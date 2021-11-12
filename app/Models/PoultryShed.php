@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class PoultryShed extends Model
 {
     use HasFactory;
+    protected $dates = ['created_at','updated_at'];
 }

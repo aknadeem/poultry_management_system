@@ -229,10 +229,30 @@
                     <div class="dropdown-divider"></div>
 
                     <!-- item-->
-                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                    <a href="{{ route('logout') }}" class="dropdown-item notify-item confirm-status">
                         <i class="fe-log-out"></i>
                         <span>Logout</span>
                     </a>
+
+                    {{-- <form id="logout-form" method="POST" action="{{ route('logout') }}" class="d-none">
+                        @csrf
+                    </form> --}}
+
+                    {{-- onclick="event.preventDefault();
+                    document.getElementById('logout-form').submit();" --}}
+
+                    <form method="post" id="logout-form">
+                        @csrf
+                    </form>
+
+
+                    {{-- <a href="{{ route('logout') }}" target="_blank"
+                        class="btn btn-label btn-label-brand btn-sm btn-bold" onclick="event.preventDefault(); 
+                        document.getElementById('logout-form').submit();">{{ __('Logout') }}
+                    </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                        @csrf
+                    </form> --}}
 
                 </div>
             </li>

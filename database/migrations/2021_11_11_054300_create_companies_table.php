@@ -4,31 +4,36 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEmployeesTable extends Migration
+class CreateCompaniesTable extends Migration
 {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up()
     {
-        Schema::create('employees', function (Blueprint $table) {
+        Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('contact_no');
-            $table->string('designation')->nullable();
-            $table->string('department')->nullable();
+            $table->text('address');
             $table->string('email')->nullable();
-            $table->string('type')->nullable();
-            $table->string('cnic')->nullable();
-            $table->date('date_of_birth')->nullable();
-            $table->text('address')->nullable();
+            $table->string('company_logo')->nullable();
             $table->text('description')->nullable();
-            $table->string('employee_image')->nullable();
             $table->unsignedBigInteger('addedby')->nullable();
             $table->unsignedBigInteger('updatedby')->nullable();
             $table->timestamps();
         });
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down()
     {
-        Schema::dropIfExists('employees');
+        Schema::dropIfExists('companies');
     }
 }

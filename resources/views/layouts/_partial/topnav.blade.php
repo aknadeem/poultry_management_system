@@ -16,7 +16,7 @@
                     </li>
 
                     <li class="nav-item ">
-                        <a class="nav-link" href="#" id="topnav-dashboard">
+                        <a class="nav-link" href="{{ route('employee.index') }}" id="topnav-dashboard">
                             <i class="fas fa-id-card me-1"></i> Employee
                         </a>
                     </li>
@@ -27,7 +27,7 @@
                         </a>
                     </li>
                     <li class="nav-item ">
-                        <a class="nav-link" href="#" id="topnav-dashboard">
+                        <a class="nav-link" href="{{ route('company.index') }}" id="topnav-dashboard">
                             <i class="fas fa-hotel me-1"></i> Companies
                         </a>
                     </li>

@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\PartyManagement;
+namespace App\Http\Controllers\PoultryShed;
 
-use App\Models\Customer;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CustomerFormRequest;
 
-class CustomerController extends Controller
+class EmployeeController extends Controller
 {
     private $auth_user_id;
     public function __construct()
@@ -21,8 +21,8 @@ class CustomerController extends Controller
 
     public function index()
     {
-        $customers = Customer::where('type', 'customer')->get();
-        return view('partymanagement.customers.index', compact('customers'));
+        $employees = Employee::get();
+        return view('partymanagement.employee.index', compact('employees'));
     }
 
     public function store(Request $request)
@@ -31,9 +31,13 @@ class CustomerController extends Controller
             'name' => 'bail|required|string',
             'contact_no' => 'bail|required|numeric',
             'email' => 'bail|required|string',
-            'farm_name' => 'bail|string',
+            'cnic' => 'bail|numeric',
+            'date_of_birth' => 'bail|date',
+            'designation' => 'bail|string',
+            'department' => 'bail|string',
             'address' => 'bail|required|string',
             'image_file' => 'nullable',
+            'description' => 'nullable|string',
         ]);
 
         if($validator->fails()){
@@ -42,17 +46,18 @@ class CustomerController extends Controller
                 'success' => 'no',
             ], 201);
         }
-        if($request->customer_id_modal > 0){
-            $customer_data = Customer::find($request->customer_id_modal);
+        
+        if($request->employee_id_modal > 0){
+            $employee_data = Employee::find($request->employee_id_modal);
         }else{
-            $customer_data = null;
+            $employee_data = null;
         }
         // $country = $session?->user?->getAddress()?->country;
         if ($request->hasFile('image_file')) {
-            if($customer_data?->image != null && \Storage::disk('public')->exists('customers/'.$customer_data?->image)){
-                \Storage::disk('public')->delete('customers/'.$customer_data?->image);
+            if($employee_data?->empoyee_image != null && \Storage::disk('public')->exists('empoyees/'.$employee_data?->empoyee_image)){
+                \Storage::disk('public')->delete('empoyees/'.$employee_data?->empoyee_image);
             }
-            $path = 'customers/';
+            $path = 'employees/';
             $image_file = $request->file('image_file');
             $extension = $request->file('image_file')->extension();
             $imageName = time().mt_rand(10,99).'.'.$extension;
@@ -61,39 +66,46 @@ class CustomerController extends Controller
             $imageName = null;
         }
 
-        if($request->customer_id_modal > 0){
-            if($customer_data !=''){
-                $message = 'A customer Updated successfully!';
+        if($request->employee_id_modal > 0){
+            if($employee_data !=''){
+                $message = 'A Company Data Updated successfully!';
                 $success = 'yes';
-                if($customer_data->image !='' && $imageName == null){
-                    $imageName = $customer_data->image;
+                if($employee_data->employee_image !='' && $imageName == null){
+                    $imageName = $employee_data->employee_image;
                 }
-                $update_customer = $customer_data->update([
+                $update_company = $employee_data->update([
                     'name' => $request->name,
                     'contact_no' => $request->contact_no,
                     'email' => $request->email,
-                    'farm_name' => $request->farm_name,
                     'address' => $request->address,
+                    'cnic' => $request->cnic,
+                    'date_of_birth' => $request->date_of_birth,
+                    'designation' => $request->designation,
+                    'department' => $request->department,
+                    'employee_image' => $imageName,
+                    'description' => $request->description,
                     'updatedby' => $this->auth_user_id,
-                    'image' => $imageName,
                 ]);
             }else{
-                $message = 'No customer found against thi id';
+                $message = 'No Employee detail found against this id';
                 $success = 'no';
             }
         }else{
-            $customer = Customer::create([
+            $employee = Employee::create([
                 'name' => $request->name,
                 'contact_no' => $request->contact_no,
                 'email' => $request->email,
-                'farm_name' => $request->farm_name,
-                'type' => 'customer',
                 'address' => $request->address,
-                'image' => $imageName,
+                'cnic' => $request->cnic,
+                'date_of_birth' => $request->date_of_birth,
+                'designation' => $request->designation,
+                'department' => $request->department,
+                'employee_image' => $imageName,
+                'description' => $request->description,
                 'addedby' => $this->auth_user_id,
             ]);
-            if($customer){
-                $message = 'New customer created successfully!';
+            if($employee){
+                $message = 'New Employee Data created successfully!';
                 $success = 'yes';
             }else{
                 $message = 'Something went wrong';
@@ -108,13 +120,13 @@ class CustomerController extends Controller
 
     public function show($id)
     {
-        $customer = Customer::find($id);
+        $customer = Employee::find($id);
         if($customer){
             $html_data = \View::make('layouts._partial.customerdetail', compact('customer'))->render();
-            $message = 'Cutomer Detail Data';
+            $message = 'Employee Detail Data';
             $success = 'yes';
         }else{
-            $message = 'No customer found against this id';
+            $message = 'No employee detail found against this id';
             $success = 'no';
             $html_data = '';
         }
@@ -129,24 +141,23 @@ class CustomerController extends Controller
 
     public function edit($id)
     {
-        $customer = Customer::find($id);
-        if($customer){
+        $employee = Employee::find($id);
+        if($employee){
             $message = 'yes';
             return response()->json([
                 'message' => $message,
-                'customer' => $customer->toArray(),
+                'employee' => $employee->toArray(),
             ], 201);
         }
     }
-    
     public function destroy($id)
     {
-        $customer = Customer::findOrFail($id);
-        $img_path = 'customers/'.$customer?->image;
-        if($customer?->image != null && \Storage::disk('public')->exists($img_path)){
+        $employee = Employee::findOrFail($id);
+        $img_path = 'employees/'.$employee?->employee_image;
+        if($employee?->employee_image != null && \Storage::disk('public')->exists($img_path)){
             \Storage::disk('public')->delete($img_path);
         }
-        $customer->delete();
-        return redirect()->route('customer.index');
+        $employee->delete();
+        return redirect()->route('employee.index');
     }
 }

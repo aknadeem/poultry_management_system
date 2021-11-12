@@ -17,6 +17,8 @@ class CreatePoultryShedsTable extends Migration
             $table->text('address')->nullable();
             $table->string('shed_logo')->nullable();
             $table->string('shed_picture')->nullable();
+            $table->unsignedBigInteger('addedby')->nullable();
+            $table->unsignedBigInteger('updatedby')->nullable();
             $table->timestamps();
         });
     }

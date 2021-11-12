@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CustomerFormRequest;
 
-class CustomerController extends Controller
+class SupplierController extends Controller
 {
     private $auth_user_id;
     public function __construct()
@@ -21,8 +21,14 @@ class CustomerController extends Controller
 
     public function index()
     {
-        $customers = Customer::where('type', 'customer')->get();
+        // dd($this->auth_user_id);
+        $customers = Customer::where('type', 'supplier')->get();
         return view('partymanagement.customers.index', compact('customers'));
+    }
+
+    public function create()
+    {
+        //
     }
 
     public function store(Request $request)
@@ -63,7 +69,7 @@ class CustomerController extends Controller
 
         if($request->customer_id_modal > 0){
             if($customer_data !=''){
-                $message = 'A customer Updated successfully!';
+                $message = 'A supplier Updated successfully!';
                 $success = 'yes';
                 if($customer_data->image !='' && $imageName == null){
                     $imageName = $customer_data->image;
@@ -87,13 +93,13 @@ class CustomerController extends Controller
                 'contact_no' => $request->contact_no,
                 'email' => $request->email,
                 'farm_name' => $request->farm_name,
-                'type' => 'customer',
+                'type' => 'supplier',
                 'address' => $request->address,
                 'image' => $imageName,
                 'addedby' => $this->auth_user_id,
             ]);
             if($customer){
-                $message = 'New customer created successfully!';
+                $message = 'New supplier created successfully!';
                 $success = 'yes';
             }else{
                 $message = 'Something went wrong';
@@ -111,7 +117,7 @@ class CustomerController extends Controller
         $customer = Customer::find($id);
         if($customer){
             $html_data = \View::make('layouts._partial.customerdetail', compact('customer'))->render();
-            $message = 'Cutomer Detail Data';
+            $message = 'Supplier Detail Data';
             $success = 'yes';
         }else{
             $message = 'No customer found against this id';

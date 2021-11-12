@@ -1,14 +1,15 @@
 <?php
 
+
 namespace App\Http\Controllers\PartyManagement;
 
-use App\Models\Customer;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CustomerFormRequest;
 
-class CustomerController extends Controller
+class CompaniesController extends Controller
 {
     private $auth_user_id;
     public function __construct()
@@ -21,8 +22,9 @@ class CustomerController extends Controller
 
     public function index()
     {
-        $customers = Customer::where('type', 'customer')->get();
-        return view('partymanagement.customers.index', compact('customers'));
+        // dd($this->auth_user_id);
+        $companies = Company::get();
+        return view('partymanagement.company.index', compact('companies'));
     }
 
     public function store(Request $request)
@@ -34,6 +36,7 @@ class CustomerController extends Controller
             'farm_name' => 'bail|string',
             'address' => 'bail|required|string',
             'image_file' => 'nullable',
+            'description' => 'nullable|string',
         ]);
 
         if($validator->fails()){
@@ -42,17 +45,18 @@ class CustomerController extends Controller
                 'success' => 'no',
             ], 201);
         }
-        if($request->customer_id_modal > 0){
-            $customer_data = Customer::find($request->customer_id_modal);
+        
+        if($request->company_id_modal > 0){
+            $company_data = Company::find($request->company_id_modal);
         }else{
-            $customer_data = null;
+            $company_data = null;
         }
         // $country = $session?->user?->getAddress()?->country;
         if ($request->hasFile('image_file')) {
-            if($customer_data?->image != null && \Storage::disk('public')->exists('customers/'.$customer_data?->image)){
-                \Storage::disk('public')->delete('customers/'.$customer_data?->image);
+            if($company_data?->company_logo != null && \Storage::disk('public')->exists('companies/'.$company_data?->company_logo)){
+                \Storage::disk('public')->delete('companies/'.$company_data?->company_logo);
             }
-            $path = 'customers/';
+            $path = 'companies/';
             $image_file = $request->file('image_file');
             $extension = $request->file('image_file')->extension();
             $imageName = time().mt_rand(10,99).'.'.$extension;
@@ -61,39 +65,38 @@ class CustomerController extends Controller
             $imageName = null;
         }
 
-        if($request->customer_id_modal > 0){
-            if($customer_data !=''){
-                $message = 'A customer Updated successfully!';
+        if($request->company_id_modal > 0){
+            if($company_data !=''){
+                $message = 'A Company Data Updated successfully!';
                 $success = 'yes';
-                if($customer_data->image !='' && $imageName == null){
-                    $imageName = $customer_data->image;
+                if($company_data->image !='' && $imageName == null){
+                    $imageName = $company_data->image;
                 }
-                $update_customer = $customer_data->update([
+                $update_company = $company_data->update([
                     'name' => $request->name,
                     'contact_no' => $request->contact_no,
                     'email' => $request->email,
-                    'farm_name' => $request->farm_name,
                     'address' => $request->address,
+                    'company_logo' => $imageName,
+                    'description' => $request->description,
                     'updatedby' => $this->auth_user_id,
-                    'image' => $imageName,
                 ]);
             }else{
-                $message = 'No customer found against thi id';
+                $message = 'No Company detail found against this id';
                 $success = 'no';
             }
         }else{
-            $customer = Customer::create([
+            $company = Company::create([
                 'name' => $request->name,
                 'contact_no' => $request->contact_no,
                 'email' => $request->email,
-                'farm_name' => $request->farm_name,
-                'type' => 'customer',
                 'address' => $request->address,
-                'image' => $imageName,
+                'company_logo' => $imageName,
+                'description' => $request->description,
                 'addedby' => $this->auth_user_id,
             ]);
-            if($customer){
-                $message = 'New customer created successfully!';
+            if($company){
+                $message = 'New Company Data created successfully!';
                 $success = 'yes';
             }else{
                 $message = 'Something went wrong';
@@ -108,13 +111,13 @@ class CustomerController extends Controller
 
     public function show($id)
     {
-        $customer = Customer::find($id);
+        $customer = Company::find($id);
         if($customer){
             $html_data = \View::make('layouts._partial.customerdetail', compact('customer'))->render();
-            $message = 'Cutomer Detail Data';
+            $message = 'Company Detail Data';
             $success = 'yes';
         }else{
-            $message = 'No customer found against this id';
+            $message = 'No company detail found against this id';
             $success = 'no';
             $html_data = '';
         }
@@ -129,24 +132,24 @@ class CustomerController extends Controller
 
     public function edit($id)
     {
-        $customer = Customer::find($id);
-        if($customer){
+        $company = Company::find($id);
+        if($company){
             $message = 'yes';
             return response()->json([
                 'message' => $message,
-                'customer' => $customer->toArray(),
+                'company' => $company->toArray(),
             ], 201);
         }
     }
     
     public function destroy($id)
     {
-        $customer = Customer::findOrFail($id);
-        $img_path = 'customers/'.$customer?->image;
-        if($customer?->image != null && \Storage::disk('public')->exists($img_path)){
+        $company = Company::findOrFail($id);
+        $img_path = 'companies/'.$company?->company_logo;
+        if($company?->company_logo != null && \Storage::disk('public')->exists($img_path)){
             \Storage::disk('public')->delete($img_path);
         }
-        $customer->delete();
-        return redirect()->route('customer.index');
+        $company->delete();
+        return redirect()->route('company.index');
     }
 }

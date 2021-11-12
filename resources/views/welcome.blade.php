@@ -1,6 +1,6 @@
 @php
 $load_css = Array('');
-$load_js = Array('');
+$load_js = Array('apexChart', 'dashboard');
 @endphp
 @extends('layouts.app')
 

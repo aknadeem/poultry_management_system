@@ -17,6 +17,9 @@ class CreateCustomersTable extends Migration
             $table->string('type')->nullable();
             $table->string('cnic')->nullable();
             $table->text('address')->nullable();
+            $table->string('image')->nullable();
+            $table->unsignedBigInteger('addedby')->nullable();
+            $table->unsignedBigInteger('updatedby')->nullable();
             $table->timestamps();
         });
     }

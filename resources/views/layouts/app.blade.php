@@ -27,6 +27,26 @@
     <?php if(in_array('jquery-confirm',$load_css)) { ?>
     <link href="{{ asset('assets/js/jquery-confirm/jquery-confirm.min.css') }}" rel="stylesheet" type="text/css" />
     <?php } ?>
+    <style>
+        .bg-light-success {
+            background-color: #c9f7f5 !important;
+        }
+
+        #pageloader {
+            background: rgba(255, 255, 255, 0.8);
+            display: none;
+            height: 100%;
+            position: fixed;
+            width: 100%;
+            z-index: 9999;
+        }
+
+        #pageloader img {
+            left: 50% !important;
+            position: absolute;
+            top: 50% !important;
+        }
+    </style>
 
     @include('layouts._partial.header')
 
@@ -75,6 +95,12 @@
     <!-- END wrapper -->
     <!-- Right bar overlay-->
     <div class="rightbar-overlay"></div>
+
+    <form method="post" id="delete-form">
+        @method('DELETE')
+        @csrf
+    </form>
+
     <!-- App js -->
     <!-- Vendor js -->
     <?php if(in_array('tippy',$load_js)){ ?>
@@ -83,11 +109,19 @@
     <script src="{{ asset('assets/js/vendor.min.js') }}"></script>
     <script src="{{ asset('assets/libs/selectize/js/standalone/selectize.min.js') }}"></script>
     <!-- Plugins js-->
+
+    <?php if(in_array('apexChart',$load_js)){ ?>
     <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
     <script src="{{ asset('assets/libs/apexcharts/apexcharts.min.js') }}"></script>
+    <?php }?>
+
+    <?php if(in_array('dashboard',$load_js)){ ?>
     <!-- Dashboar 1 init js-->
     <script src="{{ asset('assets/js/pages/dashboard-1.init.js') }}"></script>
-    <!-- App js-->
+
+    <?php }?>
+
+
 
     <?php if(in_array('sweetAlert',$load_js)){ ?>
     <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.all.min.js') }}"></script>
@@ -113,7 +147,86 @@
     <?php } ?>
     <script src="{{ asset('assets/js/app.min.js') }}"></script>
 
+    @yield('modal_scripts')
     @yield('custom_scripts')
+
+
+    <script>
+        $(".confirm-logoutform").click(function (event) {
+            /* Act on the event */
+            event.preventDefault();
+            var action = $(this).attr("href");
+            var del_title = $(this).attr("del_title");
+
+            $.confirm({
+                columnClass: "col-md-5",
+                autoClose: false,
+                theme: "modern",
+                title: "Confirm Please?",
+                content:
+                    " Are You Sure You Want to Delete <br> <b>" + del_title + " </b>?",
+                type: "dark",
+                typeAnimated: true,
+                draggable: false,
+                buttons: {
+                    ok: {
+                        useBootstrap: false,
+                        text: "Yes",
+                        btnClass: "btn-danger",
+                        keys: ["enter"],
+                        action: function () {
+                            // var action = event.$target.attr('href');
+                            $("form#logout-form").attr("action", action);
+                            $("form#logout-form").submit();
+                            // alert('heelo');
+                            console.log("the user clicked confirm");
+                        },
+                    },
+                    cancel: {
+                        text: "Cancel",
+                        keys: ["esc"],
+                        cancel: function () {
+                            console.log("the user clicked cancel");
+                        },
+                    },
+                },
+            });
+        });
+
+        $("#pageloader").fadeIn();
+
+        $(document).ready(function () {
+            $(".form_loader").on("submit", function () {
+                $("#pageloader").fadeIn();
+            });
+        });
+
+        //Reset input file in modal
+        $('input[type="file"][name="image_file"]').val('');
+            //Image preview on upload time
+            $('input[type="file"][name="image_file"]').on('change', function(){
+                var img_path = $(this)[0].value;
+                var img_holder = $('.img-holder');
+                var extension = img_path.substring(img_path.lastIndexOf('.')+1).toLowerCase();
+                // alert(extension);
+                if(extension == 'jpeg' || extension == 'jpg' || extension == 'png'){
+                        if(typeof(FileReader) != 'undefined'){
+                            img_holder.empty();
+                            var reader = new FileReader();
+                            reader.onload = function(e){
+                                $('<img/>', {'src':e.target.result,'class':'','style':'max-width:20%;margin-bottom:1px;'}).appendTo(img_holder);
+                            }
+                            img_holder.show();
+                            reader.readAsDataURL($(this)[0].files[0]);
+                        }else{
+                            $(img_holder).html('This browser does not support FileReader');
+                        }
+                }else{
+                    $(img_holder).empty();
+                }
+            });
+
+    </script>
 
 </body>
 

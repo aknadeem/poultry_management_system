@@ -2,8 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\PoultryShed\PoultryShedController;
-use App\Http\Controllers\PartyManagement\CustomerController;
+use App\Http\Controllers\PoultryShed\ {PoultryShedController, EmployeeController};
+use App\Http\Controllers\PartyManagement\ {
+    CustomerController,CompaniesController };
 
 /*
 |--------------------------------------------------------------------------
@@ -16,13 +17,21 @@ use App\Http\Controllers\PartyManagement\CustomerController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Auth::routes();
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
-
-Route::resource('poultryshed', PoultryShedController::class);
-Route::resource('customer', CustomerController::class);
+Route::group(['middleware' => 'auth'], function(){
+	Route::get('/', function () {
+        return view('welcome');
+    });    
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::resource('poultryshed', PoultryShedController::class);
+    Route::resource('employee', EmployeeController::class)->except([
+        'create', 'update'
+    ]);
+    Route::resource('customer', CustomerController::class)->except([
+        'create', 'update'
+    ]);
+    Route::resource('company', CompaniesController::class)->except([
+        'create', 'update'
+    ]);
+});
