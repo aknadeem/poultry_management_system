@@ -97,13 +97,15 @@
 
 <script>
     $(function() {
-        $('.openEmployeeModal').click(function () {
+        $(document).on('click', '.openEmployeeModal', function(){
+            $("#EmployeeForm").trigger("reset");
             let employee_id = parseInt($(this).attr('EmployeeId')) || 0;
             $('#AddEmployeeModal').modal('show');
             $('#employeeIdModal').val(employee_id);
             if(employee_id > 0){
                 $('.AddUpdate').html('Update');
                 $.get("{{ url('/employee')}}/"+employee_id+"/edit" , function(cdata, status){
+                    console.log(cdata?.employee?.date_of_birth)
                     $('#employeeIdModal').val(cdata?.employee?.id)
                     $('#employeeName').val(cdata?.employee?.name)
                     $('#employeeContactNo').val(cdata?.employee?.contact_no)
@@ -154,22 +156,19 @@
                     }else{
                         $("#EmployeeForm").trigger("reset");
                         $('#AddEmployeeModal').modal('hide');
-                        swal.fire({
-                            title: "Success",
-                            text: msg.message,
-                            type: "success",
-                            confirmButtonText: "Ok",
-                            // closeOnConfirm: true,
-                        }, function () {
-                            location.reload();
-                        });
+                        $('#employee-datatable').DataTable().ajax.reload(null, false);
+                        Swal.fire(
+                            'Saved',
+                            msg.message,
+                            'success'
+                        )
                     }
                 }
             });
         });
         $('.ModalClosed').click(function () {
-            $('.modal').modal('hide'); 
             $(this).find('form').trigger('reset');
+            $('.modal').modal('hide'); 
         });
     });
 </script>

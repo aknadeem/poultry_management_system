@@ -4,9 +4,11 @@ namespace App\Http\Controllers\PoultryShed;
 
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use DataTables;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CustomerFormRequest;
+use Session;
 
 class EmployeeController extends Controller
 {
@@ -22,7 +24,42 @@ class EmployeeController extends Controller
     public function index()
     {
         $employees = Employee::get();
+        // return DataTables::of($employees)->make(true);
         return view('partymanagement.employee.index', compact('employees'));
+    }
+
+    public function getEmployeeList()
+    {
+        $employees = Employee::orderBy('id','DESC')->get();
+        return DataTables::of($employees)
+            ->addIndexColumn()
+            ->addColumn('employee_image', function($row){
+                $url= asset('storage/employees/'.$row?->employee_image);
+                return '<img class="rounded-circle avatar-lg" src="'.$url.'"  alt="No image" />';
+            })
+            ->addColumn('Actions', function($row){
+                return ' <a class="btn btn-secondary btn-sm ViewEmployeeModal"
+                EmployeeId="'.$row["id"].'" href="javascript:void(0);"
+                title="View Details" tabindex="0" data-plugin="tippy"
+                data-tippy-animation="scale" data-tippy-arrow="true"><i class="fa fa-eye"></i>
+                View
+            </a>
+            <a class="btn btn-info btn-sm openEmployeeModal"
+                EmployeeId="'.$row["id"].'" data-id="'.$row["id"].'" id="editEmployeeModal" href="javascript:void(0);"
+                title="Click to edit"><i
+                    class="fa fa-pencil-alt"></i>
+                Edit
+            </a>
+            <a class="btn btn-danger btn-sm delete-confirm"
+                href="'.route("employee.destroy", $row["id"]).'"
+                del_title="Employee" title="Click to delete"
+                tabindex="0" data-plugin="tippy" data-tippy-animation="scale"
+                data-tippy-arrow="true"><i class="fa fa-trash"></i>
+                Delete
+            </a>';
+            })
+            ->rawColumns(['employee_image','Actions'])
+            ->make(true);
     }
 
     public function store(Request $request)
@@ -158,6 +195,9 @@ class EmployeeController extends Controller
             \Storage::disk('public')->delete($img_path);
         }
         $employee->delete();
+
+        Session::flash('swal_notification', ['title' => 'Deleted', 'icon_type' => 'success', 'message' => 'Data Deleted Successfully!']);
+        
         return redirect()->route('employee.index');
     }
 }

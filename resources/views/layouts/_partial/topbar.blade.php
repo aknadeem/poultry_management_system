@@ -229,10 +229,13 @@
                     <div class="dropdown-divider"></div>
 
                     <!-- item-->
-                    <a href="{{ route('logout') }}" class="dropdown-item notify-item confirm-status">
+                    <a href="{{ route('logout') }}" class="dropdown-item notify-item confirm-logout"
+                        msg_content="Are you sure you want to Logout?">
                         <i class="fe-log-out"></i>
                         <span>Logout</span>
                     </a>
+
+                    {{-- are u sure u want to Logout? --}}
 
                     {{-- <form id="logout-form" method="POST" action="{{ route('logout') }}" class="d-none">
                         @csrf

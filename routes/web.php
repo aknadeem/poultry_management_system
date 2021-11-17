@@ -28,6 +28,9 @@ Route::group(['middleware' => 'auth'], function(){
     Route::resource('employee', EmployeeController::class)->except([
         'create', 'update'
     ]);
+
+    Route::get('/getEmployeeList', [EmployeeController::class, 'getEmployeeList'])->name('getEmployeeList');
+
     Route::resource('customer', CustomerController::class)->except([
         'create', 'update'
     ]);

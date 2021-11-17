@@ -19,6 +19,26 @@
     <link rel="mask-icon" href="{{ asset('assets/favicon/safari-pinned-tab.svg')}}" color="#a0390e">
     <meta name="msapplication-TileColor" content="#8d0e0e">
     <meta name="theme-color" content="#ffffff">
+
+    <link rel="apple-touch-icon" sizes="57x57" href="{{ asset('assets/images/favicon/apple-icon-57x57.png') }}">
+    <link rel="apple-touch-icon" sizes="60x60" href="{{ asset('assets/images/favicon/apple-icon-60x60.png') }}">
+    <link rel="apple-touch-icon" sizes="72x72" href="{{ asset('assets/images/favicon/apple-icon-72x72.png') }}">
+    <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('assets/images/favicon/apple-icon-76x76.png') }}">
+    <link rel="apple-touch-icon" sizes="114x114" href=" {{ asset('assets/images/favicon/apple-icon-114x114.png') }}">
+    <link rel="apple-touch-icon" sizes="120x120" href="{{ asset('assets/images/favicon/apple-icon-120x120.png') }}">
+    <link rel="apple-touch-icon" sizes="144x144" href="{{ asset('assets/images/favicon/apple-icon-144x144.png') }}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{{ asset('assets/images/favicon/apple-icon-152x152.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/images/favicon/apple-icon-180x180.png') }}">
+    <link rel="icon" type="image/png" sizes="192x192"
+        href="{{ asset('assets/images/favicon/android-icon-192x192.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/images/favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('assets/images/favicon/favicon-96x96.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/images/favicon/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ asset('assets/images/favicon/manifest.json') }}">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="{{ asset('assets/images/favicon/ms-icon-144x144.png') }}">
+    <meta name="theme-color" content="#ffffff">
+
     <!-- App css -->
     <?php if(in_array('sweetAlert',$load_css)) { ?>
     <link href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
@@ -129,11 +149,17 @@
     <?php 
         if(in_array('tables',$load_js)){
     ?>
+
+    {{-- <script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    --}}
+
     <script src="{{ asset('assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('assets/js/pages/datatables.init.js') }}"></script>
+
+
     <?php } ?>
 
     <?php if(in_array('parsley',$load_js)){ ?>
@@ -147,54 +173,10 @@
     <?php } ?>
     <script src="{{ asset('assets/js/app.min.js') }}"></script>
 
-    @yield('modal_scripts')
     @yield('custom_scripts')
-
+    @yield('modal_scripts')
 
     <script>
-        $(".confirm-logoutform").click(function (event) {
-            /* Act on the event */
-            event.preventDefault();
-            var action = $(this).attr("href");
-            var del_title = $(this).attr("del_title");
-
-            $.confirm({
-                columnClass: "col-md-5",
-                autoClose: false,
-                theme: "modern",
-                title: "Confirm Please?",
-                content:
-                    " Are You Sure You Want to Delete <br> <b>" + del_title + " </b>?",
-                type: "dark",
-                typeAnimated: true,
-                draggable: false,
-                buttons: {
-                    ok: {
-                        useBootstrap: false,
-                        text: "Yes",
-                        btnClass: "btn-danger",
-                        keys: ["enter"],
-                        action: function () {
-                            // var action = event.$target.attr('href');
-                            $("form#logout-form").attr("action", action);
-                            $("form#logout-form").submit();
-                            // alert('heelo');
-                            console.log("the user clicked confirm");
-                        },
-                    },
-                    cancel: {
-                        text: "Cancel",
-                        keys: ["esc"],
-                        cancel: function () {
-                            console.log("the user clicked cancel");
-                        },
-                    },
-                },
-            });
-        });
-
-        $("#pageloader").fadeIn();
-
         $(document).ready(function () {
             $(".form_loader").on("submit", function () {
                 $("#pageloader").fadeIn();
@@ -203,31 +185,55 @@
 
         //Reset input file in modal
         $('input[type="file"][name="image_file"]').val('');
-            //Image preview on upload time
-            $('input[type="file"][name="image_file"]').on('change', function(){
-                var img_path = $(this)[0].value;
-                var img_holder = $('.img-holder');
-                var extension = img_path.substring(img_path.lastIndexOf('.')+1).toLowerCase();
-                // alert(extension);
-                if(extension == 'jpeg' || extension == 'jpg' || extension == 'png'){
-                        if(typeof(FileReader) != 'undefined'){
-                            img_holder.empty();
-                            var reader = new FileReader();
-                            reader.onload = function(e){
-                                $('<img/>', {'src':e.target.result,'class':'','style':'max-width:20%;margin-bottom:1px;'}).appendTo(img_holder);
-                            }
-                            img_holder.show();
-                            reader.readAsDataURL($(this)[0].files[0]);
-                        }else{
-                            $(img_holder).html('This browser does not support FileReader');
+        //Image preview on upload time
+        $('input[type="file"][name="image_file"]').on('change', function(){
+            var img_path = $(this)[0].value;
+            var img_holder = $('.img-holder');
+            var extension = img_path.substring(img_path.lastIndexOf('.')+1).toLowerCase();
+            // alert(extension);
+            if(extension == 'jpeg' || extension == 'jpg' || extension == 'png'){
+                    if(typeof(FileReader) != 'undefined'){
+                        img_holder.empty();
+                        var reader = new FileReader();
+                        reader.onload = function(e){
+                            $('<img/>', {'src':e.target.result,'class':'','style':'max-width:20%;margin-bottom:1px;'}).appendTo(img_holder);
                         }
-                }else{
-                    $(img_holder).empty();
-                }
-            });
+                        img_holder.show();
+                        reader.readAsDataURL($(this)[0].files[0]);
+                    }else{
+                        $(img_holder).html('This browser does not support FileReader');
+                    }
+            }else{
+                $(img_holder).empty();
+            }
+        });
+        // End Image Preview Code on Modal Form
+
+        // Swal And Toast Notifications
+        @if(Session::has("swal_notification"))
+            Swal.fire(
+                '{{ Session::get("swal_notification.title")}}',
+                '{{ Session::get("swal_notification.message")}}',
+                '{{ Session::get("swal_notification.icon_type")}}'
+            )
+            // const Toast = Swal.mixin({
+            // toast: true,
+            // position: 'top-end',
+            // showConfirmButton: false,
+            // timer: 3000,
+            // timerProgressBar: true,
+            //     didOpen: (toast) => {
+            //         toast.addEventListener('mouseenter', Swal.stopTimer)
+            //         toast.addEventListener('mouseleave', Swal.resumeTimer)
+            //     }
+            // })
+            // Toast.fire({
+            //     icon: '{{ Session::get("swal_notification.icon_type")}}',
+            //     title: '{{ Session::get("swal_notification.message")}}'
+            // })
+        @endif
 
     </script>
-
 </body>
 
 </html>

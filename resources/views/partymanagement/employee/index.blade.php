@@ -29,15 +29,28 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                             <h4>Employees</h4>
                         </div>
                         <div class="col-6 align-self-end text-end mb-2">
-                            <a class="btn btn-secondary btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#AddEmployeeModal" href="javascript:void(0);" CustomerId="0"
-                                title="Click to add new employee" data-plugin="tippy" data-tippy-animation="scale"
-                                data-tippy-arrow="true"><i class="fa fa-plus"></i>
+                            <a class="btn btn-secondary btn-sm openEmployeeModal" href="javascript:void(0);"
+                                CustomerId="0" title="Click to add new employee" data-plugin="tippy"
+                                data-tippy-animation="scale" data-tippy-arrow="true"><i class="fa fa-plus"></i>
                                 Employee
                             </a>
                         </div>
                     </div>
-                    <table id="basic-datatable" class="table table-striped dt-responsive  w-100">
+
+                    <table id="employee-datatable" class="table table-striped dt-responsive w-100">
+                        <thead>
+                            <th>#</th>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Contact Number</th>
+                            <th>ShopName</th>
+                            <th>Actions</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+
+                    {{-- <table id="basic-datatable" class="table table-striped dt-responsive  w-100">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -45,7 +58,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Contact Number</th>
-                                <th>ShopName</th>
+                                <th>Address</th>
                                 <th>Options</th>
                             </tr>
                         </thead>
@@ -93,7 +106,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                             @empty
                             @endforelse
                         </tbody>
-                    </table>
+                    </table> --}}
                 </div> <!-- end card body-->
             </div> <!-- end card -->
         </div>
@@ -123,7 +136,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
             $(this).find('form').trigger('reset');
         });
 
-        $('.ViewEmployeeModal').click(function () {
+        $(document).on('click', '.ViewEmployeeModal', function(){
             let employee_id = parseInt($(this).attr('EmployeeId')) || 0;
             $.get("{{ url('/employee')}}/"+employee_id, function(result) {
                 // console.log(result)
@@ -131,6 +144,30 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                 $('#CustomerDetailData').html(result?.html_data);
             });
         });
+        $('#employee-datatable').DataTable({
+            processing: true,
+            info: true,
+            ajax: "{{ route('getEmployeeList')}}",
+            "pageLength":20,
+            "aLengthMenu":[[30,40,50,-1],[30,40,50,"all"]],
+            columns:[
+                // {data:'id', name:'id'},
+                {data:'DT_RowIndex'},
+                {data:'employee_image'},
+                {data:'name'},
+                {data:'email'},
+                {data:'contact_no'},
+                {data:'address'},
+                {data:'Actions'},
+            ]
+        });
+
+        // $(document).on('click', '.openEmployeeModal', function(){
+        //     var empId = $(this).data('id');
+        //     alert(empId);
+        // });
+
+        
     });
 </script>
 @endsection

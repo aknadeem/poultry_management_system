@@ -1,5 +1,5 @@
 // delete Form
-$(".delete-confirm").click(function (event) {
+$(document).on("click", ".delete-confirm", function (event) {
     /* Act on the event */
     event.preventDefault();
     var action = $(this).attr("href");
@@ -130,37 +130,36 @@ $(".confirm-select").change(function () {
 
 // User Active InActive Status Confirmation msg
 
-$("a.confirm-status").click(function (event) {
+$("a.confirm-logout").click(function (event) {
     /* Act on the event */
     event.preventDefault();
     var action = $(this).attr("href");
-    var msg = $(this).attr("msg");
+    var msg = $(this).attr("msg_content");
     $.confirm({
-        columnClass: "col-md-5",
         theme: "modern",
         title: "Confirm Please?",
-        content: msg,
-        type: "dark",
+        content: "<b>" + msg + "</b>",
+        type: "red",
         typeAnimated: true,
         draggable: false,
         buttons: {
             ok: {
                 useBootstrap: false,
                 text: "Yes!",
-                btnClass: "btn-info btn-xs",
+                btnClass: "btn-red btn-xs",
                 keys: ["enter"],
                 action: function () {
                     // var action = this.$target.attr('href')
                     $("form#logout-form").attr("action", action);
                     $("form#logout-form").submit();
-                    console.log("the user clicked confirm");
+                    // console.log("the user clicked confirm");
                 },
             },
             cancel: {
                 text: "No",
                 keys: ["esc"],
                 cancel: function () {
-                    console.log("the user clicked cancel");
+                    // console.log("the user clicked cancel");
                 },
             },
         },
