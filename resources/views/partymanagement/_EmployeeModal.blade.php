@@ -97,6 +97,7 @@
 
 <script>
     $(function() {
+        $('#AddEmployeeModal').modal({backdrop: 'static', keyboard: false}) 
         $(document).on('click', '.openEmployeeModal', function(){
             $("#EmployeeForm").trigger("reset");
             let employee_id = parseInt($(this).attr('EmployeeId')) || 0;

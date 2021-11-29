@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ChickenPurchase extends Model
+class Feed extends Model
 {
-    public $table = 'chicken_purchases';
+    public $table = 'feeds';
     use HasFactory;
     protected $dates = ['created_at','updated_at', 'purchase_date'];
     protected $casts = [

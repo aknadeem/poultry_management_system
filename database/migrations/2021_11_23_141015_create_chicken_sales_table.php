@@ -4,23 +4,21 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateChickenPurchasesTable extends Migration
+class CreateChickenSalesTable extends Migration
 {
-   
     public function up()
     {
-        Schema::create('chicken_purchases', function (Blueprint $table) {
+        Schema::create('chicken_sales', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('supplier_id')->nullable()->constrained('customers')->onDelete('cascade');
             $table->string('bill_no')->nullable();
-            $table->date('purchase_date')->nullable();
+            $table->date('sale_date')->nullable();
+            $table->foreignId('customer_id')->nullable()->constrained('customers')->onDelete('cascade');
             $table->string('vehicle_number')->nullable();
             $table->string('driver_name')->nullable();
             $table->string('driver_contact')->nullable();
-            $table->foreignId('company_id')->nullable()->constrained('companies')->onDelete('cascade');
             $table->integer('quantity')->nullable();
-            $table->decimal('weight')->nullable();
-            $table->decimal('price')->nullable();
+            $table->decimal('total_weight')->nullable();
+            $table->decimal('per_kg_price')->nullable();
             $table->decimal('discount_amount')->nullable();
             $table->float('discount_percentage')->nullable();
             $table->decimal('total_price')->nullable();
@@ -34,6 +32,6 @@ class CreateChickenPurchasesTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('chicken_purchases');
+        Schema::dropIfExists('chicken_sales');
     }
 }

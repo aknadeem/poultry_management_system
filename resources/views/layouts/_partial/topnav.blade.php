@@ -32,10 +32,16 @@
                         </a>
                     </li>
 
+                    <li class="nav-item ">
+                        <a class="nav-link" href="{{ route('expense.index') }}" id="topnav-dashboard">
+                            <i class="fas fa-hotel me-1"></i> Expenses
+                        </a>
+                    </li>
+
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-components" role="button"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-layer-group me-1"></i> Inventory Management <div class="arrow-down"></div>
+                            <i class="fas fa-layer-group me-1"></i> Inventory <div class="arrow-down"></div>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="topnav-components">
                             <div class="dropdown">
@@ -44,9 +50,9 @@
                                     <i class="fe-bookmark me-1"></i> Chickens <div class="arrow-down"></div>
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="topnav-form">
-                                    <a href="#" class="dropdown-item">Sales</a>
-                                    <a href="#" class="dropdown-item">Purchase</a>
-                                    <a href="#l" class="dropdown-item">Stock</a>
+                                    <a href="{{ route('sale.index') }}" class="dropdown-item">Sales</a>
+                                    <a href="{{ route('purchase.index') }}" class="dropdown-item">Purchase</a>
+                                    {{-- <a href="#l" class="dropdown-item">Stock</a> --}}
                                 </div>
                             </div>
 
@@ -56,9 +62,9 @@
                                     <i class="fe-bookmark me-1"></i> Feed <div class="arrow-down"></div>
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="topnav-form">
-                                    <a href="#" class="dropdown-item">Sales</a>
-                                    <a href="#" class="dropdown-item">Purchase</a>
-                                    <a href="#" class="dropdown-item">Consumption</a>
+                                    {{-- <a href="#" class="dropdown-item">Sales</a> --}}
+                                    <a href="{{ route('feed.index') }}" class="dropdown-item">Purchase</a>
+                                    {{-- <a href="#" class="dropdown-item">Consumption</a> --}}
                                 </div>
                             </div>
 
@@ -135,6 +141,32 @@
                             </div>
                         </div>
                     </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-components" role="button"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-layer-group me-1"></i> User Management <div class="arrow-down"></div>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="topnav-components">
+                            <div class="dropdown">
+                                <a class="dropdown-item arrow-none" href="{{ route('users.index') }}" id="topnav-form"
+                                    role="button">
+                                    <i class="fa fa-users me-1"></i> Users
+                                </a>
+                            </div>
+
+                            <div class="dropdown">
+                                <a class="dropdown-item dropdown-toggle arrow-none" href="#" id="topnav-form"
+                                    role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fe-bookmark me-1"></i> UserGroup <div class="arrow-down"></div>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+
+
+
+
                 </ul> <!-- end navbar-->
             </div> <!-- end .collapsed-->
         </nav>

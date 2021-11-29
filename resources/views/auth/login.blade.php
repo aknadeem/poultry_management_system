@@ -54,20 +54,14 @@
 
                             <form action="{{ route('login') }}" method="POST" class="needs-validation" novalidate>
                                 @csrf
-
                                 <div class="form-group mb-3">
                                     <label for="email">{{ __('E-Mail Address')
                                         }}</label>
                                     <input class="form-control" id="email" type="email" name="email"
                                         value="{{ old('email') }}" required autocomplete="email" autofocus
                                         id="emailaddress" required placeholder="Enter your admission email">
-                                    <div class="invalid-tooltip" style="position: initial;">
-                                        Please provide a valid email address.
-                                    </div>
                                     @error('email')
-                                    <div class="invalid-tooltip" style="position: initial;">
-                                        {{ $message }}
-                                    </div>
+                                    <span class="text-danger"> {{ $message }}</span>
                                     @enderror
                                 </div>
 
@@ -79,9 +73,7 @@
                                         autocomplete="current-password" placeholder="Enter Your Password">
 
                                     @error('password')
-                                    <div class="invalid-tooltip" style="position: initial;">
-                                        {{ $message }}
-                                    </div>
+                                    <span class="text-danger"> {{ $message }}</span>
                                     @enderror
                                 </div>
 

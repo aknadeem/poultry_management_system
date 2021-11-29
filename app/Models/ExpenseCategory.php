@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Company extends Model
+class ExpenseCategory extends Model
 {
-    public $table = 'companies';
     use HasFactory;
-    protected $dates = ['created_at','updated_at'];
+    public $table = 'expense_categories';
+    // protected $dates = ['created_at','updated_at'];
 }

@@ -44,6 +44,18 @@
     <link href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
     <?php } ?>
 
+    <?php if(in_array('multipleselect',$load_css)) { ?>
+    <link href="{{ asset('assets/libs/multiple-select/css/multiple-select.min.css') }}" rel="stylesheet"
+        type="text/css" />
+    <?php } ?>
+
+    {{--
+    <?php //if(in_array('select2',$load_css)) { ?> --}}
+    <link href="{{ asset('assets/libs/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css" />
+    {{--
+    <?php //} ?> --}}
+
+
     <?php if(in_array('jquery-confirm',$load_css)) { ?>
     <link href="{{ asset('assets/js/jquery-confirm/jquery-confirm.min.css') }}" rel="stylesheet" type="text/css" />
     <?php } ?>
@@ -138,9 +150,20 @@
     <?php if(in_array('dashboard',$load_js)){ ?>
     <!-- Dashboar 1 init js-->
     <script src="{{ asset('assets/js/pages/dashboard-1.init.js') }}"></script>
-
     <?php }?>
 
+
+    <?php if(in_array('select2',$load_js)){ ?>
+    <script src="{{ asset('assets/libs/select2/js/select2.min.js') }}"></script>
+    <script type="text/javascript">
+        $(function() {
+                $('.mySelect').select2();
+                $(document).on('select2:open', () => {
+                    document.querySelector('.select2-search__field').focus();
+                });
+            });
+    </script>
+    <?php }?>
 
 
     <?php if(in_array('sweetAlert',$load_js)){ ?>
@@ -149,17 +172,11 @@
     <?php 
         if(in_array('tables',$load_js)){
     ?>
-
-    {{-- <script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-    --}}
-
     <script src="{{ asset('assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('assets/js/pages/datatables.init.js') }}"></script>
-
-
     <?php } ?>
 
     <?php if(in_array('parsley',$load_js)){ ?>
@@ -171,13 +188,21 @@
     <script src="{{ asset('assets/js/jquery-confirm/jquery-confirm.min.js') }}"></script>
     <script src="{{ asset('assets/js/custom.js') }}"></script>
     <?php } ?>
+
     <script src="{{ asset('assets/js/app.min.js') }}"></script>
 
     @yield('custom_scripts')
     @yield('modal_scripts')
-
     <script>
         $(document).ready(function () {
+
+           ' <?php  if(in_array('select2model',$load_js)){ ?>'
+                $('.mySelectModal').select2({
+                    dropdownParent: $('#AddFeedModal'),
+                    dropdownParent: $('#AddModal')
+                });
+            '<?php } ?>'
+
             $(".form_loader").on("submit", function () {
                 $("#pageloader").fadeIn();
             });
@@ -234,6 +259,8 @@
         @endif
 
     </script>
+
+
 </body>
 
 </html>

@@ -127,7 +127,23 @@ class CompaniesController extends Controller
             'html_data' => $html_data,
         ], 201);
 
-        return response()->json($data, 200, $headers);
+        // return response()->json($data, 200, $headers);
+    }
+
+    public function getCompaniesList()
+    {
+        $companies = Company::get();
+        if($companies->count()  > 0){
+            $success = 'yes';
+            $data = $companies;
+        }else{
+            $success = 'no';
+            $data = $companies;
+        }
+        return response()->json([
+            'success' => $success,
+            'companies' => $data,
+        ], 201);
     }
 
     public function edit($id)

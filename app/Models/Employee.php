@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Employee extends Model
 {
+    public $table = 'employees';
     use HasFactory;
     protected $dates = ['created_at','updated_at', 'date_of_birth'];
     protected $casts = [

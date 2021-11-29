@@ -77,6 +77,7 @@
 
 <script>
     $(function() {
+        $('#AddCustomerModal').modal({backdrop: 'static', keyboard: false}) 
         $('.openCustomerModal').click(function () {
             let customer_id = parseInt($(this).attr('CustomerId')) || 0;
             $('#AddCustomerModal').modal('show');

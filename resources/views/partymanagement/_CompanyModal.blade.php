@@ -73,6 +73,8 @@
 
 <script>
     $(function() {
+        $('#AddCompanyModal').modal({backdrop: 'static', keyboard: false}) 
+
         $('.openCompanyModal').click(function () {
             let company_id = parseInt($(this).attr('CompanyId')) || 0;
             $('#AddCompanyModal').modal('show');
