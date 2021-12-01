@@ -10,7 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    public $table = 'users';
+    protected $table = 'users';
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
@@ -18,11 +18,12 @@ class User extends Authenticatable
      *
      * @var string[]
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    // protected $fillable = [
+    //     'name',
+    //     'email',
+    //     'email',
+    //     'password',
+    // ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -42,4 +43,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function userlevel()
+    {
+        return $this->belongsTo('App\Models\UserLevel', 'user_level_id', 'id');
+    }
 }

@@ -12,9 +12,12 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->foreignId('user_level_id')->nullable()->constrained('user_levels')->onDelete('cascade');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->unsignedBigInteger('addedby')->nullable();
+            $table->unsignedBigInteger('updatedby')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

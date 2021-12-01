@@ -3,8 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Database\Seeders\UserSeeder;
-use Database\Seeders\ExpenseCategorySeed;
+use Database\Seeders\ { UserSeeder, ExpenseCategorySeed, CountryProvinceSeeder };
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,6 +11,7 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
         $this->call([
+            CountryProvinceSeeder::class,  
             UserSeeder::class,  
             ExpenseCategorySeed::class,  
 	    ]); 

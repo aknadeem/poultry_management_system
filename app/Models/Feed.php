@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Feed extends Model
 {
-    public $table = 'feeds';
+    protected $table = 'feeds';
     use HasFactory;
     protected $dates = ['created_at','updated_at', 'purchase_date'];
     protected $casts = [

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ChickenSale extends Model
 {
-    public $table = 'chicken_sales';
+    protected $table = 'chicken_sales';
     use HasFactory;
     protected $dates = ['created_at','updated_at', 'sale_date'];
     protected $casts = [

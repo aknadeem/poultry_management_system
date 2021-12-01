@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Expense extends Model
 {
-    public $table = 'expenses';
+    protected $table = 'expenses';
     use HasFactory;
     protected $dates = ['created_at','updated_at', 'expense_date'];
     protected $casts = [

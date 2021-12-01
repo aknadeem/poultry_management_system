@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CustomerBalance extends Model
 {
-    public $table = 'customer_balances';
+    protected $table = 'customer_balances';
     use HasFactory;
 
     protected $dates = ['created_at','updated_at', 'balance_date'];

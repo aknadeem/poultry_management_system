@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Supplier extends Model
 {
-    public $table = 'suppliers';
+    protected $table = 'suppliers';
     use HasFactory;
     protected $dates = ['created_at','updated_at'];
 }
