@@ -2,7 +2,6 @@
     <div class="container-fluid">
         <ul class="list-unstyled topnav-menu float-end mb-0">
 
-
             <li class="dropdown d-none d-lg-inline-block">
                 <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" data-toggle="fullscreen"
                     href="#">
@@ -246,6 +245,7 @@
 
                     <form method="post" id="logout-form">
                         @csrf
+                        @method('POST')
                     </form>
 
 

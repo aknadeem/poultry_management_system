@@ -105,7 +105,6 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
 
 @include('partymanagement._CompanyModal')
 
-
 <!-- View Detail modal content -->
 <div id="CompanyDetailModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="CompanyDetailModal"
     aria-hidden="true">

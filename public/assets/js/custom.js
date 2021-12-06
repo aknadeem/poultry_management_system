@@ -130,7 +130,7 @@ $(".confirm-select").change(function () {
 
 // User Active InActive Status Confirmation msg
 
-$("a.confirm-logout").click(function (event) {
+$(document).on("click", ".confirm-logout", function (event) {
     /* Act on the event */
     event.preventDefault();
     var action = $(this).attr("href");

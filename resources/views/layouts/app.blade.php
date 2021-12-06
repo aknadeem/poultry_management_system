@@ -64,6 +64,10 @@
             background-color: #c9f7f5 !important;
         }
 
+        .bolded {
+            font-weight: bold;
+        }
+
         #pageloader {
             background: rgba(255, 255, 255, 0.8);
             display: none;
@@ -195,19 +199,11 @@
     @yield('modal_scripts')
     <script>
         $(document).ready(function () {
-
-           ' <?php  if(in_array('select2model',$load_js)){ ?>'
-                $('.mySelectModal').select2({
-                    dropdownParent: $('#AddFeedModal'),
-                    dropdownParent: $('#AddModal')
-                });
-            '<?php } ?>'
-
+                
             $(".form_loader").on("submit", function () {
                 $("#pageloader").fadeIn();
             });
         });
-
         //Reset input file in modal
         $('input[type="file"][name="image_file"]').val('');
         //Image preview on upload time

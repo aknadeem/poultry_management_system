@@ -7,6 +7,8 @@ use DataTables;
 use App\Models\Feed;
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use App\Models\CompanyBalance;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CustomerFormRequest;
@@ -69,10 +71,10 @@ class FeedController extends Controller
             'company_id' => 'bail|required|integer',
             'quantity' => 'bail|required|numeric',
             'price' => 'bail|required|numeric',
-            'discount_amount' => 'bail|required|numeric',
-            'discount_percentage' => 'bail|required|numeric',
+            'discount_amount' => 'bail|nullable|numeric',
+            'discount_percentage' => 'bail|nullable',
             'total_price' => 'bail|required|numeric',
-            'image_file' => 'mimes:jpeg,jpg,png|max:5000',
+            'image_file' => 'nullable|mimes:jpeg,jpg,png|max:5000',
         ],[
             'image_file.max'=> 'Maximum Image size to upload is 5MB (5000KB). If you are uploading a photo, try to reduce its resolution to make it under 5MB',
         ]);
@@ -125,23 +127,36 @@ class FeedController extends Controller
                 $success = 'no';
             }
         }else{
-            $employee = Feed::create([
-                'feed_name' => $request->feed_name,
-                'purchase_date' => $request->purchase_date,
-                'company_id' => $request->company_id,
-                'quantity' => $request->quantity,
-                'price' => $request->price,
-                'discount_amount' => $request->discount_amount,
-                'discount_percentage' => $request->discount_percentage,
-                'total_price' => $request->total_price,
-                'picture' => $imageName,
-                'addedby' => $this->auth_user_id,
-            ]);
-            if($employee){
-                $message = 'New Feed entry created successfully!';
-                $success = 'yes';
-            }else{
-                $message = 'Something went wrong';
+            $message = 'New Feed entry created successfully!';
+            $success = 'yes';
+            try {
+               DB::transaction(function () use ($request, $imageName) {
+                    $feed = Feed::create([
+                        'feed_name' => $request->feed_name,
+                        'purchase_date' => $request->purchase_date,
+                        'company_id' => $request->company_id,
+                        'quantity' => $request->quantity,
+                        'price' => $request->price,
+                        'discount_amount' => $request->discount_amount,
+                        'discount_percentage' => $request->discount_percentage,
+                        'total_price' => $request->total_price,
+                        'picture' => $imageName,
+                        'addedby' => $this->auth_user_id,
+                    ]);
+                    
+                    $companyBalance = CompanyBalance::create([
+                        'type' => 'feed',
+                        'company_id' => $request->company_id,
+                        'feed_purchase_id' => $feed->id,
+                        'total_amount' => $request->total_price,
+                        'remaining_amount' => $request->total_price,
+                        'addedby' => $this->auth_user_id,
+                    ]);
+                });
+            }
+            catch (\Throwable $e) {
+                return $e;
+                $message = 'Data not save something went wrong!';
                 $success = 'no';
             }
         }

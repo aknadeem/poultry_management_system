@@ -1,7 +1,9 @@
 @php
-$load_css = Array('tables','sweetAlert', 'jquery-confirm');
-$load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
+$load_css = Array('tables','sweetAlert', 'jquery-confirm','select2');
+$load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','select2model')
+;
 @endphp
+
 @extends('layouts.app')
 @section('content')
 <div class="container-fluid">
@@ -55,6 +57,8 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
     </div>
 </div>
 
+@include('usermanagement._AddUserModal')
+
 @endsection
 
 @section('custom_scripts')
@@ -76,7 +80,6 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
             "pageLength":10,
             "aLengthMenu":[[10,30,50,-1],[10,30,50,"all"]],
             columns:[
-                // {data:'id', name:'id'},
                 {data:'DT_RowIndex'},
                 {data:'name'},
                 {data:'user_level_id'},

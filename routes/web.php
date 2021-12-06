@@ -2,10 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\UserManagement\UserController;
+use App\Http\Controllers\UserManagement\{ UserController, UserLevelController};
 use App\Http\Controllers\PoultryShed\ {PoultryShedController, EmployeeController};
 use App\Http\Controllers\PartyManagement\ {
-    CustomerController,CompaniesController };
+    CustomerController,CompaniesController, CompaniesBalanceController };
 
 use App\Http\Controllers\InventoryManagement\ {FeedController, ExpenseController};
 use App\Http\Controllers\ChickenModule\ {ChickenPurchaseController, ChickenSaleController};
@@ -19,7 +19,9 @@ Route::group(['middleware' => 'auth'], function(){
 
     Route::group(['prefix' => '/usermanagement'], function(){
         Route::get('/get-users-list', [UserController::class, 'getUsersList'])->name('getUsersList');
+        Route::get('/get-userlevels', [UserController::class, 'getUserLevelList'])->name('getUserLevelList');
         Route::resource('users', UserController::class);
+        Route::resource('userlevel', UserLevelController::class);
     });
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
@@ -34,8 +36,14 @@ Route::group(['middleware' => 'auth'], function(){
     ]);
 
     Route::get('/getCompaniesList', [CompaniesController::class, 'getCompaniesList'])->name('getCompaniesList');
-
+    
     Route::resource('company', CompaniesController::class)->except([
+        'create', 'update'
+    ]);
+
+    Route::get('/getCompaniesBalanceList', [CompaniesBalanceController::class, 'getCompaniesBalanceList'])->name('getCompaniesBalanceList');
+    
+    Route::resource('companybalance', CompaniesBalanceController::class)->except([
         'create', 'update'
     ]);
     Route::group(['prefix' => '/inventory'], function(){

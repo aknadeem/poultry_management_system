@@ -30,8 +30,9 @@
                             <label for="feedCompanyId">Select Company *</label>
                             <select class="form-control mySelectModal" id="feedCompanyId" name="company_id"
                                 data-placeholder="Select Company" data-toggle="select2" data-width="100%">
-                                <option value="0"> Select Company </option>
+                                <option value=""> Select Company </option>
                             </select>
+
                             <span class="text-danger company_id_error"></span>
                         </div>
 
@@ -109,10 +110,9 @@
 
 <script>
     $(function() {
-
         var companies_list = {};
         
-        $('#AddFeedModal').modal({backdrop: 'static', keyboard: false})
+        $('#AddModal').modal({backdrop: 'static', keyboard: false})
 
         $(document).on('click', '.openFeedModal', function(e){
             $("#FeedEntryForm").trigger("reset");
@@ -264,8 +264,6 @@
             }
         });
         
-        // $("#feedDiscountPercentage").change(function () {
-
         $('#feedDiscountPercentage').on('keyup', function() {
             let total_qty = Number($('#feedQuantity').val())
             let feed_price = parseFloat($('#feedPrice').val())
@@ -290,6 +288,10 @@
                 $(".discount_percentage_error").html('Discount Percentage Must be less than 100 (Total Amount)');
             }
         });
+    });
+
+    $(".mySelectModal").select2({
+        dropdownParent: $("#AddFeedModal")
     });
 </script>
 @endsection

@@ -3,6 +3,7 @@ $load_css = Array('tables','sweetAlert', 'jquery-confirm','select2');
 $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','select2model')
 ;
 @endphp
+
 @extends('layouts.app')
 @section('content')
 <div class="container-fluid">
@@ -94,7 +95,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
             info: true,
             ajax: "{{ url('inventory/get-feed-list')}}",
             "pageLength":10,
-            "aLengthMenu":[[20,30,40,-1],[20,30,40,"all"]],
+            "aLengthMenu":[[10,20,30,40,-1],[10,20,30,40,"all"]],
             columns:[
                 // {data:'id', name:'id'},
                 {data:'DT_RowIndex'},

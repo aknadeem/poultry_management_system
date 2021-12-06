@@ -5,12 +5,14 @@ namespace App\Http\Controllers\ChickenModule;
 use Session;
 use DataTables;
 use App\Models\Feed;
-use App\Models\Employee;
 use App\Models\Company;
+use App\Models\Employee;
 use Illuminate\Http\Request;
+use App\Models\CompanyBalance;
 use App\Models\ChickenPurchase;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\CustomerFormRequest;
 
 class ChickenPurchaseController extends Controller
@@ -73,20 +75,18 @@ class ChickenPurchaseController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->toArray());
-
         $this->validate($request, [
-            'vehicle_number' => 'bail|required|string',
-            'driver_name' => 'bail|required|string',
-            'driver_contact' => 'bail|required|numeric',
             'purchase_date' => 'bail|required|date',
             'company_id' => 'bail|required|integer',
             'quantity' => 'bail|required|numeric',
             'weight' => 'bail|nullable|numeric',
             'price' => 'bail|required|numeric',
-            'discount_amount' => 'bail|required|numeric',
-            'discount_percentage' => 'bail|required|numeric',
+            'discount_amount' => 'bail|nullable|numeric',
+            'discount_percentage' => 'bail|nullable|numeric',
             'total_price' => 'bail|required|numeric',
+            'vehicle_number' => 'bail|nullable|string',
+            'driver_name' => 'bail|nullable|string',
+            'driver_contact' => 'bail|nullable|numeric',
             'image_file' => 'mimes:jpeg,jpg,png|max:5000',
         ],[
             'image_file.max'=> 'Maximum Image size to upload is 5MB (5000KB). If you are uploading a photo, try to reduce its resolution to make it under 5MB',
@@ -101,27 +101,41 @@ class ChickenPurchaseController extends Controller
         }else{
             $imageName = null;
         }
-        $purchase = ChickenPurchase::create([
-            'purchase_date' => $request->purchase_date,
-            'vehicle_number' => $request->vehicle_number,
-            'driver_name' => $request->driver_name,
-            'driver_contact' => $request->driver_contact,
-            'company_id' => $request->company_id,
-            'quantity' => $request->quantity,
-            'price' => $request->price,
-            'discount_amount' => $request->discount_amount,
-            'discount_percentage' => $request->discount_percentage,
-            'total_price' => $request->total_price,
-            'picture' => $imageName,
-            'addedby' => $this->auth_user_id,
-        ]);
 
-        if($purchase){
-            $message = 'Data created successfully!';
-            $title = 'Saved';
-            $icon_type = 'success';
-
-        }else{
+        $message = 'Data created successfully!';
+        $title = 'Saved';
+        $icon_type = 'success';
+        
+        try {
+            $purchase = null;
+            DB::transaction(function () use ($request, $imageName) {
+                $purchase = ChickenPurchase::create([
+                    'purchase_date' => $request->purchase_date,
+                    'vehicle_number' => $request->vehicle_number,
+                    'driver_name' => $request->driver_name,
+                    'driver_contact' => $request->driver_contact,
+                    'company_id' => $request->company_id,
+                    'quantity' => $request->quantity,
+                    'price' => $request->price,
+                    'discount_amount' => $request->discount_amount,
+                    'discount_percentage' => $request->discount_percentage,
+                    'total_price' => $request->total_price,
+                    'picture' => $imageName,
+                    'addedby' => $this->auth_user_id,
+                ]);
+                
+                $companyBalance = CompanyBalance::create([
+                    'type' => 'chicken',
+                    'company_id' => $request->company_id,
+                    'chicken_purchase_id' => $purchase->id,
+                    'total_amount' => $request->total_price,
+                    'remaining_amount' => $request->total_price,
+                    'addedby' => $this->auth_user_id,
+                ]);
+            });
+        }
+        catch (\Throwable $e) {
+            // return $e;
             $message = 'Something went wrong';
             $title = 'Error';
             $icon_type = 'warning';
