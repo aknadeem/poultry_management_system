@@ -11,11 +11,6 @@ use Illuminate\Support\Facades\DB;
 
 class CountryProvinceSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
     public function run()
     {
   		$this->createCountries();
