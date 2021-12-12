@@ -60,6 +60,11 @@
     <link href="{{ asset('assets/js/jquery-confirm/jquery-confirm.min.css') }}" rel="stylesheet" type="text/css" />
     <?php } ?>
     <style>
+        .font_bold {
+            font-qeight: bold !important;
+            font-size: 15px !important;
+        }
+
         .bg-light-success {
             background-color: #c9f7f5 !important;
         }

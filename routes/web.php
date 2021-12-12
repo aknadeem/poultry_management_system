@@ -5,7 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserManagement\{ UserController, UserLevelController};
 use App\Http\Controllers\PoultryShed\ {PoultryShedController, EmployeeController};
 use App\Http\Controllers\PartyManagement\ {
-    CustomerController,CompaniesController, CompaniesBalanceController };
+    PartyController, CustomerController,CompaniesController, CompaniesBalanceController, ConductPersonController };
 
 use App\Http\Controllers\InventoryManagement\ {FeedController, ExpenseController};
 use App\Http\Controllers\ChickenModule\ {ChickenPurchaseController, ChickenSaleController};
@@ -23,17 +23,22 @@ Route::group(['middleware' => 'auth'], function(){
         Route::resource('users', UserController::class);
         Route::resource('userlevel', UserLevelController::class);
     });
+    
+    Route::group(['prefix' => '/partymanagement'], function(){
+        Route::resource('parties', PartyController::class);
+        Route::resource('conductpersons', ConductPersonController::class);
+    });
+
+    
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::resource('poultryshed', PoultryShedController::class);
     Route::resource('employee', EmployeeController::class)->except([
-        'create', 'update'
+        'update'
     ]);
 
     Route::get('/getEmployeeList', [EmployeeController::class, 'getEmployeeList'])->name('getEmployeeList');
-    Route::resource('customer', CustomerController::class)->except([
-        'create', 'update'
-    ]);
+    Route::resource('customer', CustomerController::class)->except(['update']);
 
     Route::get('/getCompaniesList', [CompaniesController::class, 'getCompaniesList'])->name('getCompaniesList');
     

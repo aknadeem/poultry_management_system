@@ -29,9 +29,10 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                             <h4>Employees</h4>
                         </div>
                         <div class="col-6 align-self-end text-end mb-2">
-                            <a class="btn btn-secondary btn-sm openEmployeeModal" href="javascript:void(0);"
-                                CustomerId="0" title="Click to add new employee" data-plugin="tippy"
-                                data-tippy-animation="scale" data-tippy-arrow="true"><i class="fa fa-plus"></i>
+                            {{-- openEmployeeModal --}}
+                            <a class="btn btn-secondary btn-sm" href="{{ route('employee.create') }}" CustomerId="0"
+                                title="Click to add new employee" data-plugin="tippy" data-tippy-animation="scale"
+                                data-tippy-arrow="true"><i class="fa fa-plus"></i>
                                 Employee
                             </a>
                         </div>

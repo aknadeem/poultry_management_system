@@ -25,6 +25,11 @@ class CustomerController extends Controller
         return view('partymanagement.customers.index', compact('customers'));
     }
 
+    public function create()
+    {
+        return view('partymanagement.customers.create');
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[

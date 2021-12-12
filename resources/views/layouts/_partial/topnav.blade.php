@@ -1,31 +1,74 @@
 <div class="topnav">
     <div class="container-fluid">
         <nav class="navbar navbar-light navbar-expand-lg topnav-menu">
-
+            <style>
+                .nav-link {
+                    padding-right: 8px !important;
+                }
+            </style>
             <div class="collapse navbar-collapse" id="topnav-menu-content">
                 <ul class="navbar-nav">
                     <li class="nav-item ">
-                        <a class="nav-link" href="{{ url('/') }}" id="topnav-dashboard">
+                        <a class="nav-link pr-1" href="{{ url('/') }}" id="topnav-dashboard">
                             <i class="fas fa-home"></i> Dashboards
                         </a>
                     </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" href="#" id="topnav-dashboard">
-                            <i class="fas fa-warehouse"></i> Sheds
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-components" role="button"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-users-cog"></i> Parties <div class="arrow-down"></div>
                         </a>
+                        <div class="dropdown-menu" aria-labelledby="topnav-components">
+                            <div class="dropdown">
+                                <a class="dropdown-item arrow-none" href="{{ route('parties.index') }}" id="topnav-form"
+                                    role="button">
+                                    <b> <i class="fas fa-users"></i> Party Management </b>
+                                </a>
+                                <a class="dropdown-item" href="{{ route('customer.index') }}">
+                                    <i class="fas fa-user-tie"></i> Customers
+                                </a>
+                                <a class="dropdown-item" href="{{ route('customer.index') }}">
+                                    <i class="fas fa-address-card"></i> Vendors
+                                </a>
+                                <a class="dropdown-item" href="{{ route('conductpersons.index') }}">
+                                    <i class="fas fa-user-friends"></i> Conduct Persons
+                                </a>
+                            </div>
+                        </div>
                     </li>
 
-                    <li class="nav-item ">
-                        <a class="nav-link" href="{{ route('employee.index') }}" id="topnav-dashboard">
-                            <i class="fas fa-id-card"></i> Employee
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-components" role="button"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-pallet"></i> ShedManagement <div class="arrow-down"></div>
                         </a>
+                        <div class="dropdown-menu" aria-labelledby="topnav-components">
+                            <div class="dropdown">
+                                <a class="dropdown-item dropdown-toggle arrow-none" href="#" id="topnav-form"
+                                    role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-warehouse"></i> Sheds <div class="arrow-down"></div>
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="topnav-form">
+                                    <a href="{{ route('poultryshed.index') }}" class="dropdown-item"> Personal Sheds
+                                    </a>
+                                    <a href="{{ route('purchase.index') }}" class="dropdown-item"> Customer Sheds </a>
+                                </div>
+                            </div>
+
+                            <div class="dropdown">
+                                <a class="dropdown-item arrow-none" href="{{ route('employee.index') }}"
+                                    id="topnav-form">
+                                    <i class="fas fa-id-card"></i> Employee
+                                </a>
+
+                            </div>
+
+                        </div>
                     </li>
 
-                    <li class="nav-item ">
-                        <a class="nav-link" href="{{ route('customer.index') }}">
-                            <i class="fas fa-users"></i> Customers
-                        </a>
-                    </li>
+
+
 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-components" role="button"

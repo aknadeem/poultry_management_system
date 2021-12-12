@@ -19,7 +19,7 @@ $load_js = Array('tippy','select2')
                         <li class="breadcrumb-item active">Create</li>
                     </ol>
                 </div>
-                <h4 class="page-title">Customer</h4>
+                <h4 class="page-title">Create Party</h4>
             </div>
         </div>
     </div>
@@ -29,7 +29,7 @@ $load_js = Array('tippy','select2')
                 <div class="card-body">
                     <div class="row mb-2">
                         <div class="col-6 align-self-start">
-                            <h4>Create Customer </h4>
+                            <h4>Create Party </h4>
                         </div>
 
                         <div class="col-6 align-self-end text-end mb-2">
@@ -65,21 +65,21 @@ $load_js = Array('tippy','select2')
                                 </div>
                                 <div class="col-3 mb-2">
                                     <label class="font_bold" for=""> Select Type* </label> <br>
-                                    {{-- <div class="form-check mb-2 mt-1 form-check-inline">
+                                    <div class="form-check mb-2 mt-1 form-check-inline">
                                         <input class="form-check-input"
                                             style="width: 1.7em !important; height: 1.7em !important;" type="checkbox"
                                             name="is_vendor" value="1" id="customckeck1" checked="">
                                         <label class="font_bold" class="form-check-label " for="customckeck1"
                                             style="padding: 5px;">
                                             Vendor</label>
-                                    </div> --}}
+                                    </div>
 
                                     <div class="form-check mb-2 form-check-inline form-check-success">
                                         <input class="form-check-input" style=" width: 1.7em;
                                         height: 1.7em;" type="checkbox" name="is_customer" value="1" id="customckeck2"
-                                            checked="true" readaonly disabled>
+                                            checked="">
                                         <label class="font_bold" class="form-check-label" style="padding: 5px;"
-                                            readaonly for="customckeck2">
+                                            for="customckeck2">
                                             Customer</label>
                                     </div>
                                     <span class="text-danger name_error"></span>
@@ -194,6 +194,48 @@ $load_js = Array('tippy','select2')
                                     <span class="text-danger farm_name_error"> </span>
                                 </div>
                             </div>
+
+                            <div id="VendorCompanyRow" class="row border border-2 rounded-2 border-primary mt-2">
+                                <h4 class="my-2">Vendor Company data </h4>
+
+                                <div class="col-4 mb-2">
+                                    <label class="font_bold" for="PartyVendorType"> Select Vendor Type * </label>
+                                    <select name="vendor_type_id" id="PartyVendorType" class="form-control mySelect"
+                                        required data-toggle="select2" data-width="100%" id="">
+                                        <option value=""> Select Vendor Type </option>
+                                        <option value="1"> abc</option>
+                                    </select>
+                                    <span class="text-danger vendor_type_id_error"> </span>
+                                </div>
+
+                                <div class="col-4 mb-2">
+                                    <label class="font_bold" for="PartyCompanyName">Company Name*</label>
+                                    <input type="text" placeholder="Enter Company Name" name="company_name"
+                                        class="form-control" id="PartyCompanyName">
+                                    <span class="text-danger company_name_error"> </span>
+                                </div>
+                                <div class="col-4 mb-2">
+                                    <label class="font_bold" for="PartyBusinessType"> Select Business Type * </label>
+                                    <select name="business_type_id" id="PartyBusinessType" class="form-control mySelect"
+                                        required data-toggle="select2" data-width="100%" id="">
+                                        <option value=""> Select Business Type </option>
+                                        <option value="1"> abc</option>
+                                    </select>
+                                    <span class="text-danger business_type_id_error"> </span>
+                                </div>
+                                <div class="col-4 mb-2">
+                                    <label class="font_bold" for="cno">Company logo *</label>
+                                    <input type="file" name="farm_name" class="form-control" id="customerFarmName">
+                                    <span class="text-danger farm_name_error"> </span>
+                                </div>
+                                <div class="col-4 mb-2">
+                                    <label class="font_bold" for="cno">Company Address *</label>
+                                    <input type="text" placeholder="Enter Company Address number" name="farm_name"
+                                        class="form-control" id="customerFarmName">
+                                    <span class="text-danger farm_name_error"> </span>
+                                </div>
+                            </div>
+
                             <div class="row mt-2">
                                 <div class="col-3 mb-2">
                                     <label class="font_bold" for="cno"> Profile Picture *</label>

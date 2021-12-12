@@ -28,6 +28,12 @@ class EmployeeController extends Controller
         return view('partymanagement.employee.index', compact('employees'));
     }
 
+    public function create()
+    {
+        $employee = new Employee();
+        return view('partymanagement.employee.create', compact('employee'));
+    }
+
     public function getEmployeeList()
     {
         $employees = Employee::orderBy('id','DESC')->get();

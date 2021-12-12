@@ -72,7 +72,8 @@
 
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+</div>
+<!-- /.modal -->
 @section('modal_scripts')
 
 <script>

@@ -262,7 +262,7 @@
         //     dropdownParent: $("#AddPaymentModal")
         // });
 
-        $('#AddPaymentModal').modal({backdrop: 'static', keyboard: false}) /
+        $('#AddPaymentModal').modal({backdrop: 'static', keyboard: false}) 
 
         $(document).on("click", ".openAddPaymentModal", function(event) {
             $('#AddPaymentModal').modal('show')
