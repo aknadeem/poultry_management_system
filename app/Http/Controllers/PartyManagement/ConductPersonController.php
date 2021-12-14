@@ -16,4 +16,20 @@ class ConductPersonController extends Controller
     {
         return view('partymanagement.conductperson.create');
     }
+
+    public function store(Request $request)
+    {
+        $this->validate($request,[
+            'name' => 'bail|required|string',
+            'guardian_name' => 'bail|required|string',
+            'cnic' => 'bail|required|numeric|min:13|max:13|unique:users,cnic',
+            'email' => 'bail|required|integer',
+            'contact_no' => 'bail|required|integer',
+            'country_id' => 'bail|required|integer',
+            'province_id' => 'bail|required|integer',
+            'city_id' => 'bail|required|integer',
+            'address' => 'bail|required|integer',
+            'picture' => 'bail|required|integer',
+        ]);
+    }
 }

@@ -66,6 +66,13 @@ $load_js = Array('tippy','select2')
                                 </div>
 
                                 <div class="col-sm-3 mb-2">
+                                    <label for="employeeOtherNumber"> other Number *</label>
+                                    <input type="number" placeholder="Enter other number" name="other_number" required
+                                        class="form-control" id="employeeOtherNumber">
+                                    <span class="text-danger other_number_error"></span>
+                                </div>
+
+                                <div class="col-sm-3 mb-2">
                                     <label for="cno"> Email *</label>
                                     <input type="text" placeholder="Enter email" name="email" class="form-control"
                                         id="employeeEmail">
@@ -85,6 +92,28 @@ $load_js = Array('tippy','select2')
                                 </div>
 
                                 <div class="col-sm-3 mb-2">
+                                    <label for="EmployeeType"> Select Employee Type </label>
+                                    <select name="employee_type" required class="form-control mySelect"
+                                        data-toggle="select2" data-width="100%" id="EmployeeType" multiple>
+                                        <option value="" selected> Select Type </option>
+                                        <option value="office_employee"> Office Employee </option>
+                                        <option value="shed_employee"> Shed Employee </option>
+                                        {{-- <option value="other"> other </option> --}}
+                                    </select>
+                                    <span class="text-danger employee_type_error"></span>
+                                </div>
+
+                                <div class="col-sm-3 mb-2">
+                                    <label for="Employee_level_id"> Select Employee Level </label>
+                                    <select name="employee_level_id" required class="form-control mySelect"
+                                        data-toggle="select2" data-width="100%" id="Employee_level_id" multiple>
+                                        <option value="" selected> Select Level </option>
+                                        <option value="1"> abc </option>
+                                    </select>
+                                    <span class="text-danger employee_level_id_error"></span>
+                                </div>
+
+                                <div class="col-sm-3 mb-2">
                                     <label for="employeeBasicSalary"> Basic Salaray* </label>
                                     <input type="number" step="any" min="0" placeholder="Enter Basic Salary" required
                                         name="basic_salary" class="form-control" id="employeeBasicSalary">
@@ -100,17 +129,10 @@ $load_js = Array('tippy','select2')
                                     <span class="text-danger allownce_id_error"></span>
                                 </div>
                                 <div class="col-sm-3 mb-2">
-                                    <label for="employeeBasicSalary"> Salary* </label>
+                                    <label for="employeeBasicSalary"> Net Salary* </label>
                                     <input type="number" step="any" min="0" placeholder="Enter Basic Salary" required
                                         name="basic_salary" class="form-control" id="employeeBasicSalary">
                                     <span class="text-danger basic_salary_error"></span>
-                                </div>
-
-                                <div class="col-sm-3 mb-2">
-                                    <label for="empDesignation"> Designation *</label>
-                                    <input type="text" placeholder="Enter designation" name="designation" required
-                                        class="form-control" id="empDesignation">
-                                    <span class="text-danger designation_error"></span>
                                 </div>
 
                                 <div class="col-sm-3 mb-2">
@@ -133,6 +155,13 @@ $load_js = Array('tippy','select2')
                                         <option value="1"> abc </option>
                                     </select>
                                     <span class="text-danger farm_id_error"></span>
+                                </div>
+
+                                <div class="col-sm-3 mb-2">
+                                    <label for="bloodGroup"> Blood Group </label>
+                                    <input type="text" placeholder="Enter Contract Period" name="blood_group" required
+                                        class="form-control" id="bloodGroup">
+                                    <span class="text-danger blood_group_error"></span>
                                 </div>
 
                                 <div class="col-3 mb-2">
@@ -161,6 +190,17 @@ $load_js = Array('tippy','select2')
                                         <option value="1"> Lahore</option>
                                     </select>
                                     <span class="text-danger city_id_error"> </span>
+                                </div>
+
+                                <div class="col-3 mb-2">
+                                    <label class="font_bold" for="PoliceRecord">Police Record* </label>
+                                    <select name="is_police_record" class="form-control mySelect" required
+                                        data-toggle="select2" data-width="100%" id="PoliceRecord">
+                                        <option value=""> Select Option</option>
+                                        <option value="1"> Yes</option>
+                                        <option value="0"> No</option>
+                                    </select>
+                                    <span class="text-danger is_police_record_error"> </span>
                                 </div>
 
                                 <div class="col-6 mb-2">

@@ -74,17 +74,17 @@
         }
 
         #pageloader {
-            background: rgba(255, 255, 255, 0.8);
-            display: none;
-            height: 100%;
-            position: fixed;
-            width: 100%;
-            z-index: 9999;
+            background: rgba(255, 255, 255, 0.8) !important;
+            display: block !important;
+            height: 100% !important;
+            position: fixed !important;
+            width: 100% !important;
+            z-index: 9999 !important;
         }
 
         #pageloader img {
             left: 50% !important;
-            position: absolute;
+            position: absolute !important;
             top: 50% !important;
         }
     </style>
@@ -141,6 +141,11 @@
         @method('DELETE')
         @csrf
     </form>
+
+
+    <div id="pageloader">
+        <img src="{{ asset('uploads/loader-large.gif') }}" alt="processing..." />
+    </div>
 
     <!-- App js -->
     <!-- Vendor js -->
@@ -204,11 +209,12 @@
     @yield('modal_scripts')
     <script>
         $(document).ready(function () {
-                
+            // $("#pageloader").fadeIn();
             $(".form_loader").on("submit", function () {
                 $("#pageloader").fadeIn();
             });
         });
+
         //Reset input file in modal
         $('input[type="file"][name="image_file"]').val('');
         //Image preview on upload time
@@ -258,6 +264,7 @@
             //     title: '{{ Session::get("swal_notification.message")}}'
             // })
         @endif
+
 
     </script>
 

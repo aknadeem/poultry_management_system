@@ -41,41 +41,58 @@ $load_js = Array('tippy','select2')
                             </a>
                         </div>
 
-                        <form autocomplete="off" method="post" enctype="multipart/form-data" id="ConductPersonForm"
-                            class="form_loader">
+                        <form autocomplete="off" method="post" enctype="multipart/form-data" id="ConductPersonForm">
                             @csrf
                             <div class="row form-group">
                                 <input type="hidden" name="conduct_person_id" id="conduct_person_id" value="0">
                                 <div class="col-sm-3 mb-2">
                                     <label for="name" class="font_bold"> Name * </label>
                                     <input type="text" placeholder="Enter name" name="name" class="form-control"
-                                        id="customerName">
-                                    <span class="text-danger name_error"></span>
+                                        required id="customerName">
+
+                                    @error('name')
+                                    <span class="text-danger name_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
                                 <div class="col-sm-3 mb-2">
                                     <label class="font_bold" for="name"> Father Name/ Guardian name * </label>
                                     <input type="text" placeholder="Enter Father/Gardian name" name="guardian_name"
                                         class="form-control" id="Partyguardian_name">
-                                    <span class="text-danger guardian_name_error"></span>
+
+                                    @error('guardian_name')
+                                    <span class="text-danger guardian_name_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
                                 <div class="col-sm-3 mb-2">
                                     <label class="font_bold" for="cno">CNIC *</label>
-                                    <input type="text" placeholder="Enter CNIC number" name="cnic_no"
+                                    <input type="number" min="13" max="13"
+                                        placeholder="Enter CNIC number Without Dashes(-)" name="cnic_no"
                                         class="form-control" id="Partycnic_mo">
-                                    <span class="text-danger cnic_no_error"> </span>
+
+                                    @error('cnic_no')
+                                    <span class="text-danger cnic_no_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
 
                                 <div class="col-sm-3 mb-2">
                                     <label class="font_bold" for="cno"> Email *</label>
                                     <input type="text" placeholder="Enter email" name="email" class="form-control"
                                         id="customerEmail">
+
+                                    @error('email')
+                                    <span class="text-danger email_error"> {{ $message }} </span>
+                                    @enderror
+
                                     <span class="text-danger email_error"></span>
                                 </div>
                                 <div class="col-sm-3 mb-2">
                                     <label class="font_bold" for="cno"> Contact Number *</label>
                                     <input type="number" placeholder="Enter contact number" name="contact_no"
                                         class="form-control" id="PartyContactNo">
-                                    <span class="text-danger contact_no_error"></span>
+
+                                    @error('contact_no')
+                                    <span class="text-danger contact_no_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
 
                                 <div class="col-3 mb-2">
@@ -85,7 +102,10 @@ $load_js = Array('tippy','select2')
                                         <option value=""> Select Country</option>
                                         <option value="1"> Pakistan</option>
                                     </select>
-                                    <span class="text-danger country_id_error"> </span>
+
+                                    @error('country_id')
+                                    <span class="text-danger country_id_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
                                 <div class="col-3 mb-2">
                                     <label class="font_bold" for="PartyProvince"> Select Province* </label>
@@ -94,7 +114,10 @@ $load_js = Array('tippy','select2')
                                         <option value=""> Select Province</option>
                                         <option value="1"> Punjab</option>
                                     </select>
-                                    <span class="text-danger province_id_error"> </span>
+
+                                    @error('province_id')
+                                    <span class="text-danger province_id_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
                                 <div class="col-3 mb-2">
                                     <label class="font_bold" for="PartyCity"> Select City* </label>
@@ -103,20 +126,29 @@ $load_js = Array('tippy','select2')
                                         <option value=""> Select City</option>
                                         <option value="1"> Lahore</option>
                                     </select>
-                                    <span class="text-danger city_id_error"> </span>
+
+                                    @error('city_id')
+                                    <span class="text-danger city_id_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
 
                                 <div class="col-3 mb-2">
                                     <label class="font_bold" for="PartyAddress"> Address</label>
                                     <input type="text" name="PartyAddress" class="form-control" name="address"
                                         placeholder="Enter Address">
-                                    <span class="text-danger address_error"> </span>
+
+                                    @error('address')
+                                    <span class="text-danger address_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
 
                                 <div class="col-3 mb-2">
                                     <label class="font_bold" for="cno"> Profile Picture *</label>
-                                    <input type="file" name="farm_name" class="form-control" id="customerFarmName">
-                                    <span class="text-danger farm_name_error"> </span>
+                                    <input type="file" name="image_file" class="form-control" id="customerFarmName">
+
+                                    @error('image_file')
+                                    <span class="text-danger image_file_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
                             </div>
 
@@ -140,12 +172,11 @@ $load_js = Array('tippy','select2')
         <!-- end col-->
     </div>
 </div>
+
 @endsection
 
 @section('custom_scripts')
 <script>
-    $(function() {
-        
-    });
+
 </script>
 @endsection

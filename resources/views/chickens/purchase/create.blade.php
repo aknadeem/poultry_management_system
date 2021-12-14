@@ -14,12 +14,12 @@ $load_js = Array('tippy','select2')
                     <ol class="breadcrumb m-0">
                         <li class="breadcrumb-item"><a href="#">Home</a>
                         </li>
-                        <li class="breadcrumb-item"> <a href="{{ route('purchase.index') }}"> ChickensPurchases </a>
+                        <li class="breadcrumb-item"> <a href="{{ route('purchase.index') }}"> ChicksPurchases </a>
                         </li>
                         <li class="breadcrumb-item active">{{ ($purchase->id > 0 ? "Update" : "Create") }} </li>
                     </ol>
                 </div>
-                <h4 class="page-title">Chicken Purchase</h4>
+                <h4 class="page-title">Chicks Purchase</h4>
             </div>
         </div>
     </div>
@@ -63,10 +63,25 @@ $load_js = Array('tippy','select2')
                                 </div>
 
                                 <div class="col-3 mb-2">
-                                    <label for="feedCompanyId">Select Company *</label>
+                                    <label for="ChickGrade">Select Chick Grade *</label>
+                                    <select class="form-control mySelect" id="ChickGrade" required name="chick_grade_id"
+                                        data-placeholder="Select Company" data-toggle="select2" data-width="100%">
+                                        <option value=""> Select Grade </option>
+                                        <option value="1"> A Grade </option>
+                                        <option value="2"> B Grade </option>
+                                        <option value=3"> C Grade </option>
+                                    </select>
+
+                                    @error('chick_grade_id')
+                                    <span class="text-danger chick_grade_id_error"> {{ $message }} </span>
+                                    @enderror
+                                </div>
+
+                                <div class="col-3 mb-2">
+                                    <label for="feedCompanyId">Select Vendor *</label>
                                     <select class="form-control mySelect" id="feedCompanyId" required name="company_id"
                                         data-placeholder="Select Company" data-toggle="select2" data-width="100%">
-                                        <option value=""> Select Company </option>
+                                        <option value=""> Select Vendor </option>
                                         @forelse ($compaines as $company)
                                         <option {{ old('company_id') || $purchase?->company_id ? 'selected' : '' }} {{--
                                             @if
@@ -105,6 +120,18 @@ $load_js = Array('tippy','select2')
                                 </div>
 
                                 <div class="col-sm-3 mb-2">
+                                    <label for="ChickWeight"> Weight </label>
+                                    <input type="text" placeholder="Enter weight" name="chick_weight"
+                                        class="form-control" id="ChickWeight"
+                                        value="{{ $purchase?->chick_weight ?? old('chick_weight') }}" required>
+
+                                    @error('chick_weight')
+                                    <span class="text-danger chick_weight_error"> {{ $message }} </span>
+                                    @enderror
+
+                                </div>
+
+                                <div class="col-sm-3 mb-2">
                                     <label for="feedQuantity"> Quantity </label>
                                     <input type="text" placeholder="Enter quantity" name="quantity" class="form-control"
                                         id="feedQuantity" value="{{ $purchase?->quantity ?? old('quantity') }}"
@@ -113,7 +140,6 @@ $load_js = Array('tippy','select2')
                                     @error('quantity')
                                     <span class="text-danger quantity_error"> {{ $message }} </span>
                                     @enderror
-
                                 </div>
 
                                 <div class="col-sm-3 mb-2">
@@ -162,6 +188,30 @@ $load_js = Array('tippy','select2')
                                 </div>
 
                                 <div class="col-sm-3 mb-2">
+                                    <label for="BiltyNumber"> Bilty Number</label>
+                                    <input type="text" placeholder="ENter Bilty Number" name="bilty_number"
+                                        value="{{ $purchase?->bilty_number ?? old('bilty_number') }}"
+                                        class="form-control" id="BiltyNumber">
+
+                                    @error('bilty_number')
+                                    <span class="text-danger bilty_number_error"> {{ $message }} </span>
+                                    @enderror
+
+                                </div>
+
+                                <div class="col-sm-3 mb-2">
+                                    <label for="BiltyCharges"> Bilty Charges</label>
+                                    <input type="text" placeholder="ENter Bilty Charges" name="bilty_charges"
+                                        value="{{ $purchase?->bilty_charges ?? old('bilty_charges') }}"
+                                        class="form-control" id="BiltyCharges">
+
+                                    @error('bilty_charges')
+                                    <span class="text-danger bilty_charges_error"> {{ $message }} </span>
+                                    @enderror
+
+                                </div>
+
+                                <div class="col-sm-3 mb-2">
                                     <label for="Vnumber"> Vehicle Number </label>
                                     <input type="text" placeholder="Vehicle number" name="vehicle_number"
                                         value="{{ $purchase?->vehicle_number ?? old('vehicle_number') }}"
@@ -194,7 +244,37 @@ $load_js = Array('tippy','select2')
                                     @error('driver_contact')
                                     <span class="text-danger driver_contact_error"> {{ $message }} </span>
                                     @enderror
+                                </div>
 
+                                <div class="col-3 mb-2">
+                                    <label for="SoNumber"> Sale Order Number </label>
+                                    <input type="text" placeholder="Enter Sale Order Number" name="sale_order_number"
+                                        value="" class="form-control" id="SoNumber">
+
+                                    @error('sale_order_number')
+                                    <span class="text-danger sale_order_number_error"> {{ $message }} </span>
+                                    @enderror
+                                </div>
+
+                                <div class="col-3 mb-2">
+                                    <label for="Do_Number"> Delivery Order Number </label>
+                                    <input type="text" placeholder="Enter Delivery Order Number"
+                                        name="delivery_order_number" value="" class="form-control" id="Do_Number">
+
+                                    @error('delivery_order_number')
+                                    <span class="text-danger delivery_order_number_error"> {{ $message }} </span>
+                                    @enderror
+                                </div>
+
+                                <div class="col-sm-3 mb-2">
+                                    <label for="Remarks"> Remarks </label>
+                                    <input type="text" placeholder="Enter Remarks If any" name="remarks"
+                                        value="{{ $purchase?->remarks ?? old('remarks') }}" class="form-control"
+                                        id="Remarks">
+
+                                    @error('remarks')
+                                    <span class="text-danger remarks_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
 
                                 <div class="col-sm-3 mb-2">
@@ -205,7 +285,6 @@ $load_js = Array('tippy','select2')
                                     @error('image_file')
                                     <span class="text-danger image_file_error"> {{ $message }} </span>
                                     @enderror
-
                                 </div>
                                 <div class="col-sm-6 mt-2 img-holder">
                                     @if ($purchase?->picture !='')
@@ -214,7 +293,6 @@ $load_js = Array('tippy','select2')
                                             src="{{ asset('storage/chickens/'.$purchase?->picture) }}" alt="No image">
                                     </a>
                                     @endif
-
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -244,84 +322,84 @@ $load_js = Array('tippy','select2')
 
         var companies_list = <?php echo json_encode($compaines) ?>;
         console.log(companies_list)
-    $( "#feedCompanyId" ).change(function() {
-        let company_id_modal = parseInt($(this).val())
-        let find_company = companies_list?.find(x => x.id === company_id_modal);
-        if(find_company){
-            $('#feedCompanyAddr').val(find_company?.address || '');
-            $('#feedCompanyContact').val(find_company?.contact_no || '');
-        }
-    });
+        $( "#feedCompanyId" ).change(function() {
+            let company_id_modal = parseInt($(this).val())
+            let find_company = companies_list?.find(x => x.id === company_id_modal);
+            if(find_company){
+                $('#feedCompanyAddr').val(find_company?.address || '');
+                $('#feedCompanyContact').val(find_company?.contact_no || '');
+            }
+        });
 
-    $('#feedPrice').on('keyup', function() {
-        let total_qty = Number($('#feedQuantity').val())
-        let feed_price = parseFloat($('#feedPrice').val())
+        $('#feedPrice').on('keyup', function() {
+            let total_qty = Number($('#feedQuantity').val())
+            let feed_price = parseFloat($('#feedPrice').val())
 
-        if (total_qty > 0 && feed_price > 0) {
-            $("#PriceQtyError").html('');
-            $("#PriceQtyError").hide();
-            priceWithOutDiscount = total_qty*feed_price;
-            $("#feedTotalPrice").val(priceWithOutDiscount);
-        } else {
-            $("#PriceQtyError").show();
-            $("#PriceQtyError").html('Price and Quantity Is required');
-            $("#feedTotalPrice").val('');
-        }
-    });
-
-    // $('#feedDiscountAmount').on('keyup', function() {
-    $('#feedDiscountAmount').on('keyup', function() {
-        let total_qty = Number($('#feedQuantity').val())
-        let feed_price = parseFloat($('#feedPrice').val())
-        let discountAmount = parseFloat($(this).val());
-        let priceWithOutDiscount = 0
-        if(discountAmount > 0){
             if (total_qty > 0 && feed_price > 0) {
                 $("#PriceQtyError").html('');
                 $("#PriceQtyError").hide();
                 priceWithOutDiscount = total_qty*feed_price;
-                let discount_percent = (discountAmount / priceWithOutDiscount) * 100;
-                if(discountAmount >= priceWithOutDiscount){
-                    $(".discount_amount_error").html('Discount Amount Must be less than total amount');
-                }else{
-                    $(".discount_amount_error").html('');
-                    $("#feedDiscountPercentage").val(discount_percent.toFixed(2));
-                    $("#feedTotalPrice").val(priceWithOutDiscount - discountAmount);
+                $("#feedTotalPrice").val(priceWithOutDiscount);
+            } else {
+                $("#PriceQtyError").show();
+                $("#PriceQtyError").html('Price and Quantity Is required');
+                $("#feedTotalPrice").val('');
+            }
+        });
+
+        // $('#feedDiscountAmount').on('keyup', function() {
+        $('#feedDiscountAmount').on('keyup', function() {
+            let total_qty = Number($('#feedQuantity').val())
+            let feed_price = parseFloat($('#feedPrice').val())
+            let discountAmount = parseFloat($(this).val());
+            let priceWithOutDiscount = 0
+            if(discountAmount > 0){
+                if (total_qty > 0 && feed_price > 0) {
+                    $("#PriceQtyError").html('');
+                    $("#PriceQtyError").hide();
+                    priceWithOutDiscount = total_qty*feed_price;
+                    let discount_percent = (discountAmount / priceWithOutDiscount) * 100;
+                    if(discountAmount >= priceWithOutDiscount){
+                        $(".discount_amount_error").html('Discount Amount Must be less than total amount');
+                    }else{
+                        $(".discount_amount_error").html('');
+                        $("#feedDiscountPercentage").val(discount_percent.toFixed(2));
+                        $("#feedTotalPrice").val(priceWithOutDiscount - discountAmount);
+                    }
+                } else {
+                    $("#PriceQtyError").show();
+                    $("#PriceQtyError").html('Price and Quantity Is required');
                 }
-            } else {
-                $("#PriceQtyError").show();
-                $("#PriceQtyError").html('Price and Quantity Is required');
+            }else{
+                $("#feedDiscountPercentage").val('');
+                $("#feedTotalPrice").val(total_qty*feed_price);
             }
-        }else{
-            $("#feedDiscountPercentage").val('');
-            $("#feedTotalPrice").val(total_qty*feed_price);
-        }
-    });
+        });
     
-    $('#feedDiscountPercentage').on('keyup', function() {
-        let total_qty = Number($('#feedQuantity').val())
-        let feed_price = parseFloat($('#feedPrice').val())
-        let discountPercentage = parseFloat($(this).val()) || 0;
-        let priceWithOutDiscount = 0
-        $(".discount_percentage_error").html('');
-        if(discountPercentage > 0 && discountPercentage < 100){
-            if (total_qty > 0 && feed_price > 0) {
-                $("#PriceQtyError").html('');
-                $("#PriceQtyError").hide();
-                priceWithOutDiscount = total_qty*feed_price;
-                let discount_amt = (discountPercentage /100 ) * priceWithOutDiscount;
-                $("#feedDiscountAmount").val(discount_amt.toFixed(2));
-                $("#feedTotalPrice").val(priceWithOutDiscount - discount_amt);
-            } else {
-                $("#PriceQtyError").show();
-                $("#PriceQtyError").html('Price and Quantity Is required');
+        $('#feedDiscountPercentage').on('keyup', function() {
+            let total_qty = Number($('#feedQuantity').val())
+            let feed_price = parseFloat($('#feedPrice').val())
+            let discountPercentage = parseFloat($(this).val()) || 0;
+            let priceWithOutDiscount = 0
+            $(".discount_percentage_error").html('');
+            if(discountPercentage > 0 && discountPercentage < 100){
+                if (total_qty > 0 && feed_price > 0) {
+                    $("#PriceQtyError").html('');
+                    $("#PriceQtyError").hide();
+                    priceWithOutDiscount = total_qty*feed_price;
+                    let discount_amt = (discountPercentage /100 ) * priceWithOutDiscount;
+                    $("#feedDiscountAmount").val(discount_amt.toFixed(2));
+                    $("#feedTotalPrice").val(priceWithOutDiscount - discount_amt);
+                } else {
+                    $("#PriceQtyError").show();
+                    $("#PriceQtyError").html('Price and Quantity Is required');
+                }
+            }else{
+                $("#feedDiscountAmount").val('');
+                $("#feedTotalPrice").val(total_qty*feed_price);
+                $(".discount_percentage_error").html('Discount Percentage Must be less than 100 (Total Amount)');
             }
-        }else{
-            $("#feedDiscountAmount").val('');
-            $("#feedTotalPrice").val(total_qty*feed_price);
-            $(".discount_percentage_error").html('Discount Percentage Must be less than 100 (Total Amount)');
-        }
+        });
     });
-});
 </script>
 @endsection

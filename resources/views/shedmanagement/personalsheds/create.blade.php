@@ -62,23 +62,23 @@ $load_js = Array('tippy','select2')
                                     <span class="text-danger shed_type_id_error"> </span>
                                 </div>
                                 <div class="col-sm-3 mb-2">
-                                    <label class="font_bold" for="cno">CNIC *</label>
-                                    <input type="text" placeholder="Enter CNIC number" name="cnic_no"
-                                        class="form-control" id="Partycnic_mo">
-                                    <span class="text-danger cnic_no_error"> </span>
+                                    <label class="font_bold" for="shedArea"> Area </label>
+                                    <input type="number" step="any" min="0" placeholder="Enter Area" name="shed_area"
+                                        class="form-control" id="shedArea">
+                                    <span class="text-danger shed_area_error"> </span>
                                 </div>
 
                                 <div class="col-sm-3 mb-2">
-                                    <label class="font_bold" for="cno"> Email *</label>
-                                    <input type="text" placeholder="Enter email" name="email" class="form-control"
-                                        id="customerEmail">
-                                    <span class="text-danger email_error"></span>
+                                    <label class="font_bold" for="ShedCapacity"> Capacity *</label>
+                                    <input type="number" step="any" min="0" placeholder="Enter Capacity"
+                                        name="shed_capacity" class="form-control" id="ShedCapacity">
+                                    <span class="text-danger shed_capacity_error"></span>
                                 </div>
                                 <div class="col-sm-3 mb-2">
-                                    <label class="font_bold" for="cno"> Contact Number *</label>
-                                    <input type="number" placeholder="Enter contact number" name="contact_no"
-                                        class="form-control" id="PartyContactNo">
-                                    <span class="text-danger contact_no_error"></span>
+                                    <label class="font_bold" for="FeedRoomSize"> Feed Room Size *</label>
+                                    <input type="number" step="any" min="0" placeholder="Enter contact number"
+                                        name="feed_room_size" class="form-control" id="FeedRoomSize">
+                                    <span class="text-danger feed_room_size_error"></span>
                                 </div>
 
                                 <div class="col-3 mb-2">
@@ -117,8 +117,8 @@ $load_js = Array('tippy','select2')
                                 </div>
 
                                 <div class="col-3 mb-2">
-                                    <label class="font_bold" for="cno"> Profile Picture *</label>
-                                    <input type="file" name="farm_name" class="form-control" id="customerFarmName">
+                                    <label class="font_bold" for="shedPicture"> Shed Picture *</label>
+                                    <input type="file" name="shed_picture" class="form-control" id="shedPicture">
                                     <span class="text-danger farm_name_error"> </span>
                                 </div>
                             </div>

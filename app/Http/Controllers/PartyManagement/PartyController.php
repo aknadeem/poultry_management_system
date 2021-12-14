@@ -18,4 +18,9 @@ class PartyController extends Controller
     {
         return view('partymanagement.party.create');
     }
+
+    public function store(Request $request)
+    {
+        # code...
+    }
 }
