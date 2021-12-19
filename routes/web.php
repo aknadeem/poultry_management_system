@@ -5,7 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserManagement\{ UserController, UserLevelController};
 use App\Http\Controllers\PoultryShed\ {PoultryShedController, EmployeeController};
 use App\Http\Controllers\PartyManagement\ {
-    PartyController, CustomerController,CompaniesController, CompaniesBalanceController, ConductPersonController };
+    PartyController, CustomerController, CompaniesController, CompaniesBalanceController, ConductPersonController, VendorController };
 
 use App\Http\Controllers\InventoryManagement\ {FeedController, ExpenseController};
 use App\Http\Controllers\ChickenModule\ {ChickenPurchaseController, ChickenSaleController};
@@ -26,6 +26,7 @@ Route::group(['middleware' => 'auth'], function(){
     
     Route::group(['prefix' => '/partymanagement'], function(){
         Route::resource('parties', PartyController::class);
+        Route::resource('vendors', VendorController::class);
         Route::resource('conductpersons', ConductPersonController::class);
     });
 

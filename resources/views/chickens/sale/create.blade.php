@@ -52,6 +52,15 @@ $load_js = Array('tippy','select2')
                             <div class="row form-group mt-2">
                                 <input type="hidden" name="sale_id">
                                 <div class="col-sm-3 mb-2">
+                                    <label for="ManualNumber"> Manual Number </label>
+                                    <input type="text" required placeholder="Enter manual number" name="manual_number"
+                                        class="form-control" id="ManualNumber">
+                                    @error('manual_number')
+                                    <span class="text-danger manual_number_error"> {{ $message }} </span>
+                                    @enderror
+                                </div>
+
+                                <div class="col-sm-3 mb-2">
                                     <label for="chikSaleDate"> Sale Date *</label>
                                     <input type="date" required placeholder="Enter date" name="sale_date"
                                         value="{{ today()->format('Y-m-d') }}" {{--
@@ -59,6 +68,24 @@ $load_js = Array('tippy','select2')
                                         id="chikSaleDate">
                                     @error('sale_date')
                                     <span class="text-danger sale_date_error"> {{ $message }} </span>
+                                    @enderror
+                                </div>
+
+                                <div class="col-3 mb-2">
+                                    <label for="BrokerId">Select Broker *</label>
+                                    <select class="form-control mySelect" id="BrokerId" required name="broker_id"
+                                        data-placeholder="Select Customer" data-toggle="select2" data-width="100%">
+                                        <option value=""> Select Customer </option>
+                                        @forelse ($customers as $customer)
+                                        <option {{ ( old('broker_id') || $sale?->broker_id == $customer->id) ?
+                                            'selected' : '' }} value="{{$customer->id}}">
+                                            {{$customer->name}}</option>
+                                        @empty
+                                        @endforelse
+                                    </select>
+
+                                    @error('broker_id')
+                                    <span class="text-danger broker_id_error"> {{ $message }} </span>
                                     @enderror
                                 </div>
 
@@ -99,6 +126,42 @@ $load_js = Array('tippy','select2')
                                     @error('customer_contact')
                                     <span class="text-danger customer_contact_error"> {{ $message }} </span>
                                     @enderror
+                                </div>
+
+                                <div class="col-sm-3 mb-2">
+                                    <label for="FirstWeight"> Fisrt Weight </label>
+                                    <input type="number" step="any" min="1" placeholder="Enter weight"
+                                        name="first_weight" class="form-control" id="FirstWeight"
+                                        value="{{ $sale?->first_weight ?? old('first_weight') }}" required>
+
+                                    @error('first_weight')
+                                    <span class="text-danger first_weight_error"> {{ $message }} </span>
+                                    @enderror
+
+                                </div>
+
+                                <div class="col-sm-3 mb-2">
+                                    <label for="SecondWeight"> Second Weight </label>
+                                    <input type="number" step="any" min="1" placeholder="Enter weight"
+                                        name="second_weight" class="form-control" id="SecondWeight"
+                                        value="{{ $sale?->second_weight ?? old('second_weight') }}" required>
+
+                                    @error('second_weight')
+                                    <span class="text-danger second_weight_error"> {{ $message }} </span>
+                                    @enderror
+
+                                </div>
+
+                                <div class="col-sm-3 mb-2">
+                                    <label for="NetWeight">Net Weight </label>
+                                    <input type="number" step="any" min="1" placeholder="Enter weight" name="net_weight"
+                                        class="form-control" id="NetWeight"
+                                        value="{{ $sale?->net_weight ?? old('net_weight') }}" required>
+
+                                    @error('net_weight')
+                                    <span class="text-danger net_weight_error"> {{ $message }} </span>
+                                    @enderror
+
                                 </div>
 
                                 <div class="col-sm-3 mb-2">
@@ -145,6 +208,18 @@ $load_js = Array('tippy','select2')
                                     <span class="text-danger discount_percentage_error"></span>
 
                                 </div>
+                                <div class="col-sm-3 mb-2">
+                                    <label for="BrokerCommession"> Broker Commission</label>
+                                    <input type="number" step="any" min="1" placeholder="Enter Broker Commission"
+                                        name="broker_commission" value="{{ $sale?->total_price ?? old('total_price') }}"
+                                        class="form-control" id="BrokerCommession">
+
+                                    @error('total_price')
+                                    <span class="text-danger total_price_error"> {{ $message }} </span>
+                                    @enderror
+
+                                </div>
+
                                 <div class="col-sm-3 mb-2">
                                     <label for="feedTotalPrice"> Total Price </label>
                                     <input type="number" step="any" min="1" placeholder="Total price" name="total_price"

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\PartyManagement;
 
-use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class PartyController extends Controller
 {
-
     public function index()
     {
         return view('partymanagement.party.index');

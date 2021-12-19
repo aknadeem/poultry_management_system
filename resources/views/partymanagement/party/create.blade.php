@@ -33,34 +33,35 @@ $load_js = Array('tippy','select2')
                         </div>
 
                         <div class="col-6 align-self-end text-end mb-2">
-                            <a class="btn btn-secondary btn-sm" href="{{ route('sale.index') }}"
-                                title="Click to see Sales" data-plugin="tippy" data-tippy-animation="scale"
+                            <a class="btn btn-secondary btn-sm" href="{{ route('parties.index') }}"
+                                title="Click to back" data-plugin="tippy" data-tippy-animation="scale"
                                 data-tippy-arrow="true"><i class="fa fa-arrow-left"></i>
                                 Back
                             </a>
                         </div>
 
-                        <form autocomplete="off" method="post" enctype="multipart/form-data" id="CustomerForm"
+                        <form autocomplete="off" method="post" enctype="multipart/form-data" id="PartyForm"
                             class="form_loader">
                             @csrf
                             <div class="row form-group">
                                 <input type="hidden" name="party_id" id="PartyId" value="0">
                                 <div class="col-sm-3 mb-2">
-                                    <label for="name" class="font_bold"> Name * </label>
-                                    <input type="text" placeholder="Enter name" name="name" class="form-control"
-                                        id="customerName">
+                                    <label for="PartyName" class="font_bold"> Name * </label>
+                                    <input type="text" required placeholder="Enter name" name="name"
+                                        class="form-control" id="PartyName">
                                     <span class="text-danger name_error"></span>
                                 </div>
                                 <div class="col-sm-3 mb-2">
-                                    <label class="font_bold" for="name"> Father Name/ Guardian name * </label>
+                                    <label class="font_bold" for="PartyguardianName"> Father Name/ Guardian name
+                                    </label>
                                     <input type="text" placeholder="Enter Father/Gardian name" name="guardian_name"
-                                        class="form-control" id="Partyguardian_name">
+                                        class="form-control" id="PartyguardianName">
                                     <span class="text-danger guardian_name_error"></span>
                                 </div>
                                 <div class="col-sm-3 mb-2">
-                                    <label class="font_bold" for="cno">CNIC *</label>
-                                    <input type="text" placeholder="Enter CNIC number" name="cnic_no"
-                                        class="form-control" id="Partycnic_mo">
+                                    <label class="font_bold" for="PartyCnicNo"> CNIC *</label>
+                                    <input type="text" placeholder="Enter CNIC number" name="cnic_no" required
+                                        class="form-control" id="PartyCnicNo">
                                     <span class="text-danger cnic_no_error"> </span>
                                 </div>
                                 <div class="col-3 mb-2">
@@ -68,48 +69,52 @@ $load_js = Array('tippy','select2')
                                     <div class="form-check mb-2 mt-1 form-check-inline">
                                         <input class="form-check-input"
                                             style="width: 1.7em !important; height: 1.7em !important;" type="checkbox"
-                                            name="is_vendor" value="1" id="customckeck1" checked="">
-                                        <label class="font_bold" class="form-check-label " for="customckeck1"
+                                            name="is_vendor" value="1" id="VendorCheckBox" checked="">
+                                        <label class="font_bold" class="form-check-label " for="VendorCheckBox"
                                             style="padding: 5px;">
                                             Vendor</label>
                                     </div>
 
                                     <div class="form-check mb-2 form-check-inline form-check-success">
                                         <input class="form-check-input" style=" width: 1.7em;
-                                        height: 1.7em;" type="checkbox" name="is_customer" value="1" id="customckeck2"
-                                            checked="">
+                                        height: 1.7em;" type="checkbox" name="is_customer" value="1"
+                                            id="CustomerCheckBox" checked="">
                                         <label class="font_bold" class="form-check-label" style="padding: 5px;"
-                                            for="customckeck2">
+                                            for="CustomerCheckBox">
                                             Customer</label>
                                     </div>
                                     <span class="text-danger name_error"></span>
                                 </div>
 
                                 <div class="col-sm-3 mb-2">
-                                    <label class="font_bold" for="cno"> Email *</label>
+                                    <label class="font_bold" for="customerEmail"> Email </label>
                                     <input type="text" placeholder="Enter email" name="email" class="form-control"
                                         id="customerEmail">
                                     <span class="text-danger email_error"></span>
                                 </div>
+
                                 <div class="col-sm-3 mb-2">
-                                    <label class="font_bold" for="cno"> Contact Number *</label>
-                                    <input type="number" placeholder="Enter contact number" name="contact_no"
+                                    <label class="font_bold" for="PartyContactNo"> Contact Number *</label>
+                                    <input type="number" placeholder="Enter contact number" name="contact_no" required
                                         class="form-control" id="PartyContactNo">
                                     <span class="text-danger contact_no_error"></span>
                                 </div>
+
                                 <div class="col-sm-3 mb-2">
-                                    <label class="font_bold" for="PartybusinessNo"> Business Number *</label>
+                                    <label class="font_bold" for="PartyBusinessNo"> Business Number </label>
                                     <input type="number" placeholder="Enter business number" name="business_no"
-                                        class="form-control" id="PartybusinessNo">
+                                        class="form-control" id="PartyBusinessNo">
                                     <span class="text-danger business_no_error"></span>
                                 </div>
+
                                 <div class="col-3 mb-2">
-                                    <label class="font_bold" for="Partymanual_number">Manual Series *</label>
+                                    <label class="font_bold" for="PartyManualNumber">Manual Series Number</label>
                                     <input type="text" placeholder="Enter Manual Series Number" name="manual_number"
-                                        class="form-control" id="Partymanual_number">
+                                        class="form-control" id="PartyManualNumber">
                                     <span class="text-danger manual_number_error"> </span>
                                 </div>
                             </div>
+
                             <div class="row mt-1">
                                 <div class="col-3 mb-2">
                                     <label class="font_bold" for="PartyCountry"> Select Country* </label>
@@ -140,15 +145,25 @@ $load_js = Array('tippy','select2')
                                 </div>
 
                                 <div class="col-3 mb-2">
-                                    <label class="font_bold" for="PartyAddress"> Address</label>
-                                    <input type="text" name="PartyAddress" class="form-control" name="address"
-                                        placeholder="Enter Address">
+                                    <label class="font_bold" for="PartyAddress"> Address </label>
+                                    <input type="text" class="form-control" name="address" placeholder="Enter Address"
+                                        id="PartyAddress">
                                     <span class="text-danger address_error"> </span>
                                 </div>
                             </div>
 
                             <div id="CustomerFarmRow" class="row border border-2 border-dark rounded-2 mt-1">
-                                <h4 class="my-2"> Customer Farm Data </h4>
+                                <h4 class="my-2"> Customer Data </h4>
+
+                                <div class="col-4 mb-2">
+                                    <label class="font_bold" for="PartyDivision"> Select Division* </label>
+                                    <select name="division_id" id="PartyDivision" class="form-control mySelect"
+                                        data-toggle="select2" data-width="100%">
+                                        <option value=""> Select division </option>
+                                        <option value="1"> abc</option>
+                                    </select>
+                                    <span class="text-danger division_id_error"> </span>
+                                </div>
 
                                 <div class="col-4 mb-2">
                                     <label class="font_bold" for="PartyCustomerType"> Select Customer Type* </label>
@@ -161,8 +176,8 @@ $load_js = Array('tippy','select2')
                                 </div>
 
                                 <div class="col-4 mb-2">
-                                    <label class="font_bold" for="PartyFarmType"> Select Farm Type * </label>
-                                    <select name="farm_type_id" id="PartyFarmType" class="form-control mySelect"
+                                    <label class="font_bold" for="CustomerFarmType"> Select Farm Type * </label>
+                                    <select name="farm_type_id" id="CustomerFarmType" class="form-control mySelect"
                                         required data-toggle="select2" data-width="100%" id="">
                                         <option value=""> Select Farm Type</option>
                                         <option value="1"> abc</option>
@@ -171,32 +186,52 @@ $load_js = Array('tippy','select2')
                                 </div>
 
                                 <div class="col-4 mb-2">
-                                    <label class="font_bold" for="cno">Farm Name *</label>
+                                    <label class="font_bold" for="PartyFarmSubtype"> Select Farm Subtype * </label>
+                                    <select name="farm_subtype_id" id="PartyFarmSubtype" class="form-control mySelect"
+                                        required data-toggle="select2" data-width="100%">
+                                        <option value=""> Select Farm subtype</option>
+                                        <option value="1"> abc</option>
+                                    </select>
+                                    <span class="text-danger farm_subtype_id_error"> </span>
+                                </div>
+
+                                <div class="col-4 mb-2">
+                                    <label class="font_bold" for="customerFarmName">Farm Name *</label>
                                     <input type="text" placeholder="Enter Farm Name number" name="farm_name"
                                         class="form-control" id="customerFarmName">
                                     <span class="text-danger farm_name_error"> </span>
                                 </div>
                                 <div class="col-4 mb-2">
-                                    <label class="font_bold" for="cno">Farm NOC *</label>
-                                    <input type="text" placeholder="Enter Farm NOC number" name="farm_name"
-                                        class="form-control" id="customerFarmName">
-                                    <span class="text-danger farm_name_error"> </span>
+                                    <label class="font_bold" for="FarmNOC">Farm NOC *</label>
+                                    <input type="text" placeholder="Enter Farm NOC number" name="farm_noc"
+                                        class="form-control" id="FarmNOC">
+                                    <span class="text-danger farm_noc_error"> </span>
                                 </div>
                                 <div class="col-4 mb-2">
-                                    <label class="font_bold" for="cno">Farm Image *</label>
-                                    <input type="file" name="farm_name" class="form-control" id="customerFarmName">
-                                    <span class="text-danger farm_name_error"> </span>
+                                    <label class="font_bold" for="FarmImage">Farm Image *</label>
+                                    <input type="file" name="customer_farm_image" class="form-control" id="FarmImage">
+                                    <span class="text-danger customer_farm_image_error"> </span>
                                 </div>
                                 <div class="col-4 mb-2">
-                                    <label class="font_bold" for="cno">Farm Address *</label>
-                                    <input type="text" placeholder="Enter Farm Address number" name="farm_name"
-                                        class="form-control" id="customerFarmName">
-                                    <span class="text-danger farm_name_error"> </span>
+                                    <label class="font_bold" for="CustomerFarmAddress">Farm Address *</label>
+                                    <input type="text" placeholder="Enter Farm Address number"
+                                        name="customer_farm_address" class="form-control" id="CustomerFarmAddress">
+                                    <span class="text-danger customer_farm_address_error"> </span>
                                 </div>
                             </div>
 
                             <div id="VendorCompanyRow" class="row border border-2 rounded-2 border-primary mt-2">
-                                <h4 class="my-2">Vendor Company data </h4>
+                                <h4 class="my-2"> Company data </h4>
+
+                                <div class="col-4 mb-2">
+                                    <label class="font_bold" for="PartyVendorDivision"> Select Division* </label>
+                                    <select name="vendor_division_id" id="PartyVendorDivision"
+                                        class="form-control mySelect" data-toggle="select2" data-width="100%">
+                                        <option value=""> Select division </option>
+                                        <option value="1"> abc</option>
+                                    </select>
+                                    <span class="text-danger vendor_division_id_error"> </span>
+                                </div>
 
                                 <div class="col-4 mb-2">
                                     <label class="font_bold" for="PartyVendorType"> Select Vendor Type * </label>
@@ -224,38 +259,40 @@ $load_js = Array('tippy','select2')
                                     <span class="text-danger business_type_id_error"> </span>
                                 </div>
                                 <div class="col-4 mb-2">
-                                    <label class="font_bold" for="cno">Company logo *</label>
-                                    <input type="file" name="farm_name" class="form-control" id="customerFarmName">
-                                    <span class="text-danger farm_name_error"> </span>
+                                    <label class="font_bold" for="CompanyLogo">Company logo *</label>
+                                    <input type="file" name="company_logo_image" class="form-control" id="CompanyLogo">
+                                    <span class="text-danger company_logo_image_error"> </span>
                                 </div>
                                 <div class="col-4 mb-2">
-                                    <label class="font_bold" for="cno">Company Address *</label>
-                                    <input type="text" placeholder="Enter Company Address number" name="farm_name"
-                                        class="form-control" id="customerFarmName">
-                                    <span class="text-danger farm_name_error"> </span>
+                                    <label class="font_bold" for="CompanyAddress">Company Address *</label>
+                                    <input type="text" placeholder="Enter Company Address" name="company_address"
+                                        class="form-control" id="CompanyAddress">
+                                    <span class="text-danger company_address_error"> </span>
                                 </div>
                             </div>
 
                             <div class="row mt-2">
                                 <div class="col-3 mb-2">
-                                    <label class="font_bold" for="cno"> Profile Picture *</label>
-                                    <input type="file" name="farm_name" class="form-control" id="customerFarmName">
-                                    <span class="text-danger farm_name_error"> </span>
+                                    <label class="font_bold" for="PartyProfileImage"> Profile Picture </label>
+                                    <input type="file" name="party_profile_image" class="form-control"
+                                        id="PartyProfileImage">
+                                    <span class="text-danger party_profile_image_error"> </span>
                                 </div>
                                 <div class="col-3 mb-2">
-                                    <label class="font_bold" for="cno">Cnic Front *</label>
-                                    <input type="file" name="farm_name" class="form-control" id="customerFarmName">
-                                    <span class="text-danger farm_name_error"> </span>
+                                    <label class="font_bold" for="CnicFront">Cnic Front</label>
+                                    <input type="file" name="cnic_front_image" class="form-control" id="CnicFront">
+                                    <span class="text-danger cnic_front_image_error"> </span>
                                 </div>
                                 <div class="col-3 mb-2">
-                                    <label class="font_bold" for="cno">Cnic Back *</label>
-                                    <input type="file" name="farm_name" class="form-control" id="customerFarmName">
-                                    <span class="text-danger farm_name_error"> </span>
+                                    <label class="font_bold" for="CnicBack">Cnic Back</label>
+                                    <input type="file" name="cnic_back" class="form-control" id="CnicBack">
+                                    <span class="text-danger cnic_back_error"> </span>
                                 </div>
                                 <div class="col-3 mb-2">
-                                    <label class="font_bold" for="cno">Signature*</label>
-                                    <input type="file" name="farm_name" class="form-control" id="customerFarmName">
-                                    <span class="text-danger farm_name_error"> </span>
+                                    <label class="font_bold" for="PartySignatureImage">Signature*</label>
+                                    <input type="file" name="signature_image" class="form-control"
+                                        id="PartySignatureImage">
+                                    <span class="text-danger signature_image_error"> </span>
                                 </div>
                             </div>
 
@@ -266,22 +303,19 @@ $load_js = Array('tippy','select2')
                                         class="form-control">
                                     <span class="text-danger party_agreement_error"> </span>
                                 </div> --}}
-
-
                                 <div class="col-4 mb-2">
-                                    <label class="font_bold" for="PartyConductPerson"> Select Conduct Person * </label>
-                                    <select name="conduct_person_id" id="PartyConductPerson"
-                                        class="form-control mySelect" required data-toggle="select2" data-width="100%"
-                                        id="">
-                                        <option value=""> Select Conduct Person </option>
+                                    <label class="font_bold" for="PartyContactPerson"> Select contact Person * </label>
+                                    <select name="contact_person_id" id="PartyContactPerson"
+                                        class="form-control mySelect" data-toggle="select2" data-width="100%">
+                                        <option value=""> Select contact Person </option>
                                         <option value="1"> abc</option>
                                     </select>
-                                    <span class="text-danger conduct_person_id_error"> </span>
+                                    <span class="text-danger contact_person_id_error"> </span>
                                 </div>
 
                                 <div class="col-8">
-                                    <label class="font_bold" for="address">Description*</label>
-                                    <textarea class="form-control ckeditor" name="description" id="customerdescription"
+                                    <label class="font_bold" for="Description">Description*</label>
+                                    <textarea class="form-control ckeditor" name="description" id="Description"
                                         cols="80" rows="2"></textarea>
                                     <span class="text-danger description_error"> </span>
                                 </div>
@@ -320,6 +354,34 @@ $load_js = Array('tippy','select2')
 <script>
     $(function() {
         
+
+        $("#CustomerCheckBox").click(function() {
+            if($(this).is(":checked")) {
+                $("#CustomerFarmRow").fadeIn();
+                if(! $('#VendorCheckBox').is(":checked")){
+                    $("#VendorCompanyRow").hide();
+                }
+            } else {
+                $("#CustomerFarmRow").hide();
+                if(! $('#VendorCheckBox').is(":checked")){
+                    $("#VendorCompanyRow").hide();
+                }
+            }
+        });
+        
+        $("#VendorCheckBox").click(function() {
+            if($(this).is(":checked")) {
+                $("#VendorCompanyRow").fadeIn();
+                if(! $('#CustomerCheckBox').is(":checked")){
+                    $("#CustomerFarmRow").hide();
+                }
+            } else {
+                $("#VendorCompanyRow").hide();
+                if(! $('#CustomerCheckBox').is(":checked")){
+                    $("#CustomerFarmRow").hide();
+                }
+            }
+        });
     });
 </script>
 @endsection

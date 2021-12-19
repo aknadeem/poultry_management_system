@@ -24,6 +24,7 @@ class EmployeeController extends Controller
     public function index()
     {
         $employees = Employee::get();
+        // $employees = collect();
         // return DataTables::of($employees)->make(true);
         return view('partymanagement.employee.index', compact('employees'));
     }

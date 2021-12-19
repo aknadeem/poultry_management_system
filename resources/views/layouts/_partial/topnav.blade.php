@@ -25,16 +25,31 @@
                                     role="button">
                                     <b> <i class="fas fa-users"></i> Party Management </b>
                                 </a>
-                                <a class="dropdown-item" href="{{ route('customer.index') }}">
+
+                            </div>
+
+                            <div class="dropdown">
+
+                                <a class="dropdown-item" id="topnav-form" href="{{ route('customer.index') }}">
                                     <i class="fas fa-user-tie"></i> Customers
                                 </a>
-                                <a class="dropdown-item" href="{{ route('customer.index') }}">
+
+                            </div>
+
+                            <div class="dropdown">
+
+                                <a class="dropdown-item" id="topnav-form" href="{{ route('vendors.index') }}">
                                     <i class="fas fa-address-card"></i> Vendors
                                 </a>
-                                <a class="dropdown-item" href="{{ route('conductpersons.index') }}">
-                                    <i class="fas fa-user-friends"></i> Conduct Persons
+                            </div>
+
+                            <div class="dropdown">
+
+                                <a class="dropdown-item" id="topnav-form" href="{{ route('conductpersons.index') }}">
+                                    <i class="fas fa-user-friends"></i> Contact Persons
                                 </a>
                             </div>
+
                         </div>
                     </li>
 
@@ -49,6 +64,7 @@
                                     role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fas fa-warehouse"></i> Sheds <div class="arrow-down"></div>
                                 </a>
+
                                 <div class="dropdown-menu" aria-labelledby="topnav-form">
                                     <a href="{{ route('poultryshed.index') }}" class="dropdown-item"> Personal Sheds
                                     </a>
@@ -61,14 +77,15 @@
                                     id="topnav-form">
                                     <i class="fas fa-id-card"></i> Employee
                                 </a>
-
                             </div>
-
+                            <div class="dropdown">
+                                <a class="dropdown-item arrow-none" href="{{ route('employee.index') }}"
+                                    id="topnav-form">
+                                    <i class="fas fa-id-card"></i> Vaccination
+                                </a>
+                            </div>
                         </div>
                     </li>
-
-
-
 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-components" role="button"
@@ -168,9 +185,6 @@
                             </div>
                         </div>
                     </li>
-
-
-
 
                 </ul> <!-- end navbar-->
             </div> <!-- end .collapsed-->

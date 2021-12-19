@@ -61,6 +61,16 @@ $load_js = Array('tippy','select2')
                                     </select>
                                     <span class="text-danger shed_type_id_error"> </span>
                                 </div>
+
+                                <div class="col-3 mb-2">
+                                    <label class="font_bold" for="ShedType"> Select Subtype* </label>
+                                    <select name="shed_subtype_id" required id="ShedType" class="form-control mySelect"
+                                        data-toggle="select2" data-width="100%" id="">
+                                        <option value=""> Select Subtype</option>
+                                        <option value="1"> abc </option>
+                                    </select>
+                                    <span class="text-danger shed_subtype_id_error"> </span>
+                                </div>
                                 <div class="col-sm-3 mb-2">
                                     <label class="font_bold" for="shedArea"> Area </label>
                                     <input type="number" step="any" min="0" placeholder="Enter Area" name="shed_area"

@@ -10,7 +10,7 @@ class CreateCustomerTypesTable extends Migration
     {
         Schema::create('customer_types', function (Blueprint $table) {
             $table->id();
-            $table->name()->unique();
+            $table->string('name')->unique();
             $table->timestamps();
         });
     }

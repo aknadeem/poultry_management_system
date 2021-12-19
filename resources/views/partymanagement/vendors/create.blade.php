@@ -14,12 +14,12 @@ $load_js = Array('tippy','select2')
                     <ol class="breadcrumb m-0">
                         <li class="breadcrumb-item"><a href="#">Home</a>
                         </li>
-                        <li class="breadcrumb-item"> <a href="{{ route('purchase.index') }}"> PartyManagement </a>
+                        <li class="breadcrumb-item"> <a href="{{ route('parties.index') }}"> PartyManagement </a>
                         </li>
                         <li class="breadcrumb-item active">Create</li>
                     </ol>
                 </div>
-                <h4 class="page-title">Customer</h4>
+                <h4 class="page-title">Vendor</h4>
             </div>
         </div>
     </div>
@@ -29,38 +29,38 @@ $load_js = Array('tippy','select2')
                 <div class="card-body">
                     <div class="row mb-2">
                         <div class="col-6 align-self-start">
-                            <h4>Create Customer </h4>
+                            <h4>Create Vendor </h4>
                         </div>
 
                         <div class="col-6 align-self-end text-end mb-2">
-                            <a class="btn btn-secondary btn-sm" href="{{ route('sale.index') }}"
-                                title="Click to see Sales" data-plugin="tippy" data-tippy-animation="scale"
+                            <a class="btn btn-secondary btn-sm" href="{{ route('vendors.index') }}"
+                                title="Click to go back" data-plugin="tippy" data-tippy-animation="scale"
                                 data-tippy-arrow="true"><i class="fa fa-arrow-left"></i>
                                 Back
                             </a>
                         </div>
 
-                        <form autocomplete="off" method="post" enctype="multipart/form-data" id="CustomerForm"
+                        <form autocomplete="off" method="post" enctype="multipart/form-data" id="VendorForm"
                             class="form_loader">
                             @csrf
                             <div class="row form-group">
                                 <input type="hidden" name="party_id" id="PartyId" value="0">
                                 <div class="col-sm-3 mb-2">
-                                    <label for="name" class="font_bold"> Name * </label>
+                                    <label for="VendorName" class="font_bold"> Name * </label>
                                     <input type="text" placeholder="Enter name" name="name" class="form-control"
-                                        id="customerName">
+                                        id="VendorName">
                                     <span class="text-danger name_error"></span>
                                 </div>
                                 <div class="col-sm-3 mb-2">
-                                    <label class="font_bold" for="name"> Father Name/ Guardian name * </label>
+                                    <label class="font_bold" for="GuardianName"> Father Name/ Guardian name * </label>
                                     <input type="text" placeholder="Enter Father/Gardian name" name="guardian_name"
-                                        class="form-control" id="Partyguardian_name">
+                                        class="form-control" id="GuardianName">
                                     <span class="text-danger guardian_name_error"></span>
                                 </div>
                                 <div class="col-sm-3 mb-2">
-                                    <label class="font_bold" for="cno">CNIC *</label>
+                                    <label class="font_bold" for="CnicNo">CNIC *</label>
                                     <input type="text" placeholder="Enter CNIC number" name="cnic_no"
-                                        class="form-control" id="Partycnic_mo">
+                                        class="form-control" id="CnicNo">
                                     <span class="text-danger cnic_no_error"> </span>
                                 </div>
                                 <div class="col-3 mb-2">
@@ -86,27 +86,27 @@ $load_js = Array('tippy','select2')
                                 </div>
 
                                 <div class="col-sm-3 mb-2">
-                                    <label class="font_bold" for="cno"> Email *</label>
+                                    <label class="font_bold" for="VendorEmail"> Email *</label>
                                     <input type="text" placeholder="Enter email" name="email" class="form-control"
-                                        id="customerEmail">
+                                        id="VendorEmail">
                                     <span class="text-danger email_error"></span>
                                 </div>
                                 <div class="col-sm-3 mb-2">
-                                    <label class="font_bold" for="cno"> Contact Number *</label>
+                                    <label class="font_bold" for="ContactNo"> Contact Number *</label>
                                     <input type="number" placeholder="Enter contact number" name="contact_no"
-                                        class="form-control" id="PartyContactNo">
+                                        class="form-control" id="ContactNo">
                                     <span class="text-danger contact_no_error"></span>
                                 </div>
                                 <div class="col-sm-3 mb-2">
-                                    <label class="font_bold" for="PartybusinessNo"> Business Number *</label>
+                                    <label class="font_bold" for="BusinessNo"> Business Number *</label>
                                     <input type="number" placeholder="Enter business number" name="business_no"
-                                        class="form-control" id="PartybusinessNo">
+                                        class="form-control" id="BusinessNo">
                                     <span class="text-danger business_no_error"></span>
                                 </div>
                                 <div class="col-3 mb-2">
-                                    <label class="font_bold" for="Partymanual_number">Manual Series *</label>
+                                    <label class="font_bold" for="ManualSrNo">Manual Series *</label>
                                     <input type="text" placeholder="Enter Manual Series Number" name="manual_number"
-                                        class="form-control" id="Partymanual_number">
+                                        class="form-control" id="ManualSrNo">
                                     <span class="text-danger manual_number_error"> </span>
                                 </div>
                             </div>
@@ -147,73 +147,58 @@ $load_js = Array('tippy','select2')
                                 </div>
                             </div>
 
-                            <div id="CustomerFarmRow" class="row border border-2 border-dark rounded-2 mt-1">
-                                <h4 class="my-2"> Customer Farm Data </h4>
+                            <div id="VendorCompanyRow" class="row border border-2 rounded-2 border-primary mt-2">
+                                <h4 class="my-2">Company data </h4>
 
                                 <div class="col-4 mb-2">
-                                    <label class="font_bold" for="PartyDivision"> Select Division* </label>
-                                    <select name="division_id" id="PartyDivision" class="form-control mySelect"
-                                        data-toggle="select2" data-width="100%">
+                                    <label class="font_bold" for="PartyVendorDivision"> Select Division* </label>
+                                    <select name="vendor_division_id" id="PartyVendorDivision"
+                                        class="form-control mySelect" data-toggle="select2" data-width="100%">
                                         <option value=""> Select division </option>
                                         <option value="1"> abc</option>
                                     </select>
-                                    <span class="text-danger division_id_error"> </span>
+                                    <span class="text-danger vendor_division_id_error"> </span>
                                 </div>
 
                                 <div class="col-4 mb-2">
-                                    <label class="font_bold" for="PartyCustomerType"> Select Customer Type* </label>
-                                    <select name="customer_type_id" id="PartyCustomerType" class="form-control mySelect"
+                                    <label class="font_bold" for="PartyVendorType"> Select Vendor Type * </label>
+                                    <select name="vendor_type_id" id="PartyVendorType" class="form-control mySelect"
                                         required data-toggle="select2" data-width="100%" id="">
-                                        <option value=""> Select Customer Type</option>
+                                        <option value=""> Select Vendor Type </option>
                                         <option value="1"> abc</option>
                                     </select>
-                                    <span class="text-danger customer_type_id_error"> </span>
+                                    <span class="text-danger vendor_type_id_error"> </span>
                                 </div>
 
                                 <div class="col-4 mb-2">
-                                    <label class="font_bold" for="PartyFarmType"> Select Farm Type * </label>
-                                    <select name="farm_type_id" id="PartyFarmType" class="form-control mySelect"
+                                    <label class="font_bold" for="PartyCompanyName">Company Name*</label>
+                                    <input type="text" placeholder="Enter Company Name" name="company_name"
+                                        class="form-control" id="PartyCompanyName">
+                                    <span class="text-danger company_name_error"> </span>
+                                </div>
+                                <div class="col-4 mb-2">
+                                    <label class="font_bold" for="PartyBusinessType"> Select Business Type * </label>
+                                    <select name="business_type_id" id="PartyBusinessType" class="form-control mySelect"
                                         required data-toggle="select2" data-width="100%" id="">
-                                        <option value=""> Select Farm Type</option>
+                                        <option value=""> Select Business Type </option>
                                         <option value="1"> abc</option>
                                     </select>
-                                    <span class="text-danger farm_type_id_error"> </span>
-                                </div>
-
-                                <div class="col-4 mb-2">
-                                    <label class="font_bold" for="PartyFarmSubtype"> Select Farm Subtype * </label>
-                                    <select name="farm_subtype_id" id="PartyFarmSubtype" class="form-control mySelect"
-                                        required data-toggle="select2" data-width="100%" id="">
-                                        <option value=""> Select Farm Subtype</option>
-                                        <option value="1"> abc</option>
-                                    </select>
-                                    <span class="text-danger farm_subtype_id_error"> </span>
-                                </div>
-
-                                <div class="col-4 mb-2">
-                                    <label class="font_bold" for="cno">Farm Name *</label>
-                                    <input type="text" placeholder="Enter Farm Name number" name="farm_name"
-                                        class="form-control" id="customerFarmName">
-                                    <span class="text-danger farm_name_error"> </span>
+                                    <span class="text-danger business_type_id_error"> </span>
                                 </div>
                                 <div class="col-4 mb-2">
-                                    <label class="font_bold" for="cno">Farm NOC *</label>
-                                    <input type="text" placeholder="Enter Farm NOC number" name="farm_name"
-                                        class="form-control" id="customerFarmName">
-                                    <span class="text-danger farm_name_error"> </span>
+                                    <label class="font_bold" for="CompanyLogo">Company logo *</label>
+                                    <input type="file" name="company_logo_image" class="form-control" id="CompanyLogo">
+                                    <span class="text-danger company_logo_image_error"> </span>
                                 </div>
                                 <div class="col-4 mb-2">
-                                    <label class="font_bold" for="cno">Farm Image *</label>
-                                    <input type="file" name="farm_name" class="form-control" id="customerFarmName">
-                                    <span class="text-danger farm_name_error"> </span>
-                                </div>
-                                <div class="col-4 mb-2">
-                                    <label class="font_bold" for="cno">Farm Address *</label>
-                                    <input type="text" placeholder="Enter Farm Address number" name="farm_name"
-                                        class="form-control" id="customerFarmName">
-                                    <span class="text-danger farm_name_error"> </span>
+                                    <label class="font_bold" for="CompanyAddress">Company Address *</label>
+                                    <input type="text" placeholder="Enter Company Address" name="company_address"
+                                        class="form-control" id="CompanyAddress">
+                                    <span class="text-danger company_address_error"> </span>
                                 </div>
                             </div>
+
+
                             <div class="row mt-2">
                                 <div class="col-3 mb-2">
                                     <label class="font_bold" for="cno"> Profile Picture *</label>

@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\PartyManagement;
 
+use App\Models\Country;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CustomerFormRequest;
 
-class CustomerController extends Controller
+class VendorController extends Controller
 {
     private $auth_user_id;
     public function __construct()
@@ -23,13 +24,16 @@ class CustomerController extends Controller
     {
         // $customers = Customer::where('type', 'customer')->get();
         $customers = collect();
-        return view('partymanagement.customers.index', compact('customers'));
+        return view('partymanagement.vendors.index', compact('customers'));
         // return view('partymanagement.customers.index');
     }
 
     public function create()
     {
-        return view('partymanagement.customers.create');
+        $countries = Country::with('provinces:id,name,country_id',
+        'provinces.cities:id,name,province_id')->get(['id','name']);
+
+        return view('partymanagement.vendors.create', compact('countries'));
     }
 
     public function store(Request $request)
@@ -157,3 +161,4 @@ class CustomerController extends Controller
         return redirect()->route('customer.index');
     }
 }
+
