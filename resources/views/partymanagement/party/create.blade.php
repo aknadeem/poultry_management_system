@@ -1,11 +1,13 @@
 @php
-$load_css = Array('select2');
-$load_js = Array('tippy','select2')
+$load_css = Array('select2', 'sweetAlert');
+$load_js = Array('tippy','select2', 'sweetAlert')
 ;
 @endphp
 @extends('layouts.app')
 @section('content')
 <div class="container-fluid">
+
+
     <!-- start page title -->
     <div class="row">
         <div class="col-12">
@@ -40,7 +42,8 @@ $load_js = Array('tippy','select2')
                             </a>
                         </div>
 
-                        <form autocomplete="off" method="post" enctype="multipart/form-data" id="PartyForm"
+                        <form method="post" action="{{ ($party->id) ? route('parties.update', $party->id ) :
+                        route('parties.store') }}" enctype="multipart/form-data" autocomplete="off" id="PartyForm"
                             class="form_loader">
                             @csrf
                             <div class="row form-group">
@@ -48,28 +51,36 @@ $load_js = Array('tippy','select2')
                                 <div class="col-sm-3 mb-2">
                                     <label for="PartyName" class="font_bold"> Name * </label>
                                     <input type="text" required placeholder="Enter name" name="name"
-                                        class="form-control" id="PartyName">
-                                    <span class="text-danger name_error"></span>
+                                        value="{{ old('name')}}" class="form-control" id="PartyName">
+
+                                    @error('name')
+                                    <span class="text-danger name_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
                                 <div class="col-sm-3 mb-2">
                                     <label class="font_bold" for="PartyguardianName"> Father Name/ Guardian name
                                     </label>
                                     <input type="text" placeholder="Enter Father/Gardian name" name="guardian_name"
-                                        class="form-control" id="PartyguardianName">
-                                    <span class="text-danger guardian_name_error"></span>
+                                        value="{{ old('guardian_name')}}" class="form-control" id="PartyguardianName">
+                                    @error('guardian_name')
+                                    <span class="text-danger guardian_name_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
                                 <div class="col-sm-3 mb-2">
                                     <label class="font_bold" for="PartyCnicNo"> CNIC *</label>
-                                    <input type="text" placeholder="Enter CNIC number" name="cnic_no" required
-                                        class="form-control" id="PartyCnicNo">
-                                    <span class="text-danger cnic_no_error"> </span>
+                                    <input type="text" placeholder="Enter CNIC number" name="cnic_no"
+                                        value="{{ old('cnic_no')}}" required class="form-control" id="PartyCnicNo">
+                                    @error('cnic_no')
+                                    <span class="text-danger cnic_no_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
                                 <div class="col-3 mb-2">
                                     <label class="font_bold" for=""> Select Type* </label> <br>
                                     <div class="form-check mb-2 mt-1 form-check-inline">
                                         <input class="form-check-input"
                                             style="width: 1.7em !important; height: 1.7em !important;" type="checkbox"
-                                            name="is_vendor" value="1" id="VendorCheckBox" checked="">
+                                            name="is_vendor" value="1" id="VendorCheckBox" {{ (! empty(old('is_vendor'))
+                                            ? 'checked' : 'checked' ) }}>
                                         <label class="font_bold" class="form-check-label " for="VendorCheckBox"
                                             style="padding: 5px;">
                                             Vendor</label>
@@ -78,7 +89,8 @@ $load_js = Array('tippy','select2')
                                     <div class="form-check mb-2 form-check-inline form-check-success">
                                         <input class="form-check-input" style=" width: 1.7em;
                                         height: 1.7em;" type="checkbox" name="is_customer" value="1"
-                                            id="CustomerCheckBox" checked="">
+                                            id="CustomerCheckBox" {{ (! empty(old('is_customer')) ? 'checked'
+                                            : 'checked' ) }}>
                                         <label class="font_bold" class="form-check-label" style="padding: 5px;"
                                             for="CustomerCheckBox">
                                             Customer</label>
@@ -88,67 +100,55 @@ $load_js = Array('tippy','select2')
 
                                 <div class="col-sm-3 mb-2">
                                     <label class="font_bold" for="customerEmail"> Email </label>
-                                    <input type="text" placeholder="Enter email" name="email" class="form-control"
-                                        id="customerEmail">
-                                    <span class="text-danger email_error"></span>
+                                    <input type="text" placeholder="Enter email" name="email" value="{{ old('email')}}"
+                                        class="form-control" id="customerEmail">
+                                    @error('email')
+                                    <span class="text-danger email_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
 
                                 <div class="col-sm-3 mb-2">
                                     <label class="font_bold" for="PartyContactNo"> Contact Number *</label>
                                     <input type="number" placeholder="Enter contact number" name="contact_no" required
-                                        class="form-control" id="PartyContactNo">
-                                    <span class="text-danger contact_no_error"></span>
+                                        class="form-control" value="{{ old('contact_no')}}" id="PartyContactNo">
+                                    @error('contact_no')
+                                    <span class="text-danger contact_no_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
 
                                 <div class="col-sm-3 mb-2">
                                     <label class="font_bold" for="PartyBusinessNo"> Business Number </label>
                                     <input type="number" placeholder="Enter business number" name="business_no"
-                                        class="form-control" id="PartyBusinessNo">
-                                    <span class="text-danger business_no_error"></span>
+                                        class="form-control" value="{{ old('business_no')}}" id="PartyBusinessNo">
+                                    @error('business_no')
+                                    <span class="text-danger business_no_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
 
                                 <div class="col-3 mb-2">
                                     <label class="font_bold" for="PartyManualNumber">Manual Series Number</label>
                                     <input type="text" placeholder="Enter Manual Series Number" name="manual_number"
-                                        class="form-control" id="PartyManualNumber">
-                                    <span class="text-danger manual_number_error"> </span>
+                                        class="form-control" value="{{ old('manual_number')}}" id="PartyManualNumber">
+                                    @error('manual_number')
+                                    <span class="text-danger manual_number_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
                             </div>
 
                             <div class="row mt-1">
-                                <div class="col-3 mb-2">
-                                    <label class="font_bold" for="PartyCountry"> Select Country* </label>
-                                    <select name="country_id" class="form-control mySelect" id="PartyCountry" required
-                                        data-toggle="select2" data-width="100%" id="">
-                                        <option value=""> Select Country</option>
-                                        <option value="1"> Pakistan</option>
-                                    </select>
-                                    <span class="text-danger country_id_error"> </span>
-                                </div>
-                                <div class="col-3 mb-2">
-                                    <label class="font_bold" for="PartyProvince"> Select Province* </label>
-                                    <select name="province_id" required id="PartyProvince" class="form-control mySelect"
-                                        data-toggle="select2" data-width="100%" id="">
-                                        <option value=""> Select Province</option>
-                                        <option value="1"> Punjab</option>
-                                    </select>
-                                    <span class="text-danger province_id_error"> </span>
-                                </div>
-                                <div class="col-3 mb-2">
-                                    <label class="font_bold" for="PartyCity"> Select City* </label>
-                                    <select name="city_id" id="PartyCity" class="form-control mySelect" required
-                                        data-toggle="select2" data-width="100%" id="">
-                                        <option value=""> Select City</option>
-                                        <option value="1"> Lahore</option>
-                                    </select>
-                                    <span class="text-danger city_id_error"> </span>
-                                </div>
+
+                                @include('layouts._partial.country_province_city',[
+                                'countries' => $countries,
+                                'updateData' => $party
+                                ])
 
                                 <div class="col-3 mb-2">
                                     <label class="font_bold" for="PartyAddress"> Address </label>
                                     <input type="text" class="form-control" name="address" placeholder="Enter Address"
-                                        id="PartyAddress">
-                                    <span class="text-danger address_error"> </span>
+                                        value="{{ old('address')}}" id="PartyAddress">
+                                    @error('address')
+                                    <span class="text-danger address_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
                             </div>
 
@@ -156,67 +156,129 @@ $load_js = Array('tippy','select2')
                                 <h4 class="my-2"> Customer Data </h4>
 
                                 <div class="col-4 mb-2">
-                                    <label class="font_bold" for="PartyDivision"> Select Division* </label>
-                                    <select name="division_id" id="PartyDivision" class="form-control mySelect"
-                                        data-toggle="select2" data-width="100%">
-                                        <option value=""> Select division </option>
-                                        <option value="1"> abc</option>
-                                    </select>
-                                    <span class="text-danger division_id_error"> </span>
+                                    <label class="font_bold" for="CustomerDivision"> Select Division </label>
+                                    <div class="input-group">
+                                        <select name="customer_division_id" id="CustomerDivision"
+                                            class="form-control mySelect" data-toggle="select2" data-width="89%">
+                                            <option value=""> Select division </option>
+                                            @forelse ($divisions as $item)
+                                            <option {{ (! empty(old('customer_division_id')==$item->id) ? 'selected'
+                                                : 'selected' ) }} value="{{$item->id}}">{{$item->name}}</option>
+
+                                            @empty
+
+                                            @endforelse
+
+                                        </select>
+                                        <a href="#"
+                                            class="btn input-group-text btn-dark waves-effect waves-light OpenaddTypeModal"
+                                            title="Click to add new" SelectBoxId="CustomerDivision"
+                                            TableName="divisions" type="button">
+                                            <i class="fa fa-plus"></i>
+                                        </a>
+                                    </div>
+                                    @error('customer_division_id')
+                                    <span class="text-danger customer_division_id_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
 
                                 <div class="col-4 mb-2">
                                     <label class="font_bold" for="PartyCustomerType"> Select Customer Type* </label>
-                                    <select name="customer_type_id" id="PartyCustomerType" class="form-control mySelect"
-                                        required data-toggle="select2" data-width="100%" id="">
-                                        <option value=""> Select Customer Type</option>
-                                        <option value="1"> abc</option>
-                                    </select>
-                                    <span class="text-danger customer_type_id_error"> </span>
+
+                                    <div class="input-group">
+                                        <select name="customer_type_id" id="PartyCustomerType"
+                                            class="form-control mySelect" data-toggle="select2" data-width="89%" id="">
+                                            <option {{ (! empty(old('customer_type_id')==$item->id) ? 'selected'
+                                                : 'selected' ) }} value=""> Select Customer Type</option>
+                                            @forelse ($customer_types as $item)
+                                            <option value="{{$item->id}}">{{$item->name}}</option>
+                                            @empty
+                                            @endforelse
+                                        </select>
+                                        <a href="#"
+                                            class="btn input-group-text btn-dark waves-effect waves-light OpenaddTypeModal"
+                                            TableName="customer_types" SelectBoxId="PartyCustomerType"
+                                            title="Click to add new" type="button"> <i class="fa fa-plus"></i> </a>
+                                    </div>
+                                    @error('customer_type_id')
+                                    <span class="text-danger customer_type_id_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
 
                                 <div class="col-4 mb-2">
                                     <label class="font_bold" for="CustomerFarmType"> Select Farm Type * </label>
-                                    <select name="farm_type_id" id="CustomerFarmType" class="form-control mySelect"
-                                        required data-toggle="select2" data-width="100%" id="">
-                                        <option value=""> Select Farm Type</option>
-                                        <option value="1"> abc</option>
-                                    </select>
-                                    <span class="text-danger farm_type_id_error"> </span>
+                                    <div class="input-group">
+                                        <select name="farm_type_id" id="CustomerFarmType" class="form-control mySelect"
+                                            data-toggle="select2" data-width="89%">
+                                            <option {{ (! empty(old('farm_type_id')==$item->id) ? 'selected'
+                                                : 'selected' ) }} value=""> Select Farm Type</option>
+                                            @forelse ($farm_types as $item)
+                                            <option value="{{$item->id}}">{{$item->name}}</option>
+                                            @empty
+                                            @endforelse
+                                        </select>
+                                        <a href="#"
+                                            class="btn input-group-text btn-dark waves-effect waves-light OpenaddTypeModal"
+                                            SelectBoxId="CustomerFarmType" TableName="farm_types"
+                                            title="Click to add new" type="button"> <i class="fa fa-plus"></i> </a>
+                                    </div>
+                                    @error('farm_type_id')
+                                    <span class="text-danger farm_type_id_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
 
                                 <div class="col-4 mb-2">
                                     <label class="font_bold" for="PartyFarmSubtype"> Select Farm Subtype * </label>
-                                    <select name="farm_subtype_id" id="PartyFarmSubtype" class="form-control mySelect"
-                                        required data-toggle="select2" data-width="100%">
-                                        <option value=""> Select Farm subtype</option>
-                                        <option value="1"> abc</option>
-                                    </select>
-                                    <span class="text-danger farm_subtype_id_error"> </span>
+                                    <div class="input-group">
+                                        <select name="farm_subtype_id" id="PartyFarmSubtype"
+                                            class="form-control mySelect" data-toggle="select2" data-width="89%">
+                                            <option value=""> Select Farm subtype</option>
+                                            @forelse ($farm_subtypes as $item)
+                                            <option {{ (! empty(old('farm_subtype_id')==$item->id) ? 'selected'
+                                                : 'selected' ) }} value="{{$item->id}}">{{$item->name}}</option>
+                                            @empty
+                                            @endforelse
+                                        </select>
+                                        <a href="#"
+                                            class="btn input-group-text btn-dark waves-effect waves-light OpenaddTypeModal"
+                                            SelectBoxId="PartyFarmSubtype" TableName="farm_subtypes"
+                                            title="Click to add new" type="button"> <i class="fa fa-plus"></i> </a>
+                                    </div>
+                                    @error('farm_subtype_id')
+                                    <span class="text-danger farm_subtype_id_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
 
                                 <div class="col-4 mb-2">
                                     <label class="font_bold" for="customerFarmName">Farm Name *</label>
-                                    <input type="text" placeholder="Enter Farm Name number" name="farm_name"
-                                        class="form-control" id="customerFarmName">
-                                    <span class="text-danger farm_name_error"> </span>
+                                    <input type="text" placeholder="Enter Farm Name" name="farm_name"
+                                        value="{{ old('farm_name') }}" class="form-control" id="customerFarmName">
+                                    @error('farm_name')
+                                    <span class="text-danger farm_name_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
                                 <div class="col-4 mb-2">
                                     <label class="font_bold" for="FarmNOC">Farm NOC *</label>
                                     <input type="text" placeholder="Enter Farm NOC number" name="farm_noc"
-                                        class="form-control" id="FarmNOC">
-                                    <span class="text-danger farm_noc_error"> </span>
+                                        value="{{ old('farm_noc') }}" class="form-control" id="FarmNOC">
+                                    @error('farm_noc')
+                                    <span class="text-danger farm_noc_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
                                 <div class="col-4 mb-2">
                                     <label class="font_bold" for="FarmImage">Farm Image *</label>
-                                    <input type="file" name="customer_farm_image" class="form-control" id="FarmImage">
-                                    <span class="text-danger customer_farm_image_error"> </span>
+                                    <input type="file" name="farm_image" class="form-control" id="FarmImage">
+                                    @error('farm_image')
+                                    <span class="text-danger farm_image_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
                                 <div class="col-4 mb-2">
-                                    <label class="font_bold" for="CustomerFarmAddress">Farm Address *</label>
-                                    <input type="text" placeholder="Enter Farm Address number"
-                                        name="customer_farm_address" class="form-control" id="CustomerFarmAddress">
-                                    <span class="text-danger customer_farm_address_error"> </span>
+                                    <label class="font_bold" for="CustomerFarmAddress">Farm Address</label>
+                                    <input type="text" placeholder="Enter Farm Address" name="farm_address"
+                                        value="{{ old('farm_address') }}" class="form-control" id="CustomerFarmAddress">
+                                    @error('farm_address')
+                                    <span class="text-danger farm_address_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
                             </div>
 
@@ -225,74 +287,126 @@ $load_js = Array('tippy','select2')
 
                                 <div class="col-4 mb-2">
                                     <label class="font_bold" for="PartyVendorDivision"> Select Division* </label>
-                                    <select name="vendor_division_id" id="PartyVendorDivision"
-                                        class="form-control mySelect" data-toggle="select2" data-width="100%">
-                                        <option value=""> Select division </option>
-                                        <option value="1"> abc</option>
-                                    </select>
-                                    <span class="text-danger vendor_division_id_error"> </span>
+                                    <div class="input-group">
+                                        <select name="vendor_division_id" id="PartyVendorDivision"
+                                            class="form-control mySelect" data-toggle="select2" data-width="89%">
+                                            <option value=""> Select division </option>
+                                            @forelse ($divisions as $item)
+                                            <option {{ (! empty(old('vendor_division_id')==$item->id) ? 'selected'
+                                                : 'selected' ) }} value="{{$item->id}}">{{$item->name}}</option>
+                                            @empty
+                                            @endforelse
+                                        </select>
+                                        <a href="#"
+                                            class="btn input-group-text btn-dark waves-effect waves-light OpenaddTypeModal"
+                                            SelectBoxId="PartyVendorDivision" TableName="divisions"
+                                            title="Click to add new" type="button"> <i class="fa fa-plus"></i> </a>
+                                    </div>
+                                    @error('vendor_division_id')
+                                    <span class="text-danger vendor_division_id_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
 
                                 <div class="col-4 mb-2">
                                     <label class="font_bold" for="PartyVendorType"> Select Vendor Type * </label>
-                                    <select name="vendor_type_id" id="PartyVendorType" class="form-control mySelect"
-                                        required data-toggle="select2" data-width="100%" id="">
-                                        <option value=""> Select Vendor Type </option>
-                                        <option value="1"> abc</option>
-                                    </select>
-                                    <span class="text-danger vendor_type_id_error"> </span>
+                                    <div class="input-group">
+                                        <select name="vendor_type_id" id="PartyVendorType" class="form-control mySelect"
+                                            data-toggle="select2" data-width="89%" id="">
+                                            <option value=""> Select Vendor Type </option>
+                                            @forelse ($vendor_types as $item)
+                                            <option {{ (! empty(old('vendor_type_id')==$item->id) ? 'selected'
+                                                : 'selected' ) }} value="{{$item->id}}">{{$item->name}}</option>
+                                            @empty
+                                            @endforelse
+                                            <option value="1"> abc</option>
+                                        </select>
+                                        <a href="#"
+                                            class="btn input-group-text btn-dark waves-effect waves-light OpenaddTypeModal"
+                                            SelectBoxId="PartyVendorType" TableName="vendor_types"
+                                            title="Click to add new" type="button"> <i class="fa fa-plus"></i> </a>
+                                    </div>
+                                    @error('vendor_type_id')
+                                    <span class="text-danger vendor_type_id_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
 
                                 <div class="col-4 mb-2">
                                     <label class="font_bold" for="PartyCompanyName">Company Name*</label>
                                     <input type="text" placeholder="Enter Company Name" name="company_name"
-                                        class="form-control" id="PartyCompanyName">
-                                    <span class="text-danger company_name_error"> </span>
+                                        value="{{ old('company_name') }}" class="form-control" id="PartyCompanyName">
+                                    @error('company_name')
+                                    <span class="text-danger company_name_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
                                 <div class="col-4 mb-2">
                                     <label class="font_bold" for="PartyBusinessType"> Select Business Type * </label>
-                                    <select name="business_type_id" id="PartyBusinessType" class="form-control mySelect"
-                                        required data-toggle="select2" data-width="100%" id="">
-                                        <option value=""> Select Business Type </option>
-                                        <option value="1"> abc</option>
-                                    </select>
-                                    <span class="text-danger business_type_id_error"> </span>
+                                    <div class="input-group">
+                                        <select name="business_type_id" id="PartyBusinessType"
+                                            class="form-control mySelect" data-toggle="select2" data-width="89%" id="">
+                                            <option value=""> Select Business Type </option>
+
+                                            @forelse ($business_types as $item)
+                                            <option {{ (! empty(old('business_type_id')==$item->id) ? 'selected'
+                                                : 'selected' ) }} value="{{$item->id}}">{{$item->name}}</option>
+                                            @empty
+                                            @endforelse
+                                        </select>
+                                        <a href="#"
+                                            class="btn input-group-text btn-dark waves-effect waves-light OpenaddTypeModal"
+                                            SelectBoxId="PartyBusinessType" TableName="business_types"
+                                            title="Click to add new" type="button"> <i class="fa fa-plus"></i> </a>
+                                    </div>
+                                    @error('business_type_id')
+                                    <span class="text-danger business_type_id_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
                                 <div class="col-4 mb-2">
                                     <label class="font_bold" for="CompanyLogo">Company logo *</label>
-                                    <input type="file" name="company_logo_image" class="form-control" id="CompanyLogo">
-                                    <span class="text-danger company_logo_image_error"> </span>
+                                    <input type="file" name="company_logo" class="form-control" id="CompanyLogo">
+                                    @error('company_logo')
+                                    <span class="text-danger company_logo_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
                                 <div class="col-4 mb-2">
                                     <label class="font_bold" for="CompanyAddress">Company Address *</label>
                                     <input type="text" placeholder="Enter Company Address" name="company_address"
-                                        class="form-control" id="CompanyAddress">
-                                    <span class="text-danger company_address_error"> </span>
+                                        value="{{ old('company_address') }}" class="form-control" id="CompanyAddress">
+                                    @error('company_address')
+                                    <span class="text-danger company_address_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
                             </div>
 
                             <div class="row mt-2">
                                 <div class="col-3 mb-2">
                                     <label class="font_bold" for="PartyProfileImage"> Profile Picture </label>
-                                    <input type="file" name="party_profile_image" class="form-control"
+                                    <input type="file" name="profile_picture" class="form-control"
                                         id="PartyProfileImage">
-                                    <span class="text-danger party_profile_image_error"> </span>
+                                    @error('profile_picture')
+                                    <span class="text-danger profile_picture_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
                                 <div class="col-3 mb-2">
                                     <label class="font_bold" for="CnicFront">Cnic Front</label>
-                                    <input type="file" name="cnic_front_image" class="form-control" id="CnicFront">
-                                    <span class="text-danger cnic_front_image_error"> </span>
+                                    <input type="file" name="cnic_front" class="form-control" required id="CnicFront">
+                                    @error('cnic_front')
+                                    <span class="text-danger cnic_front_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
                                 <div class="col-3 mb-2">
                                     <label class="font_bold" for="CnicBack">Cnic Back</label>
-                                    <input type="file" name="cnic_back" class="form-control" id="CnicBack">
-                                    <span class="text-danger cnic_back_error"> </span>
+                                    <input type="file" required name="cnic_back" class="form-control" id="CnicBack">
+                                    @error('cnic_back')
+                                    <span class="text-danger cnic_back_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
                                 <div class="col-3 mb-2">
-                                    <label class="font_bold" for="PartySignatureImage">Signature*</label>
+                                    <label class="font_bold" for="PartySignatureImage">Signature</label>
                                     <input type="file" name="signature_image" class="form-control"
                                         id="PartySignatureImage">
-                                    <span class="text-danger signature_image_error"> </span>
+                                    @error('signature_image')
+                                    <span class="text-danger signature_image_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
                             </div>
 
@@ -304,20 +418,30 @@ $load_js = Array('tippy','select2')
                                     <span class="text-danger party_agreement_error"> </span>
                                 </div> --}}
                                 <div class="col-4 mb-2">
-                                    <label class="font_bold" for="PartyContactPerson"> Select contact Person * </label>
+                                    <label class="font_bold" for="PartyContactPerson"> Select contact Person</label>
                                     <select name="contact_person_id" id="PartyContactPerson"
                                         class="form-control mySelect" data-toggle="select2" data-width="100%">
                                         <option value=""> Select contact Person </option>
-                                        <option value="1"> abc</option>
+                                        @forelse ($contact_persons as $item)
+                                        <option {{ (! empty(old('contact_person_id')==$item->id) ? 'selected'
+                                            : 'selected' ) }} value="{{ $item->id }}"> {{ $item->name }}</option>
+                                        @empty
+                                        @endforelse
+
                                     </select>
-                                    <span class="text-danger contact_person_id_error"> </span>
+                                    @error('contact_person_id')
+                                    <span class="text-danger contact_person_id_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
 
                                 <div class="col-8">
-                                    <label class="font_bold" for="Description">Description*</label>
+                                    <label class="font_bold" for="Description">Description</label>
                                     <textarea class="form-control ckeditor" name="description" id="Description"
-                                        cols="80" rows="2"></textarea>
-                                    <span class="text-danger description_error"> </span>
+                                        placeholder="Description" cols="80"
+                                        rows="2">{{ old('company_name') }}</textarea>
+                                    @error('description')
+                                    <span class="text-danger description_error"> {{ $message }} </span>
+                                    @enderror
                                 </div>
                                 {{-- <div class="col-sm-6 mt-2">
                                     <label class="font_bold" for="image">Image</label>
@@ -335,9 +459,10 @@ $load_js = Array('tippy','select2')
                                         class="btn btn-secondary btn-sm waves-effect waves-light mt-3 AddUpdate">
                                         Submit
                                     </button>
-                                    <button class="btn btn-light btn-sm waves-effect waves-light mt-3 ModalClosed">
+                                    <a clas href="#"
+                                        class="btn btn-light btn-sm waves-effect waves-light mt-3 ModalClosed">
                                         Cancel
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         </form>
@@ -348,13 +473,87 @@ $load_js = Array('tippy','select2')
         <!-- end col-->
     </div>
 </div>
-@endsection
 
+@include('layouts._partial.add_types_modal')
+@endsection
 @section('custom_scripts')
 <script>
-    $(function() {
-        
+    $(function() {  
+        var SelectBoxId = '';
+        $('.OpenaddTypeModal').click(function () {
 
+            // $('#TypeForm').find('span.text-danger').text('')
+            let form_title = 'Add new';
+            SelectBoxId = $(this).attr('SelectBoxId') || '';
+            let table_name = $(this).attr('TableName') || '';
+            $('#AddTypeModal').modal('show');
+            $("#ModalTitle").html(form_title);
+            $("#TableName").val(table_name);
+            // alert(SelectBoxId)
+            $('#TypeForm').on('submit', function(e) {
+                e.preventDefault();
+                let form_type = 'POST'
+                let form_url = "{{ route('addalltypes')}}"
+                // alert(form_url)
+                $.ajax({
+                    type: form_type,
+                    url: form_url,
+                    data:new FormData(this),
+                    dataType:'JSON',
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    // data: $('#CustomerForm').serialize(),
+                    beforeSend : function(msg) {
+                        $('#TypeForm').find('span.text-danger').text('')
+                    },
+                    success: function(msg) {
+                        console.log(msg);
+                        if(msg?.success == 'no'){
+                            // console.log(msg.error)
+                            $.each(msg?.error, function(prefix, val){
+                                // console.log(prefix)
+                                $('#TypeForm').find('span.'+prefix+'_error').text(val[0]);
+                            });
+
+                            swal.fire({
+                                title: "Warning",
+                                text: msg.message,
+                                icon: "warning",
+                                confirmButtonText: "Close",
+                                // closeOnConfirm: true,
+                            });
+                        }else{
+                            $("#TypeForm").trigger("reset");
+                            $('#AddTypeModal').modal('hide');
+
+                            swal.fire({
+                                title: "Success",
+                                text: msg.message,
+                                icon: "success",
+                                confirmButtonText: "Ok",
+                                // closeOnConfirm: true,
+                            }).then (() => {
+                                // alert('hello');
+                                console.log(SelectBoxId)
+                                var selectBox = $('#'+SelectBoxId);
+                                var option = new Option(msg?.data?.name, msg?.data?.id, true, true);
+                                selectBox.append(option).trigger('change');
+                                // $('.mySelect').select2();
+                                // location.reload();
+                            });
+                        }
+                    }
+                });
+            });
+        });
+
+        $('.ModalClosed').click(function () {
+            // $(this).find('modal').hide();
+            $('.modal').modal('hide'); 
+            $(this).find('form').trigger('reset');
+        });
+        
         $("#CustomerCheckBox").click(function() {
             if($(this).is(":checked")) {
                 $("#CustomerFarmRow").fadeIn();
@@ -368,7 +567,6 @@ $load_js = Array('tippy','select2')
                 }
             }
         });
-        
         $("#VendorCheckBox").click(function() {
             if($(this).is(":checked")) {
                 $("#VendorCompanyRow").fadeIn();

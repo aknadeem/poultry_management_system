@@ -87,7 +87,7 @@ class ConductPersonController extends Controller
             }
         }
         catch (\Throwable $e) {
-            return $e;
+            // return $e;
             $message = 'Something went wrong';
             $title = 'Error';
             $icon_type = 'warning';

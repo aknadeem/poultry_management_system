@@ -43,6 +43,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                         <thead>
                             <tr>
                                 <th> # </th>
+                                <th> Type</th>
                                 <th> Name </th>
                                 <th> CNIC </th>
                                 <th> Account Detail </th>
@@ -52,10 +53,16 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                             </tr>
                         </thead>
                         <tbody>
+                            @forelse ($parties as $key=>$party)
                             <tr>
-                                <td>11</td>
-                                <td>Nadeem Ahmed</td>
-                                <td>434354234341</td>
+                                <td>{{++$key}}</td>
+                                <td> <b>
+                                        {{($party->is_vendor) ? 'Vendor' : 'Customer'}} {{ ($party->is_customer) ?
+                                        '/ Customer' : '/ Vendor'}}
+                                    </b>
+                                </td>
+                                <td>{{$party->name}}</td>
+                                <td>{{$party->cnic_no}}</td>
                                 <td>
                                     <a class="btn btn-secondary btn-sm viewCustomerDetailModal" CustomerId=""
                                         href="javascript:void(0);" title="Click to View Accounts "><i
@@ -97,6 +104,9 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
 
                                 <td>11</td>
                             </tr>
+
+                            @empty
+                            @endforelse
                         </tbody>
                     </table>
                 </div> <!-- end card body-->

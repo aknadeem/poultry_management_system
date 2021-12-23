@@ -17,6 +17,8 @@ Route::group(['middleware' => 'auth'], function(){
         return view('welcome');
     });
 
+    Route::post('/store-alltypes', [VendorController::class, 'storeAllType'])->name('addalltypes');
+
     Route::group(['prefix' => '/usermanagement'], function(){
         Route::get('/get-users-list', [UserController::class, 'getUsersList'])->name('getUsersList');
         Route::get('/get-userlevels', [UserController::class, 'getUserLevelList'])->name('getUserLevelList');

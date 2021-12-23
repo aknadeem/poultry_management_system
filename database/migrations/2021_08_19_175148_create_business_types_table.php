@@ -4,19 +4,20 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCustomerTypesTable extends Migration
+class CreateBusinessTypesTable extends Migration
 {
     public function up()
     {
-        Schema::create('customer_types', function (Blueprint $table) {
+        Schema::create('business_types', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
+            $table->string('slug')->unique()->nullable();
             $table->timestamps();
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('customer_types');
+        Schema::dropIfExists('business_types');
     }
 }

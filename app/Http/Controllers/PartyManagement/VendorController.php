@@ -4,8 +4,12 @@ namespace App\Http\Controllers\PartyManagement;
 
 use App\Models\Country;
 use App\Models\Customer;
+use App\Models\VendorType;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CustomerFormRequest;
 
@@ -33,7 +37,9 @@ class VendorController extends Controller
         $countries = Country::with('provinces:id,name,country_id',
         'provinces.cities:id,name,province_id')->get(['id','name']);
 
-        return view('partymanagement.vendors.create', compact('countries'));
+        $party = new Country();
+
+        return view('partymanagement.vendors.create', compact('countries', 'party'));
     }
 
     public function store(Request $request)
@@ -149,6 +155,50 @@ class VendorController extends Controller
             ], 201);
         }
     }
+
+    public function storeAllType(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            'name' => 'bail|required|string|unique:vendor_types,name',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'error' => $validator->errors()->toArray(),
+                'success' => 'no',
+            ], 201);
+        }
+
+        $table_name = $request->table_name;
+
+        if ($table_name !='' && Schema::hasTable($table_name) ) {
+            $save_data = DB::table($table_name)->insertGetId([
+                'name' => $request->name,
+                'slug' => Str::of($request->name)->slug('-'),
+            ]);
+            if($save_data){
+                $message = 'Data created successfully!';
+                $success = 'yes';
+                $icon_type = 'success';
+                $result = ['id' => $save_data, 'name'  => $request->name];
+            }else{
+                $message = 'Data not saved, Something went wrong';
+                $success = 'no';
+                $icon_type = 'warning';
+                $result = [];
+            }
+        }else{
+            $message = 'Something went wrong';
+            $success = 'no';
+            $icon_type = 'danger';
+            $result = [];
+        }
+        return response()->json([
+            'message' => $message,
+            'success' => $success,
+            'data' => $result,
+        ], 201);
+    }
     
     public function destroy($id)
     {
@@ -160,5 +210,6 @@ class VendorController extends Controller
         $customer->delete();
         return redirect()->route('customer.index');
     }
+
 }
 

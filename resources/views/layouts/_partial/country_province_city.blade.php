@@ -22,6 +22,7 @@ $required = '';
         @endforelse
     </select>
 
+
     @error('country_id')
     <span class="text-danger country_id_error"> {{ $message }} </span>
     @enderror
@@ -64,9 +65,8 @@ $required = '';
         $("#Country").change(function(){
             var country_id = parseInt($(this).val()) || 0
             var exProvince_id = parseInt(<?php echo json_encode($exProvince_id); ?>)
-            var province_html= '';
+            var province_html= '<option value="">Select Province</option>';
             var selected = '';
-
            
             var country = Countries.find(x => x.id === country_id);
             if(country.provinces.length > 0){
@@ -78,7 +78,7 @@ $required = '';
                     province_html+='<option '+selected+' value='+ country.provinces[i].id +'>'+ country.provinces[i].name +'</option>'; 
                 }
             }else{
-                province_html='<option> No Province Found </option>';
+                province_html='<option value=""> No Province Found </option>';
             }
             $('#Province').html(province_html);
             // $('#Province').change();
@@ -87,7 +87,7 @@ $required = '';
         $("#Province").change(function(){
             var province_id = parseInt($(this).val()) || 0;
             var exCity_id = parseInt(<?php echo json_encode($exCity_id); ?>);
-            var city_html= '';
+            var city_html= '<option value="">Select City</option>';
             var selected = '';
             var province = Provinces_list.find(x => x.id === province_id);
             if(province.cities.length > 0){

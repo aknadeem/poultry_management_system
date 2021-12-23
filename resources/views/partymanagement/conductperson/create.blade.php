@@ -42,10 +42,10 @@ $load_js = Array('tippy','select2')
                             </a>
                         </div>
 
-                        <form autocomplete="off" method="post" action="{{ ($conductperson->id) ? route('conductpersons.update', $conductperson->id ) :
-                        route('conductpersons.store') }}" enctype="multipart/form-data" id="ConductPersonForm">
+                        <form method="post" action="{{ ($conductperson->id) ? route('conductpersons.update', $conductperson->id ) :
+                        route('conductpersons.store') }}" enctype="multipart/form-data" id="ConductPersonForm"
+                            class="form_loader" autocomplete="off">
                             @csrf
-
                             @php
                             $required = 'required';
                             $exProvince_id = 0;

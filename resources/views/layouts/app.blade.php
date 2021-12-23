@@ -73,9 +73,11 @@
             font-weight: bold;
         }
 
+
+
         #pageloader {
             background: rgba(255, 255, 255, 0.8) !important;
-            display: block !important;
+            display: none;
             height: 100% !important;
             position: fixed !important;
             width: 100% !important;
@@ -85,7 +87,15 @@
         #pageloader img {
             left: 50% !important;
             position: absolute !important;
-            top: 50% !important;
+            top: 40% !important;
+        }
+
+        #pageloader figcaption {
+            left: 49% !important;
+            position: absolute !important;
+            top: 49% !important;
+            font-size: 15px;
+            font-weight: bold;
         }
     </style>
 
@@ -121,10 +131,15 @@
         <!-- Left Side Menu End -->
 
         <div class="content-page">
+
+            <figure id="pageloader">
+                <img src="{{ asset('uploads/loader-large.gif') }}" alt="Processing ....">
+                <figcaption>Please wait...</figcaption>
+            </figure>
+
             <div class="content">
                 @yield('content')
             </div>
-
             <!-- Footer Start -->
             @include('layouts._partial.footer')
             <!-- end Footer -->
@@ -132,6 +147,8 @@
         <!-- ============================================= -->
         <!-- End Page content -->
         <!-- ========================================= -->
+
+
     </div>
     <!-- END wrapper -->
     <!-- Right bar overlay-->
@@ -143,9 +160,6 @@
     </form>
 
 
-    <div id="pageloader">
-        <img src="{{ asset('uploads/loader-large.gif') }}" alt="processing..." />
-    </div>
 
     <!-- App js -->
     <!-- Vendor js -->
@@ -205,13 +219,16 @@
 
     <script src="{{ asset('assets/js/app.min.js') }}"></script>
 
-    @yield('custom_scripts')
     @yield('modal_scripts')
+    @yield('custom_scripts')
     <script>
         $(document).ready(function () {
             // $("#pageloader").fadeIn();
             $(".form_loader").on("submit", function () {
-                $("#pageloader").fadeIn();
+                console.log('form submit event')
+                $("#pageloader").fadeIn("fast");
+                // alert('hello');
+                console.log('form submit event')
             });
         });
 
