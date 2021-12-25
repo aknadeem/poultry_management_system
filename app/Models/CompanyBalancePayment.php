@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CompanyBalancePayment extends Model
 {
+    use SoftDeletes;
     protected $table = 'company_balance_payments';
     use HasFactory;
     protected $dates = ['created_at','updated_at'];

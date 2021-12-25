@@ -12,6 +12,7 @@ class CreateCustomerTypesTable extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('slug')->unique()->nullabe();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

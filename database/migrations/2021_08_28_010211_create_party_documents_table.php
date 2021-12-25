@@ -17,6 +17,7 @@ class CreatePartyDocumentsTable extends Migration
             $table->text('remarks')->nullable();
             $table->unsignedBigInteger('addedby')->nullable();
             $table->unsignedBigInteger('updatedby')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

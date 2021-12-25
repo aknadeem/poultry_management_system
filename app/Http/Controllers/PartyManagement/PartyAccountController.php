@@ -34,7 +34,7 @@ class PartyAccountController extends Controller
             'account_title' => 'bail|required|string',
             'account_number' => 'bail|required|string',
             'bank_name' => 'bail|required|string',
-            'branch_code' => 'bail|required|string',
+            'branch_code' => 'bail|nullable|string',
             'opening_balance' => 'bail|required|numeric',
         ]);
 
@@ -54,14 +54,14 @@ class PartyAccountController extends Controller
 
         if($request->party_account_id > 0){
             if($party_account !=''){
-                $message = 'A Company Data Updated successfully!';
+                $message = 'A Data Updated successfully!';
                 $success = 'yes';
                 $update_account = $party_account->update([
                     'party_id' => $request->party_id,
                     'account_title' => $request->account_title,
                     'account_number' => $request->account_number,
                     'bank_name' => $request->bank_name,
-                    'branch_code' => $request->branch_code,
+                    // 'branch_code' => $request->branch_code,
                     'opening_balance' => $request->opening_balance,
                     'updatedby' => $this->auth_user_id,
                 ]);
@@ -75,8 +75,9 @@ class PartyAccountController extends Controller
                 'account_title' => $request->account_title,
                 'account_number' => $request->account_number,
                 'bank_name' => $request->bank_name,
-                'branch_code' => $request->branch_code,
+                // 'branch_code' => $request->branch_code,
                 'opening_balance' => $request->opening_balance,
+                'dr' => $request->opening_balance,
                 'addedby' => $this->auth_user_id,
             ]);
             if($PartyAccount){

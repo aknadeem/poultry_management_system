@@ -34,8 +34,85 @@
     </div><!-- /.modal-dialog -->
 </div>
 
-@section('modal_scripts')
+@section('modal_scripts2')
 <script>
+    $(function() {  
+        var SelectBoxId = '';
+        $('.OpenaddTypeModal').click(function () {
+            // $('#TypeForm').find('span.text-danger').text('')
+            let form_title = 'Add new';
+            SelectBoxId = $(this).attr('SelectBoxId') || '';
+            let table_name = $(this).attr('TableName') || '';
+            $('#AddTypeModal').modal('show');
 
+            $("#TypeForm").trigger("reset");
+            $('#TypeForm').find('span.text-danger').text('')
+
+            $("#ModalTitle").html(form_title);
+            $("#TableName").val(table_name);
+            // alert(SelectBoxId)
+            $('#TypeForm').on('submit', function(e) {
+                e.preventDefault();
+                let form_type = 'POST'
+                let form_url = "{{ route('addalltypes')}}"
+                // alert(form_url)
+                $.ajax({
+                    type: form_type,
+                    url: form_url,
+                    data:new FormData(this),
+                    dataType:'JSON',
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    // data: $('#CustomerForm').serialize(),
+                    beforeSend : function(msg) {
+                        $('#TypeForm').find('span.text-danger').text('')
+                    },
+                    success: function(msg) {
+                        console.log(msg);
+                        if(msg?.success == 'no'){
+                            // console.log(msg.error)
+                            $.each(msg?.error, function(prefix, val){
+                                // console.log(prefix)
+                                $('#TypeForm').find('span.'+prefix+'_error').text(val[0]);
+                            });
+
+                            // swal.fire({
+                            //     title: "Warning",
+                            //     text: msg.message,
+                            //     icon: "warning",
+                            //     confirmButtonText: "Close",
+                            // });
+                        }else{
+                            $("#TypeForm").trigger("reset");
+                            $('#AddTypeModal').modal('hide');
+
+                            swal.fire({
+                                title: "Success",
+                                text: msg.message,
+                                icon: "success",
+                                confirmButtonText: "Ok",
+                                // closeOnConfirm: true,
+                            }).then (() => {
+                                // alert('hello');
+                                console.log(SelectBoxId)
+                                var selectBox = $('#'+SelectBoxId);
+                                var option = new Option(msg?.data?.name, msg?.data?.id, true, true);
+                                selectBox.append(option).trigger('change');
+                                // $('.mySelect').select2();
+                                // location.reload();
+                            });
+                        }
+                    }
+                });
+            });
+        });
+
+        $('.ModalClosed').click(function () {
+            // $(this).find('modal').hide();
+            $('.modal').modal('hide'); 
+            $(this).find('form').trigger('reset');
+        });
+    });
 </script>
 @endsection

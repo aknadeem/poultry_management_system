@@ -46,12 +46,15 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                         route('parties.store') }}" enctype="multipart/form-data" autocomplete="off" id="PartyForm"
                             class="form_loader">
                             @csrf
+
+                            @if ($party?->id)
+                            @method('PUT')
+                            @endif
                             <div class="row form-group">
-                                <input type="hidden" name="party_id" id="PartyId" value="0">
                                 <div class="col-sm-3 mb-2">
                                     <label for="PartyName" class="font_bold"> Name * </label>
                                     <input type="text" required placeholder="Enter name" name="name"
-                                        value="{{ old('name')}}" class="form-control" id="PartyName">
+                                        value="{{ old('name', $party?->name)}}" class="form-control" id="PartyName">
 
                                     @error('name')
                                     <span class="text-danger name_error"> {{ $message }} </span>
@@ -61,7 +64,8 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                     <label class="font_bold" for="PartyguardianName"> Father Name/ Guardian name
                                     </label>
                                     <input type="text" placeholder="Enter Father/Gardian name" name="guardian_name"
-                                        value="{{ old('guardian_name')}}" class="form-control" id="PartyguardianName">
+                                        value="{{ old('guardian_name', $party?->guardian_name)}}" class="form-control"
+                                        id="PartyguardianName">
                                     @error('guardian_name')
                                     <span class="text-danger guardian_name_error"> {{ $message }} </span>
                                     @enderror
@@ -69,7 +73,8 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                 <div class="col-sm-3 mb-2">
                                     <label class="font_bold" for="PartyCnicNo"> CNIC *</label>
                                     <input type="text" placeholder="Enter CNIC number" name="cnic_no"
-                                        value="{{ old('cnic_no')}}" required class="form-control" id="PartyCnicNo">
+                                        value="{{ old('cnic_no', $party?->cnic_no)}}" required class="form-control"
+                                        id="PartyCnicNo">
                                     @error('cnic_no')
                                     <span class="text-danger cnic_no_error"> {{ $message }} </span>
                                     @enderror
@@ -79,8 +84,9 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                     <div class="form-check mb-2 mt-1 form-check-inline">
                                         <input class="form-check-input"
                                             style="width: 1.7em !important; height: 1.7em !important;" type="checkbox"
-                                            name="is_vendor" value="1" id="VendorCheckBox" {{ (! empty(old('is_vendor'))
-                                            ? 'checked' : 'checked' ) }}>
+                                            name="is_vendor" value="1" id="VendorCheckBox" {{ (! empty(old('is_vendor',
+                                            $party?->is_vendor))
+                                        ? 'checked' : '' ) }}>
                                         <label class="font_bold" class="form-check-label " for="VendorCheckBox"
                                             style="padding: 5px;">
                                             Vendor</label>
@@ -89,8 +95,9 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                     <div class="form-check mb-2 form-check-inline form-check-success">
                                         <input class="form-check-input" style=" width: 1.7em;
                                         height: 1.7em;" type="checkbox" name="is_customer" value="1"
-                                            id="CustomerCheckBox" {{ (! empty(old('is_customer')) ? 'checked'
-                                            : 'checked' ) }}>
+                                            id="CustomerCheckBox" {{ (! empty(old('is_customer', $party?->is_customer))
+                                        ? 'checked'
+                                        : '' ) }}>
                                         <label class="font_bold" class="form-check-label" style="padding: 5px;"
                                             for="CustomerCheckBox">
                                             Customer</label>
@@ -100,8 +107,9 @@ $load_js = Array('tippy','select2', 'sweetAlert')
 
                                 <div class="col-sm-3 mb-2">
                                     <label class="font_bold" for="customerEmail"> Email </label>
-                                    <input type="text" placeholder="Enter email" name="email" value="{{ old('email')}}"
-                                        class="form-control" id="customerEmail">
+                                    <input type="text" placeholder="Enter email" name="email"
+                                        value="{{ old('email', $party?->email)}}" class="form-control"
+                                        id="customerEmail">
                                     @error('email')
                                     <span class="text-danger email_error"> {{ $message }} </span>
                                     @enderror
@@ -110,7 +118,8 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                 <div class="col-sm-3 mb-2">
                                     <label class="font_bold" for="PartyContactNo"> Contact Number *</label>
                                     <input type="number" placeholder="Enter contact number" name="contact_no" required
-                                        class="form-control" value="{{ old('contact_no')}}" id="PartyContactNo">
+                                        class="form-control" value="{{ old('contact_no', $party?->contact_no)}}"
+                                        id="PartyContactNo">
                                     @error('contact_no')
                                     <span class="text-danger contact_no_error"> {{ $message }} </span>
                                     @enderror
@@ -119,7 +128,8 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                 <div class="col-sm-3 mb-2">
                                     <label class="font_bold" for="PartyBusinessNo"> Business Number </label>
                                     <input type="number" placeholder="Enter business number" name="business_no"
-                                        class="form-control" value="{{ old('business_no')}}" id="PartyBusinessNo">
+                                        class="form-control" value="{{ old('business_no', $party?->business_no)}}"
+                                        id="PartyBusinessNo">
                                     @error('business_no')
                                     <span class="text-danger business_no_error"> {{ $message }} </span>
                                     @enderror
@@ -128,7 +138,8 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                 <div class="col-3 mb-2">
                                     <label class="font_bold" for="PartyManualNumber">Manual Series Number</label>
                                     <input type="text" placeholder="Enter Manual Series Number" name="manual_number"
-                                        class="form-control" value="{{ old('manual_number')}}" id="PartyManualNumber">
+                                        class="form-control" value="{{ old('manual_number', $party?->manual_number)}}"
+                                        id="PartyManualNumber">
                                     @error('manual_number')
                                     <span class="text-danger manual_number_error"> {{ $message }} </span>
                                     @enderror
@@ -145,7 +156,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                 <div class="col-3 mb-2">
                                     <label class="font_bold" for="PartyAddress"> Address </label>
                                     <input type="text" class="form-control" name="address" placeholder="Enter Address"
-                                        value="{{ old('address')}}" id="PartyAddress">
+                                        value="{{ old('address', $party?->address)}}" id="PartyAddress">
                                     @error('address')
                                     <span class="text-danger address_error"> {{ $message }} </span>
                                     @enderror
@@ -162,7 +173,10 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             class="form-control mySelect" data-toggle="select2" data-width="89%">
                                             <option value=""> Select division </option>
                                             @forelse ($divisions as $item)
-                                            <option {{ (! empty(old('customer_division_id')==$item->id) ? 'selected'
+                                            <option {{ (! empty(old('customer_division_id', $party?->
+                                                customer_division_id
+                                                )==$item->id) ?
+                                                'selected'
                                                 : 'selected' ) }} value="{{$item->id}}">{{$item->name}}</option>
 
                                             @empty
@@ -188,10 +202,12 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                     <div class="input-group">
                                         <select name="customer_type_id" id="PartyCustomerType"
                                             class="form-control mySelect" data-toggle="select2" data-width="89%" id="">
-                                            <option {{ (! empty(old('customer_type_id')==$item->id) ? 'selected'
-                                                : 'selected' ) }} value=""> Select Customer Type</option>
+                                            <option value=""> Select Customer Type</option>
                                             @forelse ($customer_types as $item)
-                                            <option value="{{$item->id}}">{{$item->name}}</option>
+                                            <option {{ (! empty(old('customer_type_id', $party?->
+                                                customer_type_id)==$item->id) ?
+                                                'selected'
+                                                : '' ) }} value="{{$item->id}}">{{$item->name}}</option>
                                             @empty
                                             @endforelse
                                         </select>
@@ -210,10 +226,11 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                     <div class="input-group">
                                         <select name="farm_type_id" id="CustomerFarmType" class="form-control mySelect"
                                             data-toggle="select2" data-width="89%">
-                                            <option {{ (! empty(old('farm_type_id')==$item->id) ? 'selected'
-                                                : 'selected' ) }} value=""> Select Farm Type</option>
+                                            <option value=""> Select Farm Type</option>
                                             @forelse ($farm_types as $item)
-                                            <option value="{{$item->id}}">{{$item->name}}</option>
+                                            <option {{ (! empty(old('farm_type_id', $party?->farm_type_id)==$item->id) ?
+                                                'selected'
+                                                : 'selected' ) }} value="{{$item->id}}">{{$item->name}}</option>
                                             @empty
                                             @endforelse
                                         </select>
@@ -234,11 +251,13 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             class="form-control mySelect" data-toggle="select2" data-width="89%">
                                             <option value=""> Select Farm subtype</option>
                                             @forelse ($farm_subtypes as $item)
-                                            <option {{ (! empty(old('farm_subtype_id')==$item->id) ? 'selected'
+                                            <option {{ (! empty(old('farm_subtype_id', $party?->
+                                                farm_subtype_id)==$item->id) ? 'selected'
                                                 : 'selected' ) }} value="{{$item->id}}">{{$item->name}}</option>
                                             @empty
                                             @endforelse
                                         </select>
+
                                         <a href="#"
                                             class="btn input-group-text btn-dark waves-effect waves-light OpenaddTypeModal"
                                             SelectBoxId="PartyFarmSubtype" TableName="farm_subtypes"
@@ -252,7 +271,8 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                 <div class="col-4 mb-2">
                                     <label class="font_bold" for="customerFarmName">Farm Name *</label>
                                     <input type="text" placeholder="Enter Farm Name" name="farm_name"
-                                        value="{{ old('farm_name') }}" class="form-control" id="customerFarmName">
+                                        value="{{ old('farm_name', $party?->farm_name) }}" class="form-control"
+                                        id="customerFarmName">
                                     @error('farm_name')
                                     <span class="text-danger farm_name_error"> {{ $message }} </span>
                                     @enderror
@@ -260,7 +280,8 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                 <div class="col-4 mb-2">
                                     <label class="font_bold" for="FarmNOC">Farm NOC *</label>
                                     <input type="text" placeholder="Enter Farm NOC number" name="farm_noc"
-                                        value="{{ old('farm_noc') }}" class="form-control" id="FarmNOC">
+                                        value="{{ old('farm_noc',$party?->darm_noc) }}" class="form-control"
+                                        id="FarmNOC">
                                     @error('farm_noc')
                                     <span class="text-danger farm_noc_error"> {{ $message }} </span>
                                     @enderror
@@ -275,7 +296,8 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                 <div class="col-4 mb-2">
                                     <label class="font_bold" for="CustomerFarmAddress">Farm Address</label>
                                     <input type="text" placeholder="Enter Farm Address" name="farm_address"
-                                        value="{{ old('farm_address') }}" class="form-control" id="CustomerFarmAddress">
+                                        value="{{ old('farm_address', $party?->farm_address) }}" class="form-control"
+                                        id="CustomerFarmAddress">
                                     @error('farm_address')
                                     <span class="text-danger farm_address_error"> {{ $message }} </span>
                                     @enderror
@@ -292,8 +314,10 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             class="form-control mySelect" data-toggle="select2" data-width="89%">
                                             <option value=""> Select division </option>
                                             @forelse ($divisions as $item)
-                                            <option {{ (! empty(old('vendor_division_id')==$item->id) ? 'selected'
-                                                : 'selected' ) }} value="{{$item->id}}">{{$item->name}}</option>
+                                            <option {{ (! empty(old('vendor_division_id', $party?->
+                                                vendor_division_id)==$item->id) ?
+                                                'selected'
+                                                : '' ) }} value="{{$item->id}}">{{$item->name}}</option>
                                             @empty
                                             @endforelse
                                         </select>
@@ -314,7 +338,9 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             data-toggle="select2" data-width="89%" id="">
                                             <option value=""> Select Vendor Type </option>
                                             @forelse ($vendor_types as $item)
-                                            <option {{ (! empty(old('vendor_type_id')==$item->id) ? 'selected'
+                                            <option {{ (! empty(old('vendor_type_id', $party?->
+                                                vendor_type_id)==$item->id) ?
+                                                'selected'
                                                 : 'selected' ) }} value="{{$item->id}}">{{$item->name}}</option>
                                             @empty
                                             @endforelse
@@ -333,7 +359,8 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                 <div class="col-4 mb-2">
                                     <label class="font_bold" for="PartyCompanyName">Company Name*</label>
                                     <input type="text" placeholder="Enter Company Name" name="company_name"
-                                        value="{{ old('company_name') }}" class="form-control" id="PartyCompanyName">
+                                        value="{{ old('company_name', $party?->company_name) }}" class="form-control"
+                                        id="PartyCompanyName">
                                     @error('company_name')
                                     <span class="text-danger company_name_error"> {{ $message }} </span>
                                     @enderror
@@ -346,7 +373,9 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             <option value=""> Select Business Type </option>
 
                                             @forelse ($business_types as $item)
-                                            <option {{ (! empty(old('business_type_id')==$item->id) ? 'selected'
+                                            <option {{ (! empty(old('business_type_id', $party?->
+                                                business_type_id)==$item->id) ?
+                                                'selected'
                                                 : 'selected' ) }} value="{{$item->id}}">{{$item->name}}</option>
                                             @empty
                                             @endforelse
@@ -370,7 +399,8 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                 <div class="col-4 mb-2">
                                     <label class="font_bold" for="CompanyAddress">Company Address *</label>
                                     <input type="text" placeholder="Enter Company Address" name="company_address"
-                                        value="{{ old('company_address') }}" class="form-control" id="CompanyAddress">
+                                        value="{{ old('company_address', $party?->company_address) }}"
+                                        class="form-control" id="CompanyAddress">
                                     @error('company_address')
                                     <span class="text-danger company_address_error"> {{ $message }} </span>
                                     @enderror
@@ -423,7 +453,9 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                         class="form-control mySelect" data-toggle="select2" data-width="100%">
                                         <option value=""> Select contact Person </option>
                                         @forelse ($contact_persons as $item)
-                                        <option {{ (! empty(old('contact_person_id')==$item->id) ? 'selected'
+                                        <option {{ (! empty(old('contact_person_id', $party?->
+                                            contact_person_id)==$item->id) ?
+                                            'selected'
                                             : 'selected' ) }} value="{{ $item->id }}"> {{ $item->name }}</option>
                                         @empty
                                         @endforelse
@@ -438,7 +470,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                     <label class="font_bold" for="Description">Description</label>
                                     <textarea class="form-control ckeditor" name="description" id="Description"
                                         placeholder="Description" cols="80"
-                                        rows="2">{{ old('company_name') }}</textarea>
+                                        rows="2">{{ old('description', $party?->description) }}</textarea>
                                     @error('description')
                                     <span class="text-danger description_error"> {{ $message }} </span>
                                     @enderror
@@ -478,81 +510,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
 @endsection
 @section('custom_scripts')
 <script>
-    $(function() {  
-        var SelectBoxId = '';
-        $('.OpenaddTypeModal').click(function () {
-
-            // $('#TypeForm').find('span.text-danger').text('')
-            let form_title = 'Add new';
-            SelectBoxId = $(this).attr('SelectBoxId') || '';
-            let table_name = $(this).attr('TableName') || '';
-            $('#AddTypeModal').modal('show');
-            $("#ModalTitle").html(form_title);
-            $("#TableName").val(table_name);
-            // alert(SelectBoxId)
-            $('#TypeForm').on('submit', function(e) {
-                e.preventDefault();
-                let form_type = 'POST'
-                let form_url = "{{ route('addalltypes')}}"
-                // alert(form_url)
-                $.ajax({
-                    type: form_type,
-                    url: form_url,
-                    data:new FormData(this),
-                    dataType:'JSON',
-                    contentType: false,
-                    cache: false,
-                    processData: false,
-                    // data: $('#CustomerForm').serialize(),
-                    beforeSend : function(msg) {
-                        $('#TypeForm').find('span.text-danger').text('')
-                    },
-                    success: function(msg) {
-                        console.log(msg);
-                        if(msg?.success == 'no'){
-                            // console.log(msg.error)
-                            $.each(msg?.error, function(prefix, val){
-                                // console.log(prefix)
-                                $('#TypeForm').find('span.'+prefix+'_error').text(val[0]);
-                            });
-
-                            swal.fire({
-                                title: "Warning",
-                                text: msg.message,
-                                icon: "warning",
-                                confirmButtonText: "Close",
-                                // closeOnConfirm: true,
-                            });
-                        }else{
-                            $("#TypeForm").trigger("reset");
-                            $('#AddTypeModal').modal('hide');
-
-                            swal.fire({
-                                title: "Success",
-                                text: msg.message,
-                                icon: "success",
-                                confirmButtonText: "Ok",
-                                // closeOnConfirm: true,
-                            }).then (() => {
-                                // alert('hello');
-                                console.log(SelectBoxId)
-                                var selectBox = $('#'+SelectBoxId);
-                                var option = new Option(msg?.data?.name, msg?.data?.id, true, true);
-                                selectBox.append(option).trigger('change');
-                                // $('.mySelect').select2();
-                                // location.reload();
-                            });
-                        }
-                    }
-                });
-            });
-        });
-
-        $('.ModalClosed').click(function () {
-            // $(this).find('modal').hide();
-            $('.modal').modal('hide'); 
-            $(this).find('form').trigger('reset');
-        });
+    $(function() {
         
         $("#CustomerCheckBox").click(function() {
             if($(this).is(":checked")) {

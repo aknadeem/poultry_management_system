@@ -18,6 +18,7 @@ class CreateCustomerPaymentsTable extends Migration
             $table->text('narration')->nullable();
             $table->unsignedBigInteger('addedby')->nullable();
             $table->unsignedBigInteger('updatedby')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

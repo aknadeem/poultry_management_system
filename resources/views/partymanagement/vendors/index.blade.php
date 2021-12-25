@@ -46,26 +46,71 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                                 <th>Email</th>
                                 <th>Contact Number</th>
                                 <th>ShopName</th>
+                                <th>Account</th>
+                                <th>Document</th>
+                                <th>Balance Limit</th>
                                 <th>Options</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($customers as $key=>$customer)
+                            @forelse ($customers as $key=>$vendor)
                             <tr>
                                 <td>{{ ++$key }}</td>
                                 <td>
-                                    @if ($customer->image)
+                                    @if ($vendor->image)
                                     <img class="d-flex me-3 rounded-circle avatar-lg"
-                                        src="{{ asset('storage/customers/'.$customer->image) ?? ''}}" alt="No image">
+                                        src="{{ asset('storage/party/'.$vendor->profile_picture) ?? ''}}"
+                                        alt="No image">
                                     @else
                                     <b>No Image</b>
                                     @endif
 
                                 </td>
-                                <td>{{ $customer->name ?? '' }}</td>
-                                <td>{{ $customer->email ?? '' }}</td>
-                                <td>{{ $customer->contact_no ?? '' }}</td>
-                                <td>{{ $customer->farm_name ?? '' }}</td>
+                                <td>{{ $vendor->name ?? '' }}</td>
+                                <td>{{ $vendor->email ?? '' }}</td>
+                                <td>{{ $vendor->contact_no ?? '' }}</td>
+                                <td>{{ $vendor->farm_name ?? '' }}</td>
+
+
+                                <td>
+                                    <a class="btn btn-secondary btn-sm viewCustomerDetailModal" CustomerId=""
+                                        href="javascript:void(0);" title="Click to View Accounts "><i
+                                            class="fa fa-eye"></i>
+                                        View
+                                    </a>
+                                    <a class="btn btn-success btn-sm OpenAccountModal" PartyId="{{ $vendor->id}}"
+                                        href="javascript:void(0);" title="Click to Add New Account"><i
+                                            class="fa fa-plus"></i>
+                                        add
+                                    </a>
+                                </td>
+
+                                <td>
+                                    <a class="btn btn-secondary btn-sm viewCustomerDetailModal" CustomerId=""
+                                        href="javascript:void(0);" title="Click to View DOcuments "><i
+                                            class="fa fa-eye"></i>
+                                        View
+                                    </a>
+                                    <a class="btn btn-success btn-sm OpenPartyDocumentModal" PartyId="{{ $vendor->id}}"
+                                        CustomerId="" href="javascript:void(0);" title="Click to Add New Document"><i
+                                            class="fa fa-plus"></i>
+                                        add
+                                    </a>
+                                </td>
+
+                                <td>
+                                    <a class="btn btn-secondary btn-sm viewCustomerDetailModal" CustomerId=""
+                                        href="javascript:void(0);" title="Click to View DOcuments "><i
+                                            class="fa fa-eye"></i>
+                                        View
+                                    </a>
+                                    <a class="btn btn-success btn-sm OpenPartyLimitsModal" PartyId="{{ $vendor->id}}"
+                                        CustomerId="" href="javascript:void(0);" title="Click to Add New Limit"><i
+                                            class="fa fa-plus"></i>
+                                        add
+                                    </a>
+                                </td>
+
                                 <td>
                                     <a class="btn btn-secondary btn-sm viewCustomerDetailModal"
                                         CustomerId="{{ $customer->id ?? 0}}" href="javascript:void(0);"
@@ -81,8 +126,8 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                                         Edit
                                     </a>
                                     <a class="btn btn-danger btn-sm delete-confirm"
-                                        href="{{route('customer.destroy', $customer->id ?? 0)}}" del_title="Cutomer abc"
-                                        title="Click to delete" tabindex="0" data-plugin="tippy"
+                                        href="{{route('customers.destroy', $customer->id ?? 0)}}"
+                                        del_title="Cutomer abc" title="Click to delete" tabindex="0" data-plugin="tippy"
                                         data-tippy-animation="scale" data-tippy-arrow="true"><i class="fa fa-trash"></i>
                                         Delete
                                     </a>
@@ -106,13 +151,21 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
     </div>
 </div>
 
+@include('partymanagement._AddPartyAccounts')
+@include('partymanagement._AddPartyDocuments')
+@include('partymanagement._AddPartyBalanceLimit')
+
 @endsection
 
 @section('custom_scripts')
 
 <script>
     $(function() {
-
+        $('.ModalClosed').click(function () {
+            // $(this).find('modal').hide();
+            $('.modal').modal('hide'); 
+            $(this).find('form').trigger('reset');
+        });
     });
 </script>
 @endsection

@@ -22,6 +22,7 @@ class CreateCompanyBalancesTable extends Migration
             $table->foreignId('feed_purchase_id')->nullable()->constrained('feeds')->onDelete('cascade');
             $table->unsignedBigInteger('addedby')->nullable();
             $table->unsignedBigInteger('updatedby')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

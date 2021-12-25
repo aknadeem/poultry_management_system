@@ -25,6 +25,7 @@ class CreateCompaniesTable extends Migration
             $table->index(['country_id', 'province_id', 'city_id']);
             $table->unsignedBigInteger('addedby')->nullable();
             $table->unsignedBigInteger('updatedby')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

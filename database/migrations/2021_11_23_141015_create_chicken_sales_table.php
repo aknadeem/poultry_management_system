@@ -26,6 +26,7 @@ class CreateChickenSalesTable extends Migration
             $table->string('picture')->nullable();
             $table->unsignedBigInteger('addedby')->nullable();
             $table->unsignedBigInteger('updatedby')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

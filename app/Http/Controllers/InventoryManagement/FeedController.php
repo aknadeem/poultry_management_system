@@ -5,6 +5,7 @@ namespace App\Http\Controllers\InventoryManagement;
 use Session;
 use DataTables;
 use App\Models\Feed;
+use App\Models\Country;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Models\CompanyBalance;
@@ -61,6 +62,14 @@ class FeedController extends Controller
             })
             ->rawColumns(['picture','Actions'])
             ->make(true);
+    }
+
+
+    public function create()
+    {
+       $feed = new Feed();
+       $categories = collect();
+       return view('inventorymanagement.feeds.create', compact('feed', 'categories'));
     }
 
     public function store(Request $request)

@@ -140,6 +140,7 @@
             <div class="content">
                 @yield('content')
             </div>
+            @yield('htmlmodal')
             <!-- Footer Start -->
             @include('layouts._partial.footer')
             <!-- end Footer -->
@@ -158,8 +159,6 @@
         @method('DELETE')
         @csrf
     </form>
-
-
 
     <!-- App js -->
     <!-- Vendor js -->
@@ -219,19 +218,20 @@
 
     <script src="{{ asset('assets/js/app.min.js') }}"></script>
 
-    @yield('modal_scripts')
-    @yield('custom_scripts')
     <script>
         $(document).ready(function () {
             // $("#pageloader").fadeIn();
-            $(".form_loader").on("submit", function () {
-                console.log('form submit event')
-                $("#pageloader").fadeIn("fast");
-                // alert('hello');
-                console.log('form submit event')
-            });
+            // $(".form_loader").on("submit", function () {
+            //     $("#pageloader").fadeIn();
+            // });
         });
+    </script>
 
+    @yield('modal_scripts')
+    @yield('custom_scripts')
+    @yield('modal_scripts2')
+    @yield('modal_scripts3')
+    <script>
         //Reset input file in modal
         $('input[type="file"][name="image_file"]').val('');
         //Image preview on upload time

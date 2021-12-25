@@ -33,8 +33,8 @@ $required = '';
         data-width="100%">
         <option value=""> Select Province</option>
         @if ($updateData?->province_id)
-        <option selected value="{{ $updateData->province->id }}"> {{
-            $updateData->province->name }}</option>
+        <option selected value="{{ $updateData?->province?->id }}"> {{
+            $updateData?->province?->name }}</option>
         @endif
     </select>
 
@@ -47,8 +47,8 @@ $required = '';
     <select name="city_id" id="City" class="form-control mySelect" required data-toggle="select2" data-width="100%">
         <option value=""> Select City</option>
         @if ($updateData?->city_id)
-        <option selected value="{{ $updateData->city->id }}"> {{
-            $updateData->city->name }}</option>
+        <option selected value="{{ $updateData?->city?->id }}"> {{
+            $updateData?->city?->name }}</option>
         @endif
     </select>
 
@@ -60,22 +60,29 @@ $required = '';
 @section('modal_scripts')
 <script>
     $(function() {
+        var exProvince_id = parseInt(<?php echo json_encode($exProvince_id); ?>) || 0
+        var exCity_id = parseInt(<?php echo json_encode($exCity_id); ?>) || 0;
+        
         var Countries = <?php  echo json_encode($countries); ?>  || {}
         var Provinces_list = {}
+
+        console.log(exProvince_id)
         $("#Country").change(function(){
             var country_id = parseInt($(this).val()) || 0
-            var exProvince_id = parseInt(<?php echo json_encode($exProvince_id); ?>)
             var province_html= '<option value="">Select Province</option>';
             var selected = '';
            
             var country = Countries.find(x => x.id === country_id);
-            if(country.provinces.length > 0){
-                Provinces_list = country.provinces
-                for (var i = 0; i < country.provinces.length; i++) {
-                    if(exProvince_id == country.provinces[i].id){
+            if(country?.provinces?.length > 0){
+                Provinces_list = country?.provinces
+                // alert(exProvince_id)
+                for (var i = 0; i < country?.provinces?.length; i++) {
+                    if(exProvince_id === country?.provinces[i]?.id){
                         selected = 'selected';
+                    }else{
+                        selected = '';
                     }
-                    province_html+='<option '+selected+' value='+ country.provinces[i].id +'>'+ country.provinces[i].name +'</option>'; 
+                    province_html+='<option '+selected+' value='+ country?.provinces[i]?.id +'>'+ country?.provinces[i]?.name +'</option>'; 
                 }
             }else{
                 province_html='<option value=""> No Province Found </option>';
@@ -86,16 +93,17 @@ $required = '';
         
         $("#Province").change(function(){
             var province_id = parseInt($(this).val()) || 0;
-            var exCity_id = parseInt(<?php echo json_encode($exCity_id); ?>);
             var city_html= '<option value="">Select City</option>';
             var selected = '';
             var province = Provinces_list.find(x => x.id === province_id);
-            if(province.cities.length > 0){
-                for (var i = 0; i < province.cities.length; i++) {
-                    if(exCity_id == province.cities[i].id){
+            if(province?.cities?.length > 0){
+                for (var i = 0; i < province?.cities?.length; i++) {
+                    if(exCity_id == province?.cities[i]?.id){
                         selected = 'selected';
+                    }else{
+                        selected = '';
                     }
-                    city_html+='<option '+selected+' value='+ province.cities[i].id +'>'+ province.cities[i].name +'</option>'; 
+                    city_html+='<option '+selected+' value='+ province?.cities[i]?.id +'>'+ province?.cities[i]?.name +'</option>'; 
                 }
             }else{
                 city_html='<option> No City Found </option>';

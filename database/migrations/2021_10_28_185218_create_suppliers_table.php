@@ -20,6 +20,7 @@ class CreateSuppliersTable extends Migration
             $table->string('image')->nullable();
             $table->unsignedBigInteger('addedby')->nullable();
             $table->unsignedBigInteger('updatedby')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

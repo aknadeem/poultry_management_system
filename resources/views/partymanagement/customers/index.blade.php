@@ -31,7 +31,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                         </div>
                         <div class="col-6 align-self-end text-end mb-2">
 
-                            <a class="btn btn-secondary btn-sm" href="{{ route('customer.create') }}"
+                            <a class="btn btn-secondary btn-sm" href="{{ route('customers.create') }}"
                                 title="Click to add new Customer" data-plugin="tippy" data-tippy-animation="scale"
                                 data-tippy-arrow="true"><i class="fa fa-plus"></i>
                                 Customer
@@ -43,10 +43,14 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                             <tr>
                                 <th>#</th>
                                 <th>Image</th>
+                                <th>Type</th>
                                 <th>Name</th>
-                                <th>Email</th>
+                                <th>Cnic</th>
                                 <th>Contact Number</th>
-                                <th>ShopName</th>
+                                <th>Farm Name</th>
+                                <th>Accounts</th>
+                                <th>Documents</th>
+                                <th>Balance Limit</th>
                                 <th>Options</th>
                             </tr>
                         </thead>
@@ -57,35 +61,58 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                                 <td>
                                     @if ($customer->image)
                                     <img class="d-flex me-3 rounded-circle avatar-lg"
-                                        src="{{ asset('storage/customers/'.$customer->image) ?? ''}}" alt="No image">
+                                        src="{{ asset('storage/party/'.$customer?->profile_picture) ?? ''}}"
+                                        alt="No image">
                                     @else
                                     <b>No Image</b>
                                     @endif
-
                                 </td>
-                                <td>{{ $customer->name ?? '' }}</td>
-                                <td>{{ $customer->email ?? '' }}</td>
-                                <td>{{ $customer->contact_no ?? '' }}</td>
-                                <td>{{ $customer->farm_name ?? '' }}</td>
+                                <td>{{ $customer?->customer_type_id }}</td>
+                                <td>{{ $customer?->name }}</td>
+                                <td>{{ $customer?->cnic_no }}</td>
+                                <td>{{ $customer?->contact_no }}</td>
+                                <td>{{ $customer?->farm?->farm_name }}</td>
+
+                                <td>
+                                    <a class="btn btn-success btn-sm OpenAccountModal" PartyId="{{ $customer->id}}"
+                                        href="javascript:void(0);" title="Click to Add New Account"><i
+                                            class="fa fa-plus"></i>
+                                    </a>
+                                </td>
+
+                                <td>
+                                    <a class="btn btn-success btn-sm OpenPartyDocumentModal"
+                                        PartyId="{{ $customer->id}}" CustomerId="" href="javascript:void(0);"
+                                        title="Click to Add New Document"><i class="fa fa-plus"></i>
+                                    </a>
+                                </td>
+
+                                <td>
+                                    <a class="btn btn-success btn-sm OpenPartyLimitsModal" PartyId="{{ $customer->id}}"
+                                        CustomerId="" href="javascript:void(0);" title="Click to Add New Limit"><i
+                                            class="fa fa-plus"></i>
+                                    </a>
+                                </td>
+
                                 <td>
                                     <a class="btn btn-secondary btn-sm viewCustomerDetailModal"
                                         CustomerId="{{ $customer->id ?? 0}}" href="javascript:void(0);"
                                         title="View Details" tabindex="0" data-plugin="tippy"
                                         data-tippy-animation="scale" data-tippy-arrow="true"><i class="fa fa-eye"></i>
-                                        View
+
                                     </a>
                                     <a class="btn btn-info btn-sm openCustomerModal" data-bs-toggle="modal"
                                         data-bs-target="#AddCustomerModal" CustomerId="{{ $customer->id ?? 0}}"
                                         href="javascript:void(0);" title="Click to edit" tabindex="0"
                                         data-plugin="tippy" data-tippy-animation="scale" data-tippy-arrow="true"><i
                                             class="fa fa-pencil-alt"></i>
-                                        Edit
+
                                     </a>
                                     <a class="btn btn-danger btn-sm delete-confirm"
-                                        href="{{route('customer.destroy', $customer->id ?? 0)}}" del_title="Cutomer abc"
-                                        title="Click to delete" tabindex="0" data-plugin="tippy"
+                                        href="{{route('customers.destroy', $customer->id ?? 0)}}"
+                                        del_title="Cutomer abc" title="Click to delete" tabindex="0" data-plugin="tippy"
                                         data-tippy-animation="scale" data-tippy-arrow="true"><i class="fa fa-trash"></i>
-                                        Delete
+
                                     </a>
 
                                     {{-- <a class="btn btn-danger btn-sm" data-bs-toggle="modal"
@@ -107,7 +134,12 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
     </div>
 </div>
 
-@include('partymanagement._CustomerModal')
+@include('partymanagement._AddPartyAccounts')
+@include('partymanagement._AddPartyDocuments')
+@include('partymanagement._AddPartyBalanceLimit')
+
+
+{{-- @include('partymanagement._CustomerModal') --}}
 
 
 <!-- View Detail modal content -->
@@ -115,9 +147,9 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content" id="CustomerDetailData">
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+        </div>
+    </div>
+</div>
 
 @endsection
 

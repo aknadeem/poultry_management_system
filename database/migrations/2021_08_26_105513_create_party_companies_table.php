@@ -21,6 +21,7 @@ class CreatePartyCompaniesTable extends Migration
             $table->boolean('is_active')->default(1);
             $table->unsignedBigInteger('addedby')->nullable();
             $table->unsignedBigInteger('updatedby')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

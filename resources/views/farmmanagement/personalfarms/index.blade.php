@@ -13,12 +13,12 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                     <ol class="breadcrumb m-0">
                         <li class="breadcrumb-item"><a href="#">Home</a>
                         </li>
-                        <li class="breadcrumb-item">ShedManagement</li>
-                        <li class="breadcrumb-item"> PersonalSheds </li>
+                        <li class="breadcrumb-item">FarmManagement</li>
+                        <li class="breadcrumb-item"> PersonalFarms </li>
                         <li class="breadcrumb-item active"> index </li>
                     </ol>
                 </div>
-                <h4 class="page-title">ShedManagement</h4>
+                <h4 class="page-title">Farm Management</h4>
             </div>
         </div>
     </div>
@@ -28,13 +28,13 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                 <div class="card-body">
                     <div class="row mb-2">
                         <div class="col-6 align-self-start">
-                            <h4>Personal Sheds</h4>
+                            <h4>Personal Farms</h4>
                         </div>
                         <div class="col-6 align-self-end text-end mb-2">
-                            <a class="btn btn-secondary btn-sm" href="{{ route('poultryshed.create') }}"
-                                title="Click to add new shed" data-plugin="tippy" data-tippy-animation="scale"
+                            <a class="btn btn-secondary btn-sm" href="{{ route('personalfarms.create') }}"
+                                title="Click to add new farm" data-plugin="tippy" data-tippy-animation="scale"
                                 data-tippy-arrow="true"><i class="fa fa-plus"></i>
-                                Create Shed
+                                Create Farm
                             </a>
                         </div>
                     </div>
@@ -42,60 +42,58 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                         <thead>
                             <tr>
                                 <th> # </th>
-                                <th> Name </th>
-                                <th> CNIC </th>
-                                <th> Account Detail </th>
-                                <th> Documents </th>
-                                <th> Debit/Credit Limit </th>
+                                <th> Image </th>
+                                <th> farm type </th>
+                                <th> farm subtype </th>
+                                <th> Farm Name </th>
+                                <th>Area</th>
+                                <th> Capacity </th>
                                 <th>Options</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @forelse ($farms as $key=>$farm)
                             <tr>
-                                <td>11</td>
-                                <td>Nadeem Ahmed</td>
-                                <td>434354234341</td>
-                                <td>
-                                    <a class="btn btn-secondary btn-sm viewCustomerDetailModal" CustomerId=""
-                                        href="javascript:void(0);" title="Click to View Accounts "><i
-                                            class="fa fa-eye"></i>
-                                        View
-                                    </a>
-                                    <a class="btn btn-success btn-sm OpenAccountModal" data-id="1" CustomerId=""
-                                        href="javascript:void(0);" title="Click to Add New Account"><i
-                                            class="fa fa-plus"></i>
-                                        add
+                                <td>{{ ++$key }}</td>
+                                <td> <a href="{{ asset('storage/personalfarms/'.$farm?->farm_image) ?? ''}}"
+                                        target="_blank" title="Click to view">
+                                        <img src="{{ asset('storage/personalfarms/'.$farm?->farm_image)}}" width="50"
+                                            alt="No Image">
                                     </a>
                                 </td>
+                                <td>{{ $farm?->type?->name}}</td>
+                                <td>{{ $farm?->subtype?->name}}</td>
+                                <td>{{ $farm->farm_name}}</td>
+                                <td>{{ $farm?->farm_area}}</td>
+                                <td>{{ $farm?->farm_capacity}}</td>
 
                                 <td>
-                                    <a class="btn btn-secondary btn-sm viewCustomerDetailModal" CustomerId=""
-                                        href="javascript:void(0);" title="Click to View DOcuments "><i
-                                            class="fa fa-eye"></i>
+                                    <a class="btn btn-secondary btn-sm" href="javascript:void(0);" title="View Details"
+                                        tabindex="0" data-plugin="tippy" data-tippy-animation="scale"
+                                        data-tippy-arrow="true"><i class="fa fa-eye"></i>
                                         View
                                     </a>
-                                    <a class="btn btn-success btn-sm OpenPartyDocumentModal" CustomerId=""
-                                        href="javascript:void(0);" title="Click to Add New Document"><i
-                                            class="fa fa-plus"></i>
-                                        add
+                                    <a class="btn btn-info btn-sm" href="{{route('personalfarms.edit', $farm?->id)}}"
+                                        title="Click to edit" tabindex="0" data-plugin="tippy"
+                                        data-tippy-animation="scale" data-tippy-arrow="true"><i
+                                            class="fa fa-pencil-alt"></i>
+                                        Edit
                                     </a>
-                                </td>
 
-                                <td>
-                                    <a class="btn btn-secondary btn-sm viewCustomerDetailModal" CustomerId=""
-                                        href="javascript:void(0);" title="Click to View DOcuments "><i
-                                            class="fa fa-eye"></i>
-                                        View
-                                    </a>
-                                    <a class="btn btn-success btn-sm OpenPartyLimitsModal" CustomerId=""
-                                        href="javascript:void(0);" title="Click to Add New Limit"><i
-                                            class="fa fa-plus"></i>
-                                        add
-                                    </a>
-                                </td>
+                                    <a class="btn btn-danger btn-sm delete-confirm"
+                                        href="{{route('personalfarms.destroy', $farm?->id )}}"
+                                        del_title="Customer Fame {{$farm?->farm_name}}" title="Click to delete"
+                                        tabindex="0" data-plugin="tippy" data-tippy-animation="scale"
+                                        data-tippy-arrow="true"><i class="fa fa-trash"></i>
 
-                                <td>11</td>
+                                    </a>
+
+                                </td>
                             </tr>
+                            @empty
+
+                            @endforelse
+
                         </tbody>
                     </table>
                 </div> <!-- end card body-->

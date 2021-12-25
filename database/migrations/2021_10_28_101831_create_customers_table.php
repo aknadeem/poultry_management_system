@@ -40,6 +40,7 @@ class CreateCustomersTable extends Migration
 
             $table->unsignedBigInteger('addedby')->nullable();
             $table->unsignedBigInteger('updatedby')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -30,7 +30,7 @@ class PartyDocumentController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'party_id' => 'bail|required|integer',
-            'title' => 'bail|required|string',
+            'document_title' => 'bail|required|string',
             'document_name' => 'bail|required',
         ]);
 
@@ -47,24 +47,22 @@ class PartyDocumentController extends Controller
             $party_document = null;
         }
 
-        if ($request->hasFile('image_file')) {
-            if($party_document?->document_name != null && \Storage::disk('public')->exists('party/docuemnts/'.$party_document?->document_name)){
-                \Storage::disk('public')->delete('companies/'.$company_data?->document_name);
+        if ($request->hasFile('document_name')) {
+            if($party_document?->document_name != null && \Storage::disk('public')->exists('party/documents/'.$party_document?->document_name)){
+                \Storage::disk('public')->delete('parties/documents/'.$company_data?->document_name);
             }
             $path = 'party/documents/';
-            $image_file = $request->file('image_file');
-            $extension = $request->file('image_file')->extension();
+            $image_file = $request->file('document_name');
+            $extension = $request->file('document_name')->extension();
             $imageName = time().mt_rand(10,99).'.'.$extension;
             $upload = $image_file->storeAs($path, $imageName, 'public');
         }else{
             $imageName = null;
         }
 
-
-
         if($request->party_account_id > 0){
             if($party_document !=''){
-                $message = 'A Company Data Updated successfully!';
+                $message = 'Data Updated successfully!';
                 $success = 'yes';
 
                 if($party_document?->document_name !='' && $imageName == null){
@@ -73,7 +71,7 @@ class PartyDocumentController extends Controller
 
                 $update_doc = $party_document->update([
                     'party_id' => $request->party_id,
-                    'title' => $request->account_title,
+                    'title' => $request->document_title,
                     'document_name' => $imageName,
                     'updatedby' => $this->auth_user_id,
                 ]);
@@ -84,7 +82,7 @@ class PartyDocumentController extends Controller
         }else{
             $party_document = PartyDocument::create([
                 'party_id' => $request->party_id,
-                'title' => $request->title,
+                'title' => $request->document_title,
                 'document_name' => $imageName,
                 'addedby' => $this->auth_user_id,
             ]);
@@ -128,7 +126,6 @@ class PartyDocumentController extends Controller
         if($party_document?->document_name != null && \Storage::disk('public')->exists($img_path)){
             \Storage::disk('public')->delete($img_path);
         }
-
         $party_document->delete();
         return redirect()->route('company.index');
     }

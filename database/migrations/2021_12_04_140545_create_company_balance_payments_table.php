@@ -16,6 +16,7 @@ class CreateCompanyBalancePaymentsTable extends Migration
             $table->decimal('balance')->nullable();
             $table->unsignedBigInteger('addedby')->nullable();
             $table->unsignedBigInteger('updatedby')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

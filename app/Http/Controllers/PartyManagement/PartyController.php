@@ -38,24 +38,40 @@ class PartyController extends Controller
     }
 
     public function create()
-    {
+    {   
+        $party = new Party();
         $countries = Country::with('provinces:id,name,country_id',
         'provinces.cities:id,name,province_id')->get(['id','name']);
-
 
         $divisions = Division::get();
         $customer_types = CustomerType::get();
         $farm_types = FarmType::get();
         $farm_subtypes = FarmSubtype::get();
+        $contact_persons = ConductPerson::get();
 
         $vendor_types = VendorType::get();
         $business_types = BusinessType::get();
+        // dd($divisions->toArray());
+        return view('partymanagement.party.create', compact('countries', 'party', 'divisions', 'customer_types', 'farm_types', 'farm_subtypes', 'business_types', 'vendor_types','contact_persons'));
+    }
 
+    public function edit($id)
+    {   
+        $party = Party::with('country:id,name','province:id,name','city:id,name', 'farm:id,party_id,farm_name', 'company:id,party_id,company_name')->findOrFail($id);
+
+        // dd($party->toArray());
+        $countries = Country::with('provinces:id,name,country_id',
+        'provinces.cities:id,name,province_id')->get(['id','name']);
+
+        $divisions = Division::get();
+        $customer_types = CustomerType::get();
+        $farm_types = FarmType::get();
+        $farm_subtypes = FarmSubtype::get();
         $contact_persons = ConductPerson::get();
 
+        $vendor_types = VendorType::get();
+        $business_types = BusinessType::get();
         // dd($divisions->toArray());
-
-        $party = new Party();
         return view('partymanagement.party.create', compact('countries', 'party', 'divisions', 'customer_types', 'farm_types', 'farm_subtypes', 'business_types', 'vendor_types','contact_persons'));
     }
 
@@ -126,7 +142,7 @@ class PartyController extends Controller
                             'farm_subtype_id' => $request->farm_subtype_id,
                             'farm_name' => $request->farm_name,
                             'farm_noc' => $request->farm_noc,
-                            'farm_image' => $request->farm_image,
+                            'farm_image' => $farm_image,
                             'farm_address' => $request->farm_address,
                             'addedby' => $this->auth_user_id,
                         ]);
@@ -149,7 +165,7 @@ class PartyController extends Controller
                             'party_id' =>  $party->id,
                             'company_name' => $request->company_name,
                             'business_type_id' => $request->business_type_id,
-                            'company_logo' => $request->company_logo,
+                            'company_logo' => $company_logo,
                             'company_address' => $request->company_address,
                             'addedby' => $this->auth_user_id,
                         ]);
@@ -169,7 +185,14 @@ class PartyController extends Controller
         }
 
         Session::flash('swal_notification', ['title' => $title, 'icon_type' => $icon_type, 'message' => $message]);
-        return redirect()->route('parties.index');
+
+        if($request->has('from_vendor')){
+            return redirect()->route('vendors.index');
+        }elseif($request->has('from_customer')){
+            return redirect()->route('customers.index');
+        }else{
+            return redirect()->route('parties.index');
+        }
     }
 
 
@@ -226,7 +249,7 @@ class PartyController extends Controller
             'name' => 'bail|required|string',
             'guardian_name' => 'bail|required|string',
             'cnic_no' => 'bail|required|string|min:13|max:13|unique:parties,cnic_no,'.$id,
-            'email' => 'bail|required|string',
+            'email' => 'bail|nullable|string',
             'contact_no' => 'bail|required|string|min:11|max:11',
             'business_number' => 'bail|nullable|string|min:11|max:11',
             'manual_number' => 'bail|required|string',

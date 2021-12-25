@@ -32,6 +32,7 @@ class CreateVendorsTable extends Migration
             $table->string('description')->nullable();
             $table->unsignedBigInteger('addedby')->nullable();
             $table->unsignedBigInteger('updatedby')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

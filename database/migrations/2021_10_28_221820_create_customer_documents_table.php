@@ -13,6 +13,7 @@ class CreateCustomerDocumentsTable extends Migration
             $table->string('title');
             $table->string('picture');
             $table->string('type')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

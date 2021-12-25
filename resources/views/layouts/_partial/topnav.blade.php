@@ -30,7 +30,7 @@
 
                             <div class="dropdown">
 
-                                <a class="dropdown-item" id="topnav-form" href="{{ route('customer.index') }}">
+                                <a class="dropdown-item" id="topnav-form" href="{{ route('customers.index') }}">
                                     <i class="fas fa-user-tie"></i> Customers
                                 </a>
 
@@ -56,19 +56,20 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-components" role="button"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-pallet"></i> ShedManagement <div class="arrow-down"></div>
+                            <i class="fas fa-pallet"></i> FarmManagement <div class="arrow-down"></div>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="topnav-components">
                             <div class="dropdown">
                                 <a class="dropdown-item dropdown-toggle arrow-none" href="#" id="topnav-form"
                                     role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-warehouse"></i> Sheds <div class="arrow-down"></div>
+                                    <i class="fas fa-warehouse"></i> Farms <div class="arrow-down"></div>
                                 </a>
 
                                 <div class="dropdown-menu" aria-labelledby="topnav-form">
-                                    <a href="{{ route('poultryshed.index') }}" class="dropdown-item"> Personal Sheds
+                                    <a href="{{ route('personalfarms.index') }}" class="dropdown-item"> Personal Farms
                                     </a>
-                                    <a href="{{ route('purchase.index') }}" class="dropdown-item"> Customer Sheds </a>
+                                    <a href="{{ route('customerfarms.index') }}" class="dropdown-item"> Customer Farms
+                                    </a>
                                 </div>
                             </div>
 

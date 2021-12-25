@@ -38,6 +38,7 @@ class CreatePartiesTable extends Migration
             $table->foreignId('contact_person_id')->nullable()->constrained('conduct_people')->onDelete('cascade');
             $table->unsignedBigInteger('addedby')->nullable();
             $table->unsignedBigInteger('updatedby')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

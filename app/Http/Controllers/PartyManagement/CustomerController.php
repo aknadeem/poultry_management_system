@@ -2,8 +2,15 @@
 
 namespace App\Http\Controllers\PartyManagement;
 
+use App\Models\Party;
+use App\Models\Country;
 use App\Models\Customer;
+use App\Models\Division;
+use App\Models\FarmType;
+use App\Models\FarmSubtype;
+use App\Models\CustomerType;
 use Illuminate\Http\Request;
+use App\Models\ConductPerson;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CustomerFormRequest;
@@ -21,15 +28,24 @@ class CustomerController extends Controller
 
     public function index()
     {
-        // $customers = Customer::where('type', 'customer')->get();
-        $customers = collect();
+        $customers = Party::where('is_customer', 1)->with('farm:id,party_id,farm_name,farm_type_id')->get(['id','is_customer','name', 'guardian_name','cnic_no', 'contact_no', 'customer_type_id','customer_division_id', 'profile_picture']);
+        // dd($customers->toArray());
+        // $customers = collect();
         return view('partymanagement.customers.index', compact('customers'));
         // return view('partymanagement.customers.index');
     }
 
     public function create()
     {
-        return view('partymanagement.customers.create');
+        $party = new Party();
+        $countries = Country::with('provinces:id,name,country_id',
+        'provinces.cities:id,name,province_id')->get(['id','name']);
+        $divisions = Division::get();
+        $customer_types = CustomerType::get();
+        $farm_types = FarmType::get();
+        $farm_subtypes = FarmSubtype::get();
+        $contact_persons = ConductPerson::get();
+        return view('partymanagement.customers.create', compact('countries', 'party', 'divisions', 'customer_types', 'farm_types', 'farm_subtypes','contact_persons'));
     }
 
     public function store(Request $request)

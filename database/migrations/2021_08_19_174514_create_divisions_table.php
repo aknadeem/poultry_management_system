@@ -13,6 +13,7 @@ class CreateDivisionsTable extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('slug')->unique()->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

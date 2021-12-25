@@ -33,7 +33,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                         {{-- data-bs-toggle="modal"
                         data-bs-target="#AddFeedModal" --}}
                         <div class="col-6 align-self-end text-end mb-2">
-                            <a class="btn btn-secondary btn-sm openFeedModal" href="javascript:void(0);" FeedId="0"
+                            <a class="btn btn-secondary btn-sm" href="{{ route('feed.create') }}"
                                 title="Click to add Feed" data-plugin="tippy" data-tippy-animation="scale"
                                 data-tippy-arrow="true"><i class="fa fa-plus"></i>
                                 Feed

@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\PartyManagement;
 
+use App\Models\Party;
 use App\Models\Country;
 use App\Models\Customer;
+use App\Models\Division;
 use App\Models\VendorType;
 use Illuminate\Support\Str;
+use App\Models\BusinessType;
 use Illuminate\Http\Request;
+use App\Models\ConductPerson;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Schema;
@@ -26,20 +30,26 @@ class VendorController extends Controller
 
     public function index()
     {
-        // $customers = Customer::where('type', 'customer')->get();
-        $customers = collect();
+        $customers = Party::where('is_vendor', 1)->with('farm:id,party_id,farm_name,farm_type_id')->get(['id','is_customer','name', 'guardian_name','cnic_no', 'contact_no', 'customer_type_id','customer_division_id', 'profile_picture']);
         return view('partymanagement.vendors.index', compact('customers'));
         // return view('partymanagement.customers.index');
     }
 
     public function create()
     {
+
+        $party = new Party();
         $countries = Country::with('provinces:id,name,country_id',
         'provinces.cities:id,name,province_id')->get(['id','name']);
 
-        $party = new Country();
 
-        return view('partymanagement.vendors.create', compact('countries', 'party'));
+        $divisions = Division::get();
+        $contact_persons = ConductPerson::get();
+
+        $vendor_types = VendorType::get();
+        $business_types = BusinessType::get();
+        
+        return view('partymanagement.vendors.create', compact('countries', 'party',  'business_types','divisions' , 'vendor_types','contact_persons'));
     }
 
     public function store(Request $request)
@@ -158,8 +168,9 @@ class VendorController extends Controller
 
     public function storeAllType(Request $request)
     {
+        $table_name = $request->table_name;
         $validator = Validator::make($request->all(),[
-            'name' => 'bail|required|string|unique:vendor_types,name',
+            'name' => 'bail|required|string|unique:'.$table_name.',name',
         ]);
 
         if($validator->fails()){
@@ -168,8 +179,6 @@ class VendorController extends Controller
                 'success' => 'no',
             ], 201);
         }
-
-        $table_name = $request->table_name;
 
         if ($table_name !='' && Schema::hasTable($table_name) ) {
             $save_data = DB::table($table_name)->insertGetId([
