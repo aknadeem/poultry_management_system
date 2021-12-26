@@ -27,6 +27,13 @@ class Party extends Model
         ]);
     }
     
+    public function balancelimit()
+    {
+        return $this->hasOne('App\Models\PartyBalanceLimit', 'party_id', 'id')->where('is_active', 1)->where('start_date', '>=', today())->withDefault([
+            'id' => null,
+        ]);
+    }
+    
     public function company()
     {
         return $this->hasOne('App\Models\PartyCompany', 'party_id', 'id')->withDefault([

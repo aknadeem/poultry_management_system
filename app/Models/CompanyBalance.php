@@ -23,6 +23,6 @@ class CompanyBalance extends Model
 
     public function company()
     {
-        return $this->belongsTo('App\Models\Company', 'company_id', 'id');
+        return $this->belongsTo('App\Models\PartyCompany', 'company_id', 'id');
     }
 }

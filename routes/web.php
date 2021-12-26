@@ -8,11 +8,11 @@ use App\Http\Controllers\PoultryShed\ {
 };
 use App\Http\Controllers\PartyManagement\ {
     PartyController, CustomerController, CompaniesController, CompaniesBalanceController, ConductPersonController, VendorController, PartyBalanceLimitController,
-    PartyDocumentController, PartyAccountController
+    PartyDocumentController, PartyAccountController, BrokerController
 };
 
 use App\Http\Controllers\InventoryManagement\ {FeedController, ExpenseController};
-use App\Http\Controllers\ChickenModule\ {ChickenPurchaseController, ChickenSaleController};
+use App\Http\Controllers\ChickenModule\ {ChickenPurchaseController, ChickenSaleController, ChickPurchaseController};
 
 Auth::routes();
 
@@ -22,6 +22,7 @@ Route::group(['middleware' => 'auth'], function(){
     });
 
     Route::post('/store-alltypes', [VendorController::class, 'storeAllType'])->name('addalltypes');
+    Route::put('/update-active-status/{id}/{tag}', [CompaniesController::class, 'updateStatus'])->name('updatestatus');
 
     Route::group(['prefix' => '/usermanagement'], function(){
         Route::get('/get-users-list', [UserController::class, 'getUsersList'])->name('getUsersList');
@@ -39,6 +40,7 @@ Route::group(['middleware' => 'auth'], function(){
         Route::resource('partydocuments', PartyDocumentController::class);
         Route::resource('partyaccounts', PartyAccountController::class);
         Route::resource('balancelimits', PartyBalanceLimitController::class);
+        Route::resource('brokers', BrokerController::class);
     });
     
     Route::group(['prefix' => '/farmManagement'], function(){
@@ -80,8 +82,9 @@ Route::group(['middleware' => 'auth'], function(){
     });
 
     Route::group(['prefix' => '/poultry'], function(){
-        Route::get('/get-purchase-list', [ChickenPurchaseController::class, 'getPurchaseList'])->name('getpurchaselist');
-        Route::resource('purchase', ChickenPurchaseController::class);
+        Route::get('/get-purchase-list', [ChickPurchaseController::class, 'getPurchaseList'])->name('getpurchaselist');
+        Route::resource('purchase', ChickPurchaseController::class);
+        Route::resource('chickenpurchase', ChickenPurchaseController::class);
     });
 
     Route::group(['prefix' => '/poultry'], function(){

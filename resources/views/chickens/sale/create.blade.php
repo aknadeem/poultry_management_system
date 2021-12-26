@@ -63,9 +63,7 @@ $load_js = Array('tippy','select2')
                                 <div class="col-sm-3 mb-2">
                                     <label for="chikSaleDate"> Sale Date *</label>
                                     <input type="date" required placeholder="Enter date" name="sale_date"
-                                        value="{{ today()->format('Y-m-d') }}" {{--
-                                        value="{{ $sale->sale_date ?? old('sale_date') }}" --}} class="form-control"
-                                        id="chikSaleDate">
+                                        value="{{ today()->format('Y-m-d') }}" class="form-control" id="chikSaleDate">
                                     @error('sale_date')
                                     <span class="text-danger sale_date_error"> {{ $message }} </span>
                                     @enderror
@@ -76,10 +74,10 @@ $load_js = Array('tippy','select2')
                                     <select class="form-control mySelect" id="BrokerId" required name="broker_id"
                                         data-placeholder="Select Customer" data-toggle="select2" data-width="100%">
                                         <option value=""> Select Customer </option>
-                                        @forelse ($customers as $customer)
-                                        <option {{ ( old('broker_id') || $sale?->broker_id == $customer->id) ?
-                                            'selected' : '' }} value="{{$customer->id}}">
-                                            {{$customer->name}}</option>
+                                        @forelse ($brokers as $item)
+                                        <option {{ ( old('broker_id') || $sale?->broker_id == $item->id) ?
+                                            'selected' : '' }} value="{{$item->id}}">
+                                            {{$item->name}}</option>
                                         @empty
                                         @endforelse
                                     </select>
@@ -94,10 +92,10 @@ $load_js = Array('tippy','select2')
                                     <select class="form-control mySelect" id="customerId" required name="customer_id"
                                         data-placeholder="Select Customer" data-toggle="select2" data-width="100%">
                                         <option value=""> Select Customer </option>
-                                        @forelse ($customers as $customer)
-                                        <option {{ ( old('customer_id') || $sale?->customer_id == $customer->id) ?
-                                            'selected' : '' }} value="{{$customer->id}}">
-                                            {{$customer->name}}</option>
+                                        @forelse ($customers as $item)
+                                        <option {{ ( old('customer_id') || $sale?->party_id == $item->id) ?
+                                            'selected' : '' }} value="{{$item->id}}">
+                                            {{$item->name}}</option>
                                         @empty
                                         @endforelse
                                     </select>
@@ -129,8 +127,8 @@ $load_js = Array('tippy','select2')
                                 </div>
 
                                 <div class="col-sm-3 mb-2">
-                                    <label for="FirstWeight"> Fisrt Weight </label>
-                                    <input type="number" step="any" min="1" placeholder="Enter weight"
+                                    <label for="FirstWeight"> Fisrt Weight (kg) </label>
+                                    <input type="number" step="any" min="1" placeholder="Enter weight in Kilo Gram (kg)"
                                         name="first_weight" class="form-control" id="FirstWeight"
                                         value="{{ $sale?->first_weight ?? old('first_weight') }}" required>
 
@@ -141,8 +139,8 @@ $load_js = Array('tippy','select2')
                                 </div>
 
                                 <div class="col-sm-3 mb-2">
-                                    <label for="SecondWeight"> Second Weight </label>
-                                    <input type="number" step="any" min="1" placeholder="Enter weight"
+                                    <label for="SecondWeight"> Second Weight (kg)</label>
+                                    <input type="number" step="any" min="1" placeholder="Enter weight in Kilo Gram (kg)"
                                         name="second_weight" class="form-control" id="SecondWeight"
                                         value="{{ $sale?->second_weight ?? old('second_weight') }}" required>
 
@@ -153,9 +151,9 @@ $load_js = Array('tippy','select2')
                                 </div>
 
                                 <div class="col-sm-3 mb-2">
-                                    <label for="NetWeight">Net Weight </label>
-                                    <input type="number" step="any" min="1" placeholder="Enter weight" name="net_weight"
-                                        class="form-control" id="NetWeight"
+                                    <label for="NetWeight">Net Weight (kg) </label>
+                                    <input type="number" step="any" min="1" placeholder="Enter weight in Kilo Gram (kg)"
+                                        name="net_weight" class="form-control" id="NetWeight"
                                         value="{{ $sale?->net_weight ?? old('net_weight') }}" required>
 
                                     @error('net_weight')
@@ -165,8 +163,8 @@ $load_js = Array('tippy','select2')
                                 </div>
 
                                 <div class="col-sm-3 mb-2">
-                                    <label for="TotalWeight"> Total Weight </label>
-                                    <input type="number" step="any" min="1" placeholder="Enter weight"
+                                    <label for="TotalWeight"> Total Weight (kg) </label>
+                                    <input type="number" step="any" min="1" placeholder="Enter weight in Kilo Gram (kg)"
                                         name="total_weight" class="form-control" id="TotalWeight"
                                         value="{{ $sale?->total_weight ?? old('total_weight') }}" required>
 
@@ -314,9 +312,10 @@ $load_js = Array('tippy','select2')
     $( "#customerId" ).change(function() {
         let customer_id_modal = parseInt($(this).val())
         let find_customer = customers_list?.find(x => x.id === customer_id_modal);
+        // console.log(find_customer)
         if(find_customer){
             $('#CustomerContact').val(find_customer?.contact_no || '');
-            $('#CustomerFarm').val(find_customer?.farm_name || '');
+            $('#CustomerFarm').val(find_customer?.farm?.farm_name || '');
         }
     });
 

@@ -1,6 +1,6 @@
 @php
-$load_css = Array('select2');
-$load_js = Array('tippy','select2')
+$load_css = Array('select2', 'sweetAlert');
+$load_js = Array('tippy','select2', 'sweetAlert')
 ;
 @endphp
 @extends('layouts.app')
@@ -68,14 +68,14 @@ $load_js = Array('tippy','select2')
                                             <option value=""> Select category </option>
                                             @forelse ($categories as $item)
                                             <option {{ (! empty(old('feed_category_id')==$item->id) ? 'selected'
-                                                : 'selected' ) }} value="{{$item->id}}">{{$item->name}}</option>
+                                                : '' ) }} value="{{$item->id}}">{{$item->name}}</option>
                                             @empty
                                             @endforelse
                                         </select>
                                         <a href="#"
                                             class="btn input-group-text btn-dark waves-effect waves-light OpenaddTypeModal"
-                                            title="Click to add new" SelectBoxId="CustomerDivision"
-                                            TableName="divisions" type="button">
+                                            title="Click to add new" SelectBoxId="FeedCategory"
+                                            TableName="feed_categories" type="button">
                                             <i class="fa fa-plus"></i>
                                         </a>
                                     </div>
@@ -84,39 +84,39 @@ $load_js = Array('tippy','select2')
                                     @enderror
                                 </div>
 
-
-                                <div class="col-sm-4 mb-2">
-                                    <label for="FeedCategory">Select Feed Category *</label>
-                                    <select class="form-control mySelectModal" id="FeedCategory" name="feed_category_id"
-                                        data-placeholder="Select category" data-toggle="select2" data-width="100%">
-                                        <option value=""> Select category </option>
-                                    </select>
-
-                                    <span class="text-danger purchase_date_error"></span>
-                                </div>
-
                                 <div class="col-4 mb-2">
                                     <label for="feedCompanyId">Select Company *</label>
-                                    <select class="form-control mySelectModal" id="feedCompanyId" name="company_id"
+                                    <select class="form-control mySelect" id="feedCompanyId" name="company_id"
                                         data-placeholder="Select Company" data-toggle="select2" data-width="100%">
                                         <option value=""> Select Company </option>
+                                        @forelse ($companies as $item)
+                                        <option value="{{$item->id}}">{{$item->company_name}}</option>
+                                        @empty
+                                        @endforelse
                                     </select>
 
                                     <span class="text-danger company_id_error"></span>
                                 </div>
 
                                 <div class="col-sm-4 mb-2">
-                                    <label for="feedCompanyAddr"> Company Address </label>
-                                    <input type="text" placeholder="Company Address" name="company_address" readonly
-                                        disabled class="form-control" id="feedCompanyAddr">
-                                    <span class="text-danger company_address_error"></span>
+                                    <label for="VendorName"> Vendor Name </label>
+                                    <input type="text" placeholder="Company Address" name="vendor_name" readonly
+                                        disabled class="form-control" id="VendorName">
+                                    <span class="text-danger vendor_name_error"></span>
                                 </div>
-                                <div class="col-sm-4 mb-2">
-                                    <label for="feedCompanyContact"> Company Contact </label>
-                                    <input type="text" placeholder="Enter Contact" name="company_contact"
-                                        class="form-control" readonly disabled id="feedCompanyContact">
-                                    <span class="text-danger company_contact_error"></span>
+                                {{-- <div class="col-sm-2 mb-2">
+                                    <label for="CompanyDebitLimit" class="text-danger">Debit Limit</label>
+                                    <input type="text" placeholder="Enter Contact" name="company_debit_limit"
+                                        class="form-control input-danger" readonly disabled id="CompanyDebitLimit">
+                                    <span class="text-danger company_debit_limit_error"></span>
                                 </div>
+
+                                <div class="col-sm-2 mb-2">
+                                    <label for="CompanyCreditLimit" class="text-warning"> Credit Limit </label>
+                                    <input type="text" placeholder="Enter Contact" name="company_credit_limit"
+                                        class="form-control" readonly disabled id="CompanyCreditLimit">
+                                    <span class="text-danger company_credit_limit_error"></span>
+                                </div> --}}
 
                                 <div class="col-sm-4 mb-2">
                                     <label for="feedQuantity"> Quantity </label>
@@ -134,8 +134,8 @@ $load_js = Array('tippy','select2')
 
                                 <div class="col-sm-4 mb-2">
                                     <label for="feedDiscountAmount"> Discount Amount </label>
-                                    <input type="text" placeholder="Discount Amount" name="discount_amount"
-                                        class="form-control" id="feedDiscountAmount">
+                                    <input type="number" step="any" min="0" placeholder="Discount Amount"
+                                        name="discount_amount" class="form-control" id="feedDiscountAmount">
                                     <span class="text-danger discount_amount_error"></span>
                                 </div>
                                 <span class="text-danger h6" id="PriceQtyError" style="display: none;"></span>
@@ -165,8 +165,8 @@ $load_js = Array('tippy','select2')
 
                                 <div class="col-sm-4 mb-2">
                                     <label for="BiltyCharges"> Bilty Charges</label>
-                                    <input type="text" placeholder="ENter Bilty Charges" name="bilty_charges" value=""
-                                        class="form-control" id="BiltyCharges">
+                                    <input type="number" step="any" min="0" placeholder="ENter Bilty Charges"
+                                        name="bilty_charges" class="form-control" id="BiltyCharges">
 
                                     @error('bilty_charges')
                                     <span class="text-danger bilty_charges_error"> {{ $message }} </span>
@@ -176,11 +176,11 @@ $load_js = Array('tippy','select2')
 
                                 <div class="col-sm-4 mb-2">
                                     <label for="BagDiscount"> Per Bag Discount </label>
-                                    <input type="text" placeholder="Enter Bilty Charges" name="bag_discount" value=""
-                                        class="form-control" id="BagDiscount">
+                                    <input type="number" step="any" min="0" placeholder="Enter Bilty Charges"
+                                        name="per_bag_discount" value="" class="form-control" id="BagDiscount">
 
-                                    @error('bag_discount')
-                                    <span class="text-danger bag_discount_error"> {{ $message }} </span>
+                                    @error('per_bag_discount')
+                                    <span class="text-danger per_bag_discount_error"> {{ $message }} </span>
                                     @enderror
 
                                 </div>
@@ -208,10 +208,10 @@ $load_js = Array('tippy','select2')
                                 </div>
 
                                 <div class="col-sm-4 mb-2">
-                                    <label for="Remarks">Remarks</label>
-                                    <input type="text" class="form-control" name="remarks" id="Remarks"
-                                        placeholder="Remarks if any">
-                                    <span class="text-danger remarks_error"> </span>
+                                    <label for="description">Description</label>
+                                    <input type="text" class="form-control" name="description" id="description"
+                                        placeholder="description if any">
+                                    <span class="text-danger description_error"></span>
                                 </div>
 
                                 <div class="col-sm-4 mb-2">
@@ -248,7 +248,92 @@ $load_js = Array('tippy','select2')
 @section('custom_scripts')
 <script>
     $(function() {
+
+        var companies_list = {};
+        companies_list = '<?php echo json_encode($companies); ?>';
+
+        // console.log(companies_list)
+
+        $( "#feedCompanyId" ).change(function() {
+            let company_id = parseInt($(this).val())
+            console.log(company_id)
+            let find_company = companies_list.find(x => x.id === company_id);
+            if(find_company){
+                $('#VendorName').val(find_company?.vendor?.name || '');
+                // $('#feedCompanyContact').val(find_company?.contact_no || '');
+            }
+        });
+
         
+        $('#feedPrice').on('keyup', function() {
+            let total_qty = Number($('#feedQuantity').val())
+            let feed_price = parseFloat($('#feedPrice').val())
+
+            if (total_qty > 0 && feed_price > 0) {
+                $("#PriceQtyError").html('');
+                $("#PriceQtyError").hide();
+                priceWithOutDiscount = total_qty*feed_price;
+                $("#feedTotalPrice").val(priceWithOutDiscount);
+            } else {
+                $("#PriceQtyError").show();
+                $("#PriceQtyError").html('Price and Quantity Is required');
+                $("#feedTotalPrice").val('');
+            }
+        });
+
+        // $('#feedDiscountAmount').on('keyup', function() {
+        $('#feedDiscountAmount').on('keyup', function() {
+            let total_qty = Number($('#feedQuantity').val())
+            let feed_price = parseFloat($('#feedPrice').val())
+            let discountAmount = parseFloat($(this).val());
+            let priceWithOutDiscount = 0
+            if(discountAmount > 0){
+                if (total_qty > 0 && feed_price > 0) {
+                    $("#PriceQtyError").html('');
+                    $("#PriceQtyError").hide();
+                    priceWithOutDiscount = total_qty*feed_price;
+                    let discount_percent = (discountAmount / priceWithOutDiscount) * 100;
+                    if(discountAmount >= priceWithOutDiscount){
+                        $(".discount_amount_error").html('Discount Amount Must be less than total amount');
+                    }else{
+                        $(".discount_amount_error").html('');
+                        $("#feedDiscountPercentage").val(discount_percent.toFixed(2));
+                        $("#feedTotalPrice").val(priceWithOutDiscount - discountAmount);
+                    }
+                } else {
+                    $("#PriceQtyError").show();
+                    $("#PriceQtyError").html('Price and Quantity Is required');
+                }
+            }else{
+                $("#feedDiscountPercentage").val('');
+                $("#feedTotalPrice").val(total_qty*feed_price);
+            }
+        });
+        
+        $('#feedDiscountPercentage').on('keyup', function() {
+            let total_qty = Number($('#feedQuantity').val())
+            let feed_price = parseFloat($('#feedPrice').val())
+            let discountPercentage = parseFloat($(this).val()) || 0;
+            let priceWithOutDiscount = 0
+            $(".discount_percentage_error").html('');
+            if(discountPercentage > 0 && discountPercentage < 100){
+                if (total_qty > 0 && feed_price > 0) {
+                    $("#PriceQtyError").html('');
+                    $("#PriceQtyError").hide();
+                    priceWithOutDiscount = total_qty*feed_price;
+                    let discount_amt = (discountPercentage /100 ) * priceWithOutDiscount;
+                    $("#feedDiscountAmount").val(discount_amt.toFixed(2));
+                    $("#feedTotalPrice").val(priceWithOutDiscount - discount_amt);
+                } else {
+                    $("#PriceQtyError").show();
+                    $("#PriceQtyError").html('Price and Quantity Is required');
+                }
+            }else{
+                $("#feedDiscountAmount").val('');
+                $("#feedTotalPrice").val(total_qty*feed_price);
+                $(".discount_percentage_error").html('Discount Percentage Must be less than 100 (Total Amount)');
+            }
+        });
     });
 </script>
 @endsection

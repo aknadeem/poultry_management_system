@@ -60,6 +60,10 @@
     <link href="{{ asset('assets/js/jquery-confirm/jquery-confirm.min.css') }}" rel="stylesheet" type="text/css" />
     <?php } ?>
     <style>
+        .bolded {
+            font-weight: bold !important;
+        }
+
         .font_bold {
             font-qeight: bold !important;
             font-size: 15px !important;
@@ -72,8 +76,6 @@
         .bolded {
             font-weight: bold;
         }
-
-
 
         #pageloader {
             background: rgba(255, 255, 255, 0.8) !important;
@@ -96,6 +98,11 @@
             top: 49% !important;
             font-size: 15px;
             font-weight: bold;
+        }
+
+        .form-switch .form-check-input {
+            width: 4em !important;
+            height: 2em !important;
         }
     </style>
 
@@ -157,6 +164,11 @@
 
     <form method="post" id="delete-form">
         @method('DELETE')
+        @csrf
+    </form>
+
+    <form method="post" id="status-form">
+        @method('PUT')
         @csrf
     </form>
 

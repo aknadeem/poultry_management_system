@@ -21,8 +21,11 @@ class CreatePartyFarmsTable extends Migration
             $table->string('farm_image')->nullable();
             $table->text('farm_address')->nullable();
             $table->double('farm_area')->nullable();
-            $table->double('farm_capacity')->nullable();
             $table->double('feed_room_size')->nullable();
+            $table->integer('farm_capacity')->nullable();
+            $table->integer('folk_quantity')->default(0);
+            $table->integer('remaining_quantity')->default(0);
+            $table->boolean('is_occupied')->default(0);
             $table->boolean('is_active')->default(1);
             $table->unsignedBigInteger('addedby')->nullable();
             $table->unsignedBigInteger('updatedby')->nullable();

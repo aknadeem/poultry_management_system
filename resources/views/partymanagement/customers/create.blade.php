@@ -1,6 +1,6 @@
 @php
-$load_css = Array('select2');
-$load_js = Array('tippy','select2')
+$load_css = Array('select2', 'sweetAlert');
+$load_js = Array('tippy','select2', 'sweetAlert')
 ;
 @endphp
 @extends('layouts.app')

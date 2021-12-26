@@ -106,7 +106,12 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                 {data:'discount_amount'},
                 {data:'total_price'},
                 {data:'Actions'},
-            ]
+            ],
+            columnDefs: [ {
+                targets:[2,3, 7],
+                className: ['bolded']
+                }
+            ],
         });
     });
 </script>

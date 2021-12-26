@@ -1,6 +1,6 @@
 @php
-$load_css = Array('select2');
-$load_js = Array('tippy','select2')
+$load_css = Array('select2', 'sweetAlert');
+$load_js = Array('tippy','select2', 'sweetAlert')
 ;
 @endphp
 @extends('layouts.app')
@@ -63,30 +63,38 @@ $load_js = Array('tippy','select2')
                                 </div>
 
                                 <div class="col-3 mb-2">
-                                    <label for="ChickGrade">Select Chick Grade *</label>
-                                    <select class="form-control mySelect" id="ChickGrade" required name="chick_grade_id"
-                                        data-placeholder="Select Company" data-toggle="select2" data-width="100%">
-                                        <option value=""> Select Grade </option>
-                                        <option value="1"> A Grade </option>
-                                        <option value="2"> B Grade </option>
-                                        <option value=3"> C Grade </option>
-                                    </select>
-
+                                    <label class="font_bold" for="ChickGrade"> Select Chick Grade* </label>
+                                    <div class="input-group">
+                                        <select name="chick_grade_id" id="ChickGrade" class="form-control mySelect"
+                                            data-toggle="select2" data-width="85%">
+                                            <option value=""> Select chick grade </option>
+                                            @forelse ($chick_grades as $item)
+                                            <option {{ (! empty(old('chick_grade_id', $purchase?->
+                                                chick_grade_id)==$item->id) ?
+                                                'selected'
+                                                : '' ) }} value="{{$item->id}}">{{$item->name}}</option>
+                                            @empty
+                                            @endforelse
+                                        </select>
+                                        <a href="#"
+                                            class="btn input-group-text btn-dark btn-sm waves-effect waves-light OpenaddTypeModal"
+                                            SelectBoxId="ChickGrade" TableName="chick_grades" title="Click to add new"
+                                            type="button"> <i class="fa fa-plus pt-1"></i> </a>
+                                    </div>
                                     @error('chick_grade_id')
                                     <span class="text-danger chick_grade_id_error"> {{ $message }} </span>
                                     @enderror
                                 </div>
 
                                 <div class="col-3 mb-2">
-                                    <label for="feedCompanyId">Select Vendor *</label>
+                                    <label for="feedCompanyId">Select Company *</label>
                                     <select class="form-control mySelect" id="feedCompanyId" required name="company_id"
                                         data-placeholder="Select Company" data-toggle="select2" data-width="100%">
-                                        <option value=""> Select Vendor </option>
+                                        <option value="" selected> Select Company </option>
                                         @forelse ($compaines as $company)
-                                        <option {{ old('company_id') || $purchase?->company_id ? 'selected' : '' }} {{--
-                                            @if
-                                            ($ex_user==$user->id) selected @endif --}} value="{{$company->id}}">
-                                            {{$company->name}} </option>
+                                        <option {{ old('company_id') || $purchase?->company_id ? 'selected' : '' }}
+                                            value="{{$company->id}}">
+                                            {{$company->company_name}} </option>
                                         @empty
                                         @endforelse
                                     </select>
@@ -97,33 +105,96 @@ $load_js = Array('tippy','select2')
                                 </div>
 
                                 <div class="col-sm-3 mb-2">
-                                    <label for="feedCompanyAddr"> Company Address </label>
-                                    <input type="text" placeholder="Company Address" name="company_address" readonly
-                                        disabled class="form-control"
-                                        value="{{ $purchase?->company?->address ?? old('company_address') }}"
-                                        id="feedCompanyAddr">
-                                    @error('company_address')
-                                    <span class="text-danger company_address_error"> {{ $message }} </span>
+                                    <label for="CompanyVendorName"> Vendor Name </label>
+                                    <input type="text" placeholder="Vendor Name" name="vendor_name" readonly disabled
+                                        class="form-control"
+                                        value="{{ $purchase?->company?->vendor?->name ?? old('vendor_name') }}"
+                                        id="CompanyVendorName">
+                                    @error('vendor_name')
+                                    <span class="text-danger vendor_name_error"> {{ $message }} </span>
                                     @enderror
 
                                 </div>
-                                <div class="col-sm-3 mb-2">
-                                    <label for="feedCompanyContact"> Company Contact </label>
-                                    <input type="text" placeholder="Enter Contact" name="company_contact"
-                                        value="{{ $purchase?->company?->contact_no ?? old('company_contact') }}"
-                                        class="form-control" readonly disabled id="feedCompanyContact">
+                                {{-- <div class="col-sm-3 mb-2">
+                                    <label for="VendorGuardianName"> Vendor Guardian Name</label>
+                                    <input type="text" placeholder="Vendor Guardian Name" name="vendor_guardian_name"
+                                        value="{{ $purchase?->company?->vendor?->guardian_name ?? old('vendor_guardian_name') }}"
+                                        class="form-control" readonly disabled id="VendorGuardianName">
 
-                                    @error('company_contact')
-                                    <span class="text-danger company_contact_error"> {{ $message }} </span>
+                                    @error('vendor_guardian_name')
+                                    <span class="text-danger vendor__error"> {{ $message }} </span>
+                                    @enderror
+
+                                </div> --}}
+                            </div>
+                            <div class="row">
+                                <div class="col-3 mb-2">
+                                    <label for="PurchaseForSelect">Select Purchase For *</label>
+                                    <select class="form-control mySelect" id="PurchaseForSelect" required
+                                        name="purchase_for" data-placeholder="Select Purchase Option"
+                                        data-toggle="select2" data-width="100%">
+                                        <option value="" selected> Select option </option>
+                                        <option value="personal"> Personal Farm </option>
+                                        <option value="customer"> Customer </option>
+                                        <option value="both"> Form Both </option>
+                                    </select>
+
+                                    @error('purchase_for')
+                                    <span class="text-danger purchase_for_error"> {{ $message }} </span>
+                                    @enderror
+                                </div>
+
+                                <div class="col-3 mb-2">
+                                    <label for="PersonalFarmSelect">Select Personal Farm *</label>
+                                    <select class="form-control mySelect" id="PersonalFarmSelect" required
+                                        name="personal_farm_id" data-placeholder="Select Farm" data-toggle="select2"
+                                        data-width="100%">
+                                        <option value="" selected> Select Farm Option </option>
+                                        @forelse ($personal_farms as $item)
+                                        <option {{ old('personal_farm_id') || $purchase?->personal_farm_id ? 'selected'
+                                            : '' }}
+                                            value="{{$item->id}}">
+                                            {{$item->farm_name}} </option>
+                                        @empty
+                                        @endforelse
+                                    </select>
+
+                                    @error('personal_farm_id')
+                                    <span class="text-danger personal_farm_id_error"> {{ $message }} </span>
+                                    @enderror
+                                </div>
+
+                                <div class="col-sm-3 mb-2">
+                                    <label for="PersonalFarmCapacity"> Farm Capacity </label>
+                                    <input type="number" step="any" min="0" placeholder="Enter weight"
+                                        name="personal_farm_capacity" class="form-control" id="PersonalFarmCapacity"
+                                        value="{{ $purchase?->personal_farm_capacity ?? old('personal_farm_capacity') }}"
+                                        readonly>
+
+                                    @error('personal_farm_capacity')
+                                    <span class="text-danger personal_farm_capacity_error"> {{ $message }} </span>
                                     @enderror
 
                                 </div>
 
                                 <div class="col-sm-3 mb-2">
-                                    <label for="ChickWeight"> Weight </label>
-                                    <input type="text" placeholder="Enter weight" name="chick_weight"
-                                        class="form-control" id="ChickWeight"
-                                        value="{{ $purchase?->chick_weight ?? old('chick_weight') }}" required>
+                                    <label for="PersonalFarmAddress"> Farm Address </label>
+                                    <input type="text" placeholder="Enter weight" name="Personal_farm_address"
+                                        class="form-control" id="PersonalFarmAddress"
+                                        value="{{ $purchase?->Personal_farm_address ?? old('Personal_farm_address') }}"
+                                        readonly>
+
+                                    @error('Personal_farm_address')
+                                    <span class="text-danger Personal_farm_address_error"> {{ $message }} </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-3 mb-2">
+                                    <label for="ChickWeight"> Weight in Grams (gm) </label>
+                                    <input type="number" step="any" min="0" max="50" placeholder="Enter weight"
+                                        name="chick_weight" class="form-control" id="ChickWeight"
+                                        value="{{ $purchase?->weight ?? old('chick_weight') }}" required>
 
                                     @error('chick_weight')
                                     <span class="text-danger chick_weight_error"> {{ $message }} </span>
@@ -133,9 +204,9 @@ $load_js = Array('tippy','select2')
 
                                 <div class="col-sm-3 mb-2">
                                     <label for="feedQuantity"> Quantity </label>
-                                    <input type="text" placeholder="Enter quantity" name="quantity" class="form-control"
-                                        id="feedQuantity" value="{{ $purchase?->quantity ?? old('quantity') }}"
-                                        required>
+                                    <input type="number" step="any" min="0" placeholder="Enter quantity" name="quantity"
+                                        class="form-control" id="feedQuantity"
+                                        value="{{ $purchase?->quantity ?? old('quantity') }}" required>
 
                                     @error('quantity')
                                     <span class="text-danger quantity_error"> {{ $message }} </span>
@@ -144,8 +215,9 @@ $load_js = Array('tippy','select2')
 
                                 <div class="col-sm-3 mb-2">
                                     <label for="feedPrice"> Price </label>
-                                    <input type="text" placeholder="Enter price" name="price" class="form-control"
-                                        id="feedPrice" value="{{ $purchase?->price ?? old('price') }}" required>
+                                    <input type="number" min="0" step="any" placeholder="Enter price" name="price"
+                                        class="form-control" id="feedPrice"
+                                        value="{{ $purchase?->price ?? old('price') }}" required>
                                     @error('price')
                                     <span class="text-danger price_error"> {{ $message }} </span>
                                     @enderror
@@ -154,7 +226,8 @@ $load_js = Array('tippy','select2')
 
                                 <div class="col-sm-3 mb-2">
                                     <label for="feedDiscountAmount"> Discount Amount </label>
-                                    <input type="text" placeholder="Discount Amount" name="discount_amount"
+                                    <input type="number" min="0" step="any" placeholder="Discount Amount"
+                                        name="discount_amount"
                                         value="{{ $purchase?->discount_amount ?? old('discount_amount') }}"
                                         class="form-control" id="feedDiscountAmount">
 
@@ -166,7 +239,8 @@ $load_js = Array('tippy','select2')
                                 <span class="text-danger h6" id="PriceQtyError" style="display: none;"></span>
                                 <div class="col-3 mb-2">
                                     <label for="feedDiscountPercentage"> Discount Percentage % </label>
-                                    <input type="text" placeholder="Discount Percentage %" name="discount_percentage"
+                                    <input type="number" min="0" step="any" placeholder="Discount Percentage %"
+                                        name="discount_percentage"
                                         value="{{ $purchase?->discount_percentage ?? old('discount_percentage') }}"
                                         class="form-control" id="feedDiscountPercentage">
 
@@ -177,7 +251,7 @@ $load_js = Array('tippy','select2')
                                 </div>
                                 <div class="col-sm-3 mb-2">
                                     <label for="feedTotalPrice"> Total Price </label>
-                                    <input type="text" placeholder="Total price" name="total_price"
+                                    <input type="number" min="0" step="any" placeholder="Total price" name="total_price"
                                         value="{{ $purchase?->total_price ?? old('total_price') }}" class="form-control"
                                         id="feedTotalPrice">
 
@@ -189,7 +263,7 @@ $load_js = Array('tippy','select2')
 
                                 <div class="col-sm-3 mb-2">
                                     <label for="BiltyNumber"> Bilty Number</label>
-                                    <input type="text" placeholder="ENter Bilty Number" name="bilty_number"
+                                    <input type="text" placeholder="Enter Bilty Number" name="bilty_number"
                                         value="{{ $purchase?->bilty_number ?? old('bilty_number') }}"
                                         class="form-control" id="BiltyNumber">
 
@@ -201,7 +275,8 @@ $load_js = Array('tippy','select2')
 
                                 <div class="col-sm-3 mb-2">
                                     <label for="BiltyCharges"> Bilty Charges</label>
-                                    <input type="text" placeholder="ENter Bilty Charges" name="bilty_charges"
+                                    <input type="number" min="0" step="any" placeholder="Enter Bilty Charges"
+                                        name="bilty_charges"
                                         value="{{ $purchase?->bilty_charges ?? old('bilty_charges') }}"
                                         class="form-control" id="BiltyCharges">
 
@@ -249,7 +324,8 @@ $load_js = Array('tippy','select2')
                                 <div class="col-3 mb-2">
                                     <label for="SoNumber"> Sale Order Number </label>
                                     <input type="text" placeholder="Enter Sale Order Number" name="sale_order_number"
-                                        value="" class="form-control" id="SoNumber">
+                                        value="{{ $purchase?->sale_order_number ?? old('sale_order_number') }}"
+                                        class="form-control" id="SoNumber">
 
                                     @error('sale_order_number')
                                     <span class="text-danger sale_order_number_error"> {{ $message }} </span>
@@ -259,7 +335,9 @@ $load_js = Array('tippy','select2')
                                 <div class="col-3 mb-2">
                                     <label for="Do_Number"> Delivery Order Number </label>
                                     <input type="text" placeholder="Enter Delivery Order Number"
-                                        name="delivery_order_number" value="" class="form-control" id="Do_Number">
+                                        name="delivery_order_number"
+                                        value="{{ $purchase?->delivery_order_number ?? old('delivery_order_number') }}"
+                                        class="form-control" id="Do_Number">
 
                                     @error('delivery_order_number')
                                     <span class="text-danger delivery_order_number_error"> {{ $message }} </span>
@@ -288,9 +366,9 @@ $load_js = Array('tippy','select2')
                                 </div>
                                 <div class="col-sm-6 mt-2 img-holder">
                                     @if ($purchase?->picture !='')
-                                    <a href="{{ asset('storage/chickens/'.$purchase?->picture) }}" target="_blank"> <img
+                                    <a href="{{ asset('storage/chicks/'.$purchase?->picture) }}" target="_blank"> <img
                                             class="d-flex me-3 avatar-lg" target="_blank"
-                                            src="{{ asset('storage/chickens/'.$purchase?->picture) }}" alt="No image">
+                                            src="{{ asset('storage/chicks/'.$purchase?->picture) }}" alt="No image">
                                     </a>
                                     @endif
                                 </div>
@@ -314,6 +392,8 @@ $load_js = Array('tippy','select2')
         <!-- end col-->
     </div>
 </div>
+
+@include('layouts._partial.add_types_modal')
 @endsection
 
 @section('custom_scripts')
@@ -321,13 +401,25 @@ $load_js = Array('tippy','select2')
     $(function() {
 
         var companies_list = <?php echo json_encode($compaines) ?>;
+        var personal_farm_list = <?php echo json_encode($personal_farms) ?>;
         console.log(companies_list)
         $( "#feedCompanyId" ).change(function() {
             let company_id_modal = parseInt($(this).val())
             let find_company = companies_list?.find(x => x.id === company_id_modal);
             if(find_company){
-                $('#feedCompanyAddr').val(find_company?.address || '');
-                $('#feedCompanyContact').val(find_company?.contact_no || '');
+                $('#CompanyVendorName').val(find_company?.vendor?.name || '');
+                $('#VendorGuardianName').val(find_company?.vendor?.guardian_name || '');
+            }
+        }); 
+        
+        $( "#PersonalFarmSelect" ).change(function() {
+            let PersonalFarmId = parseInt($(this).val())
+            let Personal_farm = personal_farm_list?.find(x => x.id === PersonalFarmId);
+
+            console.log(Personal_farm)
+            if(Personal_farm){
+                $('#PersonalFarmCapacity').val(Personal_farm?.farm_capacity);
+                $('#PersonalFarmAddress').val(Personal_farm?.farm_address || '');
             }
         });
 

@@ -57,7 +57,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                             <tr>
                                 <td>{{ ++$key }}</td>
                                 <td>
-                                    @if ($vendor->image)
+                                    @if ($vendor->profile_picture)
                                     <img class="d-flex me-3 rounded-circle avatar-lg"
                                         src="{{ asset('storage/party/'.$vendor->profile_picture) ?? ''}}"
                                         alt="No image">

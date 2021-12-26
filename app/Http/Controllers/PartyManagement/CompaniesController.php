@@ -4,8 +4,12 @@
 namespace App\Http\Controllers\PartyManagement;
 
 use App\Models\Company;
+use App\Models\PartyCompany;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CustomerFormRequest;
 
@@ -23,7 +27,7 @@ class CompaniesController extends Controller
     public function index()
     {
         // dd($this->auth_user_id);
-        $companies = Company::get();
+        $companies = PartyCompany::with('businesstype:id,name','vendor:id,name')->get();
         return view('partymanagement.company.index', compact('companies'));
     }
 
@@ -111,9 +115,9 @@ class CompaniesController extends Controller
 
     public function show($id)
     {
-        $customer = Company::find($id);
-        if($customer){
-            $html_data = \View::make('layouts._partial.customerdetail', compact('customer'))->render();
+        $data = PartyCompany::with('businesstype', 'vendor:id,name')->find($id);
+        if($data){
+            $html_data = \View::make('layouts._partial.companydetail', compact('data'))->render();
             $message = 'Company Detail Data';
             $success = 'yes';
         }else{
@@ -130,9 +134,40 @@ class CompaniesController extends Controller
         // return response()->json($data, 200, $headers);
     }
 
+    public function updateStatus($id, $tablename)
+    {
+
+        if ($tablename !='' && Schema::hasTable($tablename) ) {
+            $company_data = DB::table($tablename)->where('id',$id)->first();
+
+            if ($company_data->is_active == 0) {
+                $status = 1;
+            }else{
+                $status = 0;
+            }
+
+            $company = DB::table($tablename)->where('id',$id)->update(['is_active' => $status, 'updatedby' => $this->auth_user_id]);
+            if($company){
+                $message = 'Data Updated successfully!';
+                $success = 'yes';
+                $icon_type = 'success';
+            }else{
+                $message = 'Data not updated, Something went wrong';
+                $success = 'no';
+                $icon_type = 'warning';
+            }
+        }else{
+            $message = 'Data not updated, Something went wrong';
+            $success = 'no';
+            $icon_type = 'warning';
+        }
+        Session::flash('swal_notification', ['title' => $message, 'icon_type' => $icon_type, 'message' => $message]);
+        return back();
+    }
+
     public function getCompaniesList()
     {
-        $companies = Company::get();
+        $companies = PartyCompany::get();
         if($companies->count()  > 0){
             $success = 'yes';
             $data = $companies;
@@ -148,7 +183,7 @@ class CompaniesController extends Controller
 
     public function edit($id)
     {
-        $company = Company::find($id);
+        $company = PartyCompany::find($id);
         if($company){
             $message = 'yes';
             return response()->json([
@@ -160,8 +195,8 @@ class CompaniesController extends Controller
     
     public function destroy($id)
     {
-        $company = Company::findOrFail($id);
-        $img_path = 'companies/'.$company?->company_logo;
+        $company = PartyCompany::findOrFail($id);
+        $img_path = 'party/company/'.$company?->company_logo;
         if($company?->company_logo != null && \Storage::disk('public')->exists($img_path)){
             \Storage::disk('public')->delete($img_path);
         }

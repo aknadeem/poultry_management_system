@@ -5,13 +5,18 @@ namespace App\Http\Controllers\ChickenModule;
 use Session;
 use DataTables;
 use App\Models\Feed;
-use App\Models\Employee;
+use App\Models\Party;
+use App\Models\Broker;
 use App\Models\Company;
 use App\Models\Customer;
-use Illuminate\Http\Request;
-use App\Models\ChickenPurchase;
+use App\Models\Employee;
 use App\Models\ChickenSale;
+use Illuminate\Http\Request;
+use App\Models\BrokerBalance;
+use App\Models\ChickenPurchase;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\CustomerPartyBalance;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CustomerFormRequest;
 
@@ -69,65 +74,100 @@ class ChickenSaleController extends Controller
     public function create()
     {
         $sale = new ChickenSale();
-        $customers = Customer::get(['id','name','contact_no','farm_name']);
-        return view('chickens.sale.create', compact('sale','customers'));
+        $customers = Party::where('is_customer', 1)->with('farm:id,farm_name,party_id')->get(['id','name','contact_no','cnic_no']);
+        $brokers = Broker::where('is_active', 1)->get(['id','name','contact_no','cnic_no']);
+        // dd($brokers);
+        return view('chickens.sale.create', compact('sale','customers','brokers'));
     }
 
     public function store(Request $request)
     {
         $this->validate($request, [
-            'vehicle_number' => 'bail|required|string',
-            'driver_name' => 'bail|required|string',
-            'driver_contact' => 'bail|required|numeric',
+            'manual_number' => 'bail|required|string',
             'sale_date' => 'bail|required|date',
             'customer_id' => 'bail|required|integer',
+            'broker_id' => 'bail|required|integer',
+            'first_weight' => 'bail|nullable|numeric',
+            'second_weight' => 'bail|nullable|numeric',
+            'net_weight' => 'bail|nullable|numeric',
             'total_weight' => 'bail|required|numeric',
             'per_kg_price' => 'bail|required|numeric',
             'discount_amount' => 'bail|required|numeric',
             'discount_percentage' => 'bail|required|numeric',
             'total_price' => 'bail|required|numeric',
+            'vehicle_number' => 'bail|required|string',
+            'driver_name' => 'bail|required|string',
+            'driver_contact' => 'bail|required|numeric',
             'image_file' => 'mimes:jpeg,jpg,png|max:5000',
         ],[
             'image_file.max'=> 'Maximum Image size to upload is 5MB (5000KB). If you are uploading a photo, try to reduce its resolution to make it under 5MB',
-        ]); 
-        // $country = $session?->user?->getAddress()?->country;
-        if ($request->hasFile('image_file')) {
-            $path = 'chickens/';
-            $image_file = $request->file('image_file');
-            $extension = $request->file('image_file')->extension();
-            $imageName = time().mt_rand(10,99).'.'.$extension;
-            $upload = $image_file->storeAs($path, $imageName, 'public');
-        }else{
-            $imageName = null;
-        }
-        $sale = ChickenSale::create([
-            'sale_date' => $request->sale_date,
-            'vehicle_number' => $request->vehicle_number,
-            'driver_name' => $request->driver_name,
-            'driver_contact' => $request->driver_contact,
-            'customer_id' => $request->customer_id,
-            'total_weight' => $request->total_weight,
-            'per_kg_price' => $request->per_kg_price,
-            'discount_amount' => $request->discount_amount,
-            'discount_percentage' => $request->discount_percentage,
-            'total_price' => $request->total_price,
-            'picture' => $imageName,
-            'addedby' => $this->auth_user_id,
         ]);
-
-        if($sale){
+        try {
             $message = 'Data created successfully!';
             $title = 'Saved';
             $icon_type = 'success';
-
-        }else{
+            DB::transaction(function () use ($request) {
+                if ($request->hasFile('image_file')) {
+                    $path = 'chickens/sales/';
+                    $image_file = $request->file('image_file');
+                    $extension = $request->file('image_file')->extension();
+                    $imageName = time().mt_rand(10,99).'.'.$extension;
+                }else{
+                    $imageName = null;
+                }
+                $sale = ChickenSale::create([
+                    'manual_number' => $request->manual_number,
+                    'sale_date' => $request->sale_date,
+                    'vehicle_number' => $request->vehicle_number,
+                    'driver_name' => $request->driver_name,
+                    'driver_contact' => $request->driver_contact,
+                    // 'customer_id' => $request->customer_id,
+                    'party_id' => $request->customer_id,
+                    'broker_id' => $request->broker_id,
+                    'broker_commission' => $request->broker_commission,
+                    'first_weight' => $request->first_weight,
+                    'second_weight' => $request->second_weight,
+                    'net_weight' => $request->net_weight,
+                    'total_weight' => $request->total_weight,
+                    'per_kg_price' => $request->per_kg_price,
+                    'discount_amount' => $request->discount_amount,
+                    'discount_percentage' => $request->discount_percentage,
+                    'total_price' => $request->total_price,
+                    'picture' => $imageName,
+                    'addedby' => $this->auth_user_id,
+                ]);
+                if($sale){
+                    $upload = $image_file->storeAs($path, $imageName, 'public');
+                    $pBalance = CustomerPartyBalance::create([
+                        'balance_type' => 'chicken sale',
+                        'party_id' => $request->customer_id,
+                        'dr' => $request->total_price,
+                        'total_amount' => $request->total_price,
+                        'narration' => 'chicken sale',
+                        'addedby' => $this->auth_user_id,
+                    ]);
+                    $broker_balance = BrokerBalance::create([
+                        'broker_id' => $request->broker_id,
+                        'dr' => $request->broker_commission,
+                        'total_amount' => $request->broker_commission,
+                        'narration' => 'chicken sale commession',
+                        'addedby' => $this->auth_user_id,
+                    ]);
+                    
+                }else{
+                    $message = 'Something went wrong';
+                    $title = 'Error';
+                    $icon_type = 'warning';
+                }
+            });
+        } catch (\Throwable $e) {
+            return $e;
             $message = 'Something went wrong';
             $title = 'Error';
             $icon_type = 'warning';
         }
-
+        
         Session::flash('swal_notification', ['title' => $title, 'icon_type' => $icon_type, 'message' => $message]);
-
         return redirect()->route('sale.index');
     }
 
@@ -221,7 +261,8 @@ class ChickenSaleController extends Controller
     {
         $sale = ChickenSale::with('customer:id,name,contact_no,farm_name')->findOrFail($id);
         $customers = Customer::get(['id','name','contact_no','farm_name']);
-        return view('chickens.sale.create', compact('sale','customers'));
+        $brokers = Broker::where('is_active', 1)->get(['id','name','contact_no','cnic_no']);
+        return view('chickens.sale.create', compact('sale','customers','brokers'));
     }
 
     public function destroy($id)

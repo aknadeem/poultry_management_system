@@ -43,11 +43,12 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Image</th>
+                                <th>Logo</th>
                                 <th>Name</th>
-                                <th>Email</th>
-                                <th>Contact Number</th>
-                                <th>ShopName</th>
+                                <th>Business Type</th>
+                                <th>Vendor Name</th>
+                                <th>Status</th>
+                                <th>Address</th>
                                 <th>Options</th>
                             </tr>
                         </thead>
@@ -58,17 +59,28 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                                 <td>
                                     @if ($company?->company_logo)
                                     <img class="rounded-circle avatar-lg"
-                                        src="{{ asset('storage/companies/'.$company?->company_logo) ?? ''}}"
+                                        src="{{ asset('storage/party/company/'.$company?->company_logo) ?? ''}}"
                                         alt="No image">
                                     @else
                                     <b>No Image</b>
                                     @endif
 
                                 </td>
-                                <td>{{ $company?->name ?? '' }}</td>
-                                <td>{{ $company?->email ?? '' }}</td>
-                                <td>{{ $company?->contact_no ?? '' }}</td>
-                                <td>{{ $company?->address ?? '' }}</td>
+                                <td><b>{{ $company?->company_name }}</b></td>
+                                <td>{{ $company?->businesstype?->name }}</td>
+                                <td><b>{{ $company?->vendor?->name }}</b></td>
+                                <td>
+
+                                    <a href="{{ route('updatestatus', ['id'=> $company->id, 'tag' => 'party_companies']) }}"
+                                        title="Click to update Status" class="confirm-status">
+                                        <div class="form-check form-switch">
+                                            <input type="checkbox" class="form-check-input" id="customSwitch1"
+                                                {{($company?->is_active) ? 'checked' : ''}}>
+                                            <label class="form-check-label" for="customSwitch1"></label>
+                                        </div>
+                                    </a>
+                                </td>
+                                <td>{{ $company?->company_address }}</td>
                                 <td>
                                     <a class="btn btn-secondary btn-sm ViewCompanyModal"
                                         CompanyId="{{ $company?->id ?? 0}}" href="javascript:void(0);"
@@ -76,13 +88,13 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                                         data-tippy-animation="scale" data-tippy-arrow="true"><i class="fa fa-eye"></i>
                                         View
                                     </a>
-                                    <a class="btn btn-info btn-sm openCompanyModal" data-bs-toggle="modal"
+                                    {{-- <a class="btn btn-info btn-sm openCompanyModal" data-bs-toggle="modal"
                                         data-bs-target="#AddCustomerModal" CompanyId="{{ $company?->id ?? 0}}"
                                         href="javascript:void(0);" title="Click to edit" tabindex="0"
                                         data-plugin="tippy" data-tippy-animation="scale" data-tippy-arrow="true"><i
                                             class="fa fa-pencil-alt"></i>
                                         Edit
-                                    </a>
+                                    </a> --}}
                                     <a class="btn btn-danger btn-sm delete-confirm"
                                         href="{{route('company.destroy', $company?->id ?? 0)}}"
                                         del_title="Company {{$company?->name ?? ''}}" title="Click to delete"

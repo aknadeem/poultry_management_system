@@ -8,6 +8,5 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PartyBalanceLimit extends Model
 {
-    use SoftDeletes;
-    use HasFactory;
+    use SoftDeletes, HasFactory;
 }

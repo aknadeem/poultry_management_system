@@ -17,6 +17,7 @@ class CreateFarmSubtypesTable extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('slug')->unique()->nullable();
+            $table->foreignId('farm_type_id')->nullable()->constrained('farm_types')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
         });

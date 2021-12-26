@@ -7,6 +7,9 @@ use DataTables;
 use App\Models\Feed;
 use App\Models\Country;
 use App\Models\Employee;
+use App\Models\FeedCategory;
+use App\Models\FeedPurchase;
+use App\Models\PartyCompany;
 use Illuminate\Http\Request;
 use App\Models\CompanyBalance;
 use Illuminate\Support\Facades\DB;
@@ -27,21 +30,20 @@ class FeedController extends Controller
 
     public function index()
     {
+        
         return view('inventorymanagement.feeds.index');
     }
 
     public function getFeedList()
     {
-        $feeds = Feed::orderBy('id','DESC')->get();
+        $feeds = Feed::with('category:id,name')->orderBy('id','DESC')->get();
         return DataTables::of($feeds)
             ->addIndexColumn()
-            ->addColumn('picture', function($row){
-                $url= asset('storage/feeds/'.$row?->picture);
-                return '<img class="rounded-circle avatar-lg" src="'.$url.'"  alt="No image" />';
+            ->addColumn('feed_category_id', function($row){
+                return '<b>'. $row?->category?->name .'</b>';
             })
             ->addColumn('Actions', function($row){
-                return ' <a class="btn btn-secondary btn-sm ViewEmployeeModal"
-                FeedId="'.$row["id"].'" href="javascript:void(0);"
+                return ' <a class="btn btn-secondary btn-sm" href="'.route("feed.show", $row["id"]).'"
                 title="View Details" tabindex="0" data-plugin="tippy"
                 data-tippy-animation="scale" data-tippy-arrow="true"><i class="fa fa-eye"></i>
                 View
@@ -60,7 +62,7 @@ class FeedController extends Controller
                 Delete
             </a>';
             })
-            ->rawColumns(['picture','Actions'])
+            ->rawColumns(['feed_category_id','Actions'])
             ->make(true);
     }
 
@@ -68,8 +70,11 @@ class FeedController extends Controller
     public function create()
     {
        $feed = new Feed();
-       $categories = collect();
-       return view('inventorymanagement.feeds.create', compact('feed', 'categories'));
+       $categories = FeedCategory::get();
+       $companies = PartyCompany::with('vendor:id,name,guardian_name','vendor.balancelimit')->get();
+
+    //    dd($companies->toArray());
+       return view('inventorymanagement.feeds.create', compact('feed', 'categories', 'companies'));
     }
 
     public function store(Request $request)
@@ -77,12 +82,123 @@ class FeedController extends Controller
         $validator = Validator::make($request->all(),[
             'feed_name' => 'bail|required|string',
             'purchase_date' => 'bail|required|date',
+            'feed_category_id' => 'bail|required|integer',
             'company_id' => 'bail|required|integer',
             'quantity' => 'bail|required|numeric',
             'price' => 'bail|required|numeric',
             'discount_amount' => 'bail|nullable|numeric',
             'discount_percentage' => 'bail|nullable',
             'total_price' => 'bail|required|numeric',
+            'bilty_number' => 'bail|nullable|string',
+            'bilty_charges' => 'bail|required|numeric',
+            'per_bag_discount' => 'bail|required|numeric',
+            'sale_order_number' => 'bail|required|string',
+            'delivery_order_number' => 'bail|required|string',
+            'image_file' => 'nullable|mimes:jpeg,jpg,png|max:5000',
+        ],[
+            'image_file.max'=> 'Maximum Image size to upload is 5MB (5000KB). If you are uploading a photo, try to reduce its resolution to make it under 5MB',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'error' => $validator->errors()->toArray(),
+                'success' => 'no',
+            ], 201);
+        }
+
+        // dd($request->toArray());
+
+        $message = 'New Feed entry created successfully!';
+        $success = 'yes';
+        $icon = 'success';
+        try {
+            DB::transaction(function () use ($request) {
+                $feed = Feed::create([
+                    'feed_name' => $request->feed_name,
+                    'feed_code' => 'ab01',
+                    'feed_category_id' => $request->feed_category_id,
+                    'total_quantity' => $request->quantity,
+                    'remaining_quantity' => $request->quantity,
+                    'addedby' => $this->auth_user_id,
+                ]);
+
+                // dd($feed->id);
+
+                if($feed){
+                    if ($request->hasFile('image_file')) {
+                        $path = 'feeds/';
+                        $image_file = $request->file('image_file');
+                        $extension = $request->file('image_file')->extension();
+                        $imageName = time().mt_rand(10,99).'.'.$extension;
+                    }else{
+                        $imageName = null;
+                    }
+
+                    $feed_purchase = FeedPurchase::create([
+                        'feed_id' => $feed->id,
+                        'purchase_date' => $request->purchase_date,
+                        'company_id' => $request->company_id,
+                        'quantity' => $request->quantity,
+                        'price' => $request->price,
+                        'discount_amount' => $request->discount_amount,
+                        'discount_percentage' => $request->discount_percentage,
+                        'total_price' => $request->total_price,
+                        'bilty_number' => $request->bilty_number,
+                        'bilty_charges' => $request->bilty_charges,
+                        'per_bag_discount_amount' => $request->bag_discount,
+                        'sale_order_number' => $request->sale_order_number,
+                        'delivery_order_number' => $request->delivery_order_number,
+                        'picture' => $imageName,
+                        'addedby' => $this->auth_user_id,
+                    ]);
+
+                    if($feed_purchase){
+                        if($imageName){
+                            $upload = $image_file->storeAs($path, $imageName, 'public');
+                        }
+                        $companyBalance = CompanyBalance::create([
+                            'type' => 'feed',
+                            'company_id' => $request->company_id,
+                            'feed_purchase_id' => $feed->id,
+                            'total_amount' => $request->total_price,
+                            'dr' => $request->total_price,
+                            'remaining_amount' => $request->total_price,
+                            'addedby' => $this->auth_user_id,
+                        ]);
+                    }
+                }
+            });
+        }
+        catch (\Throwable $e) {
+            return $e;
+            $message = 'Data not save something went wrong!';
+            $success = 'no';
+            $icon = 'danger';
+        }
+
+        return response()->json([
+            'message' => $message,
+            'success' => $success,
+        ], 200);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(),[
+            'feed_name' => 'bail|required|string',
+            'purchase_date' => 'bail|required|date',
+            'feed_category_id' => 'bail|required|integer',
+            'company_id' => 'bail|required|integer',
+            'quantity' => 'bail|required|numeric',
+            'price' => 'bail|required|numeric',
+            'discount_amount' => 'bail|nullable|numeric',
+            'discount_percentage' => 'bail|nullable',
+            'total_price' => 'bail|required|numeric',
+            'bilty_number' => 'bail|nullable|string',
+            'bilty_charges' => 'bail|required|numeric',
+            'per_bag_discount' => 'bail|required|numeric',
+            'sale_order_number' => 'bail|required|string',
+            'delivery_order_number' => 'bail|required|string',
             'image_file' => 'nullable|mimes:jpeg,jpg,png|max:5000',
         ],[
             'image_file.max'=> 'Maximum Image size to upload is 5MB (5000KB). If you are uploading a photo, try to reduce its resolution to make it under 5MB',
@@ -177,23 +293,8 @@ class FeedController extends Controller
 
     public function show($id)
     {
-        $customer = Employee::find($id);
-        if($customer){
-            $html_data = \View::make('layouts._partial.customerdetail', compact('customer'))->render();
-            $message = 'Employee Detail Data';
-            $success = 'yes';
-        }else{
-            $message = 'No employee detail found against this id';
-            $success = 'no';
-            $html_data = '';
-        }
-        return response()->json([
-            'message' => $message,
-            'success' => $success,
-            'html_data' => $html_data,
-        ], 201);
-
-        return response()->json($data, 200, $headers);
+        $feed = Feed::with('category:id,name','purchases', 'purchases.company:id,company_name')->findOrFail($id);
+        return view('inventorymanagement.feeds.feed_purcahses', compact('feed'));
     }
 
     public function edit($id)

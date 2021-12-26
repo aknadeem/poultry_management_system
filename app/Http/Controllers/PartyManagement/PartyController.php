@@ -202,7 +202,7 @@ class PartyController extends Controller
             $image_file = $request->file('profile_picture');
             $extension = $request->file('profile_picture')->extension();
             $profile_picture = time().mt_rand(10,99).'.'.$extension;
-            // $upload_to_folder = $image_file->storeAs('party/', $profile_picture, 'public');
+            $upload_to_folder = $image_file->storeAs('party/', $profile_picture, 'public');
         }else{
             $profile_picture = null;
         }
@@ -211,7 +211,7 @@ class PartyController extends Controller
             $cnic_front_file = $request->file('cnic_front');
             $extension = $request->file('cnic_front')->extension();
             $cnic_front = time().mt_rand(10,99).'.'.$extension;
-            // $upload_to_folder = $cnic_front_file->storeAs('party/', $cnic_front, 'public');
+            $upload_to_folder = $cnic_front_file->storeAs('party/', $cnic_front, 'public');
         }else{
             $cnic_front = null;
         }
@@ -220,7 +220,7 @@ class PartyController extends Controller
             $cnic_back_file = $request->file('cnic_back');
             $extension = $request->file('cnic_back')->extension();
             $cnic_back = time().mt_rand(10,99).'.'.$extension;
-            // $upload_to_folder = $cnic_back_file->storeAs('party/', $cnic_back, 'public');
+            $upload_to_folder = $cnic_back_file->storeAs('party/', $cnic_back, 'public');
         }else{
             $cnic_back = null;
         }

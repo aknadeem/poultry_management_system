@@ -21,9 +21,14 @@ class Feed extends Model
         'total_price' => 'decimal:2',
     ];
 
-    public function company()
+    public function category()
     {
-        return $this->belongsTo('App\Models\Company', 'company_id', 'id');
+        return $this->belongsTo('App\Models\FeedCategory', 'feed_category_id', 'id');
+    }
+    
+    public function purchases()
+    {
+        return $this->hasMany('App\Models\FeedPurchase', 'feed_id', 'id');
     }
 
 }

@@ -165,3 +165,40 @@ $(document).on("click", ".confirm-logout", function (event) {
         },
     });
 });
+
+$("a.confirm-status").click(function (event) {
+    /* Act on the event */
+    event.preventDefault();
+    var action = $(this).attr("href");
+    var msg = $(this).attr("msg") || "Are you sure to continue?";
+    $.confirm({
+        columnClass: "col-3",
+        theme: "modern",
+        title: "Confirm Please?",
+        content: msg,
+        type: "dark",
+        typeAnimated: true,
+        draggable: false,
+        buttons: {
+            ok: {
+                useBootstrap: false,
+                text: "Yes!",
+                btnClass: "btn-info btn-xs",
+                keys: ["enter"],
+                action: function () {
+                    // var action = this.$target.attr('href')
+                    $("form#status-form").attr("action", action);
+                    $("form#status-form").submit();
+                    console.log("the user clicked confirm");
+                },
+            },
+            cancel: {
+                text: "No",
+                keys: ["esc"],
+                cancel: function () {
+                    console.log("the user clicked cancel");
+                },
+            },
+        },
+    });
+});

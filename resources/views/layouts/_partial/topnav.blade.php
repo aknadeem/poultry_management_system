@@ -42,11 +42,15 @@
                                     <i class="fas fa-address-card"></i> Vendors
                                 </a>
                             </div>
-
                             <div class="dropdown">
-
                                 <a class="dropdown-item" id="topnav-form" href="{{ route('conductpersons.index') }}">
                                     <i class="fas fa-user-friends"></i> Contact Persons
+                                </a>
+                            </div>
+
+                            <div class="dropdown">
+                                <a class="dropdown-item" id="topnav-form" href="{{ route('brokers.index') }}">
+                                    <i class="fas fa-money-check-alt"></i> Brokers
                                 </a>
                             </div>
 

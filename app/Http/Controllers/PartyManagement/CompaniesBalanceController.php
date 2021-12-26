@@ -115,13 +115,13 @@ class CompaniesBalanceController extends Controller
 
     public function getCompaniesBalanceList()
     {
-        $balances = CompanyBalance::with('company:id,name,address')->orderBy('id','DESC')->withCasts([
+        $balances = CompanyBalance::with('company:id,company_name,company_address')->orderBy('id','DESC')->withCasts([
             'created_at' => 'date:d M, Y'
         ])->get();
         return DataTables::of($balances)
             ->addIndexColumn()
             ->addColumn('company_id', function($row){
-                return '<span> '.$row->company?->name.' </span>';
+                return '<span> '.$row?->company?->company_name.' </span>';
             })
             ->addColumn('Action', function($row){
                 return '<a class="btn btn-success btn-bold btn-sm openAddPaymentModal"

@@ -2,15 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class ChickenPurchase extends Model
+class ChickPurchase extends Model
 {
-    use SoftDeletes;
-    protected $table = 'chicken_purchases';
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+    protected $table = 'chick_purchases';
     protected $dates = ['created_at','updated_at', 'purchase_date'];
     protected $casts = [
         'purchase_date' => 'date:d M, Y',
@@ -25,5 +24,4 @@ class ChickenPurchase extends Model
     {
         return $this->belongsTo('App\Models\PartyCompany', 'company_id', 'id');
     }
-
 }
