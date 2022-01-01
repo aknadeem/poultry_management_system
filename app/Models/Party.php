@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\CountryPCRelationTrait;
 use Illuminate\Database\Eloquent\Model;
+use App\Interfaces\HasCountryProvinceCity;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Party extends Model
+class Party extends Model implements HasCountryProvinceCity
 {
     protected $table = 'parties';
-    use SoftDeletes, HasFactory;
+    use SoftDeletes, HasFactory, CountryPCRelationTrait;
 
     protected $dates = ['created_at','updated_at','deleted_at'];
     // protected $casts = [
@@ -39,20 +41,5 @@ class Party extends Model
         return $this->hasOne('App\Models\PartyCompany', 'party_id', 'id')->withDefault([
             'id' => null,
         ]);
-    }
-
-    public function country()
-    {
-        return $this->belongsTo('App\Models\Country', 'country_id', 'id');
-    }
-
-    public function province()
-    {
-        return $this->belongsTo('App\Models\Province', 'province_id', 'id');
-    }
-
-    public function city()
-    {
-        return $this->belongsTo('App\Models\City', 'city_id', 'id');
     }
 }

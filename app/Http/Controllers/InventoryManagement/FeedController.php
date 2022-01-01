@@ -79,7 +79,7 @@ class FeedController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(),[
+        $this->validate($request, [
             'feed_name' => 'bail|required|string',
             'purchase_date' => 'bail|required|date',
             'feed_category_id' => 'bail|required|integer',
@@ -99,31 +99,21 @@ class FeedController extends Controller
             'image_file.max'=> 'Maximum Image size to upload is 5MB (5000KB). If you are uploading a photo, try to reduce its resolution to make it under 5MB',
         ]);
 
-        if($validator->fails()){
-            return response()->json([
-                'error' => $validator->errors()->toArray(),
-                'success' => 'no',
-            ], 201);
-        }
-
         // dd($request->toArray());
-
         $message = 'New Feed entry created successfully!';
-        $success = 'yes';
+        $title = 'Success';
         $icon = 'success';
         try {
             DB::transaction(function () use ($request) {
                 $feed = Feed::create([
                     'feed_name' => $request->feed_name,
-                    'feed_code' => 'ab01',
+                    'feed_code' => 'ab02',
                     'feed_category_id' => $request->feed_category_id,
                     'total_quantity' => $request->quantity,
                     'remaining_quantity' => $request->quantity,
                     'addedby' => $this->auth_user_id,
                 ]);
-
                 // dd($feed->id);
-
                 if($feed){
                     if ($request->hasFile('image_file')) {
                         $path = 'feeds/';
@@ -172,14 +162,12 @@ class FeedController extends Controller
         catch (\Throwable $e) {
             return $e;
             $message = 'Data not save something went wrong!';
-            $success = 'no';
+            $title = 'Error';
             $icon = 'danger';
         }
 
-        return response()->json([
-            'message' => $message,
-            'success' => $success,
-        ], 200);
+        Session::flash('swal_notification', ['title' => $title, 'icon_type' => $icon, 'message' => $message]);
+        return redirect()->route('feed.index');
     }
 
     public function update(Request $request, $id)

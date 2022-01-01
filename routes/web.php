@@ -10,9 +10,12 @@ use App\Http\Controllers\PartyManagement\ {
     PartyController, CustomerController, CompaniesController, CompaniesBalanceController, ConductPersonController, VendorController, PartyBalanceLimitController,
     PartyDocumentController, PartyAccountController, BrokerController
 };
+use App\Http\Controllers\BalanceManagement\BrokerBalanceController;
 
 use App\Http\Controllers\InventoryManagement\ {FeedController, ExpenseController};
 use App\Http\Controllers\ChickenModule\ {ChickenPurchaseController, ChickenSaleController, ChickPurchaseController};
+
+use App\Http\Controllers\ProductManagement\ {ProductController, ProductPurchaseController,};
 
 Auth::routes();
 
@@ -23,6 +26,24 @@ Route::group(['middleware' => 'auth'], function(){
 
     Route::post('/store-alltypes', [VendorController::class, 'storeAllType'])->name('addalltypes');
     Route::put('/update-active-status/{id}/{tag}', [CompaniesController::class, 'updateStatus'])->name('updatestatus');
+
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    
+    Route::get('/getEmployeeList', [EmployeeController::class, 'getEmployeeList'])->name('getEmployeeList');
+   
+
+    Route::get('/getCompaniesList', [CompaniesController::class, 'getCompaniesList'])->name('getCompaniesList');
+    
+    Route::resource('company', CompaniesController::class)->except([
+        'create', 'update'
+    ]);
+
+    Route::get('/getCompaniesBalanceList', [CompaniesBalanceController::class, 'getCompaniesBalanceList'])->name('getCompaniesBalanceList');
+    
+    Route::resource('companybalance', CompaniesBalanceController::class)->except([
+        'create', 'update'
+    ]);
+
 
     Route::group(['prefix' => '/usermanagement'], function(){
         Route::get('/get-users-list', [UserController::class, 'getUsersList'])->name('getUsersList');
@@ -42,6 +63,11 @@ Route::group(['middleware' => 'auth'], function(){
         Route::resource('balancelimits', PartyBalanceLimitController::class);
         Route::resource('brokers', BrokerController::class);
     });
+
+    Route::group(['prefix' => '/balancemanagement'], function(){
+        Route::get('/getbrokersBalanceList', [BrokerBalanceController::class, 'getbrokersBalanceList'])->name('getbrokersBalanceList');
+        Route::resource('brokerbalance', BrokerBalanceController::class);
+    });
     
     Route::group(['prefix' => '/farmManagement'], function(){
         Route::resource('personalfarms', PoultryShedController::class);
@@ -49,24 +75,7 @@ Route::group(['middleware' => 'auth'], function(){
         Route::resource('employee', EmployeeController::class);
     });
 
-    
 
-    Route::get('/home', [HomeController::class, 'index'])->name('home');
-    
-    Route::get('/getEmployeeList', [EmployeeController::class, 'getEmployeeList'])->name('getEmployeeList');
-   
-
-    Route::get('/getCompaniesList', [CompaniesController::class, 'getCompaniesList'])->name('getCompaniesList');
-    
-    Route::resource('company', CompaniesController::class)->except([
-        'create', 'update'
-    ]);
-
-    Route::get('/getCompaniesBalanceList', [CompaniesBalanceController::class, 'getCompaniesBalanceList'])->name('getCompaniesBalanceList');
-    
-    Route::resource('companybalance', CompaniesBalanceController::class)->except([
-        'create', 'update'
-    ]);
     Route::group(['prefix' => '/inventory'], function(){
         Route::get('/get-feed-list', [FeedController::class, 'getFeedList'])->name('getfeedlist');
 
@@ -85,11 +94,15 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/get-purchase-list', [ChickPurchaseController::class, 'getPurchaseList'])->name('getpurchaselist');
         Route::resource('purchase', ChickPurchaseController::class);
         Route::resource('chickenpurchase', ChickenPurchaseController::class);
-    });
 
-    Route::group(['prefix' => '/poultry'], function(){
         Route::get('/get-sales-list', [ChickenSaleController::class, 'getSalesList'])->name('getSalesList');
         Route::resource('sale', ChickenSaleController::class);
     });
+    
+    Route::group(['prefix' => '/productManagement'], function(){
+        Route::resource('products', ProductController::class);
+        Route::resource('productpurchases', ProductPurchaseController::class);
+    });
+
 
 });

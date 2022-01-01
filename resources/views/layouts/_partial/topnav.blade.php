@@ -3,7 +3,7 @@
         <nav class="navbar navbar-light navbar-expand-lg topnav-menu">
             <style>
                 .nav-link {
-                    padding-right: 8px !important;
+                    padding-right: 0px !important;
                 }
             </style>
             <div class="collapse navbar-collapse" id="topnav-menu-content">
@@ -17,27 +17,21 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-components" role="button"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-users-cog"></i> Parties <div class="arrow-down"></div>
+                            <i class="fas fa-users-cog"></i> Party Management <div class="arrow-down"></div>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="topnav-components">
                             <div class="dropdown">
                                 <a class="dropdown-item arrow-none" href="{{ route('parties.index') }}" id="topnav-form"
                                     role="button">
-                                    <b> <i class="fas fa-users"></i> Party Management </b>
+                                    <b> <i class="fas fa-users"></i> Parties </b>
                                 </a>
-
                             </div>
-
                             <div class="dropdown">
-
                                 <a class="dropdown-item" id="topnav-form" href="{{ route('customers.index') }}">
                                     <i class="fas fa-user-tie"></i> Customers
                                 </a>
-
                             </div>
-
                             <div class="dropdown">
-
                                 <a class="dropdown-item" id="topnav-form" href="{{ route('vendors.index') }}">
                                     <i class="fas fa-address-card"></i> Vendors
                                 </a>
@@ -51,6 +45,18 @@
                             <div class="dropdown">
                                 <a class="dropdown-item" id="topnav-form" href="{{ route('brokers.index') }}">
                                     <i class="fas fa-money-check-alt"></i> Brokers
+                                </a>
+                            </div>
+
+                            <div class="dropdown">
+                                <a class="dropdown-item" id="topnav-form" href="{{ route('brokerbalance.index') }}">
+                                    <i class="fas fa-dollar"></i> Customer Balance
+                                </a>
+                            </div>
+
+                            <div class="dropdown">
+                                <a class="dropdown-item" id="topnav-form" href="{{ route('brokerbalance.index') }}">
+                                    <i class="fas fa-money-check-alt"></i> Broker Balance
                                 </a>
                             </div>
 
@@ -68,7 +74,6 @@
                                     role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fas fa-warehouse"></i> Farms <div class="arrow-down"></div>
                                 </a>
-
                                 <div class="dropdown-menu" aria-labelledby="topnav-form">
                                     <a href="{{ route('personalfarms.index') }}" class="dropdown-item"> Personal Farms
                                     </a>
@@ -78,15 +83,24 @@
                             </div>
 
                             <div class="dropdown">
-                                <a class="dropdown-item arrow-none" href="{{ route('employee.index') }}"
-                                    id="topnav-form">
+                                <a class="dropdown-item" href="#" id="topnav-form">
+                                    <i class="fas fa-store-alt"></i> Store Mangement
+                                </a>
+                            </div>
+
+                            <div class="dropdown">
+                                <a class="dropdown-item" href="{{ route('employee.index') }}" id="topnav-form">
                                     <i class="fas fa-id-card"></i> Employee
                                 </a>
                             </div>
                             <div class="dropdown">
-                                <a class="dropdown-item arrow-none" href="{{ route('employee.index') }}"
-                                    id="topnav-form">
-                                    <i class="fas fa-id-card"></i> Vaccination
+                                <a class="dropdown-item" href="{{ route('products.index') }}" id="topnav-form">
+                                    <i class="fas fa-store"></i> Products
+                                </a>
+                            </div>
+                            <div class="dropdown">
+                                <a class="dropdown-item" href="{{ route('productpurchases.index') }}" id="topnav-form">
+                                    <i class="fas fa-shopping-bag"></i> Product Purchases
                                 </a>
                             </div>
                         </div>
@@ -126,7 +140,7 @@
                             <div class="dropdown">
                                 <a class="dropdown-item dropdown-toggle arrow-none" href="#" id="topnav-form"
                                     role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fe-bookmark"></i> Chickens <div class="arrow-down"></div>
+                                    <i class="fas fa-dove"></i> Chickens <div class="arrow-down"> </div>
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="topnav-form">
                                     <a href="{{ route('sale.index') }}" class="dropdown-item">Sales</a>
@@ -138,7 +152,8 @@
                             <div class="dropdown">
                                 <a class="dropdown-item dropdown-toggle arrow-none" href="#" id="topnav-form"
                                     role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fe-bookmark"></i> Feed <div class="arrow-down"></div>
+                                    Feed
+                                    <div class="arrow-down"></div>
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="topnav-form">
                                     {{-- <a href="#" class="dropdown-item">Sales</a> --}}
@@ -190,7 +205,6 @@
                             </div>
                         </div>
                     </li>
-
                 </ul> <!-- end navbar-->
             </div> <!-- end .collapsed-->
         </nav>

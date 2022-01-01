@@ -16,6 +16,8 @@ class CreateBrokerBalancesTable extends Migration
             $table->decimal('balance')->nullable();
             $table->decimal('total_amount')->nullable();
             $table->decimal('paid_amount')->nullable();
+            $table->decimal('remaining_amount')->nullable();
+            $table->string('status')->default('unpaid');
             $table->boolean('is_active')->default(1);
             $table->text('narration')->nullbale();
             $table->softDeletes();

@@ -6,8 +6,6 @@ $load_js = Array('tippy','select2', 'sweetAlert')
 @extends('layouts.app')
 @section('content')
 <div class="container-fluid">
-
-
     <!-- start page title -->
     <div class="row">
         <div class="col-12">
@@ -337,7 +335,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                         <select name="vendor_type_id" id="PartyVendorType" class="form-control mySelect"
                                             data-toggle="select2" data-width="89%" id="">
                                             <option value=""> Select Vendor Type </option>
-                                            @forelse ($chick_grades as $item)
+                                            @forelse ($vendor_types as $item)
                                             <option {{ (! empty(old('vendor_type_id', $party?->
                                                 vendor_type_id)==$item->id) ?
                                                 'selected'

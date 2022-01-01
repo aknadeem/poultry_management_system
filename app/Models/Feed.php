@@ -8,9 +8,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Feed extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasFactory;
     protected $table = 'feeds';
-    use HasFactory;
     protected $dates = ['created_at','updated_at', 'purchase_date'];
     protected $casts = [
         'purchase_date' => 'date:Y-m-d',

@@ -2,32 +2,19 @@
 
 namespace App\Models;
 
+use App\Traits\CountryPCRelationTrait;
 use Illuminate\Database\Eloquent\Model;
+use App\Interfaces\HasCountryProvinceCity;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Employee extends Model
+class Employee extends Model implements HasCountryProvinceCity
 {
-    use SoftDeletes;
+    use SoftDeletes, CountryPCRelationTrait;
     protected $table = 'employees';
     use HasFactory;
     protected $dates = ['created_at','updated_at', 'date_of_birth'];
     protected $casts = [
         'date_of_birth' => 'date:Y-m-d',
     ];
-
-    public function country()
-    {
-        return $this->belongsTo('App\Models\Country', 'country_id', 'id');
-    }
-
-    public function province()
-    {
-        return $this->belongsTo('App\Models\Province', 'province_id', 'id');
-    }
-
-    public function city()
-    {
-        return $this->belongsTo('App\Models\City', 'city_id', 'id');
-    }
 }
