@@ -378,6 +378,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             @empty
                                             @endforelse
                                         </select>
+
                                         <a href="#"
                                             class="btn input-group-text btn-dark waves-effect waves-light OpenaddTypeModal"
                                             SelectBoxId="PartyBusinessType" TableName="business_types"

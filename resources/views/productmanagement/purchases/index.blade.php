@@ -35,7 +35,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                             <a class="btn btn-secondary btn-sm" href="{{ route('productpurchases.create') }}"
                                 title="Click to add new" data-plugin="tippy" data-tippy-animation="scale"
                                 data-tippy-arrow="true"><i class="fa fa-plus"></i>
-                                Add Product
+                                Add Purchase
                             </a>
                         </div>
                     </div>

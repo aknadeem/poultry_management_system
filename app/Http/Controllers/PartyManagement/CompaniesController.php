@@ -150,18 +150,21 @@ class CompaniesController extends Controller
             if($company){
                 $message = 'Data Updated successfully!';
                 $success = 'yes';
+                $title = 'Success';
                 $icon_type = 'success';
             }else{
                 $message = 'Data not updated, Something went wrong';
                 $success = 'no';
+                $title = 'Warning';
                 $icon_type = 'warning';
             }
         }else{
             $message = 'Data not updated, Something went wrong';
             $success = 'no';
+            $title = 'Warning';
             $icon_type = 'warning';
         }
-        Session::flash('swal_notification', ['title' => $message, 'icon_type' => $icon_type, 'message' => $message]);
+        Session::flash('swal_notification', ['title' => $title, 'icon_type' => $icon_type, 'message' => $message]);
         return back();
     }
 

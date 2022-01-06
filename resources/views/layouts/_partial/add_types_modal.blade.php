@@ -99,6 +99,7 @@
                                 var selectBox = $('#'+SelectBoxId);
                                 var option = new Option(msg?.data?.name, msg?.data?.id, true, true);
                                 selectBox.append(option).trigger('change');
+                                selectBox.autofocus();
                                 // $('.mySelect').select2();
                                 // location.reload();
                             });

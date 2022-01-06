@@ -6,16 +6,20 @@ use App\Http\Controllers\UserManagement\{ UserController, UserLevelController};
 use App\Http\Controllers\PoultryShed\ {
     PoultryShedController, EmployeeController, CustomerFarmController
 };
+
 use App\Http\Controllers\PartyManagement\ {
     PartyController, CustomerController, CompaniesController, CompaniesBalanceController, ConductPersonController, VendorController, PartyBalanceLimitController,
     PartyDocumentController, PartyAccountController, BrokerController
 };
+
 use App\Http\Controllers\BalanceManagement\BrokerBalanceController;
 
 use App\Http\Controllers\InventoryManagement\ {FeedController, ExpenseController};
 use App\Http\Controllers\ChickenModule\ {ChickenPurchaseController, ChickenSaleController, ChickPurchaseController};
 
-use App\Http\Controllers\ProductManagement\ {ProductController, ProductPurchaseController,};
+use App\Http\Controllers\ProductManagement\ {
+    ProductController, ProductPurchaseController, ProductStoreController
+};
 
 Auth::routes();
 
@@ -102,7 +106,7 @@ Route::group(['middleware' => 'auth'], function(){
     Route::group(['prefix' => '/productManagement'], function(){
         Route::resource('products', ProductController::class);
         Route::resource('productpurchases', ProductPurchaseController::class);
+        Route::resource('productstores', ProductStoreController::class);
     });
-
-
+    
 });

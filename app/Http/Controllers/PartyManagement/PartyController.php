@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\PartyManagement;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Party;
 use App\Models\Country;
@@ -33,6 +34,9 @@ class PartyController extends Controller
 
     public function index()
     {
+        // $currentDateTime = Carbon::now();
+        // $newDateTime = Carbon::now()->addDays(5)->format('Y-m-d');
+        // dd($newDateTime);
         $parties = Party::get();
         return view('partymanagement.party.index', compact('parties'));
     }

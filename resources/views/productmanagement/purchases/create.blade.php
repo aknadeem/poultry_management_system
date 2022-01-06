@@ -106,17 +106,16 @@ $load_js = Array('tippy','select2')
                         </div>
                         <div class="col-8 border border-2">
                             <div class="row mt-2">
-                                <div class="col-sm-4 mb-3">
-                                    <label for="ProductName" class="font_bold"> Product Name * </label>
-                                    <input type="text" placeholder="Enter Product Name" name="product_name"
-                                        class="form-control"
-                                        value="{{ $pruchase?->product_name ?? old('product_name') }}" id="ProductName"
-                                        required>
 
-                                    @error('product_name')
-                                    <span class="text-danger product_name_error"> {{ $message }} </span>
+                                <div class="col-4 mb-3">
+                                    <label class="font_bold" for="ProductPrice"> Product Price </label>
+                                    <input type="number" min="0" step="any" class="form-control" name="product_price"
+                                        placeholder="Product Price" id="ProductPrice">
+                                    @error('product_price')
+                                    <span class="text-danger product_price_error"> {{ $message }} </span>
                                     @enderror
                                 </div>
+
                                 <div class="col-4 mb-3">
                                     <label class="font_bold" for="PurchaseDate"> Purchase Date </label>
                                     <input type="date" class="form-control" name="purchase_date" value=""
@@ -144,26 +143,6 @@ $load_js = Array('tippy','select2')
 
                                     @error('quantity')
                                     <span class="text-danger quantity_error"> {{ $message }} </span>
-                                    @enderror
-                                </div>
-
-                                <div class="col-4 mb-3">
-                                    <label class="font_bold" for="TradePrice"> Trade Price </label>
-                                    <input type="number" step="any" min="0" class="form-control" name="trade_price"
-                                        value="" placeholder="Trade Price" id="TradePrice">
-
-                                    @error('trade_price')
-                                    <span class="text-danger trade_price_error"> {{ $message }} </span>
-                                    @enderror
-                                </div>
-
-                                <div class="col-4 mb-3">
-                                    <label class="font_bold" for="RetailPrice"> Retail Price</label>
-                                    <input type="number" step="any" min="0" class="form-control" name="retail_price"
-                                        value="" placeholder="Retail Price" id="RetailPrice">
-
-                                    @error('retail_price')
-                                    <span class="text-danger retail_price_error"> {{ $message }} </span>
                                     @enderror
                                 </div>
 
@@ -227,66 +206,6 @@ $load_js = Array('tippy','select2')
                                     <span class="text-danger warranty_period_error"> {{ $message }} </span>
                                     @enderror
                                 </div>
-                            </div>
-
-                            <div class="row border border-solid mx-0">
-                                <div class="col-2 mb-2">
-                                    <label class="font_bold" for=""> Is sale on TP: </label>
-                                    <div class="form-check mb-2 mt-1 form-check-inline">
-                                        <input class="form-check-input"
-                                            style="width: 1.7em !important; height: 1.7em !important;" type="checkbox"
-                                            name="is_sale_on_tp" value="1" id="VendorCheckBox">
-                                    </div>
-                                    <span class="text-danger name_error"></span>
-                                </div>
-                                <div class="col-2 mb-2">
-                                    <label class="font_bold" for=""> Is Clamable: </label>
-                                    <div class="form-check mb-2 mt-1 form-check-inline">
-                                        <input class="form-check-input"
-                                            style="width: 1.7em !important; height: 1.7em !important;" type="checkbox"
-                                            name="is_claimable" value="1" id="ClaimableCheckBox">
-                                    </div>
-                                    <span class="text-danger name_error"></span>
-                                </div>
-                                <div class="col-2 mb-2">
-                                    <label class="font_bold" for=""> Is Fridged: </label>
-                                    <div class="form-check mb-2 mt-1 form-check-inline">
-                                        <input class="form-check-input"
-                                            style="width: 1.7em !important; height: 1.7em !important;" type="checkbox"
-                                            name="is_fridged" value="1" id="FridgedCheckBox">
-                                    </div>
-                                    <span class="text-danger name_error"></span>
-                                </div>
-                                <div class="col-2 mb-2">
-                                    <label class="font_bold" for=""> Is Narcotic: </label>
-                                    <div class="form-check mb-2 mt-1 form-check-inline">
-                                        <input class="form-check-input"
-                                            style="width: 1.7em !important; height: 1.7em !important;" type="checkbox"
-                                            name="is_narcotic" value="1" id="NarcoticCheckBox">
-                                    </div>
-                                    <span class="text-danger"></span>
-                                </div>
-                                <div class="col-3 mb-2">
-                                    <label class="font_bold" for=""> Is Un-Waranted: </label> <br>
-                                    <div class="form-check mb-2 mt-1 form-check-inline">
-                                        <input class="form-check-input"
-                                            style="width: 1.7em !important; height: 1.7em !important;" type="checkbox"
-                                            name="is_unwaranted" value="1" id="UnwarantedCheckBox">
-                                    </div>
-                                    <span class="text-danger"></span>
-                                </div>
-                            </div>
-
-
-                            <div class="row mt-3">
-                                <div class="col-4 mb-2">
-                                    <label class="font_bold" for="ProductPicture"> Product Picture </label>
-                                    <input type="file" name="product_picture" class="form-control" id="ProductPicture">
-
-                                    @error('product_picture')
-                                    <span class="text-danger product_picture_error"> {{ $message }} </span>
-                                    @enderror
-                                </div>
 
                                 <div class="col-4 mb-2">
                                     <label class="font_bold" for="InvoicePicture"> Invoice Picture </label>
@@ -296,14 +215,24 @@ $load_js = Array('tippy','select2')
                                     <span class="text-danger invoice_picture_error"> {{ $message }} </span>
                                     @enderror
                                 </div>
+
+                                <div class="col-4 mb-2">
+                                    <label class="font_bold" for="Remarks"> Remarks </label>
+                                    <input type="text" name="remarks" class="form-control" placeholder="Remarks"
+                                        id="Remarks">
+
+                                    @error('remarks')
+                                    <span class="text-danger remarks_error"> {{ $message }} </span>
+                                    @enderror
+                                </div>
                             </div>
                         </div>
 
                     </div>
 
                     <div class="row mt-2">
-                        <div class="col-sm-2 offset-sm-10">
-                            <button type="submit" id="sub" class="btn btn-secondary AddUpdate float-right">
+                        <div class="col-sm-2 offset-sm-10 text-end">
+                            <button type="submit" id="sub" class="btn btn-secondary AddUpdate">
                                 Submit
                             </button>
                             <button class="btn btn-danger ModalClosed">

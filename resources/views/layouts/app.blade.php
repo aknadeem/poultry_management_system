@@ -294,6 +294,11 @@
             // })
         @endif
 
+        $(document).on("click", ".ModalClosed", function(event) {
+            $(this).find('form').trigger('reset');
+            $('.modal').modal('hide'); 
+        });
+
 
     </script>
 

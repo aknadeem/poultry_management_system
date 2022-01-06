@@ -18,7 +18,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                         <li class="breadcrumb-item active">index</li>
                     </ol>
                 </div>
-                <h4 class="page-title">Product</h4>
+                <h4 class="page-title">Product Management</h4>
             </div>
         </div>
     </div>
@@ -33,10 +33,10 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                         </div>
                         <div class="col-6 align-self-end text-end mb-2">
 
-                            <a class="btn btn-secondary btn-sm" href="{{ route('brokers.create') }}"
+                            <a class="btn btn-secondary btn-sm" href="{{ route('products.create') }}"
                                 title="Click to add new Broker" data-plugin="tippy" data-tippy-animation="scale"
                                 data-tippy-arrow="true"><i class="fa fa-plus"></i>
-                                Broker
+                                Product
                             </a>
                         </div>
                     </div>
@@ -44,29 +44,30 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                         <thead>
                             <tr>
                                 <th> # </th>
-                                <th> Name </th>
-                                <th> Father / Guardian Name </th>
-                                <th> CNIC </th>
-                                <th> Contuct Number </th>
-                                <th> Province </th>
-                                <th> City </th>
+                                <th> Product Code </th>
+                                <th> Product Name </th>
+                                <th> Company </th>
+                                <th> Product Category </th>
+                                <th> Total Quantity </th>
+                                <th> Remaining Quantity </th>
                                 <th> Status </th>
                                 <th>Options</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($brokers as $key=>$row)
+
+                            @forelse ($products as $key=>$row)
                             <tr>
                                 <td>{{ ++$key }}</td>
-                                <td>{{ $row->name }}</td>
-                                <td>{{ $row->guardian_name }}</td>
-                                <td>{{ $row->cnic_no }}</td>
-                                <td>{{ $row->contact_number }}</td>
-                                <td>{{ $row->province->name }}</td>
-                                <td>{{ $row->city->name }}</td>
+                                <td>{{ $row?->product_code }}</td>
+                                <td>{{ $row?->product_name }}</td>
+                                <td>{{ $row?->company?->company_name }}</td>
+                                <td>{{ $row?->category?->name }}</td>
+                                <td>{{ $row?->total_quantity }}</td>
+                                <td>{{ $row?->remaining_quantity }}</td>
                                 <td>
 
-                                    <a href="{{ route('updatestatus', ['id'=> $row->id, 'tag' => 'brokers']) }}"
+                                    <a href="{{ route('updatestatus', ['id'=> $row->id, 'tag' => 'products']) }}"
                                         title="Click to update Status" class="confirm-status">
                                         <div class="form-check form-switch">
                                             <input type="checkbox" class="form-check-input" id="customSwitch1"
@@ -76,25 +77,23 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                                     </a>
                                 </td>
                                 <td>
-                                    <a class="btn btn-info btn-sm" href="{{ route('brokers.edit', $row->id) }}"
+                                    <a class="btn btn-info btn-sm" href="{{ route('products.edit', $row?->id) }}"
                                         title="Click to edit" tabindex="0" data-plugin="tippy"
                                         data-tippy-animation="scale" data-tippy-arrow="true"><i
                                             class="fa fa-pencil-alt"></i>
                                         Edit
                                     </a>
                                     <a class="btn btn-danger btn-sm delete-confirm"
-                                        href="{{route('brokers.destroy', $row?->id ?? 0)}}"
-                                        del_title="Broker {{$row?->name ?? ''}}" title="Click to delete" tabindex="0"
-                                        data-plugin="tippy" data-tippy-animation="scale" data-tippy-arrow="true"><i
-                                            class="fa fa-trash"></i>
+                                        href="{{route('products.destroy', $row?->id)}}"
+                                        del_title="Product {{$row?->product_code ?? ''}}" title="Click to delete"
+                                        tabindex="0" data-plugin="tippy" data-tippy-animation="scale"
+                                        data-tippy-arrow="true"><i class="fa fa-trash"></i>
                                         Delete
                                     </a>
                                 </td>
                             </tr>
                             @empty
-
                             @endforelse
-
                         </tbody>
                     </table>
                 </div> <!-- end card body-->
