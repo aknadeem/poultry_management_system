@@ -11,9 +11,11 @@ class CreateProductsTable extends Migration
         // Schema::dropIfExists('products');
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('product_name');
             $table->string('product_code')->unique();
             $table->string('bar_code')->unique();
+            $table->string('product_name');
+            $table->date('entry_date')->nullable();
+            $table->date('purchase_date')->nullable();
 
             $table->foreignId('party_company_id')->nullable()->constrained('party_companies')->onDelete('cascade');
             $table->foreignId('product_category_id')->nullable()->constrained('product_categories')->onDelete('cascade');
@@ -33,6 +35,7 @@ class CreateProductsTable extends Migration
             $table->integer('min_inventory_level')->nulalble();
             $table->integer('max_inventory_level')->nulalble();
 
+            $table->string('quantity')->nulalble();
             $table->string('total_quantity')->nulalble();
             $table->string('remaining_quantity')->nulalble();
             $table->integer('reorder_level_period')->nulalble();

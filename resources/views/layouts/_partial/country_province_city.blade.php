@@ -66,7 +66,7 @@ $required = '';
         var Countries = <?php  echo json_encode($countries); ?>  || {}
         var Provinces_list = {}
 
-        console.log(exProvince_id)
+        // console.log(exProvince_id)
         $("#Country").change(function(){
             var country_id = parseInt($(this).val()) || 0
             var province_html= '<option value="">Select Province</option>';

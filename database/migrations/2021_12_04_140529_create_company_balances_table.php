@@ -11,7 +11,7 @@ class CreateCompanyBalancesTable extends Migration
     {
         Schema::create('company_balances', function (Blueprint $table) {
             $table->id();
-            $table->string('type');
+            $table->string('type')->nullable();
             $table->decimal('total_amount');
             $table->decimal('paid_amount')->default(0);
             $table->decimal('remaining_amount')->default(0);
@@ -21,8 +21,10 @@ class CreateCompanyBalancesTable extends Migration
             $table->string('status')->default('unpaid');
             $table->boolean('is_active')->default(1);
             $table->foreignId('company_id')->nullable()->constrained('party_companies')->onDelete('cascade');
-            $table->foreignId('chick_purchase_id')->nullable()->constrained('chick_purchases')->onDelete('cascade');
-            $table->foreignId('feed_purchase_id')->nullable()->constrained('feeds')->onDelete('cascade');
+            // $table->foreignId('chick_purchase_id')->nullable()->constrained('chick_purchases')->onDelete('cascade');
+            // $table->foreignId('feed_purchase_id')->nullable()->constrained('feeds')->onDelete('cascade');
+            $table->string('balance_type')->nullable();  // i.e chick_purchase, feed_purchase
+            $table->unsignedBigInteger('model_id')->nullable();
             $table->unsignedBigInteger('addedby')->nullable();
             $table->unsignedBigInteger('updatedby')->nullable();
             $table->softDeletes();

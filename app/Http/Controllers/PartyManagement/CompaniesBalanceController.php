@@ -122,6 +122,8 @@ class CompaniesBalanceController extends Controller
             ->addIndexColumn()
             ->addColumn('company_id', function($row){
                 return '<span> '.$row?->company?->company_name.' </span>';
+            })->addColumn('type', function($row){
+                return ucfirst(str_replace('_', ' ', $row?->type));
             })
             ->addColumn('Action', function($row){
                 return '<a class="btn btn-success btn-bold btn-sm openAddPaymentModal"
@@ -136,7 +138,7 @@ class CompaniesBalanceController extends Controller
                 View
                 </a>';
             })
-            ->rawColumns(['company_id','Action'])
+            ->rawColumns(['company_id', 'type','Action'])
             ->make(true);
     }
 

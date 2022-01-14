@@ -29,15 +29,56 @@ class ProductStoreController extends Controller
 
     public function index()
     {
-        $products = collect();
-        return view('productmanagement.index', compact('products'));
+        $stores = ProductStore::get();
+        return view('productmanagement.stores.index', compact('stores'));
+    }
+
+    public function getStoreList()
+    {
+        $stores = ProductStore::orderBy('id','DESC')->get();
+        return DataTables::of($stores)
+            ->addIndexColumn()
+            ->addColumn('is_active', function($row){
+                $is_checked = ($row?->is_active == 1) ? 'checked' : '';
+                return '<a href="'.route("updatestatus", ["id" => $row->id, "tag" => "product_stores"]).'"
+                title="Click to update Status" class="confirm-status">
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="switch1"
+                    '.$is_checked.'>
+                    <label class="form-check-label" for="switch1"></label>
+                </div>
+            </a>';
+            })
+            ->addColumn('Actions', function($row){
+                return ' <a class="btn btn-secondary btn-sm ViewDetailModal"
+                StoreId="'.$row["id"].'" href="javascript:void(0);"
+                title="View Details" tabindex="0" data-plugin="tippy"
+                data-tippy-animation="scale" data-tippy-arrow="true"><i class="fa fa-eye"></i>
+                View
+            </a>
+            <a class="btn btn-info btn-sm"
+                href="'.route("productstores.edit", $row["id"]).'"
+                title="Click to edit"><i
+                    class="fa fa-pencil-alt"></i>
+                Edit
+            </a>
+            <a class="btn btn-danger btn-sm delete-confirm"
+                href="'.route("productstores.destroy", $row["id"]).'"
+                del_title="Store '.$row["store_name"].'" title="Click to delete"
+                tabindex="0" data-plugin="tippy" data-tippy-animation="scale"
+                data-tippy-arrow="true"><i class="fa fa-trash"></i>
+                Delete
+            </a>';
+            })
+            ->rawColumns(['is_active','Actions'])
+            ->make(true);
     }
 
     public function create()
     {
-        $product = new Employee();
+        $store = new ProductStore();
         $companies = PartyCompany::get();
-        return view('productmanagement.create', compact('product','companies'));
+        return view('productmanagement.create', compact('store','companies'));
     }
 
     public function store(Request $request)
@@ -169,13 +210,13 @@ class ProductStoreController extends Controller
 
     public function show($id)
     {
-        $customer = Employee::find($id);
-        if($customer){
-            $html_data = \View::make('layouts._partial.customerdetail', compact('customer'))->render();
-            $message = 'Employee Detail Data';
+        $result = ProductStore::find($id);
+        if($result){
+            $html_data = \View::make('layouts._partial.detailModal', compact('result'))->render();
+            $message = 'Detail Data';
             $success = 'yes';
         }else{
-            $message = 'No employee detail found against this id';
+            $message = 'No detail found against this id';
             $success = 'no';
             $html_data = '';
         }
@@ -190,9 +231,9 @@ class ProductStoreController extends Controller
 
     public function edit($id)
     {
-        $pruchase = new Employee();
+        $store = new ProductStore();
         $companies = PartyCompany::get();
-        return view('productmanagement.purchases.index', compact('pruchase','companies'));
+        return view('productmanagement.purchases.index', compact('store','companies'));
     }
 
     public function validationRules($request, $id)
@@ -216,32 +257,19 @@ class ProductStoreController extends Controller
 
     public function destroy($id)
     {
-        $employee = Employee::findOrFail($id);
-        // $img_path = 'employees/'.$employee?->employee_image;
-        // if($employee?->employee_image != null && \Storage::disk('public')->exists($img_path)){
-        //     \Storage::disk('public')->delete($img_path);
-        // }
-        $employee->delete();
+        $store = ProductStore::findOrFail($id);
+        $store->delete();
 
         Session::flash('swal_notification', ['title' => 'Deleted', 'icon_type' => 'success', 'message' => 'Data Deleted Successfully!']);
         
-        return redirect()->route('employee.index');
+        return redirect()->route('productstores.index');
     }
     
     public function forceDelete($id)
     {
-        $employee = Employee::findOrFail($id);
-        $img_path = 'employee/'.$employee?->employee_image;
-        $img_path_sign = 'employee/'.$employee?->employee_signature;
-        if($employee?->employee_image != null && \Storage::disk('public')->exists($img_path)){
-            \Storage::disk('public')->delete($img_path);
-        }
-        
-        if($employee?->employee_signature != null && \Storage::disk('public')->exists($img_path_sign)){
-            \Storage::disk('public')->delete($img_path_sign);
-        }
-        $employee->forceDelete();
+        $store = ProductStore::findOrFail($id);
+        $store->forceDelete();
         Session::flash('swal_notification', ['title' => 'Deleted', 'icon_type' => 'success', 'message' => 'Data Deleted Successfully!']);
-        return redirect()->route('employee.index');
+        return redirect()->route('productstores.index');
     }
 }

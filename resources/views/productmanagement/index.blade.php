@@ -48,8 +48,8 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                                 <th> Product Name </th>
                                 <th> Company </th>
                                 <th> Product Category </th>
-                                <th> Total Quantity </th>
-                                <th> Remaining Quantity </th>
+                                <th> Quantity </th>
+                                <th> Purchase Date </th>
                                 <th> Status </th>
                                 <th>Options</th>
                             </tr>
@@ -63,8 +63,9 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                                 <td>{{ $row?->product_name }}</td>
                                 <td>{{ $row?->company?->company_name }}</td>
                                 <td>{{ $row?->category?->name }}</td>
-                                <td>{{ $row?->total_quantity }}</td>
-                                <td>{{ $row?->remaining_quantity }}</td>
+                                <td>{{ $row?->quantity }}</td>
+                                <td class="text-danger fw-bold">{{ $row?->purchase_date?->format('M d, Y') ?? 'Nil' }}
+                                </td>
                                 <td>
 
                                     <a href="{{ route('updatestatus', ['id'=> $row->id, 'tag' => 'products']) }}"

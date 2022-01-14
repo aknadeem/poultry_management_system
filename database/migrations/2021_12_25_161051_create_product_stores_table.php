@@ -15,7 +15,7 @@ class CreateProductStoresTable extends Migration
             $table->string('store_type')->nullable();
             $table->double('store_area')->nullable();
             $table->integer('total_racks')->default(0);
-            $table->boolean('status')->default(0);
+            $table->boolean('is_active')->default(1);
             $table->text('description')->nullable();
             $table->unsignedBigInteger('addedby')->nullable();
             $table->unsignedBigInteger('updatedby')->nullable();

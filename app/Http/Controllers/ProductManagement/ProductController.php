@@ -38,7 +38,7 @@ class ProductController extends Controller
 
         // $gn = str_pad($num, $length, 0, STR_PAD_LEFT)+1;
         // dd(str_pad($gn, $length, 0, STR_PAD_LEFT));
-        $products = Product::with('company:id,company_name','category:id,name')->get(['id','product_name','product_code','bar_code','party_company_id','product_category_id','total_quantity','remaining_quantity','is_active']);
+        $products = Product::with('company:id,company_name','category:id,name')->get(['id','product_name','product_code','bar_code','party_company_id','product_category_id','quantity','purchase_date','is_active']);
 
         // dd($products->toArray());
         return view('productmanagement.index', compact('products'));
@@ -131,7 +131,6 @@ class ProductController extends Controller
                 'is_narcotic' => $request->is_narcotic,
                 'is_unwarranted' => $request->is_unwaranted,
                 'description' => $request->description,
-                // 'cnic_no' => 'bail|required|numeric|unique:employees,cnic_no,'.$id,
                 'product_picture' => $product_picture,
                 'addedby' => $this->auth_user_id,
             ]);
@@ -149,6 +148,23 @@ class ProductController extends Controller
 
         Session::flash('swal_notification', ['title' => $title, 'icon_type' => $icon_type, 'message' => $message]);
         return redirect()->route('products.index');
+    }
+
+    public function companyAndCategoryFilter($party_id, $category_id)
+    {
+        $products = Product::where('is_active',1)->where([['party_company_id','=', $party_id],['product_category_id','=',$category_id]])->get(['id','product_name','product_code', 'product_type','total_quantity','remaining_quantity','purchase_price','discount_amount','tax_amount','max_inventory_level','discount_percentage','tax_percentage','warranty_period']);
+
+        if($products !=''){
+            return response()->json([
+                'success' => 'yes',
+                'data' => $products->toArray(),
+            ]);
+        }else{
+            return response()->json([
+                'success' => 'no',
+                'data' => [],
+            ]);
+        }
     }
     
     public function update(Request $request, $id)
@@ -237,8 +253,23 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        return back();
+        $result = Product::with('company:id,company_name,company_code','productstore:id,store_name')->find($id);
+        if($result){
+            $html_data = \View::make('layouts._partial.productdetail', compact('result'))->render();
+            $message = 'Item Detail Data';
+            $success = 'yes';
+        }else{
+            $message = 'No data found against this id';
+            $success = 'no';
+            $html_data = '';
+        }
+        return response()->json([
+            'message' => $message,
+            'success' => $success,
+            'html_data' => $html_data,
+        ], 201);
     }
+
 
     public function validationRules($request, $id)
     {

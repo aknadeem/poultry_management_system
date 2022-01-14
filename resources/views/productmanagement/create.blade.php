@@ -317,13 +317,13 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                         </div>
 
                                         <div class="col-4 mb-3">
-                                            <label class="font_bold" for="RetailPrice"> Purchase Price</label>
+                                            <label class="font_bold" for="PurchasePrice"> Purchase Price</label>
                                             <input type="number" step="any" min="0" class="form-control"
-                                                name="retail_price" value="" placeholder="Discount Price"
-                                                id="RetailPrice">
+                                                name="purchase_price" value="" placeholder="Purchase Price"
+                                                id="PurchasePrice">
 
-                                            @error('retail_price')
-                                            <span class="text-danger retail_price_error"> {{ $message }} </span>
+                                            @error('purchase_price')
+                                            <span class="text-danger purchase_price_error"> {{ $message }} </span>
                                             @enderror
                                         </div>
 

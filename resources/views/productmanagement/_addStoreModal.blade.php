@@ -12,6 +12,7 @@
                     @csrf
                     <div class="row form-group">
                         <input type="hidden" name="store_id" id="StorIdModal">
+                        <input type="hidden" id="FromPage">
 
                         <div class="col-sm-6 mb-2 pe-0">
                             <label for="StoreName"> Store Name*</label>
@@ -68,12 +69,17 @@
     $(function() {
         $('#AddStoreModal').modal({backdrop: 'static', keyboard: false})
         $(".OpenAddStoreModal").click(function() {
+            let Storeid = parseInt($(this).attr('StoreId')) || 0;
+            let FromPage = $(this).attr('FromPage') || '';
             $("#AddStoreModal").modal('show');
+            $('#StoreIdModal').val(Storeid);
+            $('#FromPage').val(FromPage);
         });
         
         $('#ProductStoreForm').on('submit', function(e) {
             e.preventDefault();
             let store_id = parseInt($('#StoreIdModal').val());
+            let FromPage = $('#FromPage').val() || '';
             let form_type = 'POST'
             let form_url = "{{ url('/productManagement/productstores')}}"
             $.ajax({

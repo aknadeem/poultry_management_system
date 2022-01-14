@@ -166,7 +166,7 @@ $(document).on("click", ".confirm-logout", function (event) {
     });
 });
 
-$("a.confirm-status").click(function (event) {
+$(document).on("click", ".confirm-status", function (event) {
     /* Act on the event */
     event.preventDefault();
     var action = $(this).attr("href");

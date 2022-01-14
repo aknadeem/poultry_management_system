@@ -65,6 +65,6 @@
 
 <script>
     $('.ModalClosed').click(function () {
-            $('.modal').modal('hide');
-        });
+        $('.modal').modal('hide');
+    });
 </script>

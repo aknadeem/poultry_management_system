@@ -11,8 +11,29 @@ class Product extends Model
 {
     use SoftDeletes, HasFactory;
 
+    protected $dates = ['created_at','updated_at','deleted_at', 'reorder_level_date','purchase_date'];
+
+    protected $appends = ['expiry_date_value'];
+
     protected $casts = [
+        'reorder_level_date' => 'date:Y-m-d',
+        'mrp_price' => 'decimal:2',
+        'whole_sale_price' => 'decimal:2',
+        'purchase_price' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
+        'discount_percentage' => 'float',
+        'tax_amount' => 'decimal:2',
+        'tax_percentage' => 'float',
+        'max_inventory_level' => 'integer',
+        'warranty_period' => 'integer',
+        'trade_price' => 'decimal:2',
     ];
+
+    public function getExpiryDateValueAttribute()
+    {
+        $exp_date = today()->addDays($this->warranty_period)->format('Y-m-d');
+        return $exp_date;
+    }
 
     public function company()
     {
@@ -22,6 +43,11 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo('App\Models\ProductCategory', 'product_category_id', 'id')->withDefault(['id' => null]);
+    }
+
+    public function productstore()
+    {
+        return $this->belongsTo('App\Models\ProductStore', 'product_store_id', 'id')->withDefault(['id' => null]);
     }
 
     public static function boot(){

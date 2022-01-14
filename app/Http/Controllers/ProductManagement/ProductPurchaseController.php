@@ -4,13 +4,18 @@ namespace App\Http\Controllers\ProductManagement;
 
 use Session;
 use DataTables;
+use Carbon\Carbon;
 use App\Models\Country;
+use App\Models\Product;
 use App\Models\Employee;
 use App\Models\EmployeeType;
 use App\Models\PartyCompany;
 use App\Models\PersonalFarm;
 use Illuminate\Http\Request;
 use App\Models\EmployeeLevel;
+use App\Models\ProductCategory;
+use App\Models\ProductPurchase;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CustomerFormRequest;
@@ -18,25 +23,29 @@ use App\Http\Requests\CustomerFormRequest;
 class ProductPurchaseController extends Controller
 {
     private $auth_user_id;
+    private $today_is;
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
             $this->auth_user_id= \Auth::user()->id;
             return $next($request);
         });
+        $this->today_is = Carbon::now();
     }
 
     public function index()
     {
-        $product_purchases = collect();
+        $product_purchases = ProductPurchase::with('product:id,product_name,product_code,party_company_id,product_category_id','product.company:id,company_name','product.category:id,name')->orderBy('id', 'DESC')->get();
+
         return view('productmanagement.purchases.index', compact('product_purchases'));
     }
 
     public function create()
     {
-        $pruchase = new Employee();
-        $companies = PartyCompany::get();
-        return view('productmanagement.purchases.create', compact('pruchase','companies'));
+        $pruchase = new ProductPurchase();
+        $companies = PartyCompany::where('is_active', 1)->get(['id','company_name','company_code']);
+        $categories = ProductCategory::where('is_active', 1)->get(['id','name','slug']);
+        return view('productmanagement.purchases.create', compact('pruchase','companies', 'categories'));
     }
 
     public function getEmployeeList()
@@ -78,73 +87,117 @@ class ProductPurchaseController extends Controller
         $id = null;
         $this->validationRules($request, $id);
 
+        // dd($request->toArray());
         $message = 'Data created successfully';
         $title = 'Success';
         $icon_type = 'success';
-        try {
-            if ($request->hasFile('employee_image')) {
-                $employee_image_file = $request->file('employee_image');
-                $extension = $request->file('employee_image')->extension();
-                $employee_image = time().mt_rand(10,99).'.'.$extension;
-                
+
+        $product = Product::find($request->product_id);
+        if($product !=''){
+            if($request->purchase_price > $product->purchase_price ||  $request->discount_amount > $product->discount_amount){
+                $message = 'Please make sure purchase and discount amount should be less then Product';
+                $title = 'Error';
+                $icon_type = 'danger';
             }else{
-                $employee_image = null;
-            }
-            
-            if ($request->hasFile('employee_signature')) {
-                $employee_signature_file = $request->file('employee_signature');
-                $extension = $request->file('employee_signature')->extension();
-                $employee_signature = time().mt_rand(10,99).'.'.$extension;
+                $quantity = (int)$request->quantity;
+                $purchase_price = (float)$request->purchase_price;
+                $total_price = $quantity*$purchase_price;
+                $discount_amount = (float)$request->discount_amount;
+                $final_price =  $total_price;
+
+                if($discount_amount < 1 || $discount_amount >= $total_price){
+                    $discount_amount = 0;
+                    $discount_percentage = 0;
+                }else{
+                    $discount_percentage = ($discount_amount / $total_price) * 100;
+                    $final_price = $total_price - $discount_amount;
+                }
                 
-            }else{
-                $employee_signature = null;
+                $tax_amount = (float)$request->tax_amount;
+                if($tax_amount > 0){
+                    $final_price = $final_price + $tax_amount;
+                }
+
+                try {
+                    DB::transaction(function () use ($request, $product, $total_price, $discount_amount,$discount_percentage,$final_price, $tax_amount) {
+                        if ($request->hasFile('invoice_picture')) {
+                            $invoice_picture_file = $request->file('invoice_picture');
+                            $extension = $request->file('invoice_picture')->extension();
+                            $invoice_picture = time().mt_rand(10,99).'.'.$extension;
+                            
+                        }else{
+                            $invoice_picture = null;
+                        }
+                        $save_purchase = ProductPurchase::create([
+                            'party_company_id' => $request->company_id,
+                            'product_id' => $request->product_id,
+                            'purchase_date' => $request->purchase_date,
+                            'expiry_date' => $request->expiry_date,
+                            'quantity' => $request->quantity,
+                            'bonus_quantity' => $request->bonus_quantity,
+                            'total_quantity' => $request->quantity + $request->bonus_quantity,
+                            'purchase_price' => $request->purchase_price,
+                            'total_price' => $total_price,
+                            'discount_amount' => $discount_amount,
+                            'discount_percentage' => $discount_percentage,
+                            'tax_amount' => $tax_amount,
+                            'tax_percentage' => $request->tax_percentage,
+                            'final_price' => $final_price,
+                            'warranty_period' => $request->warranty_period,
+                            'description' => $request->description,
+                            'purchase_invoice' => $invoice_picture,
+                            'addedby' => $this->auth_user_id,
+                        ]);
+                        if($save_purchase){
+                            $upload_to_folder = $invoice_picture_file->storeAs('products/purchases/', $invoice_picture, 'public');
+                            $newQty = $request->quantity + $request->bonus_quantity;
+                            $exqty = $product->quantity;
+                            $product_update = $product->update([
+                                'quantity' => $exqty + $newQty,
+                                'purchase_date' => $request->purchase_date,
+                                'updatedby' => $this->auth_user_id,
+                            ]);
+
+                            $company = DB::table('company_balances')->insert([
+                                'type' => 'product_purchase',
+                                'company_id' => $request->company_id,
+                                'model_id' => $save_purchase->id,
+                                'total_amount' => $request->final_price,
+                                'remaining_amount' => $request->final_price,
+                                'dr' => $request->final_price,
+                                'created_at' => $this->today_is,
+                                'addedby' => $this->auth_user_id,
+                            ]);
+
+                            $ac_payable = DB::table('account_payables')->insert([
+                                'amount_type' => 'product_purchase',
+                                'amount_status' => 'unpaid',
+                                'entry_date' => $request->purchase_date,
+                                'model_id' => $save_purchase->id,
+                                'total_amount' => $request->final_price,
+                                'remaining_amount' => $request->final_price,
+                                'dr' => $request->final_price,
+                                'created_at' => $this->today_is,
+                                'addedby' => $this->auth_user_id,
+                            ]);
+                        }
+                    });
+                }
+                catch (\Throwable $e) {
+                    return $e;
+                    $message = 'Something went wrong';
+                    $title = 'Error';
+                    $icon_type = 'warning';
+                }
             }
-
-            $employee = Employee::create([
-                'personal_farm_id' => $request->personal_farm_id,
-                'employee_type_id' => $request->employee_type_id,
-                'employee_level_id' => $request->employee_level_id,
-                'name' =>  $request->name,
-                'guardian_name' => $request->guardian_name,
-                'contact_no' => $request->contact_no,
-                'other_number' => $request->other_number,
-                'other_number' => $request->other_number,
-                'email' => $request->email,
-                'cnic_no' => $request->cnic_no,
-                'basic_salary' => $request->basic_salary,
-                'other_amount' => $request->other_amount,
-                'net_salary' => $request->net_salary,
-                'contract_period' => $request->contract_period,
-                'date_of_birth' => $request->date_of_birth,
-                'joining_date' => $request->joining_date,
-                'is_police_record' => $request->is_police_record,
-                'address' => $request->address,
-                'description' => $request->description,
-                'blood_group' => $request->blood_group,
-                'country_id' => $request->country_id,
-                'province_id' => $request->province_id,
-                'province_id' => $request->province_id,
-                'city_id' => $request->city_id,
-
-                'employee_image' => $employee_image,
-                'employee_signature' => $employee_signature,
-                'addedby' => $this->auth_user_id,
-            ]);
-
-            if($employee){
-                $upload_to_folder = $employee_image_file->storeAs('employee/', $employee_image, 'public');
-                $upload_to_folder_sig = $employee_signature_file->storeAs('employee/', $employee_signature, 'public');
-            }
-        }
-        catch (\Throwable $e) {
-            return $e;
-            $message = 'Something went wrong';
-            $title = 'Error';
-            $icon_type = 'warning';
+        }else{
+            $message = 'No Product found, please Choose Product id carefully';
+            $title = 'danger';
+            $icon_type = 'danger';
         }
 
         Session::flash('swal_notification', ['title' => $title, 'icon_type' => $icon_type, 'message' => $message]);
-        return redirect()->route('employee.index');
+        return redirect()->route('productpurchases.index');
     }
     
     public function update(Request $request, $id)
@@ -265,82 +318,62 @@ class ProductPurchaseController extends Controller
 
     public function edit($id)
     {
-        $pruchase = new Employee();
-        $companies = PartyCompany::get();
-        return view('productmanagement.purchases.index', compact('pruchase','companies'));
+        $pruchase = ProductPurchase::findOrFail($id);
+        $companies = PartyCompany::where('is_active', 1)->get(['id','company_name','company_code']);
+        $categories = ProductCategory::where('is_active', 1)->get(['id','name','slug']);
+        return view('productmanagement.purchases.create', compact('pruchase','companies', 'categories'));
     }
 
     public function validationRules($request, $id)
     {
-        $validator = Validator::make($request->all(),[
-        // $this->validate($request, [
-            'personal_farm_id' => 'bail|nullable|integer',
-            'employee_type_id' => 'bail|nullable|integer',
-            'employee_level_id' => 'bail|required|integer',
-            'name' => 'bail|required|string',
-            'guardian_name' => 'bail|required|string',
-            'contact_no' => 'bail|required|numeric',
-            'other_number' => 'bail|nullable|numeric',
-            'email' => 'bail|required|string',
-            'cnic_no' => 'bail|required|numeric|unique:employees,cnic_no,'.$id,
-            'basic_salary' => 'bail|required|numeric',
-            'other_amount' => 'bail|nullable|numeric',
-            'net_salary' => 'bail|required|numeric',
-            'contract_period' => 'bail|numeric|numeric',
-            'date_of_birth' => 'bail|date',
-            'joining_date' => 'bail|date',
-            'is_police_record' => 'bail|nullable',
-            'address' => 'bail|required|string',
-            'blood_group' => 'bail|nullable',
-            'description' => 'nullable|string',
-
-            'country_id' => 'bail|required|integer',
-            'province_id' => 'bail|required|integer',
-            'city_id' => 'bail|required|integer',
-
-            'employee_signature' => 'bail|nullable|mimes:jpeg,jpg,png|max:5000',
-            'employee_image' => 'bail|nullable|mimes:jpeg,jpg,png|max:5000',
-
-        ],[
-            'farm_image.required'=> 'The farm image field is required',
+        // $validator = Validator::make($request->all(),[
+        $this->validate($request, [
+            'company_id' => 'bail|required|integer',
+            'product_category_id' => 'bail|required|integer',
+            'product_id' => 'bail|required|integer',
+            'product_code' => 'bail|required|string',
+            'product_price' => 'bail|required|string',
+            'purchase_date' => 'bail|required|date',
+            'expiry_date' => 'bail|required|date',
+            'quantity' => 'bail|required|numeric',
+            'bonus_quantity' => 'bail|nullable|numeric',
+            'purchase_price' => 'bail|required|numeric',
+            'total_price' => 'bail|nullable|numeric',
+            'discount_amount' => 'bail|nullable|numeric',
+            'discount_percentage' => 'bail|nullable|numeric',
+            'tax_amount' => 'bail|nullable|numeric',
+            'tax_percentage' => 'bail|nullable|numeric',
+            'final_price' => 'bail|nullable|numeric',
+            'warranty_period' => 'bail|nullable|numeric',
+            'description' => 'bail|nullable',
+            'invoice_picture' => 'bail|nullable|mimes:jpeg,jpg,png|max:5000',
         ]);
 
-        if($validator->fails()){
-            return response()->json([
-                'error' => $validator->errors()->toArray(),
-                'success' => 'no',
-            ], 201);
-        }
+        // if($validator->fails()){
+        //     return response()->json([
+        //         'error' => $validator->errors()->toArray(),
+        //         'success' => 'no',
+        //     ], 201);
+        // }
     }
 
     public function destroy($id)
     {
-        $employee = Employee::findOrFail($id);
-        // $img_path = 'employees/'.$employee?->employee_image;
-        // if($employee?->employee_image != null && \Storage::disk('public')->exists($img_path)){
-        //     \Storage::disk('public')->delete($img_path);
-        // }
-        $employee->delete();
-
+        $purchase = ProductPurchase::findOrFail($id);
+        $purchase->delete();
         Session::flash('swal_notification', ['title' => 'Deleted', 'icon_type' => 'success', 'message' => 'Data Deleted Successfully!']);
-        
-        return redirect()->route('employee.index');
+        return redirect()->route('productpurchases.index');
     }
     
     public function forceDelete($id)
     {
-        $employee = Employee::findOrFail($id);
-        $img_path = 'employee/'.$employee?->employee_image;
-        $img_path_sign = 'employee/'.$employee?->employee_signature;
-        if($employee?->employee_image != null && \Storage::disk('public')->exists($img_path)){
+        $purchase = ProductPurchase::findOrFail($id);
+        $img_path = 'products/purchases/'.$purchase?->purchase_invoice;
+        if($purchase?->purchase_invoice != null && \Storage::disk('public')->exists($img_path)){
             \Storage::disk('public')->delete($img_path);
         }
-        
-        if($employee?->employee_signature != null && \Storage::disk('public')->exists($img_path_sign)){
-            \Storage::disk('public')->delete($img_path_sign);
-        }
-        $employee->forceDelete();
+        $purchase->forceDelete();
         Session::flash('swal_notification', ['title' => 'Deleted', 'icon_type' => 'success', 'message' => 'Data Deleted Successfully!']);
-        return redirect()->route('employee.index');
+        return redirect()->route('productpurchases.index');
     }
 }

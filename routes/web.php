@@ -104,8 +104,12 @@ Route::group(['middleware' => 'auth'], function(){
     });
     
     Route::group(['prefix' => '/productManagement'], function(){
+        Route::get('/productfilter/{company_id}/cat/{category_id}', [ProductController::class, 'companyAndCategoryFilter'])->name('productfilter');
+
         Route::resource('products', ProductController::class);
         Route::resource('productpurchases', ProductPurchaseController::class);
+
+        Route::get('/storelist', [ProductStoreController::class, 'getStoreList'])->name('storelist');
         Route::resource('productstores', ProductStoreController::class);
     });
     
