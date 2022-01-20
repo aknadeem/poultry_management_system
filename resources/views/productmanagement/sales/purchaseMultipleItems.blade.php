@@ -57,7 +57,7 @@ $load_js = Array('tippy','select2')
                     <div class="row">
                         <div class="col-4 border border-2">
                             <div class="row mt-2">
-                                <div class="col-12 mb-3">
+                                <div class="col-12 mb-2">
                                     <label class="font_bold" for="CompanySelect"> Select Company* </label>
                                     <select name="company_id" required id="CompanySelect" class="form-control mySelect"
                                         data-toggle="select2" data-width="100%" id="">
@@ -71,7 +71,7 @@ $load_js = Array('tippy','select2')
                                     <span class="text-danger company_id_error"> {{ $message }} </span>
                                     @enderror
                                 </div>
-                                <div class="col-12 mb-3">
+                                <div class="col-12 mb-2">
                                     <label class="font_bold" for="CategorySelect"> Select Category* </label>
                                     <select name="product_category_id" required id="CategorySelect"
                                         class="form-control mySelect" data-toggle="select2" data-width="100%" id="">
@@ -87,46 +87,17 @@ $load_js = Array('tippy','select2')
 
                                     <span class="text-danger" id="CompanySelectError"></span>
                                 </div>
-                                <div class="col-12 mb-3">
-                                    <label class="font_bold" for="SelectProduct"> Select Product * </label>
-                                    <select name="product_id" required id="SelectProduct" class="form-control mySelect"
-                                        data-toggle="select2" data-width="100%">
-                                        <option value=""> Select product</option>
-                                    </select>
-                                    @error('product_id')
-                                    <span class="text-danger product_id_error"> {{ $message }} </span>
-                                    @enderror
-                                </div>
-                                <div class="col-sm-12 mb-3">
+                                <div class="col-6 mb-2 pe-0">
+                                    <label class="font_bold" for="ExpiryDate"> Expiry Date </label>
+                                    <input type="date" class="form-control" name="expiry_date" value=""
+                                        placeholder="Purchase date" id="ExpiryDate">
 
-                                    <label for="ProductCode" class="font_bold"> Product Code* </label>
-
-                                    <a href="javascript:void(0);" id="ViewProductDetail"
-                                        style="float: right !important; display: none;"> View Product
-                                        Detail </a>
-
-                                    <input type="text" placeholder="Product Code" name="product_code"
-                                        class="form-control"
-                                        value="{{ $pruchase?->product_code ?? old('product_code') }}" readonly
-                                        id="ProductCode">
-                                    @error('product_code')
-                                    <span class="text-danger product_code_error"> {{ $message }} </span>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-8 border border-2">
-                            <div class="row mt-2">
-                                <div class="col-4 mb-3">
-                                    <label class="font_bold" for="ProductPrice"> Product Price </label>
-                                    <input type="number" min="0" step="any" class="form-control" name="product_price"
-                                        readonly placeholder="Product Price" id="ProductPrice">
-                                    @error('product_price')
-                                    <span class="text-danger product_price_error">{{ $message }}</span>
+                                    @error('expiry_date')
+                                    <span class="text-danger expiry_date_error"> {{ $message }} </span>
                                     @enderror
                                 </div>
 
-                                <div class="col-4 mb-3">
+                                <div class="col-6 mb-3 ps-1">
                                     <label class="font_bold" for="PurchaseDate"> Purchase Date </label>
                                     <input type="date" class="form-control" name="purchase_date"
                                         value="{{ today()->format('Y-m-d')}}" placeholder="Purchase date"
@@ -137,119 +108,162 @@ $load_js = Array('tippy','select2')
                                     @enderror
                                 </div>
 
-                                <div class="col-4 mb-3">
-                                    <label class="font_bold" for="ExpiryDate"> Expiry Date </label>
-                                    <input type="date" class="form-control" name="expiry_date" value=""
-                                        placeholder="Purchase date" id="ExpiryDate">
+                            </div>
+                        </div>
+                        <div class="col-8 border border-2">
+                            <span id="TotalProductList">
+                                <div id="row-0" class="row mt-2 border border-3 p-1 mx-1 mb-2">
 
-                                    @error('expiry_date')
-                                    <span class="text-danger expiry_date_error"> {{ $message }} </span>
-                                    @enderror
+                                    <div class="col-6 mb-2">
+                                        <label class="font_bold" for="SelectProduct"> Select Product * </label>
+                                        <a href="javascript:void(0);" class="ViewProductDetail" id="ViewProductDetail-0"
+                                            style="float: right !important; display: none;"> View Product
+                                            Detail </a>
+                                        <select name="product_id" required id="SelectProduct"
+                                            class="form-control mySelect SelectProduct" data-toggle="select2"
+                                            data-width="100%">
+                                            <option value=""> Select product</option>
+                                        </select>
+                                        @error('product_id')
+                                        <span class="text-danger product_id_error"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-sm-3 mb-2 px-1">
+                                        <label for="ProductCode" class="font_bold"> Product Code* </label>
+                                        <input type="text" placeholder="Product Code" name="product_code"
+                                            class="form-control"
+                                            value="{{ $pruchase?->product_code ?? old('product_code') }}" readonly
+                                            id="ProductCode">
+                                        @error('product_code')
+                                        <span class="text-danger product_code_error"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-3 mb-1 px-1">
+                                        <label class="font_bold" for="ProductPrice"> Product Price </label>
+                                        <input type="number" min="0" step="any" class="form-control"
+                                            name="product_price" readonly placeholder="Product Price" id="ProductPrice">
+                                        @error('product_price')
+                                        <span class="text-danger product_price_error">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-3 mb-2 px-1">
+                                        <label class="font_bold" for="ProductQuantity"> Quantity </label>
+                                        <input type="number" min="0" class="form-control" name="quantity"
+                                            placeholder="Quantity" id="ProductQuantity">
+
+                                        @error('quantity')
+                                        <span class="text-danger quantity_error"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-3 mb-2 px-1">
+                                        <label class="font_bold" for="BonusQuantity"> Bonus Qty </label>
+                                        <input type="number" min="0" class="form-control" name="bonus_quantity"
+                                            placeholder="Bonus qty" id="BonusQuantity">
+                                        @error('bonus_quantity')
+                                        <span class="text-danger bonus_quantity_error"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+
+                                    {{-- <div class="col-2 mb-2  px-1">
+                                        <label class="font_bold" for="PurchasePrice"> Purchase Price</label>
+                                        <input type="number" step="any" min="0" class="form-control"
+                                            name="purchase_price" placeholder="Purchase Price" id="PurchasePrice">
+
+                                        @error('purchase_price')
+                                        <span class="text-danger purchase_price_error"> {{ $message }} </span>
+                                        @enderror
+                                    </div> --}}
+
+                                    <div class="col-3 mb-2 px-1">
+                                        <label class="font_bold" for="TotalPrice"> Total Price</label>
+                                        <input type="number" step="any" min="0" class="form-control" name="total_price"
+                                            placeholder="Total Price" readonly id="TotalPrice">
+
+                                        @error('total_price')
+                                        <span class="text-danger total_price_error"> {{ $message }} </span>
+                                        @enderror
+
+                                        <span class="text-danger h5" id="QtyPriceError"> </span>
+                                    </div>
+
+                                    <div class="col-3 mb-2 px-1">
+                                        <label class="font_bold" for="DiscountPercentage"> Discount % </label>
+                                        <input type="number" step="any" min="0" step="any" class="form-control"
+                                            name="discount_percentage" value="" placeholder="Discount %"
+                                            id="DiscountPercentage">
+
+                                        @error('discount_percentage')
+                                        <span class="text-danger discount_percentage_error"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-3 mb-2 px-1">
+                                        <label class="font_bold" for="DiscountAmount"> Discount Amount</label>
+                                        <input type="number" step="any" min="0" step="any" class="form-control"
+                                            name="discount_amount" value="" placeholder="Discount Amount"
+                                            id="DiscountAmount">
+
+                                        @error('discount_amount')
+                                        <span class="text-danger discount_amount_error"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-3 mb-2 px-1">
+                                        <label class="font_bold" for="TaxAmount"> Tax Amount </label>
+                                        <input type="number" step="any" min="0" step="any" class="form-control"
+                                            name="tax_amount" value="" placeholder="Tax Amount" id="TaxAmount">
+
+                                        @error('tax_amount')
+                                        <span class="text-danger tax_amount_error"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-3 mb-2 px-1">
+                                        <label class="font_bold" for="TaxPercentage"> Tax % </label>
+                                        <input type="number" step="any" min="0" step="any" class="form-control"
+                                            name="tax_percentage" value="" placeholder="Tax percentage"
+                                            id="TaxPercentage">
+
+                                        @error('tax_percentage')
+                                        <span class="text-danger tax_percentage_error"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-3 mb-2 px-1">
+                                        <label class="font_bold" for="FinalPrice"> Final Price </label>
+                                        <input type="number" min="0" step="any" class="form-control" name="final_price"
+                                            readonly placeholder="Final price" id="FinalPrice">
+
+                                        @error('final_price')
+                                        <span class="text-danger final_price_error"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+
+                                    {{-- <div class="col-4 mb-3">
+                                        <label class="font_bold" for="WarrantyPeriod"> Warranty Period </label>
+                                        <input type="text" class="form-control" name="warranty_period" value=""
+                                            placeholder="Warranty period" id="WarrantyPeriod">
+
+                                        @error('warranty_period')
+                                        <span class="text-danger warranty_period_error"> {{ $message }} </span>
+                                        @enderror
+                                    </div> --}}
                                 </div>
+                            </span>
 
-                                <div class="col-4 mb-3">
-                                    <label class="font_bold" for="ProductQuantity"> Quantity </label>
-                                    <input type="number" min="0" class="form-control" name="quantity"
-                                        placeholder="Enter quantity" id="ProductQuantity">
-
-                                    @error('quantity')
-                                    <span class="text-danger quantity_error"> {{ $message }} </span>
-                                    @enderror
+                            <div class="row mt-2">
+                                <div class="col-sm-4 offset-sm-3 text-end">
+                                    <span class="btn btn-secondary" id="AddProductButton">
+                                        <i class="fa fa-plus"></i> Add More
+                                    </span>
                                 </div>
+                            </div>
 
-                                <div class="col-4 mb-3">
-                                    <label class="font_bold" for="BonusQuantity"> Bonus Quantity </label>
-                                    <input type="number" min="0" class="form-control" name="bonus_quantity"
-                                        placeholder="Enter bonus quantity" id="BonusQuantity">
-                                    @error('bonus_quantity')
-                                    <span class="text-danger bonus_quantity_error"> {{ $message }} </span>
-                                    @enderror
-                                </div>
 
-                                <div class="col-4 mb-3">
-                                    <label class="font_bold" for="PurchasePrice"> Purchase Price</label>
-                                    <input type="number" step="any" min="0" class="form-control" name="purchase_price"
-                                        placeholder="Purchase Price" id="PurchasePrice">
-
-                                    @error('purchase_price')
-                                    <span class="text-danger purchase_price_error"> {{ $message }} </span>
-                                    @enderror
-                                </div>
-
-                                <div class="col-4 mb-3">
-                                    <label class="font_bold" for="TotalPrice"> Total Price</label>
-                                    <input type="number" step="any" min="0" class="form-control" name="total_price"
-                                        placeholder="Total Price" readonly id="TotalPrice">
-
-                                    @error('total_price')
-                                    <span class="text-danger total_price_error"> {{ $message }} </span>
-                                    @enderror
-
-                                    <span class="text-danger h5" id="QtyPriceError"> </span>
-                                </div>
-
-                                <div class="col-4 mb-3">
-                                    <label class="font_bold" for="DiscountAmount"> Discount Amount</label>
-                                    <input type="number" step="any" min="0" step="any" class="form-control"
-                                        name="discount_amount" value="" placeholder="Discount Amount"
-                                        id="DiscountAmount">
-
-                                    @error('discount_amount')
-                                    <span class="text-danger discount_amount_error"> {{ $message }} </span>
-                                    @enderror
-                                </div>
-
-                                <div class="col-4 mb-3">
-                                    <label class="font_bold" for="DiscountPercentage"> Discount Percentage % </label>
-                                    <input type="number" step="any" min="0" step="any" class="form-control"
-                                        name="discount_percentage" value="" placeholder="Discount Percentage"
-                                        id="DiscountPercentage">
-
-                                    @error('discount_percentage')
-                                    <span class="text-danger discount_percentage_error"> {{ $message }} </span>
-                                    @enderror
-                                </div>
-
-                                <div class="col-4 mb-3">
-                                    <label class="font_bold" for="TaxAmount"> Tax Amount </label>
-                                    <input type="number" step="any" min="0" step="any" class="form-control"
-                                        name="tax_amount" value="" placeholder="Tax Amount" id="TaxAmount">
-
-                                    @error('tax_amount')
-                                    <span class="text-danger tax_amount_error"> {{ $message }} </span>
-                                    @enderror
-                                </div>
-
-                                <div class="col-4 mb-3">
-                                    <label class="font_bold" for="TaxPercentage"> Tax % </label>
-                                    <input type="number" step="any" min="0" step="any" class="form-control"
-                                        name="tax_percentage" value="" placeholder="Tax percentage" id="TaxPercentage">
-
-                                    @error('tax_percentage')
-                                    <span class="text-danger tax_percentage_error"> {{ $message }} </span>
-                                    @enderror
-                                </div>
-
-                                <div class="col-4 mb-3">
-                                    <label class="font_bold" for="FinalPrice"> Final Price </label>
-                                    <input type="number" min="0" step="any" class="form-control" name="final_price"
-                                        readonly placeholder="Final price" id="FinalPrice">
-
-                                    @error('final_price')
-                                    <span class="text-danger final_price_error"> {{ $message }} </span>
-                                    @enderror
-                                </div>
-
-                                {{-- <div class="col-4 mb-3">
-                                    <label class="font_bold" for="WarrantyPeriod"> Warranty Period </label>
-                                    <input type="text" class="form-control" name="warranty_period" value=""
-                                        placeholder="Warranty period" id="WarrantyPeriod">
-
-                                    @error('warranty_period')
-                                    <span class="text-danger warranty_period_error"> {{ $message }} </span>
-                                    @enderror
-                                </div> --}}
-
+                            <div class="row">
                                 <div class="col-4 mb-2">
                                     <label class="font_bold" for="InvoicePicture"> Invoice Picture </label>
                                     <input type="file" name="invoice_picture" class="form-control" id="InvoicePicture">
@@ -258,7 +272,6 @@ $load_js = Array('tippy','select2')
                                     <span class="text-danger invoice_picture_error"> {{ $message }} </span>
                                     @enderror
                                 </div>
-
                                 <div class="col-4 mb-2">
                                     <label class="font_bold" for="Description"> Description </label>
                                     <input type="text" name="description" class="form-control" placeholder="Description"
@@ -269,6 +282,7 @@ $load_js = Array('tippy','select2')
                                     @enderror
                                 </div>
                             </div>
+
                         </div>
                     </div>
                     <div class="row mt-2">
@@ -307,21 +321,151 @@ $load_js = Array('tippy','select2')
             }else{
                 $('#CompanySelectError').html("")
                 let category_id = parseInt($(this).val())
-                let url_addr = "{{ url('ProductManagement/productfilter')}}/"+company_id+"/cat/"+category_id;
+                let url_addr = "{{ url('productManagement/productfilter')}}/"+company_id+"/cat/"+category_id;
                 $.get(url_addr , function(response, status){
                     product_list = response.data;
                     var products = response.data;
                     if (products != '')
                     {
                         for (i in products) {                        
-                            $('#SelectProduct').append('<option value='+products[i]?.id+'>'+products[i]?.product_name+' ['+ products[i]?.product_code +']</option>');
+                            $('.SelectProduct').append('<option value='+products[i]?.id+'>'+products[i]?.product_name+' ['+ products[i]?.product_code +']</option>');
                         }
                     }else{
                         $('#SelectProduct').append('<option value="">No Data Found </option>');
                     }
                 });
             } 
-        }); 
+        });
+
+        
+
+        $("#AddProductButton").click(function(){
+            var products = product_list;
+            var Sub = ''
+
+            console.log(products)
+            if (products != '')
+            {
+                for (i in products) {                        
+                   Sub += '<option value='+products[i]?.id+'>'+products[i]?.product_name+' ['+ products[i]?.product_code +']</option>';
+                }
+            }else{
+                Sub = '<option value="">No Data Found </option>';
+            }
+            var html_code = `
+                <div id="row-1" class="row mt-2 border border-3 p-1 mx-1 mb-2">
+                    <div class="col-6 mb-2">
+                        <label class="font_bold" for="SelectProduct1"> Select Product * </label>
+                        <a href="javascript:void(0);" id="ViewProductDetail-1"
+                            style="float: right !important; display: none;"> View Product
+                            Detail </a>
+                        <select name="product_id" required id="SelectProduct1"
+                            class="form-control mySelect SelectProduct" data-toggle="select2" data-width="100%">
+                           ${Sub}  
+                        </select>
+                        @error('product_id')
+                        <span class="text-danger product_id_error"> {{ $message }} </span>
+                        @enderror
+                    </div>
+
+                    <div class="col-sm-3 mb-2 px-1">
+                        <label for="ProductCode" class="font_bold"> Product Code* </label>
+                        <input type="text" placeholder="Product Code" name="product_code"
+                            class="form-control"
+                            value="{{ $pruchase?->product_code ?? old('product_code') }}" readonly
+                            id="ProductCode">
+                        @error('product_code')
+                        <span class="text-danger product_code_error"> {{ $message }} </span>
+                        @enderror
+                    </div>
+
+                    <div class="col-3 mb-1 px-1">
+                        <label class="font_bold" for="ProductPrice"> Product Price </label>
+                        <input type="number" min="0" step="any" class="form-control"
+                            name="product_price" readonly placeholder="Product Price" id="ProductPrice">
+                        @error('product_price')
+                        <span class="text-danger product_price_error">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="col-3 mb-2 px-1">
+                        <label class="font_bold" for="ProductQuantity"> Quantity </label>
+                        <input type="number" min="0" class="form-control" name="quantity"
+                            placeholder="Quantity" id="ProductQuantity">
+
+                        @error('quantity')
+                        <span class="text-danger quantity_error"> {{ $message }} </span>
+                        @enderror
+                    </div>
+                    <div class="col-3 mb-2 px-1">
+                        <label class="font_bold" for="BonusQuantity"> Bonus Qty </label>
+                        <input type="number" min="0" class="form-control" name="bonus_quantity"
+                            placeholder="Bonus qty" id="BonusQuantity">
+                        @error('bonus_quantity')
+                        <span class="text-danger bonus_quantity_error"> {{ $message }} </span>
+                        @enderror
+                    </div>
+                    <div class="col-3 mb-2 px-1">
+                        <label class="font_bold" for="TotalPrice"> Total Price</label>
+                        <input type="number" step="any" min="0" class="form-control" name="total_price"
+                            placeholder="Total Price" readonly id="TotalPrice">
+
+                        @error('total_price')
+                        <span class="text-danger total_price_error"> {{ $message }} </span>
+                        @enderror
+
+                        <span class="text-danger h5" id="QtyPriceError"> </span>
+                    </div>
+                    <div class="col-3 mb-2 px-1">
+                        <label class="font_bold" for="DiscountPercentage"> Discount % </label>
+                        <input type="number" step="any" min="0" step="any" class="form-control"
+                            name="discount_percentage" value="" placeholder="Discount %"
+                            id="DiscountPercentage">
+
+                        @error('discount_percentage')
+                        <span class="text-danger discount_percentage_error"> {{ $message }} </span>
+                        @enderror
+                    </div>
+                    <div class="col-3 mb-2 px-1">
+                        <label class="font_bold" for="DiscountAmount"> Discount Amount</label>
+                        <input type="number" step="any" min="0" step="any" class="form-control"
+                            name="discount_amount" value="" placeholder="Discount Amount"
+                            id="DiscountAmount">
+
+                        @error('discount_amount')
+                        <span class="text-danger discount_amount_error"> {{ $message }} </span>
+                        @enderror
+                    </div>
+                    <div class="col-3 mb-2 px-1">
+                        <label class="font_bold" for="TaxAmount"> Tax Amount </label>
+                        <input type="number" step="any" min="0" step="any" class="form-control"
+                            name="tax_amount" value="" placeholder="Tax Amount" id="TaxAmount">
+
+                        @error('tax_amount')
+                        <span class="text-danger tax_amount_error"> {{ $message }} </span>
+                        @enderror
+                    </div>
+                    <div class="col-3 mb-2 px-1">
+                        <label class="font_bold" for="TaxPercentage"> Tax % </label>
+                        <input type="number" step="any" min="0" step="any" class="form-control"
+                            name="tax_percentage" value="" placeholder="Tax percentage"
+                            id="TaxPercentage">
+
+                        @error('tax_percentage')
+                        <span class="text-danger tax_percentage_error"> {{ $message }} </span>
+                        @enderror
+                    </div>
+                    <div class="col-3 mb-2 px-1">
+                        <label class="font_bold" for="FinalPrice"> Final Price </label>
+                        <input type="number" min="0" step="any" class="form-control" name="final_price"
+                            readonly placeholder="Final price" id="FinalPrice">
+
+                        @error('final_price')
+                        <span class="text-danger final_price_error"> {{ $message }} </span>
+                        @enderror
+                    </div>
+                </div>`;
+            $('#TotalProductList').append(html_code);
+        });
 
         function dateFormat(date, format) {
             // Calculate date parts and replace instances in format string accordingly
@@ -331,17 +475,19 @@ $load_js = Array('tippy','select2')
             return format;
         }
 
-        $("#SelectProduct").change(function(){
+        $(".SelectProduct").change(function(){
             let product_id = parseInt($(this).val())
             var single_product = product_list?.find(x => x.id === product_id);
+            // alert(product_id);
             console.log(single_product)
             $('#ProductCode').val(single_product?.product_code)
             $('#ProductPrice').val(single_product?.purchase_price)
-            $('#ViewProductDetail').show()
-            $('#ViewProductDetail').attr('ProductId', product_id)
 
-            $('#ViewProductDetail').attr('title', 'Click to view Detail')
-            $('#ViewProductDetail').attr('ProductId', product_id)
+            $('#ViewProductDetail-0').show()
+            $('#ViewProductDetail-0').attr('ProductId', product_id)
+
+            $('#ViewProductDetail-0').attr('title', 'Click to view Detail')
+            $('#ViewProductDetail-0').attr('ProductId', product_id)
 
             if(single_product?.remaining_quantity > 0){
                 $('#ProductQuantity').attr('max', single_product?.remaining_quantity)
@@ -355,7 +501,7 @@ $load_js = Array('tippy','select2')
             
             if(single_product?.warranty_period > 0){
 
-                alert(single_product?.expiry_date_value)
+                // alert(single_product?.expiry_date_value)
 
                 $('#ExpiryDate').val(dateFormat(new Date(single_product?.expiry_date_value), "Y-m-d"))
                 
@@ -391,7 +537,7 @@ $load_js = Array('tippy','select2')
             // });
         });
 
-        $("#ViewProductDetail").click(function(){
+        $(".ViewProductDetail").click(function(){
             let product_id = parseInt($(this).attr('ProductId'))
             $("#ProductDetail").modal('show')
             let url_addr = "{{ url('productManagement/products')}}/"+product_id;

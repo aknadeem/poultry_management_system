@@ -18,10 +18,20 @@ use App\Http\Controllers\InventoryManagement\ {FeedController, ExpenseController
 use App\Http\Controllers\ChickenModule\ {ChickenPurchaseController, ChickenSaleController, ChickPurchaseController};
 
 use App\Http\Controllers\ProductManagement\ {
-    ProductController, ProductPurchaseController, ProductStoreController
+    ProductController, ProductPurchaseController, ProductStoreController, ProductSaleController
 };
 
+use App\Http\Controllers\PaymentManagement\AccountPayableController;
+
 Auth::routes();
+
+// Route::get('/testpdf', function () {
+//     return response()->file(storage_path('file.pdf'));
+// });
+
+// Route::get('/testpdf', function () {
+//     return response()->download(storage_path('file.pdf'), 'save-as-pdf');
+// });
 
 Route::group(['middleware' => 'auth'], function(){
 	Route::get('/', function () {
@@ -57,6 +67,7 @@ Route::group(['middleware' => 'auth'], function(){
     });
     
     Route::group(['prefix' => '/partymanagement'], function(){
+        Route::get('/division-customers/{division_id}', [PartyController::class, 'customersWithDivision'])->name('division.customers');
         Route::resource('parties', PartyController::class);
         Route::resource('vendors', VendorController::class);
         Route::resource('customers', CustomerController::class)->except(['update']);
@@ -71,6 +82,12 @@ Route::group(['middleware' => 'auth'], function(){
     Route::group(['prefix' => '/balancemanagement'], function(){
         Route::get('/getbrokersBalanceList', [BrokerBalanceController::class, 'getbrokersBalanceList'])->name('getbrokersBalanceList');
         Route::resource('brokerbalance', BrokerBalanceController::class);
+
+        Route::get('/balance-with-company/{id}', [CompaniesBalanceController::class, 'getBalanceWithCompany'])->name('getBalanceWithCompany');
+
+        Route::resource('companybalance', CompaniesBalanceController::class)->except([
+            'create', 'update'
+        ]);
     });
     
     Route::group(['prefix' => '/farmManagement'], function(){
@@ -103,7 +120,7 @@ Route::group(['middleware' => 'auth'], function(){
         Route::resource('sale', ChickenSaleController::class);
     });
     
-    Route::group(['prefix' => '/productManagement'], function(){
+    Route::group(['prefix' => '/ProductManagement'], function(){
         Route::get('/productfilter/{company_id}/cat/{category_id}', [ProductController::class, 'companyAndCategoryFilter'])->name('productfilter');
 
         Route::resource('products', ProductController::class);
@@ -111,6 +128,11 @@ Route::group(['middleware' => 'auth'], function(){
 
         Route::get('/storelist', [ProductStoreController::class, 'getStoreList'])->name('storelist');
         Route::resource('productstores', ProductStoreController::class);
+        Route::resource('productsales', ProductSaleController::class);
+    });
+
+    Route::group(['prefix' => '/paymentmanagement'], function(){
+        Route::resource('payables', AccountPayableController::class);
     });
     
 });

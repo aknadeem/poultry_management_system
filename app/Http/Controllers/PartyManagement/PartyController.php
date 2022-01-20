@@ -79,6 +79,22 @@ class PartyController extends Controller
         return view('partymanagement.party.create', compact('countries', 'party', 'divisions', 'customer_types', 'farm_types', 'farm_subtypes', 'business_types', 'vendor_types','contact_persons'));
     }
 
+    public function customersWithDivision($division_id)
+    {
+        $customers = Party::where([['customer_division_id', $division_id], ['is_customer', 1]])->get(['id','is_customer','name','cnic_no','customer_division_id']);
+        if($customers->count() > 0){
+            return response()->json([
+                'success' => 'yes',
+                'data' => $customers->toArray(),
+            ]);
+        }else{
+            return response()->json([
+                'success' => 'no',
+                'data' => [],
+            ]);
+        }
+    }
+
     public function store(Request $request)
     {
         $id = null;

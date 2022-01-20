@@ -103,6 +103,12 @@
                                     <i class="fas fa-shopping-bag"></i> Product Purchases
                                 </a>
                             </div>
+
+                            <div class="dropdown">
+                                <a class="dropdown-item" href="{{ route('productsales.index') }}" id="topnav-form">
+                                    <i class="fas fa-shopping-bag"></i> Product Sales
+                                </a>
+                            </div>
                         </div>
                     </li>
 
@@ -161,6 +167,19 @@
                                     {{-- <a href="#" class="dropdown-item">Sales</a> --}}
                                     <a href="{{ route('feed.index') }}" class="dropdown-item"><i
                                             class="fas fa-credit-card"></i> Purchase</a>
+                                </div>
+                            </div>
+
+                            <div class="dropdown">
+                                <a class="dropdown-item dropdown-toggle arrow-none" href="#" id="topnav-form"
+                                    role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-list"> </i> Payments
+                                    <div class="arrow-down"></div>
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="topnav-form">
+                                    {{-- <a href="#" class="dropdown-item">Sales</a> --}}
+                                    <a href="{{ route('payables.index') }}" class="dropdown-item"><i
+                                            class="fas fa-credit-card"></i> Account Payable </a>
                                 </div>
                             </div>
                         </div>

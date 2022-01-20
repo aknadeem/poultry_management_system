@@ -1,6 +1,6 @@
 <div class="modal-header border-bottom">
     <h4 class="modal-title"> Product Detail </h4>
-    <button type="button" class="btn-close ModalClosed" aria-label="Close"></button>
+    <button type="button" class="btn-close" id="CloseProductDetailModal" aria-label="Close"></button>
 </div>
 <div class="card-body">
     <div class="d-flex align-items-start mb-1">
@@ -78,7 +78,12 @@
 </div>
 
 <script>
-    $('.ModalClosed').click(function () {
-        $('.modal').modal('hide');
-    });
+    // $('.ModalClosed').click(function () {
+    //     $('.modal').modal('hide');
+    // });
+
+    $(document).on("click", "#CloseProductDetailModal", function(event) {
+            // $(this).find('form').trigger('reset');
+            $('#ProductDetail').modal('hide'); 
+        });
 </script>

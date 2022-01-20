@@ -5,8 +5,10 @@ namespace App\Http\Controllers\ProductManagement;
 use Session;
 use DataTables;
 use Carbon\Carbon;
+use App\Models\Party;
 use App\Models\Country;
 use App\Models\Product;
+use App\Models\Division;
 use App\Models\Employee;
 use App\Models\EmployeeType;
 use App\Models\PartyCompany;
@@ -20,7 +22,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CustomerFormRequest;
 
-class ProductPurchaseController extends Controller
+class ProductSaleController extends Controller
 {
     private $auth_user_id;
     private $today_is;
@@ -35,17 +37,20 @@ class ProductPurchaseController extends Controller
 
     public function index()
     {
-        $product_purchases = ProductPurchase::with('product:id,product_name,product_code,party_company_id,product_category_id','product.company:id,company_name','product.category:id,name')->orderBy('id', 'DESC')->get();
-
-        return view('productmanagement.purchases.index', compact('product_purchases'));
+        $product_sales = collect();
+        return view('productmanagement.sales.index', compact('product_sales'));
     }
 
     public function create()
     {
         $pruchase = new ProductPurchase();
+        $divisions = Division::get(['id','name','slug']);
+        // $customers = Party::where('is_customer', 1)->get();
+        $customers = Party::where('is_customer', 1)->get(['id','is_customer','name','cnic_no','customer_division_id']);
+        // dd($customers->toArray());
         $companies = PartyCompany::where('is_active', 1)->get(['id','company_name','company_code']);
         $categories = ProductCategory::where('is_active', 1)->get(['id','name','slug']);
-        return view('productmanagement.purchases.create', compact('pruchase','companies', 'categories'));
+        return view('productmanagement.sales.create', compact('pruchase','companies', 'categories','divisions','customers'));
     }
 
     public function getEmployeeList()
@@ -84,6 +89,7 @@ class ProductPurchaseController extends Controller
 
     public function store(Request $request)
     {
+        dd($request->toArray());
         $id = null;
         $this->validationRules($request, $id);
 
@@ -378,3 +384,4 @@ class ProductPurchaseController extends Controller
         return redirect()->route('productpurchases.index');
     }
 }
+

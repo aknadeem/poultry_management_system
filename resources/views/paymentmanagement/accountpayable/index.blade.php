@@ -15,10 +15,10 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                     <ol class="breadcrumb m-0">
                         <li class="breadcrumb-item"><a href="#">Home</a>
                         </li>
-                        <li class="breadcrumb-item active"> BalancePayments </li>
+                        <li class="breadcrumb-item active">PaymentManagement</li>
                     </ol>
                 </div>
-                <h6 class="page-title"> {{ $balance_payments[0]->company?->company_name}} </h6>
+                <h6 class="page-title">Payments</h6>
             </div>
         </div>
     </div>
@@ -28,18 +28,14 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                 <div class="card-body">
                     <div class="row mb-2">
                         <div class="col-6 align-self-start">
-                            <h4>Balance Payments</h4>
+                            <h4>Account Payable</h4>
                         </div>
                         <div class="col-6 align-self-end text-end mb-2">
-                            <a href="{{ asset('storage/party/company/'.$balance_payments[0]->company?->company_logo) }}"
-                                target="_blank" title="click to view">
-                                <img src="{{ asset('storage/party/company/'.$balance_payments[0]->company?->company_logo) }}"
-                                    alt="No image" width="10%">
-                            </a>
-                            {{-- <a class="btn btn-secondary btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#AddCompanyModal" href="javascript:void(0);" CustomerId="0"
-                                title="Click to add new company" data-plugin="tippy" data-tippy-animation="scale"
-                                data-tippy-arrow="true"><i class="fa fa-plus"></i>
+                            {{--
+                            <a class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#AddCompanyModal"
+                                href="javascript:void(0);" CustomerId="0" title="Click to add new company"
+                                data-plugin="tippy" data-tippy-animation="scale" data-tippy-arrow="true"><i
+                                    class="fa fa-plus"></i>
                                 Company
                             </a> --}}
                         </div>
@@ -48,20 +44,24 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Paid Amount</th>
-                                <th>Paid through</th>
-                                <th>Paid By </th>
-                                <th>Paid At </th>
+                                <th>Date</th>
+                                <th>Total Amount</th>
+                                <th>Paid Amount </th>
+                                <th>Remaining Amount</th>
+                                <th>Amount Status </th>
+                                <th>Amount Type </th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($balance_payments as $key=>$item)
+                            @forelse ($payables as $key=>$item)
                             <tr>
-                                <td>{{++$key}}</td>
-                                <td>{{$item->paid_amount}}</td>
-                                <td>{{$item->payment_option}}</td>
-                                <td>{{$item?->addedBy?->name}} </td>
-                                <td>{{$item->created_at?->format('d M, Y h:i:s A')}}</td>
+                                <td>{{ ++$key }}</td>
+                                <td>{{ $item->entry_date }}</td>
+                                <td>Rs: @money($item->total_amount)</td>
+                                <td>Rs: @money($item->paid_amount)</td>
+                                <td>Rs: @money($item->remaining_amount)</td>
+                                <td> @uppercaseFirst($item->amount_status)</td>
+                                <td> @uppercaseFirst($item->amount_type)</td>
                             </tr>
                             @empty
                             @endforelse
@@ -92,12 +92,6 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
 @section('custom_scripts')
 <script>
     $(function() {
-
-        // $('.openAddPaymentModal').click(function () {
-        //     alert('hello')
-        //     // $('#AddPaymentModal').modal('show')
-        // });
-
         $('.ModalClosed').click(function () {
             // $(this).find('modal').hide();
             $('.modal').modal('hide'); 

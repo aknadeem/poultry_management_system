@@ -24,4 +24,14 @@ class CompanyBalance extends Model
     {
         return $this->belongsTo('App\Models\PartyCompany', 'company_id', 'id');
     }
+    
+    public function productpurchase()
+    {
+        return $this->belongsTo('App\Models\ProductPurchase', 'model_id', 'id')->withDefault(['id' => 0]);
+    }
+
+    public function feed()
+    {
+        return $this->belongsTo('App\Models\Feed', 'model_id', 'id')->where('type', '=', 'feed')->withDefault(['id' => 0]);
+    }
 }

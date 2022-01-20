@@ -169,33 +169,36 @@
                 <button type="button" class="btn-close ModalClosed" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form autocomplete="off" method="post" enctype="multipart/form-data" id="CustomerForm"
+                <form autocomplete="off" method="post" enctype="multipart/form-data" id="AddPaymentForm"
                     class="form_loader">
                     @csrf
                     <div class="row form-group">
-                        <input type="hidden" name="customer_id_modal" id="customerIdModal">
+                        <input type="hidden" name="company_balance_id" id="CompanyBalanceId">
+
+                        <input type="hidden" name="party_company_id" id="CompanyIdModal">
 
                         <div class="col-sm-4 mb-2">
-                            <label for="cno">Total Amount: <b> 2500 </b> </label>
+                            <label for="cno">Total Amount: <b id="TotalPaymentLabel"> 2500 </b> </label>
                         </div>
                         <div class="col-sm-4 mb-2">
-                            <label for="cno">Paid Amount: <b class="text-success"> 0 </b> </label>
+                            <label for="cno">Paid Amount: <b id="PaidAmountLabel" class="text-success"> 0 </b> </label>
                         </div>
                         <div class="col-sm-4 mb-2">
-                            <label for="cno">Remaining Amount: <b class="text-danger"> 2500 </b></label>
+                            <label for="cno">Remaining Amount: <b id="RemAmountLabel" class="text-danger"> 2500
+                                </b></label>
                         </div>
 
                         <div class="col-sm-6 mb-2">
-                            <label for="amount_payment">Amount</label>
+                            <label for="AddAmount">Amount</label>
                             <input type="number" name="amount_payment" class="form-control" placeholder="Enter amount"
-                                id="amount_payment">
+                                id="AddAmount" min="0" required>
                             <span class="text-danger amount_payment_error"> </span>
                         </div>
 
                         <div class="col-sm-6 mb-2">
                             <label for="payment_option">Payment Option</label>
                             <select name="payment_option" id="payment_option" class="form-control mySelectModal"
-                                data-toggle="select2" data-width="100%">
+                                data-toggle="select2" required data-width="100%">
                                 <option value="cheque">Cheque</option>
                                 <option value="cash">Cash</option>
                                 <option value="other">Other</option>
@@ -212,14 +215,14 @@
 
                         <div class="col-sm-4 mb-2">
                             <label for="cno">Cheque Bank</label>
-                            <input type="text" name="amount_payment" class="form-control" placeholder="Enter amount"
-                                id="amount_payment">
-                            <span class="text-danger amount_payment_error"> </span>
+                            <input type="text" name="bank_name" class="form-control" placeholder="Enter amount"
+                                id="BankName">
+                            <span class="text-danger bank_name_error"> </span>
                         </div>
                         <div class="col-sm-4 mb-2">
                             <label for="cheque_picture">Cheque Picture</label>
                             <input type="file" name="cheque_picture" class="form-control" placeholder="Enter amount"
-                                id="cheque_picture">
+                                id="ChequePicture">
                             <span class="text-danger cheque_picture_error"> </span>
                         </div>
 
@@ -257,20 +260,73 @@
 @section('modal_scripts')
 <script>
     $(function() {
-
-        // $(".mySelectModal").select2({
-        //     dropdownParent: $("#AddPaymentModal")
-        // });
-
         $('#AddPaymentModal').modal({backdrop: 'static', keyboard: false}) 
-
-        $(document).on("click", ".openAddPaymentModal", function(event) {
-            $('#AddPaymentModal').modal('show')
-        });
         
-        // $(document).on("click", ".openAddPaymentModal", function(event) {
-        //     $('#InvoicePaymentModal').modal('show')
-        // });
+        $(document).on("click", ".openAddPaymentModal", function(event) {
+            let balance_id = parseInt($(this).attr('data-id')) || 0
+            // alert(balance_id)x
+            let page_url = "{{ url('/balancemanagement/balance-with-company')}}/"+balance_id
+
+            $.get(page_url, function(data, status){
+                console.log(data)
+                if(data?.balance){
+                    $('#CompanyBalanceId').val(balance_id)
+                    $('#CompanyIdModal').val(data?.balance?.company_id)
+                    $('#TotalPaymentLabel').html(data?.balance?.total_amount)
+                    $('#PaidAmountLabel').html(data?.balance?.paid_amount)
+                    $('#RemAmountLabel').html(data?.balance?.remaining_amount)
+                    $('#AddAmount').attr('max', data?.balance?.remaining_amount)
+                    $('#AddPaymentModal').modal('show')
+                }else{
+                    return 0;
+                }
+            });
+        });
+
+        $(document).on("submit", "#AddPaymentForm", function(e) {
+            e.preventDefault();
+            let balance_id = parseInt($(this).attr('data-id')) || 0
+            // alert(balance_id)x
+            let form_url = "{{ route('companybalance.store')}}"
+            let form_type = "POST"
+
+            $.ajax({
+                type: form_type,
+                url: form_url,
+                data: new FormData(this),
+                dataType:'JSON',
+                contentType: false,
+                cache: false,
+                processData: false,
+                // data: $('#CustomerForm').serialize(),
+                beforeSend : function(msg) {
+                    $('#AddPaymentForm').find('span.invalid-feedback').text('')
+                },
+                success: function(msg) {
+                    console.log(msg)
+                    if(msg?.success == 'no'){
+                        // console.log(msg.error)
+                        $.each(msg?.error, function(prefix, val){
+                            // console.log(prefix)
+                            $('#AddPaymentForm').find('span.'+prefix+'_error').text(val[0]);
+                        });
+                    }else{
+                        $("#AddPaymentForm").trigger("reset");
+                        $('#AddPaymentModal').modal('hide');
+                        $('#Balance-Datatable').DataTable().ajax.reload(null, false);
+                        swal.fire({
+                            title: "Success",
+                            text: msg.message,
+                            icon: "success",
+                            confirmButtonText: "Ok",
+                            // closeOnConfirm: true,
+                        }, function () {
+                            location.reload();
+                        });
+                    }
+                }
+            });
+        });
 
         $(".mySelectModal").select2({
             dropdownParent: $("#AddPaymentModal")

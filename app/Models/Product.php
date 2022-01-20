@@ -20,6 +20,7 @@ class Product extends Model
         'mrp_price' => 'decimal:2',
         'whole_sale_price' => 'decimal:2',
         'purchase_price' => 'decimal:2',
+        'sale_price' => 'decimal:2',
         'discount_amount' => 'decimal:2',
         'discount_percentage' => 'float',
         'tax_amount' => 'decimal:2',
