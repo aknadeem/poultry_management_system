@@ -152,7 +152,7 @@ class ProductController extends Controller
 
     public function companyAndCategoryFilter($party_id, $category_id)
     {
-        $products = Product::where('is_active',1)->where([['party_company_id','=', $party_id],['product_category_id','=',$category_id]])->get(['id','product_name','product_code', 'product_type','total_quantity','remaining_quantity','purchase_price','sale_price', 'discount_amount','tax_amount','max_inventory_level','discount_percentage','tax_percentage','warranty_period']);
+        $products = Product::where('is_active',1)->where([['party_company_id','=', $party_id],['product_category_id','=',$category_id]])->get(['id','product_name','product_code', 'product_type','total_quantity','quantity','remaining_quantity','purchase_price','sale_price', 'discount_amount','tax_amount','max_inventory_level','discount_percentage','tax_percentage','warranty_period']);
 
         if($products !=''){
             return response()->json([

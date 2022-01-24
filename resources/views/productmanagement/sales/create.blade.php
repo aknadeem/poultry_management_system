@@ -40,6 +40,14 @@ $load_js = Array('tippy','select2')
                     </a>
                 </div>
 
+                <div class="col-12">
+                    @if ($errors->any())
+                    @foreach ($errors->all() as $error)
+                    <h5>{{$error}}</h5>
+                    @endforeach
+                    @endif
+                </div>
+
                 <form method="post" action="{{ route('productsales.store') }}" enctype="multipart/form-data"
                     id="ProductSaleForm" class="form_loader" autocomplete="off">
                     @csrf
@@ -55,11 +63,10 @@ $load_js = Array('tippy','select2')
                     @method('PUT')
                     @endif
                     <div class="row">
-                        <div class="col-4 border border-2">
+                        <div class="col-3 border border-2">
                             <div class="row mt-2">
-
-                                <div class="col-12 mb-2">
-                                    <label class="font_bold" for="DivisionSelect"> Select Divisions </label>
+                                <div class="col-12 mb-2 px-1">
+                                    <label class="fw-bold fs-5" for="DivisionSelect"> Select Divisions </label>
                                     <select name="division_id" required id="DivisionSelect"
                                         class="form-control mySelect" data-toggle="select2" data-width="100%">
                                         <option value=""> Select division </option>
@@ -74,35 +81,35 @@ $load_js = Array('tippy','select2')
                                     <span class="text-danger" id="DivisionSelectError"></span>
                                 </div>
 
-                                <div class="col-12 mb-2">
-                                    <label class="font_bold" for="CustomerSelect"> Select Customer* </label>
-                                    <select name="customer_id" required id="CustomerSelect"
-                                        class="form-control mySelect" data-toggle="select2" data-width="100%">
+                                <div class="col-12 mb-2 px-1">
+                                    <label class="fw-bold fs-5" for="CustomerSelect"> Select Customer* </label>
+                                    <select name="party_id" required id="CustomerSelect" class="form-control mySelect"
+                                        data-toggle="select2" data-width="100%">
                                         <option value=""> Select customer </option>
                                     </select>
-                                    @error('customer_id')
-                                    <span class="text-danger customer_id_error"> {{ $message }} </span>
+                                    @error('party_id')
+                                    <span class="text-danger party_id_error"> {{ $message }} </span>
                                     @enderror
                                     <span class="text-danger" id="CustomerSelectError"></span>
                                 </div>
 
-                                <div class="col-12 mb-2">
-                                    <label class="font_bold" for="CompanySelect"> Select Company* </label>
-                                    <select name="company_id" required id="CompanySelect" class="form-control mySelect"
-                                        data-toggle="select2" data-width="100%" id="">
+                                <div class="col-12 mb-2 px-1">
+                                    <label class="fw-bold fs-5" for="CompanySelect"> Select Company* </label>
+                                    <select name="party_company_id" required id="CompanySelect"
+                                        class="form-control mySelect" data-toggle="select2" data-width="100%" id="">
                                         <option value=""> Select company </option>
                                         @forelse ($companies as $item)
                                         <option value="{{ $item?->id }}"> {{ $item?->company_name }} </option>
                                         @empty
                                         @endforelse
                                     </select>
-                                    @error('company_id')
-                                    <span class="text-danger company_id_error"> {{ $message }} </span>
+                                    @error('party_company_id')
+                                    <span class="text-danger party_company_id_error"> {{ $message }} </span>
                                     @enderror
                                 </div>
 
-                                <div class="col-12 mb-2">
-                                    <label class="font_bold" for="CategorySelect"> Select Category* </label>
+                                <div class="col-12 mb-2 px-1">
+                                    <label class="fw-bold fs-5" for="CategorySelect"> Select Category* </label>
                                     <select name="product_category_id" required id="CategorySelect"
                                         class="form-control mySelect" data-toggle="select2" data-width="100%" id="">
                                         <option value=""> Select category</option>
@@ -117,16 +124,25 @@ $load_js = Array('tippy','select2')
                                     <span class="text-danger" id="CompanySelectError"></span>
                                 </div>
 
-                                <div class="col-6 mb-2 px-1">
-                                    <label class="font_bold" for="SaleDate">Sale Date</label>
-                                    <input type="date" class="form-control" name="sale_date" id="SaleDate">
+                                <div class="col-12 mb-2 px-1">
+                                    <label class="fw-bold fs-5" for="SaleDate">Sale Date*</label>
+                                    <input type="date" class="form-control" name="sale_date" id="SaleDate" required>
                                     @error('sale_date')
                                     <span class="text-danger sale_date_error"> {{ $message }} </span>
                                     @enderror
                                 </div>
 
-                                <div class="col-6 mb-2 px-1">
-                                    <label class="font_bold" for="ManualNumber">Manual Number</label>
+                                <div class="col-12 mb-2 px-1">
+                                    <label class="fw-bold fs-5" for="DueDate">Due Date*</label>
+                                    <input type="text" class="form-control" name="due_date_option" id="DueDate"
+                                        required>
+                                    @error('due_date_option')
+                                    <span class="text-danger due_date_option_error"> {{ $message }} </span>
+                                    @enderror
+                                </div>
+
+                                <div class="col-12 mb-2 px-1">
+                                    <label class="fw-bold fs-5" for="ManualNumber">Manual Number</label>
                                     <input type="text" class="form-control" name="manual_number"
                                         placeholder="Manual Number" id="ManualNumber">
                                     @error('manual_number')
@@ -134,9 +150,31 @@ $load_js = Array('tippy','select2')
                                     @enderror
                                 </div>
 
+                                <div class="col-12 mb-2">
+                                    <label class="fw-bold fs-5">Sale Type *</label>
+                                    <div class="mt-1">
+                                        <div class="form-check-inline">
+                                            <input type="radio" id="cashRadio" name="sale_type" value="cash"
+                                                class="form-check-input rounded-0" required>
+                                            <label class="form-check-label fw-bold fs-5" for="cashRadio">Cash</label>
+
+                                            &nbsp;&nbsp;
+
+                                            <input type="radio" id="creditRadio" name="sale_type" value="credit"
+                                                required class="form-check-input rounded-0 fw-bold">
+                                            <label class="form-check-label fw-bold fs-5"
+                                                for="creditRadio">Credit</label>
+                                        </div>
+                                    </div>
+
+                                    @error('sale_type')
+                                    <span class="text-danger sale_type_error"> {{ $message }} </span>
+                                    @enderror
+                                </div>
+
                             </div>
                         </div>
-                        <div class="col-8 border border-2">
+                        <div class="col-9 border border-2">
                             <span id="TotalProductList">
                                 {{-- <div id="row-0" class="row mt-2 border border-3 p-1 mx-1 mb-2">
                                 </div> --}}
@@ -145,6 +183,7 @@ $load_js = Array('tippy','select2')
                                         <th>Product Name</th>
                                         <th>Price</th>
                                         <th>Qty</th>
+                                        <th>Bonus-Qty</th>
                                         <th>Discount</th>
                                         <th>Total Price</th>
                                         <th></th>
@@ -153,49 +192,57 @@ $load_js = Array('tippy','select2')
                                     </tbody>
 
                                     <tfoot>
-                                        <tr class="items_row ">
+                                        <tr class="items_row_Footer">
                                             <td colspan="1" class="text-start">
-                                                <div class="card card-body">
+                                                <div class="card card-body" style="background: #eee;">
                                                     <span class="btn btn-secondary" id="AddProductButton">
                                                         <i class="fa fa-plus"></i> Add Item
                                                     </span>
                                                 </div>
                                             </td>
-                                            <td colspan="5" class="text-end">
+                                            <td colspan="6" class="text-end">
                                                 <label class="pt-1"> <b>Total Amount: &nbsp; </b> </label>
-                                                <input type="number" style="width:60%; float:right;" id="GrandTotal"
-                                                    class="form-control" readonly placeholder="Total Amount">
+                                                <input type="number" style="width:35%; float:right;" id="GrandTotal"
+                                                    name="total_amount" class="form-control" readonly
+                                                    placeholder="Total Amount" required>
                                                 <br>
                                                 <br>
                                                 <label class="pt-1"> <b>Add Discount: &nbsp; </b> </label>
-                                                <input type="number" style="width:60%; float:right;"
-                                                    id="DiscountOnTotal" class="form-control"
+                                                <input type="number" style="width:35%; float:right;"
+                                                    id="DiscountOnTotal" name="discount_amount" class="form-control"
                                                     placeholder="Add Discount">
                                                 <span id="DiscountAmountGreaterError" Class="text-danger"></span>
                                                 <br>
                                                 <br>
+                                                <label class="pt-1"> <b> Other Charges: &nbsp; </b> </label>
+                                                <input type="number" style="width:35%; float:right;"
+                                                    placeholder="Other charges" id="RentPrice" name="other_charges"
+                                                    class="form-control">
+                                                <br>
+                                                <br>
                                                 <label class="pt-1"> <b> Final Amount: &nbsp; </b> </label>
-                                                <input type="number" style="width:60%; float:right;"
-                                                    id="InvoiceFinalAmount" class="form-control" readonly>
+                                                <input type="number" style="width:35%; float:right;"
+                                                    placeholder="Final amount" id="InvoiceFinalAmount"
+                                                    name="final_amount" class="form-control" required readonly>
+                                                @error('final_amount')
+                                                <span class="text-danger final_amount_error"> {{ $message }} </span>
+                                                @enderror
                                             </td>
                                         </tr>
                                     </tfoot>
                                 </table>
                             </span>
-
-
-
                             <div class="row">
                                 <div class="col-4 mb-2">
-                                    <label class="font_bold" for="InvoicePicture"> Invoice Picture </label>
+                                    <label class="fw-bold fs-5" for="InvoicePicture"> Invoice Picture </label>
                                     <input type="file" name="invoice_picture" class="form-control" id="InvoicePicture">
 
                                     @error('invoice_picture')
                                     <span class="text-danger invoice_picture_error"> {{ $message }} </span>
                                     @enderror
                                 </div>
-                                <div class="col-4 mb-2">
-                                    <label class="font_bold" for="Description"> Description </label>
+                                <div class="col-8 mb-2">
+                                    <label class="fw-bold fs-5" for="Description"> Description </label>
                                     <input type="text" name="description" class="form-control" placeholder="Description"
                                         id="Description">
 
@@ -248,6 +295,16 @@ $load_js = Array('tippy','select2')
                 }
             });
         });
+        
+        $("#CompanySelect, #CategorySelect").change(function(){
+            $('#SaleItemLists').html('')
+            $('.items_row_Footer').find('input')
+            .each(function () {
+                    $(this).val('');
+                });
+        });
+
+
         $("#AddProductButton").click(function(){
             
             let company_id = parseInt($('#CompanySelect').val()) || 0
@@ -296,6 +353,7 @@ $load_js = Array('tippy','select2')
 
             $('#SalePrice').val(single_product?.sale_price)
             $('#SalePrice').attr('min', single_product?.sale_price)
+            
             $('#ProductCode').val(single_product?.product_code)
             $('#ProductPrice').val(single_product?.purchase_price)
 
@@ -305,8 +363,10 @@ $load_js = Array('tippy','select2')
             $('#ViewProductDetail-0').attr('title', 'Click to view Detail')
             $('#ViewProductDetail-0').attr('ProductId', product_id)
 
-            if(single_product?.remaining_quantity > 0){
-                $('#ProductQuantity').attr('max', single_product?.remaining_quantity)
+            if(single_product?.quantity > 0){
+                $('#ProductQuantity').attr('max', single_product?.quantity)
+                $('#totalQuantity').attr('max', single_product?.quantity)
+                // $('#totalQuantity').attr('readonly', true)
             }else{
                 $('#ProductQuantity').attr('max', single_product?.max_inventory_level)
             }
@@ -363,11 +423,29 @@ $load_js = Array('tippy','select2')
                     Fprice = Fprice+TaxAmount;
                 }
                 $("#FinalPrice").val(Fprice);
+                $("#totalQuantity").val(Quantity);
             } else {
                 $("#QtyPriceError").show();
                 $("#QtyPriceError").html('Please add Quantity and Price for total price');
                 $("#TotalPrice").val('');
                 $("#FinalPrice").val('');
+            }
+        });
+
+        $('#ProductBonusQuantity').on('keyup', function() {
+            let ProductQuantity = parseInt($('#ProductQuantity').val())
+            let ProductBonusQuantity = parseInt($(this).val());
+            let priceWithOutDiscount = 0
+            if(ProductQuantity > 0){
+               if(ProductBonusQuantity > 0){
+                    $("#QtyPriceError").html('');
+                    let tQuantity = ProductQuantity + ProductBonusQuantity;
+                    $("#totalQuantity").val(tQuantity);
+                }else{
+                    $("#totalQuantity").val(ProductQuantity);
+                }
+            }else{   
+                $("#QtyPriceError").html('Please add Quantity First');
             }
         });
 
@@ -470,6 +548,7 @@ $load_js = Array('tippy','select2')
                 $("#FinalPrice").val(TotalPrice - DiscountAmount);
             }
         });
+
         
         $('#TaxPercentage').on('keyup', function() {
             let Total_Price = parseFloat($('#TotalPrice').val())
@@ -500,12 +579,14 @@ $load_js = Array('tippy','select2')
         });
 
 
-        $('#AddProductFromButton').on('click', function(){
+        $('#SaleProductItemForm').on('submit', function(){
             let Mproduct_id = parseInt($('#SelectProduct').val()) || 0
             let Mproduct_name = $('#ProductNameModal').val() || ''
             let Mproduct_code = $('#ProductCodeModal').val() || ''
             let Mproduct_salePrice = parseFloat($('#SalePrice').val()) || 0
             let Mproduct_qty = Number($('#ProductQuantity').val()) || 0
+            let M_Bonusqty = Number($('#ProductBonusQuantity').val()) || 0
+            let M_totalqty = Number($('#totalQuantity').val()) || 0
             let Mproduct_totalPrice = parseFloat($('#TotalPrice').val()) || 0
             let Mproduct_discountAmount = parseFloat($('#DiscountAmount').val()) || 0
             let Mproduct_discountPercentage = parseFloat($('#DiscountPercentage').val()) || 0
@@ -514,7 +595,8 @@ $load_js = Array('tippy','select2')
             if(Mproduct_qty > 0 && Mproduct_totalPrice > 0){
                 const p_data = {
                     p_id:Mproduct_id, p_name:Mproduct_name, p_code:Mproduct_code, 
-                    p_sprice:Mproduct_salePrice, p_qty:Mproduct_qty, p_tprice:Mproduct_totalPrice, 
+                    p_sprice:Mproduct_salePrice, p_qty:Mproduct_qty, b_qty:M_Bonusqty,t_qty:Mproduct_qty+M_Bonusqty,
+                    p_tprice:Mproduct_totalPrice, 
                     p_discount:Mproduct_discountAmount, p_discountPer:Mproduct_discountPercentage, p_fprice: Mproduct_FinalPrice,
                 };
 
@@ -543,9 +625,17 @@ $load_js = Array('tippy','select2')
                     <td class="px-1"><input type="number" class="form-control"
                             placeholder="Price" name="product_sale_price[]" value="${p_data?.p_sprice}" readonly>
                     </td>
-                    <td class="px-1" style="width:10%"><input type="number" class="form-control"
+                    <td class="px-1" style="width:8%">
+                        <input type="number" class="form-control"
                             placeholder="qty" name="product_qty[]" value="${p_data?.p_qty}" readonly>
+                        <input type="hidden" name="product_total_qty[]" value="${p_data?.t_qty}">
                     </td>
+
+                    <td class="px-1" style="width:12%">
+                        <input type="number" class="form-control"
+                            placeholder="qty" name="product_bonus_qty[]" value="${p_data?.b_qty}">
+                    </td>
+
                     <td class="px-1">
                         <input type="number" class="form-control"
                             placeholder="discount" name="product_discount[]" value="${p_data?.p_discount}" readonly>
@@ -572,6 +662,7 @@ $load_js = Array('tippy','select2')
             });
             $('#GrandTotal').val(GrandTotal)
             discountCalculation()
+            RentCalculation()
         }
 
         function discountCalculation(){
@@ -587,6 +678,20 @@ $load_js = Array('tippy','select2')
             });
             $("#InvoiceFinalAmount").val(GrandTotalAmount);
         }
+        
+        function RentCalculation(){
+            $('#RentPrice').on('keyup', function() {
+                let GrandTotal_val = parseFloat($('#GrandTotal').val())
+                let DiscountOnTotal_val = parseFloat($('#DiscountOnTotal').val())
+                let Final_Amount = GrandTotal_val - DiscountOnTotal_val
+                let rentPrice = parseFloat($(this).val());
+                if(rentPrice > 0){
+                    $("#InvoiceFinalAmount").val(Final_Amount + rentPrice);
+                }else{
+                    $("#InvoiceFinalAmount").val(Final_Amount);
+                }
+            });
+        }
 
         $(document).on("click", ".remove_item", function () {
             let DelROwID = $(this).attr('DelRow')
@@ -597,6 +702,11 @@ $load_js = Array('tippy','select2')
             let getDiscount = parseFloat($('#DiscountOnTotal').val())
             if(getDiscount > 0){
                 $("#InvoiceFinalAmount").val(GrandTotalAmount-getDiscount);
+            }
+            let fAmount = parseFloat($('#InvoiceFinalAmount').val())
+            let RentPrice = parseFloat($('#RentPrice').val())
+            if(RentPrice > 0){
+                $("#InvoiceFinalAmount").val(fAmount+RentPrice);
             }
         });
     });

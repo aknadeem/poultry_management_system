@@ -8,7 +8,7 @@
                 <button type="button" class="btn-close ModalClosed" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form autocomplete="off" method="post" id="SaleProductItemModal" class="form_loader"
+                <form autocomplete="off" method="post" id="SaleProductItemForm" class="form_loader"
                     action="javascript: void(0)">
                     @csrf
                     <div class="row form-group">
@@ -39,13 +39,25 @@
                                 placeholder="Product Price" id="SalePrice">
                             <span class="text-danger product_price_error"></span>
                         </div>
-
-
                         <div class="col-2 mb-2 px-1">
                             <label class="font_bold" for="ProductQuantity"> Quantity </label>
                             <input type="number" min="0" class="form-control" name="quantity" placeholder="Quantity"
                                 required id="ProductQuantity">
                             <span class="text-danger quantity_error"></span>
+                        </div>
+
+                        <div class="col-2 mb-2 px-1">
+                            <label class="font_bold" for="ProductBonusQuantity"> Bonus Quantity </label>
+                            <input type="number" min="0" class="form-control" name="bonus_quantity"
+                                placeholder="Bonus Qty" required id="ProductBonusQuantity">
+                            <span class="text-danger quantity_error"></span>
+                        </div>
+
+                        <div class="col-2 mb-2 px-1">
+                            <label class="font_bold" for="totalQuantity"> Total Quantity </label>
+                            <input type="number" min="0" class="form-control" name="TotalQuantiy"
+                                placeholder="total Qty" required id="totalQuantity">
+                            <span class="text-danger total_quantity_error"></span>
                         </div>
 
                         <div class="col-3 mb-2 px-1">
@@ -70,11 +82,10 @@
                             @enderror
                         </div>
 
-                        <div class="col-3 mb-2 px-1">
-                            <label class="font_bold" for="DiscountPercentage"> Discount Percentage % </label>
+                        <div class="col-2 mb-2 px-1">
+                            <label class="font_bold" for="DiscountPercentage"> Discount % </label>
                             <input type="number" step="any" min="0" step="any" class="form-control"
-                                name="discount_percentage" value="" placeholder="Discount Percentage"
-                                id="DiscountPercentage">
+                                name="discount_percentage" value="" placeholder="Discount %" id="DiscountPercentage">
 
                             @error('discount_percentage')
                             <span class="text-danger discount_percentage_error"> {{ $message }} </span>
@@ -94,10 +105,9 @@
                     </div>
                     <div class="row form-group">
                         <div class="col-sm-4 mb-3">
-                            <span id="AddProductFromButton"
-                                class="btn btn-secondary btn-sm waves-effect waves-light mt-3">
+                            <button type="submit" id="" class="btn btn-secondary btn-sm waves-effect waves-light mt-3">
                                 Add
-                            </span>
+                            </button>
                             <button class="btn btn-light btn-sm waves-effect waves-light mt-3 ModalClosed">
                                 Cancel
                             </button>

@@ -18,7 +18,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                         <li class="breadcrumb-item active">index</li>
                     </ol>
                 </div>
-                <h4 class="page-title"> Product Management </h4>
+                <h4 class="page-title">Product Management</h4>
             </div>
         </div>
     </div>
@@ -28,7 +28,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                 <div class="card-body">
                     <div class="row mb-2">
                         <div class="col-6 align-self-start">
-                            <h4> Product Sales </h4>
+                            <h4>Product Sales</h4>
                         </div>
                         <div class="col-6 align-self-end text-end mb-2">
                             <a class="btn btn-secondary btn-sm" href="{{ route('productsales.create') }}"
@@ -41,60 +41,60 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                     <table id="basic-datatable" class="table table-striped dt-responsive  w-100">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Product code</th>
-                                <th>Product Name</th>
+                                <th class="fs-6">#</th>
+                                <th class="fs-6">Division</th>
+                                <th>Customer</th>
                                 <th>Company</th>
-                                <th>Date</th>
-                                <th>Qty</th>
-                                <th>Price</th>
-                                <th>Total Price</th>
-                                <th>Discount</th>
-                                <th>Tax</th>
-                                <th>Final Price</th>
-                                {{-- <th>Status</th> --}}
-                                {{-- <th>Options</th> --}}
+                                <th class="fs-6">Category</th>
+                                <th>Sale Date</th>
+                                <th class="fs-6">Payment Status</th>
+                                <th class="fs-6">Status</th>
+                                <th>Total Amount</th>
+                                <th>Discount Amount</th>
+                                <th>Other Charges</th>
+                                <th>Final Amount</th>
+                                <th>Paid Amount</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($product_sales as $key=>$row)
                             <tr>
-                                <td>{{ ++$key }}</td>
-                                <td>{{ $row->product?->product_code }}</td>
-                                <td>{{ $row->product?->product_name }}</td>
-                                <td>{{ $row->product?->company?->company_name }}</td>
-                                <td>{{ $row->purchase_date->format('M d, Y') }}</td>
-                                <td>{{ $row->quantity }}</td>
-                                <td class="fw-bold fs-6">@money($row->purchase_price)</td>
-                                <td class="fw-bold fs-5"> @money($row->total_price)</td>
-                                <td class="text-success fw-bold fs-6">@money($row->discount_amount)</td>
-                                <td class="text-warning fw-bold fs-6">@money($row->tax_amount)</td>
-                                <td class="text-danger fw-bold fs-5">@money($row->final_price)</td>
-                                {{-- <td>
-                                    <a href="{{ route('updatestatus', ['id'=> $row->id, 'tag' => 'product_purchases']) }}"
-                                        title="Click to update Status" class="confirm-status">
+                                <td class="fs-6">{{ ++$key }}</td>
+                                <td class="fs-6">{{ $row?->party?->division?->name }}</td>
+                                <td>{{ $row?->party?->name }}</td>
+                                <td>{{ $row->company?->company_name }}</td>
+                                <td class="fs-6">{{ $row?->productcategory?->name }}</td>
+                                <td>{{ $row->sale_date }}</td>
+                                <td class="{{ $row->status_value['class_name'] }} fs-6 fw-bold">{{
+                                    $row->status_value['value']
+                                    }}</td>
+                                <td class="fs-6">
+                                    <a href="{{ route('updatestatus', ['id'=> $row->id, 'tag' => 'product_sales']) }}"
+                                        title="Click to {{($row?->is_active) ? 'Inactive' : 'Active'}} this sale"
+                                        class="confirm-status">
                                         <div class="form-check form-switch">
-                                            <input type="checkbox" class="form-check-input" id="customSwitch1"
+                                            <input type="checkbox" class="form-check-input" id="SaleStatus"
                                                 {{($row?->is_active) ? 'checked' : ''}}>
-                                            <label class="form-check-label" for="customSwitch1"></label>
+                                            <label class="form-check-label" for="SaleStatus"></label>
                                         </div>
                                     </a>
-                                </td> --}}
-                                {{-- <td>
-                                    <a class="btn btn-info btn-sm" href="{{ route('productpurchases.edit', $row->id) }}"
-                                        title="Click to edit" tabindex="0" data-plugin="tippy"
-                                        data-tippy-animation="scale" data-tippy-arrow="true"><i
-                                            class="fa fa-pencil-alt"></i>
-                                        Edit
-                                    </a>
-                                    <a class="btn btn-danger btn-sm delete-confirm"
-                                        href="{{route('productpurchases.destroy', $row?->id)}}"
-                                        del_title="Purchase id {{$row?->id}}" title="Click to delete" tabindex="0"
-                                        data-plugin="tippy" data-tippy-animation="scale" data-tippy-arrow="true"><i
-                                            class="fa fa-trash"></i>
-                                        Delete
-                                    </a>
-                                </td> --}}
+                                </td>
+                                <td class="fw-bold fs-5">
+                                    @money($row->total_amount)
+                                </td>
+                                <td class="fw-bold fs-6">
+                                    @money($row->discount_amount)
+                                </td>
+                                <td class="fw-bold fs-6">
+                                    @money($row->other_charges)
+                                </td>
+                                <td class="text-danger fw-bold fs-5">
+                                    @money($row->final_amount)
+                                </td>
+
+                                <td class="text-success fw-bold fs-5">
+                                    @money($row->final_amount)
+                                </td>
                             </tr>
                             @empty
 

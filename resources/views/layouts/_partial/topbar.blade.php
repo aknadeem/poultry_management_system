@@ -20,19 +20,19 @@
                         <div class="row g-0">
                             <div class="col">
                                 <a class="dropdown-icon-item" href="#">
-                                    <img src="../assets/images/brands/slack.png" alt="slack">
+                                    <img src="{{ asset('assets/images/brands/slack.png')}}" alt="slack">
                                     <span>Slack</span>
                                 </a>
                             </div>
                             <div class="col">
                                 <a class="dropdown-icon-item" href="#">
-                                    <img src="../assets/images/brands/github.png" alt="Github">
+                                    <img src="{{ asset('assets/images/brands/github.png') }}" alt="Github">
                                     <span>GitHub</span>
                                 </a>
                             </div>
                             <div class="col">
                                 <a class="dropdown-icon-item" href="#">
-                                    <img src="../assets/images/brands/dribbble.png" alt="dribbble">
+                                    <img src="{{ asset('assets/images/brands/dribbble.png') }}" alt="dribbble">
                                     <span>Dribbble</span>
                                 </a>
                             </div>
@@ -41,19 +41,19 @@
                         <div class="row g-0">
                             <div class="col">
                                 <a class="dropdown-icon-item" href="#">
-                                    <img src="../assets/images/brands/bitbucket.png" alt="bitbucket">
+                                    <img src="{{ asset('assets/images/brands/bitbucket.png') }}" alt="bitbucket">
                                     <span>Bitbucket</span>
                                 </a>
                             </div>
                             <div class="col">
                                 <a class="dropdown-icon-item" href="#">
-                                    <img src="../assets/images/brands/dropbox.png" alt="dropbox">
+                                    <img src="{{ asset('assets/images/brands/dropbox.png') }}" alt="dropbox">
                                     <span>Dropbox</span>
                                 </a>
                             </div>
                             <div class="col">
                                 <a class="dropdown-icon-item" href="#">
-                                    <img src="../assets/images/brands/g-suite.png" alt="G Suite">
+                                    <img src="{{ asset('assets/images/brands/g-suite.png') }}" alt="G Suite">
                                     <span>G Suite</span>
                                 </a>
                             </div>
@@ -122,7 +122,8 @@
                         <!-- item-->
                         <a href="javascript:void(0);" class="dropdown-item notify-item active">
                             <div class="notify-icon">
-                                <img src="../assets/images/users/user-1.jpg" class="img-fluid rounded-circle" alt="" />
+                                <img src="{{ asset('assets/images/users/user-1.jpg') }}"
+                                    class="img-fluid rounded-circle" alt="" />
                             </div>
                             <p class="notify-details">Cristina Pride</p>
                             <p class="text-muted mb-0 user-msg">
@@ -143,7 +144,8 @@
                         <!-- item-->
                         <a href="javascript:void(0);" class="dropdown-item notify-item">
                             <div class="notify-icon">
-                                <img src="../assets/images/users/user-4.jpg" class="img-fluid rounded-circle" alt="" />
+                                <img src="{{ asset('assets/images/users/user-4.jpg') }}"
+                                    class="img-fluid rounded-circle" alt="" />
                             </div>
                             <p class="notify-details">Karen Robinson</p>
                             <p class="text-muted mb-0 user-msg">
@@ -265,11 +267,11 @@
         <div class="logo-box">
             <a href="{{ url('/') }}" class="logo logo-dark text-center">
                 <span class="logo-sm">
-                    <img src="../assets/images/logo-sm.png" alt="" height="22">
+                    <img src="{{ asset('assets/images/logo/poultryLogo.png') }}" alt="" height="22">
                     <!-- <span class="logo-lg-text-light">UBold</span> -->
                 </span>
                 <span class="logo-lg">
-                    <img src="../assets/images/logo-dark.png" alt="" height="20">
+                    <img src="{{ asset('assets/images/logo/poultryLogo.png') }}" alt="" height="20">
                     <!-- <span class="logo-lg-text-light">U</span> -->
                 </span>
             </a>

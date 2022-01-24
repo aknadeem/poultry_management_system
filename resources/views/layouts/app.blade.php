@@ -108,6 +108,12 @@
 
     @include('layouts._partial.header')
 
+    <style>
+        .container-fluid {
+            max-width: 98% !important;
+        }
+    </style>
+
 </head>
 
 <body class="loading" data-layout-mode="horizontal"

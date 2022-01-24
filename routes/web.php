@@ -25,9 +25,10 @@ use App\Http\Controllers\PaymentManagement\AccountPayableController;
 
 Auth::routes();
 
-// Route::get('/testpdf', function () {
-//     return response()->file(storage_path('file.pdf'));
-// });
+Route::get('/testpdf', function () {
+    return view('productmanagement.sales.sale_detail');
+    // return response()->file(storage_path('file.pdf'));
+});
 
 // Route::get('/testpdf', function () {
 //     return response()->download(storage_path('file.pdf'), 'save-as-pdf');
