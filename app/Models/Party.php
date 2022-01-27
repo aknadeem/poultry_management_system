@@ -65,5 +65,4 @@ class Party extends Model implements HasCountryProvinceCity
     {
         return $query->where('is_vendor', $value);
     }
-
 }

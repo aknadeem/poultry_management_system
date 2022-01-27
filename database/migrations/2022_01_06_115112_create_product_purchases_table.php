@@ -10,6 +10,8 @@ class CreateProductPurchasesTable extends Migration
     {
         Schema::create('product_purchases', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('purchase_number')->default(0);
+            $table->string('purchase_code')->nullable();
             $table->foreignId('product_id')->nullable()->constrained('products')->onDelete('cascade');
             $table->date('purchase_date')->nullable();
             $table->date('expiry_date')->nullable();

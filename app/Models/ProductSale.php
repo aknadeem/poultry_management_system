@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\ProductSaleDetail;
+use App\Models\EnumClasses\SalepaymentStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,6 +15,10 @@ class ProductSale extends Model
     const PAYMENT_UNPAID = 1;
     const PAYMENT_PENDING = 2;
     const PAYMENT_PAID = 3;
+
+    protected $casts = [
+        'sale_date' => 'date',
+    ];
 
     public function party()
     {
@@ -35,19 +41,26 @@ class ProductSale extends Model
         ]);
     }
 
+    public function detail()
+    {
+        return $this->hasOne(ProductSaleDetail::class, 'product_sale_id', 'id')->withDefault([
+            'id' => null,
+        ]);
+    }
+
     public function getStatusValueAttribute()
     {
         $status = [];
         if($this->payment_status == ProductSale::PAYMENT_UNPAID){
             $status['value'] = 'Un paid';
-            $status['class_name'] = 'text-danger';
+            $status['color_name'] = 'danger';
 
         }else if($this->payment_status == ProductSale::PAYMENT_PENDING){
             $status = 'Pending';
-            $status['class_name'] = 'text-warning';
+            $status['color_name'] = 'warning';
         }else{
             $status['value'] = 'Un paid';
-            $status['class_name'] = 'text-success';
+            $status['color_name'] = 'success';
         }
         return $status;
     }

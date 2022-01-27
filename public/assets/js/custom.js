@@ -40,6 +40,44 @@ $(document).on("click", ".delete-confirm", function (event) {
     });
 });
 
+$(document).on("click", ".logoutform", function (event) {
+    /* Act on the event */
+    event.preventDefault();
+    var action = $(this).attr("href");
+    $.confirm({
+        columnClass: "col-md-5",
+        autoClose: false,
+        theme: "modern",
+        title: "Confirm Please?",
+        content: " Are You Sure You Want to Logout ?",
+        type: "dark",
+        typeAnimated: true,
+        draggable: false,
+        buttons: {
+            ok: {
+                useBootstrap: false,
+                text: "Logout",
+                btnClass: "btn-danger",
+                keys: ["enter"],
+                action: function () {
+                    // var action = event.$target.attr('href');
+                    $("form#LogoutForm").attr("action", action);
+                    $("form#LogoutForm").submit();
+                    // alert('heelo');
+                    console.log("the user clicked confirm");
+                },
+            },
+            cancel: {
+                text: "Cancel",
+                keys: ["esc"],
+                cancel: function () {
+                    console.log("the user clicked cancel");
+                },
+            },
+        },
+    });
+});
+
 //open add form
 $("#OpenAddForm").click(function (event) {
     $("#addForm").show();
@@ -130,7 +168,7 @@ $(".confirm-select").change(function () {
 
 // User Active InActive Status Confirmation msg
 
-$(document).on("click", ".confirm-logout", function (event) {
+$(document).on("click", "#confirm-logout", function (event) {
     /* Act on the event */
     event.preventDefault();
     var action = $(this).attr("href");

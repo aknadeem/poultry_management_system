@@ -91,7 +91,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
 
                                 <td>
                                     <a class="btn btn-secondary btn-sm viewCustomerDetailModal" CustomerId=""
-                                        href="javascript:void(0);" title="Click to View DOcuments "><i
+                                        href="javascript:void(0);" title="Click to View Documents "><i
                                             class="fa fa-eye"></i>
                                         View
                                     </a>

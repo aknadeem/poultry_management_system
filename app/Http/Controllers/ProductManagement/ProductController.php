@@ -68,8 +68,6 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->toArray());        
-        
         $id = null;
         $this->validationRules($request, $id);
 
@@ -117,6 +115,7 @@ class ProductController extends Controller
                 'trade_price' => $request->trade_price,
                 'retail_price' => $request->retail_price,
                 'purchase_price' => $request->purchase_price,
+                'sale_price' => $request->sale_price,
                 'discount_amount' => $request->discount_amount,
 
                 'tax_percentage' => $request->tax_percentage,
@@ -210,6 +209,8 @@ class ProductController extends Controller
                 'min_inventory_level' => $request->min_level,
                 'max_inventory_level' => $request->max_level,
                 'mrp_price' => $request->mrp_price,
+                'purchase_price' => $request->purchase_price,
+                'sale_price' => $request->sale_price,
 
                 'whole_sale_price' => $request->whole_sale_price,
                 'full_less_price' => $request->full_less_price,
@@ -289,6 +290,8 @@ class ProductController extends Controller
             'min_level' => 'bail|nullable|numeric',
             'max_level' => 'bail|nullable|numeric',
             'mrp_price' => 'bail|nullable|numeric',
+            'purchase_price' => 'bail|required|numeric',
+            'sale_price' => 'bail|required|numeric',
 
             'whole_sale_price' => 'bail|nullable|numeric',
             'full_less_price' => 'bail|nullable|numeric',

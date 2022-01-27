@@ -75,7 +75,6 @@ class CompaniesBalanceController extends Controller
                 'balance' => $balance->toArray(),
             ], 201);
         }
-
     }
 
     public function store(Request $request)

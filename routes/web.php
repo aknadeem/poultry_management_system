@@ -12,7 +12,7 @@ use App\Http\Controllers\PartyManagement\ {
     PartyDocumentController, PartyAccountController, BrokerController
 };
 
-use App\Http\Controllers\BalanceManagement\BrokerBalanceController;
+use App\Http\Controllers\BalanceManagement\{BrokerBalanceController, PartyBalanceController};
 
 use App\Http\Controllers\InventoryManagement\ {FeedController, ExpenseController};
 use App\Http\Controllers\ChickenModule\ {ChickenPurchaseController, ChickenSaleController, ChickPurchaseController};
@@ -55,9 +55,9 @@ Route::group(['middleware' => 'auth'], function(){
 
     Route::get('/getCompaniesBalanceList', [CompaniesBalanceController::class, 'getCompaniesBalanceList'])->name('getCompaniesBalanceList');
     
-    Route::resource('companybalance', CompaniesBalanceController::class)->except([
-        'create', 'update'
-    ]);
+    // Route::resource('companybalance', CompaniesBalanceController::class)->except([
+    //     'create', 'update'
+    // ]);
 
 
     Route::group(['prefix' => '/usermanagement'], function(){
@@ -89,6 +89,11 @@ Route::group(['middleware' => 'auth'], function(){
         Route::resource('companybalance', CompaniesBalanceController::class)->except([
             'create', 'update'
         ]);
+
+        Route::get('/partybalancelist', [PartyBalanceController::class, 'getBalanceList'])->name('getBalanceList');
+        Route::resource('partybalance', PartyBalanceController::class);
+
+        Route::get('/party-balance-payments/{id}', [PartyBalanceController::class, 'getBalancePayments'])->name('getBalancePayments');
     });
     
     Route::group(['prefix' => '/farmManagement'], function(){
@@ -107,6 +112,9 @@ Route::group(['middleware' => 'auth'], function(){
 
         Route::get('/expense-list', [ExpenseController::class, 'getExpenseList'])->name('getExpenseList');
         
+
+        Route::post('/expense-category-store', [ExpenseController::class, 'storeExpenseCategrory'])->name('storeExpenseCategrory');
+
         Route::resource('expense', ExpenseController::class)->except([
             'create', 'update'
         ]);

@@ -8,8 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ExpenseCategory extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
     protected $table = 'expense_categories';
-    use HasFactory;
     // protected $dates = ['created_at','updated_at'];
 }

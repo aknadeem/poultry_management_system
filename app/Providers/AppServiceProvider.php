@@ -31,9 +31,31 @@ class AppServiceProvider extends ServiceProvider
         Blade::directive('money', function ($amount) {
             return "<?php echo number_format($amount, 0); ?>";
         });
-        
         Blade::directive('uppercaseFirst', function ($my_str) {
             return "<?php echo ucfirst(str_replace('_', ' ', $my_str)); ?>";
+        });
+        Blade::directive('Status', function ($my_status) {
+            $status = '';
+            if($my_status == 1){
+                $status = '<span class="badge bg-danger"> UnPaid </span>';
+            }else if($my_status == 2){
+                $status = '<span class="badge bg-warning"> Pending </span>';
+            }else if($my_status == 3){
+                $status = '<span class="badge bg-success"> Paid </span>';
+            }
+            return $status;
+        });
+
+        Blade::directive('Statuss', function ($my_status) {
+            $status = '';
+            if($my_status == '1'){
+                $status = '<span class="badge bg-danger"> UnPaid </span>';
+            }else if($my_status == '2'){
+                $status = '<span class="badge bg-warning"> Pending </span>';
+            }else if($my_status == '3'){
+                $status = '<span class="badge bg-success"> Paid </span>';
+            }
+            return $status;
         });
         // $this->app->bind(TestInterfaceLog::class);
     }

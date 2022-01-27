@@ -230,25 +230,31 @@
                     <div class="dropdown-divider"></div>
 
                     <!-- item-->
-                    <a href="{{ route('logout') }}" class="dropdown-item notify-item confirm-logout"
+
+                    <a href="{{ route('logout') }}" target="_blank" class="dropdown-item notify-item" onclick="event.preventDefault(); 
+                        document.getElementById('logout-form').submit();"> <i class="fe-log-out"></i> {{ __('Logout')
+                        }}
+                    </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                        @csrf
+                    </form>
+
+                    {{-- <a class="dropdown-item notify-item delete-confirm" href="{{route('parties.destroy', 0)}}"
                         msg_content="Are you sure you want to Logout?">
                         <i class="fe-log-out"></i>
                         <span>Logout</span>
-                    </a>
+                    </a> --}}
 
                     {{-- are u sure u want to Logout? --}}
 
                     {{-- <form id="logout-form" method="POST" action="{{ route('logout') }}" class="d-none">
                         @csrf
-                    </form> --}}
+                    </form>
 
                     {{-- onclick="event.preventDefault();
                     document.getElementById('logout-form').submit();" --}}
 
-                    <form method="post" id="logout-form">
-                        @csrf
-                        @method('POST')
-                    </form>
+
 
 
                     {{-- <a href="{{ route('logout') }}" target="_blank"

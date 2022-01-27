@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\Division;
 use App\Models\ProductSale;
 use Illuminate\Support\Arr;
+use App\Models\PartyBalance;
 use App\Models\PartyCompany;
 use Illuminate\Http\Request;
 use App\Models\ProductCategory;
@@ -17,6 +18,8 @@ use App\Models\ProductSaleDetail;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\Validators\ProductSaleValidator;
+
+use App\Helpers\Constant;
 
 class ProductSaleController extends Controller
 {
@@ -75,7 +78,6 @@ class ProductSaleController extends Controller
                 //     'party_id' => $data['party_id'],
                 //     'product_category_id' => $data['product_category_id'],
                 //     'party_company_id' => $data['party_company_id'],
-
                 //     'sale_date' => $data['sale_date'],
                 //     'due_date_option' => $data['due_date_option'],
                 //     'manual_number' => $data['manual_number'],
@@ -89,6 +91,7 @@ class ProductSaleController extends Controller
                 //     'description' => $data['description'],
                 //     'addedby' => $data['addedby'],
                 // ]);
+
                 $number = count($data['product_name']);  
                 if($number > 0)  
                 {  
@@ -123,7 +126,19 @@ class ProductSaleController extends Controller
                             ]);
                         }    
                     }
-                }  
+                }
+                
+                if($sale){
+                    $partyBalance = PartyBalance::create([
+                        'party_id' => $data['party_id'],
+                        'total_amount' => $data['final_amount'],
+                        'remaining_amount' => $data['final_amount'],
+                        'transaction_date' => $data['sale_date'],
+                        'amount_type' => Constant::AMOUNT_TYPE['ToReceive'],
+                        'narration' => 'sale product balance',
+                        'addedby' => $data['addedby'],
+                    ]);
+                }
             });
         }
         catch (\Throwable $e) {
@@ -140,7 +155,11 @@ class ProductSaleController extends Controller
     public function show($id)
     {   
         $sale = ProductSale::with('party:id,name,cnic_no,customer_division_id','party.division:id,name','company:id,company_name','productcategory:id,name')->findOrFail($id);
-        return view('productmanagement.sales.sale_detail', compact('sale'));
+
+        $items = ProductSaleDetail::where('product_sale_id', $id)->get();
+
+        // dd($sale->toArray());
+        return view('productmanagement.sales.sale_detail', compact('sale','items'));
     }
     
     public function destroy($id)

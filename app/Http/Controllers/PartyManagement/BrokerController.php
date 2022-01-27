@@ -72,7 +72,7 @@ class BrokerController extends Controller
                 'guardian_name' => $request->guardian_name,
                 'cnic_no' => $request->cnic_no,
                 'email' => $request->email,
-                'contact_number' => $request->contact_number,
+                'contact_no' => $request->contact_number,
                 'country_id' => $request->country_id,
                 'province_id' => $request->province_id,
                 'city_id' => $request->city_id,
@@ -88,7 +88,7 @@ class BrokerController extends Controller
             }
         }
         catch (\Throwable $e) {
-            // return $e;
+            return $e;
             $message = 'Something went wrong';
             $title = 'Error';
             $icon_type = 'warning';

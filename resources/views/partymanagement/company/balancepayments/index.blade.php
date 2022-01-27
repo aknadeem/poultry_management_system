@@ -60,7 +60,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                                 <td>{{++$key}}</td>
                                 <td>{{$item->paid_amount}}</td>
                                 <td>{{$item->payment_option}}</td>
-                                <td>{{$item?->addedBy?->name}} </td>
+                                <td>{{$item?->user?->name}} </td>
                                 <td>{{$item->created_at?->format('d M, Y h:i:s A')}}</td>
                             </tr>
                             @empty

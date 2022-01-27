@@ -17,6 +17,7 @@ class CreateAccountPayablesTable extends Migration
             $table->decimal('total_amount')->nullable();
             $table->decimal('paid_amount')->nullable();
             $table->decimal('remaining_amount')->nullable();
+            $table->text('narration')->nullable();
             $table->string('amount_status')->nullable();
             $table->string('amount_type')->nullable();
             $table->unsignedBigInteger('model_id')->nullable();

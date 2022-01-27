@@ -87,7 +87,6 @@ class ProductPurchaseController extends Controller
         $id = null;
         $this->validationRules($request, $id);
 
-        // dd($request->toArray());
         $message = 'Data created successfully';
         $title = 'Success';
         $icon_type = 'success';
@@ -149,7 +148,10 @@ class ProductPurchaseController extends Controller
                             'addedby' => $this->auth_user_id,
                         ]);
                         if($save_purchase){
-                            $upload_to_folder = $invoice_picture_file->storeAs('products/purchases/', $invoice_picture, 'public');
+                            if($invoice_picture){
+                                $upload_to_folder = $invoice_picture_file->storeAs('products/purchases/', $invoice_picture, 'public');
+                            }
+                    
                             $newQty = $request->quantity + $request->bonus_quantity;
                             $exqty = $product->quantity;
                             $product_update = $product->update([

@@ -278,7 +278,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                         class="form-control">
                                     <span class="text-danger party_agreement_error"> </span>
                                 </div> --}}
-                                <div class="col-4 mb-2">
+                                <div class="col-3 mb-2">
                                     <label class="font_bold" for="PartyContactPerson"> Select contact Person</label>
                                     <select name="contact_person_id" id="PartyContactPerson"
                                         class="form-control mySelect" data-toggle="select2" data-width="100%">
@@ -295,7 +295,32 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                     @enderror
                                 </div>
 
-                                <div class="col-8">
+                                <div class="col-3 mb-2">
+                                    <label class="font_bold" for="Balance"> Balance </label>
+                                    <input type="number" min="0" step="any" placeholder="Enter Balance"
+                                        name="opening_balance" class="form-control" id="Balance">
+
+                                    @error('opening_balance')
+                                    <span class="text-danger opening_balance_error"> {{ $message }} </span>
+                                    @enderror
+                                </div>
+
+                                <div class="col-3 mb-2">
+                                    <label class="font_bold">Balance Type </label>
+                                    <select name="balance_type" class="form-control mySelect" id="">
+                                        @forelse (App\Helpers\Constant::AMOUNT_TYPE as $key=>$item)
+                                        <option value="{{$item}}">{{$key}}</option>
+                                        @empty
+                                        @endforelse
+                                    </select>
+
+                                    @error('balance_type')
+                                    <span class="text-danger balance_type_error"> {{ $message }} </span>
+                                    @enderror
+                                </div>
+
+
+                                <div class="col-3">
                                     <label class="font_bold" for="Description">Description</label>
                                     <textarea class="form-control ckeditor" name="description" id="Description"
                                         placeholder="Description" cols="80"

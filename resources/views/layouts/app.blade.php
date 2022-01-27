@@ -178,6 +178,11 @@
         @csrf
     </form>
 
+    <form method="post" id="LogoutForm">
+        @csrf
+        @method('POST')
+    </form>
+
     <!-- App js -->
     <!-- Vendor js -->
     <?php if(in_array('tippy',$load_js)){ ?>

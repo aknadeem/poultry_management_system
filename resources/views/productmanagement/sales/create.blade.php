@@ -43,7 +43,7 @@ $load_js = Array('tippy','select2')
                 <div class="col-12">
                     @if ($errors->any())
                     @foreach ($errors->all() as $error)
-                    <h5>{{$error}}</h5>
+                    <h6 class="text-danger">{{$error}}</h6>
                     @endforeach
                     @endif
                 </div>
@@ -214,13 +214,13 @@ $load_js = Array('tippy','select2')
                                                 <span id="DiscountAmountGreaterError" Class="text-danger"></span>
                                                 <br>
                                                 <br>
-                                                <label class="pt-1"> <b> Other Charges: &nbsp; </b> </label>
+                                                <label class="pt-1"> <b> Other Charges*: &nbsp; </b> </label>
                                                 <input type="number" style="width:35%; float:right;"
                                                     placeholder="Other charges" id="RentPrice" name="other_charges"
-                                                    class="form-control">
+                                                    class="form-control" required>
                                                 <br>
                                                 <br>
-                                                <label class="pt-1"> <b> Final Amount: &nbsp; </b> </label>
+                                                <label class="pt-1"> <b> Final Amount*: &nbsp; </b> </label>
                                                 <input type="number" style="width:35%; float:right;"
                                                     placeholder="Final amount" id="InvoiceFinalAmount"
                                                     name="final_amount" class="form-control" required readonly>

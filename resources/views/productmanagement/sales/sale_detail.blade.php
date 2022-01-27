@@ -35,7 +35,7 @@ $load_js = Array('sweetAlert', 'jquery-confirm');
                             <div class="auth-logo">
                                 <div class="logo logo-dark">
                                     <span class="logo-lg">
-                                        <img src="{{ asset('assets/images/logo/poultryLogo.png') }}" alt="" height="22">
+                                        <img src="{{ asset('assets/images/logo/poultryLogo.png') }}" alt="" width="50%">
                                     </span>
                                 </div>
 
@@ -48,33 +48,45 @@ $load_js = Array('sweetAlert', 'jquery-confirm');
                         </div>
                         <div class="float-end">
                             <h4 class="m-0 d-print-none">Invoice</h4>
+                            <address>
+                                Stanley Jones<br>
+                                795 Folsom Ave, Suite 600<br>
+                                San Francisco, CA 94107<br>
+                                <abbr title="Phone">P:</abbr> (123) 456-7890
+                            </address>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="mt-3">
-                                <p><b>Hello, Stanley Jones</b></p>
-                                <p class="text-muted">Thanks a lot because you keep purchasing our products. Our company
-                                    promises to provide high quality products for you as well as outstanding
-                                    customer service for every transaction. </p>
+                        <div class="col-6">
+                            <div class="mt-1">
+                                <p class="fs-5">
+                                    <b>{{ $sale?->party?->name}}</b>
+                                    <b>[{{ $sale?->party?->cnic_no}}]</b>
+                                </p>
+                                <p class="text-muted">Thanks a lot because you keep purchasing our products. </p>
                             </div>
 
                         </div><!-- end col -->
-                        <div class="col-md-4 offset-md-2">
-                            <div class="mt-3 float-end">
-                                <p><strong>Order Date : </strong> <span class="float-end"> &nbsp;&nbsp;&nbsp;&nbsp; Jan
-                                        17, 2016</span></p>
-                                <p><strong>Order Status : </strong> <span class="float-end"><span
-                                            class="badge bg-danger">Unpaid</span></span></p>
-                                <p><strong>Order No. : </strong> <span class="float-end">000028 </span></p>
+                        <div class="col-6">
+                            <div class="mt-1 float-end">
+                                <p class="mb-1"><strong>Sale Date : </strong> <span class="float-end">
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        {{$sale?->sale_date?->format('d M, Y')}} </span></p>
+                                <p class="mb-1"><strong> Payment Status : </strong> <span class="float-end">
+                                        <span
+                                            class="badge bg-{{$sale?->status_value['color_name']}}">{{$sale?->status_value['value']}}</span>
+                                    </span>
+                                </p>
+                                <p class="mb-1"><strong>Sale code : </strong> <span
+                                        class="float-end">{{$sale?->sale_code}} </span>
+                                </p>
                             </div>
                         </div><!-- end col -->
                     </div>
                     <!-- end row -->
-
-                    <div class="row mt-3">
-                        <div class="col-sm-6">
+                    {{-- <div class="row mt-3">
+                        <div class="col-6">
                             <h6>Billing Address</h6>
                             <address>
                                 Stanley Jones<br>
@@ -82,9 +94,8 @@ $load_js = Array('sweetAlert', 'jquery-confirm');
                                 San Francisco, CA 94107<br>
                                 <abbr title="Phone">P:</abbr> (123) 456-7890
                             </address>
-                        </div> <!-- end col -->
-
-                        <div class="col-sm-6">
+                        </div>
+                        <div class="col-6">
                             <h6>Shipping Address</h6>
                             <address>
                                 Stanley Jones<br>
@@ -92,45 +103,41 @@ $load_js = Array('sweetAlert', 'jquery-confirm');
                                 San Francisco, CA 94107<br>
                                 <abbr title="Phone">P:</abbr> (123) 456-7890
                             </address>
-                        </div> <!-- end col -->
-                    </div>
+                        </div>
+                    </div> --}}
                     <!-- end row -->
 
                     <div class="row">
                         <div class="col-12">
                             <div class="table-responsive">
-                                <table class="table mt-4 table-centered">
+                                <table class="table mt-2 table-centered">
                                     <thead>
                                         <tr>
                                             <th>#</th>
                                             <th>Item</th>
-                                            <th style="width: 10%">Hours</th>
-                                            <th style="width: 10%">Hours Rate</th>
+                                            <th style="width: 10%">Price</th>
+                                            <th style="width: 10%">Qty</th>
+                                            <th style="width: 10%">Free Qty</th>
+                                            <th style="width: 10%">Discount</th>
                                             <th style="width: 10%" class="text-end">Total</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @forelse ($items as $key=>$item)
                                         <tr>
-                                            <td>1</td>
+                                            <td>{{++$key}}</td>
                                             <td>
-                                                <b>Web Design</b> <br />
-                                                2 Pages static website - my website
+                                                <b class="fs-5"> {{ $item?->product_code }} </b> <br />
+                                                {{$item?->product_name}}
                                             </td>
-                                            <td>22</td>
-                                            <td>$30</td>
-                                            <td class="text-end">$660.00</td>
+                                            <td>@money($item?->product_sale_price)</td>
+                                            <td>{{$item?->product_qty}}</td>
+                                            <td>{{$item?->product_bonus_qty}}</td>
+                                            <td>@money($item?->product_discount)</td>
+                                            <td class="text-end"> @money($item?->product_total_price)</td>
                                         </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>
-                                                <b>Software Development</b> <br />
-                                                Invoice editor software - AB'c Software
-                                            </td>
-                                            <td>112.5</td>
-                                            <td>$35</td>
-                                            <td class="text-end">$3937.50</td>
-                                        </tr>
-
+                                        @empty
+                                        @endforelse
                                     </tbody>
                                 </table>
                             </div> <!-- end table-responsive -->
@@ -153,10 +160,19 @@ $load_js = Array('sweetAlert', 'jquery-confirm');
                             </div>
                         </div> <!-- end col -->
                         <div class="col-sm-6">
-                            <div class="float-end">
-                                <p><b>Sub-total:</b> <span class="float-end">$4597.50</span></p>
-                                <p><b>Discount (10%):</b> <span class="float-end"> &nbsp;&nbsp;&nbsp; $459.75</span></p>
-                                <h3>$4137.75 USD</h3>
+                            <div class="float-end fs-5">
+                                <p><b>Sub-total:</b> <span class="float-end">@money($sale?->total_amount)</span></p>
+
+                                @php
+                                $perr = $sale?->discount_amount/$sale?->total_amount*100;
+
+                                @endphp
+                                <p><b>Discount ({{number_format($perr, 2)}}%):</b> <span class="float-end">
+                                        &nbsp;&nbsp;&nbsp;
+                                        @money($sale?->discount_amount) </span></p>
+                                <p><b>Other:</b> <span class="float-end">@money($sale?->other_charges)</span></p>
+
+                                <h3 class="text-danger"><b>Total: </b> @money($sale?->final_amount)</h3>
                             </div>
                             <div class="clearfix"></div>
                         </div> <!-- end col -->
@@ -167,7 +183,7 @@ $load_js = Array('sweetAlert', 'jquery-confirm');
                         <div class="text-end d-print-none">
                             <a href="javascript:window.print()" class="btn btn-primary waves-effect waves-light"><i
                                     class="mdi mdi-printer me-1"></i> Print</a>
-                            <a href="#" class="btn btn-info waves-effect waves-light">Submit</a>
+                            <a href="{{ url()->previous() }}" class="btn btn-info waves-effect waves-light">Go Back</a>
                         </div>
                     </div>
                 </div>

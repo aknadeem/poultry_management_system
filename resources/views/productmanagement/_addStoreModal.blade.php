@@ -81,7 +81,7 @@
             let store_id = parseInt($('#StoreIdModal').val());
             let FromPage = $('#FromPage').val() || '';
             let form_type = 'POST'
-            let form_url = "{{ url('/productManagement/productstores')}}"
+            let form_url = "{{ url('/ProductManagement/productstores')}}"
             $.ajax({
                 type: form_type,
                 url: form_url,

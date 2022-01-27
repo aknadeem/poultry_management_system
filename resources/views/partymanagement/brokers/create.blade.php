@@ -126,6 +126,21 @@ $load_js = Array('tippy','select2')
                                     <span class="text-danger opening_balance_error"> {{ $message }} </span>
                                     @enderror
                                 </div>
+
+                                <div class="col-sm-3 mb-2">
+                                    <label class="font_bold" for="BrokerOpenBalance">Balance Type </label>
+                                    <select name="balance_type" class="form-control mySelect" id="">
+                                        @forelse (App\Helpers\Constant::AMOUNT_TYPE as $key=>$item)
+                                        <option value="{{$item}}">{{$key}}</option>
+                                        @empty
+                                        @endforelse
+                                    </select>
+
+                                    @error('opening_balance')
+                                    <span class="text-danger opening_balance_error"> {{ $message }} </span>
+                                    @enderror
+                                </div>
+
                                 {{-- start include 3 column, fileds Country, Province, City --}}
                                 @include('layouts._partial.country_province_city',[
                                 'countries' => $countries,

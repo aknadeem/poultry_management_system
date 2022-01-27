@@ -49,8 +49,8 @@
                             </div>
 
                             <div class="dropdown">
-                                <a class="dropdown-item" id="topnav-form" href="{{ route('brokerbalance.index') }}">
-                                    <i class="fas fa-dollar"></i> Customer Balance
+                                <a class="dropdown-item" id="topnav-form" href="{{ route('partybalance.index') }}">
+                                    <i class="fas fa-dollar"></i> Party Balance
                                 </a>
                             </div>
 

@@ -23,7 +23,7 @@
                                 <span
                                     class="btn input-group-text btn-dark btn-sm waves-effect waves-light AddCategoryModal"
                                     title="Click to add new category" data-plugin="tippy" data-tippy-animation="scale"
-                                    data-tippy-arrow="true"><i class="fa fa-plus"></i>
+                                    data-tippy-arrow="true"><i class="fa fa-plus pt-1"></i>
                                 </span>
                             </div>
                             <span class="text-danger category_id_error"></span>
@@ -84,10 +84,10 @@
                     @csrf
                     <div class="row form-group">
                         <div class="col-12 mb-2">
-                            <label for="ExpenseAmount"> Expense Amount *</label>
-                            <input type="number" step="any" min="0" placeholder="EnterExpense Amount" name="amount"
-                                class="form-control" id="ExpenseAmount">
-                            <span class="text-danger amount_error"></span>
+                            <label for="ExpenseCategory"> Expense Category *</label>
+                            <input type="text" required placeholder="Expense Category" name="cat_name"
+                                class="form-control" id="ExpenseCategory">
+                            <span class="text-danger cat_name_error"></span>
                         </div>
                     </div>
                     <div class="row form-group">
@@ -110,12 +110,14 @@
 <script>
     $(function() {
 
-        var categories_list = {};
+        $(".mySelectModal").select2({
+            dropdownParent: $("#AddModal")
+        });
 
+        var categories_list = {};
         $('#AddExpenseCategoryModal').modal({backdrop: 'static', keyboard: false})
         $('#AddModal').modal({backdrop: 'static', keyboard: false})
-        
-
+    
         $(document).on('click', '.AddCategoryModal', function(){
             $('#AddExpenseCategoryModal').modal('show');
         });
@@ -180,6 +182,43 @@
                         $("#AddExpenseForm").trigger("reset");
                         $('#AddModal').modal('hide');
                         $('#Expense-datatable').DataTable().ajax.reload(null, false);
+                        Swal.fire(
+                            'Saved',
+                            msg.message,
+                            'success'
+                        )
+                    }
+                }
+            });
+        });
+        
+        $('#AddExpenseCategoryForm').on('submit', function(e) {
+            e.preventDefault();
+            // alert('hello')
+            let form_type = 'POST'
+            let form_url = "{{ route('storeExpenseCategrory')}}"
+            $.ajax({
+                type: form_type,
+                url: form_url,
+                data: new FormData(this),
+                dataType:'JSON',
+                contentType: false,
+                cache: false,
+                processData: false,
+                beforeSend : function(msg) {
+                    $('#AddExpenseCategoryForm').find('div.invalid-feedback').text('')
+                },
+                success: function(msg) {
+
+                    console.log(msg)
+                    if(msg?.success == 'no'){
+                        $.each(msg?.error, function(prefix, val){
+                            $('#AddExpenseCategoryForm').find('span.'+prefix+'_error').text(val[0]);
+                        });
+                    }else{
+                        $("#AddExpenseCategoryForm").trigger("reset");
+                        $('#AddExpenseCategoryModal').modal('hide');
+                        getExpenseCategoryList();
                         Swal.fire(
                             'Saved',
                             msg.message,

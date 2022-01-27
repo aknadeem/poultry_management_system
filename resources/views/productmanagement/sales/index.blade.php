@@ -54,6 +54,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                                 <th>Other Charges</th>
                                 <th>Final Amount</th>
                                 <th>Paid Amount</th>
+                                <th>Options</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -64,8 +65,8 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                                 <td>{{ $row?->party?->name }}</td>
                                 <td>{{ $row->company?->company_name }}</td>
                                 <td class="fs-6">{{ $row?->productcategory?->name }}</td>
-                                <td>{{ $row->sale_date }}</td>
-                                <td class="{{ $row->status_value['class_name'] }} fs-6 fw-bold">{{
+                                <td>{{ $row->sale_date?->format('d M, Y') }}</td>
+                                <td class="text-{{ $row->status_value['color_name'] }} fs-6 fw-bold">{{
                                     $row->status_value['value']
                                     }}</td>
                                 <td class="fs-6">
@@ -94,6 +95,11 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
 
                                 <td class="text-success fw-bold fs-5">
                                     @money($row->final_amount)
+                                </td>
+                                <td>
+                                    <a class="btn btn-info btn-sm" href="{{ route('productsales.show', $row?->id) }}"
+                                        title="click to view"><i class="fa fa-eye"></i>
+                                    </a>
                                 </td>
                             </tr>
                             @empty

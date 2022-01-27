@@ -10,7 +10,7 @@ class CreateProductSalesTable extends Migration
     {
         Schema::create('product_sales', function (Blueprint $table) {
             $table->id();
-            $table->bigInt('sale_number')->default(0);
+            $table->unsignedBigInteger('sale_number')->default(0);
             $table->string('sale_code')->nullable();
             $table->foreignId('division_id')->nullable()->constrained('divisions')->onDelete('cascade');
             $table->foreignId('party_id')->nullable()->constrained('parties')->onDelete('cascade');

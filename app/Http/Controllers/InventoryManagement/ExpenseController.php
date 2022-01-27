@@ -8,6 +8,7 @@ use App\Models\Expense;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Models\ExpenseCategory;
+use DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CustomerFormRequest;
@@ -152,6 +153,33 @@ class ExpenseController extends Controller
                 $message = 'Something went wrong';
                 $success = 'no';
             }
+        }
+        return response()->json([
+            'message' => $message,
+            'success' => $success,
+        ], 200);
+    }
+
+    public function storeExpenseCategrory(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            'cat_name' => 'bail|required|string',
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'error' => $validator->errors()->toArray(),
+                'success' => 'no',
+            ], 201);
+        }
+        $sv_expense_cat = ExpenseCategory::create([
+            'name' => $request->cat_name,
+        ]);
+        if($sv_expense_cat){
+            $message = 'New Category added successfully!';
+            $success = 'yes';
+        }else{
+            $message = 'Something went wrong';
+            $success = 'no';
         }
         return response()->json([
             'message' => $message,

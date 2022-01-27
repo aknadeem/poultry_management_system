@@ -20,7 +20,7 @@ Route::group([
     'prefix' => 'auth'
 
 ], function ($router) {
-    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('/home', [HomeController::class, 'index'])->name('homeApi');
 });
 
 
