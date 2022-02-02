@@ -11,9 +11,9 @@ class CreatePartyAccountsTable extends Migration
         Schema::create('party_accounts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('party_id')->nullable()->constrained('parties')->onDelete('cascade');
-            $table->string('account_title');
-            $table->string('account_number');
-            $table->string('bank_name');
+            $table->string('account_title')->nullable();
+            $table->string('account_number')->nullable();
+            $table->string('bank_name')->nullable();
             $table->string('branch_code')->nullable();
             $table->decimal('opening_balance')->nullable();
             $table->decimal('dr')->nullable();

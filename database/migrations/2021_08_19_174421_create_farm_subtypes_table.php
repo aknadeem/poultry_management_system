@@ -15,7 +15,7 @@ class CreateFarmSubtypesTable extends Migration
     {
         Schema::create('farm_subtypes', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
+            $table->string('name')->unique()->nullable();
             $table->string('slug')->unique()->nullable();
             $table->foreignId('farm_type_id')->nullable()->constrained('farm_types')->onDelete('cascade');
             $table->softDeletes();

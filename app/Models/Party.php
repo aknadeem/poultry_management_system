@@ -49,6 +49,11 @@ class Party extends Model implements HasCountryProvinceCity
             'id' => null,
         ]);
     }
+
+    public function balances()
+    {
+        return $this->hasMany('App\Models\PartyBalance', 'party_id', 'id');
+    }
     /*
     I want return "customer" from Parties table.Currently i using where queries like this.
     $customers = Party::where('is_customer', 1)->get();

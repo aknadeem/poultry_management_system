@@ -12,7 +12,7 @@ class CreateCompanyBalancesTable extends Migration
         Schema::create('company_balances', function (Blueprint $table) {
             $table->id();
             $table->string('type')->nullable();
-            $table->decimal('total_amount');
+            $table->decimal('total_amount')->nullable();
             $table->decimal('paid_amount')->default(0);
             $table->decimal('remaining_amount')->default(0);
             $table->decimal('dr')->default(0);

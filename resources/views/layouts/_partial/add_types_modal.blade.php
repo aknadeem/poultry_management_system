@@ -37,6 +37,7 @@
 @section('modal_scripts2')
 <script>
     $(function() {  
+      
         var SelectBoxId = '';
         $('.OpenaddTypeModal').click(function () {
             // $('#TypeForm').find('span.text-danger').text('')
@@ -55,15 +56,24 @@
                 e.preventDefault();
                 let form_type = 'POST'
                 let form_url = "{{ route('addalltypes')}}"
-                // alert(form_url)
+                
+                let naame = $('#TypeName').val()
+                // let csrf_tok = "{{ csrf_token() }}"
+                let TableName = $('#TableName').val()
+                 console.log(form_url);
                 $.ajax({
                     type: form_type,
-                    url: form_url,
+                    url:form_url,
+                  
+                  data: {name: naame, tag_name: TableName, _token: "{{ csrf_token() }}" },
+                   cache: false,
+                  /*
                     data:new FormData(this),
                     dataType:'JSON',
-                    contentType: false,
+                    contentType: true,
                     cache: false,
                     processData: false,
+                   */ 
                     // data: $('#CustomerForm').serialize(),
                     beforeSend : function(msg) {
                         $('#TypeForm').find('span.text-danger').text('')

@@ -10,8 +10,8 @@ class CreateCustomerDocumentsTable extends Migration
     {
         Schema::create('customer_documents', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('picture');
+            $table->string('title')->nullable();
+            $table->string('picture')->nullable();
             $table->string('type')->nullable();
             $table->softDeletes();
             $table->timestamps();

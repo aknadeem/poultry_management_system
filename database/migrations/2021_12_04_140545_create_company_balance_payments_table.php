@@ -13,7 +13,7 @@ class CreateCompanyBalancePaymentsTable extends Migration
             $table->id();
             $table->foreignId('company_balance_id')->nullable()->constrained('company_balances')->onDelete('cascade');
             $table->foreignId('party_company_id')->nullable()->constrained('party_companies')->onDelete('cascade');
-            $table->decimal('paid_amount');
+            $table->decimal('paid_amount')->nullable();
             $table->decimal('balance')->nullable();
             $table->string('payment_option')->nullable();
             $table->date('cheque_date')->nullable();

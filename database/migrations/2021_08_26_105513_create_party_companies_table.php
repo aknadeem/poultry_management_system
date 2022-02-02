@@ -11,9 +11,9 @@ class CreatePartyCompaniesTable extends Migration
         Schema::create('party_companies', function (Blueprint $table) {
             $table->id();
             $table->foreignId('party_id')->constrained('parties')->onDelete('cascade');
-            $table->string('company_name');
+            $table->string('company_name')->nullable();
             $table->string('company_code')->unique()->nullable();
-            $table->string('nic_name')->nullable();
+            $table->string('nic_name')->nullable()->nullable();
             $table->foreignId('business_type_id')->constrained('business_types')->onDelete('cascade');
             $table->string('company_logo')->nullable();
             $table->string('company_noc')->nullable();

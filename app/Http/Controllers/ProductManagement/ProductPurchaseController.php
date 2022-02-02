@@ -94,7 +94,7 @@ class ProductPurchaseController extends Controller
         $product = Product::find($request->product_id);
         if($product !=''){
             if($request->purchase_price > $product->purchase_price ||  $request->discount_amount > $product->discount_amount){
-                $message = 'Please make sure purchase and discount amount should be less then Product';
+                $message = 'Please make sure purchase and discount amount should be less then Product Purchase and Discount';
                 $title = 'Error';
                 $icon_type = 'danger';
             }else{

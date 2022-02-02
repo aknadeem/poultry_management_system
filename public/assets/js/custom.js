@@ -240,3 +240,51 @@ $(document).on("click", ".confirm-status", function (event) {
         },
     });
 });
+
+$(document).on("click", ".vaccination_confirm", function (event) {
+    /* Act on the event */
+    event.preventDefault();
+    var action = $(this).attr("href");
+    var msg = $(this).attr("msg") || "Are you sure to continue?";
+    $.confirm({
+        title: "<h4>Add Vaccination Entry</h4>",
+        content:
+            "" +
+            `<form action="" class="formName" id="VaccinationAddForm">
+                <div class="form-group col-12 mb-2">
+                    <label> Enter Date </label>
+                    <input type="date" placeholder="date" class="vDate form-control" required />
+                </div>
+                <div class="form-group col-12">
+                    <label class="fw-bold fs-5">Enter something here</label>
+                    <input type="text" placeholder="Remarks" class="name form-control" required />
+                </div>
+            </form>`,
+        buttons: {
+            formSubmit: {
+                text: "Submit",
+                btnClass: "btn-blue",
+                action: function () {
+                    var vDate = this.$content.find(".vDate").val();
+                    if (!vDate) {
+                        $.alert("provide a valid date");
+                        return false;
+                    }
+                    $.alert("Your name is " + vDate);
+                },
+            },
+            cancel: function () {
+                //close
+            },
+        },
+        onContentReady: function () {
+            // bind to events
+            var jc = this;
+            this.$content.find("form").on("submit", function (e) {
+                // if the user submits the form by pressing enter in the field.
+                e.preventDefault();
+                jc.$$formSubmit.trigger("click"); // reference the button and click it
+            });
+        },
+    });
+});

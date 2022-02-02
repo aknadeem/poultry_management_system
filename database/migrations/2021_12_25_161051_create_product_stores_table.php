@@ -10,7 +10,7 @@ class CreateProductStoresTable extends Migration
     {
         Schema::create('product_stores', function (Blueprint $table) {
             $table->id();
-            $table->string('store_name');
+            $table->string('store_name')->nullable();
             $table->string('store_code')->nullable();
             $table->string('store_type')->nullable();
             $table->double('store_area')->nullable();

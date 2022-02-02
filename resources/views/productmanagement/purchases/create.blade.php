@@ -355,8 +355,6 @@ $load_js = Array('tippy','select2')
             
             if(single_product?.warranty_period > 0){
 
-                alert(single_product?.expiry_date_value)
-
                 $('#ExpiryDate').val(dateFormat(new Date(single_product?.expiry_date_value), "Y-m-d"))
                 
             }
@@ -394,7 +392,7 @@ $load_js = Array('tippy','select2')
         $("#ViewProductDetail").click(function(){
             let product_id = parseInt($(this).attr('ProductId'))
             $("#ProductDetail").modal('show')
-            let url_addr = "{{ url('productManagement/products')}}/"+product_id;
+            let url_addr = "{{ url('ProductManagement/products')}}/"+product_id;
             $.get(url_addr , function(response, status){
                 var single_product = response.html_data;
                 if (single_product != '')

@@ -10,7 +10,7 @@ class CreateChickGradesTable extends Migration
     {
         Schema::create('chick_grades', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->string('slug')->nullable();
             $table->softDeletes();
             $table->timestamps();

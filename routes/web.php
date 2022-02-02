@@ -18,7 +18,8 @@ use App\Http\Controllers\InventoryManagement\ {FeedController, ExpenseController
 use App\Http\Controllers\ChickenModule\ {ChickenPurchaseController, ChickenSaleController, ChickPurchaseController};
 
 use App\Http\Controllers\ProductManagement\ {
-    ProductController, ProductPurchaseController, ProductStoreController, ProductSaleController
+    ProductController, ProductPurchaseController, ProductStoreController, 
+    ProductSaleController, VaccinationController
 };
 
 use App\Http\Controllers\PaymentManagement\AccountPayableController;
@@ -91,6 +92,11 @@ Route::group(['middleware' => 'auth'], function(){
         ]);
 
         Route::get('/partybalancelist', [PartyBalanceController::class, 'getBalanceList'])->name('getBalanceList');
+
+        Route::get('/getPartyBalances', [PartyBalanceController::class, 'getPartyBalances'])->name('getPartyBalances');
+        
+        // Route::get('/getParties', [PartyBalanceController::class, 'getParties'])->name('getParties');
+
         Route::resource('partybalance', PartyBalanceController::class);
 
         Route::get('/party-balance-payments/{id}', [PartyBalanceController::class, 'getBalancePayments'])->name('getBalancePayments');
@@ -100,6 +106,12 @@ Route::group(['middleware' => 'auth'], function(){
         Route::resource('personalfarms', PoultryShedController::class);
         Route::resource('customerfarms', CustomerFarmController::class);
         Route::resource('employee', EmployeeController::class);
+
+        
+
+        Route::get('/vaccination-schedule-list', [VaccinationController::class, 'getScheduleList'])->name('getScheduleList');
+        Route::post('/add-vaccination', [VaccinationController::class, 'addVaccination'])->name('addVaccination');
+        Route::resource('vaccination', VaccinationController::class);
     });
 
 
@@ -138,6 +150,7 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/storelist', [ProductStoreController::class, 'getStoreList'])->name('storelist');
         Route::resource('productstores', ProductStoreController::class);
         Route::resource('productsales', ProductSaleController::class);
+        
     });
 
     Route::group(['prefix' => '/paymentmanagement'], function(){

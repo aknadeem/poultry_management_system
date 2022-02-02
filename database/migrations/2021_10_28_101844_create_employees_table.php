@@ -12,9 +12,9 @@ class CreateEmployeesTable extends Migration
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
             $table->string('general_type')->nullable();
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->string('guardian_name')->nullable();
-            $table->string('contact_no');
+            $table->string('contact_no')->nullable();
             $table->string('other_number')->nullable();
             $table->string('email')->nullable();
             $table->string('cnic_no')->nullable();

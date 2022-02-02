@@ -10,7 +10,7 @@ class CreateFeedSubcategoriesTable extends Migration
     {
         Schema::create('feed_subcategories', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->string('slug')->nullable();
             $table->foreignId('feed_category_id')->nullable()->constrained('feed_categories')->onDelete('cascade');
             $table->softDeletes();

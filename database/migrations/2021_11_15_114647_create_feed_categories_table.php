@@ -10,7 +10,7 @@ class CreateFeedCategoriesTable extends Migration
     {
         Schema::create('feed_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->string('slug')->nullable();
             $table->softDeletes();
             $table->timestamps();

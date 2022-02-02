@@ -75,8 +75,9 @@
                                     <i class="fas fa-warehouse"></i> Farms <div class="arrow-down"></div>
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="topnav-form">
-                                    <a href="{{ route('personalfarms.index') }}" class="dropdown-item"> Personal Farms
-                                    </a>
+                                    {{-- <a href="{{ route('personalfarms.index') }}" class="dropdown-item"> Personal
+                                        Farms
+                                    </a> --}}
                                     <a href="{{ route('customerfarms.index') }}" class="dropdown-item"> Customer Farms
                                     </a>
                                 </div>
@@ -107,6 +108,12 @@
                             <div class="dropdown">
                                 <a class="dropdown-item" href="{{ route('productsales.index') }}" id="topnav-form">
                                     <i class="fas fa-shopping-bag"></i> Product Sales
+                                </a>
+                            </div>
+
+                            <div class="dropdown">
+                                <a class="dropdown-item" href="{{ route('vaccination.index') }}" id="topnav-form">
+                                    <i class="fas fa-syringe"></i> Vaccination
                                 </a>
                             </div>
                         </div>

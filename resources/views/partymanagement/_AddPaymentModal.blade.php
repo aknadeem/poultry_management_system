@@ -1,5 +1,5 @@
-<div id="InvoicePaymentModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AddPaymentModal"
-    aria-hidden="true">
+<div id="InvoicePaymentModal" class="modal fade MyModalClass" tabindex="-1" role="dialog"
+    aria-labelledby="AddPaymentModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="row">
@@ -160,7 +160,7 @@
     </div>
 </div>
 
-<div id="AddPaymentModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AddPaymentModal"
+<div id="AddPaymentModal" class="modal fade MyModalClass" tabindex="-1" role="dialog" aria-labelledby="AddPaymentModal"
     aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -326,10 +326,6 @@
                     }
                 }
             });
-        });
-
-        $(".mySelectModal").select2({
-            dropdownParent: $("#AddPaymentModal")
         });
     });
 </script>

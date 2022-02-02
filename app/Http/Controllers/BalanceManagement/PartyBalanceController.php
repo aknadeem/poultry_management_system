@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\BalanceManagement;
 
 use Validator;
+use App\Models\Party;
 use App\Helpers\Constant;
 use App\Models\PartyBalance;
 use Illuminate\Http\Request;
@@ -25,7 +26,45 @@ class PartyBalanceController extends Controller
     public function index()
     {
         $balances = PartyBalance::with('party:id,name,cnic_no')->orderBy('id','DESC')->get();
+
+        // dd($balances->toArray());
         return view('balancemanagement.party_balances.index', compact('balances'));
+    }
+
+    public function getPartyBalances()
+    {
+        $balances = PartyBalance::with('party:id,name,cnic_no')->orderBy('id','DESC')->get();
+        // dd($balances->toArray());
+        if($balances->count() > 0){
+            $message = 'yes';
+            $balances = $balances->toArray();
+        }else{
+            $message = 'no';
+            $balances = collect();
+        }
+
+        return response()->json([
+            'message' => $message,
+            'balances' => $balances,
+        ], 201);
+    }
+
+    public function getParties()
+    {
+        $parties = Party::whereHas('balances')->orderBy('id','DESC')->get();
+        // dd($parties->toArray());
+        if($parties->count() > 0){
+            $message = 'yes';
+            $parties = $parties->toArray();
+        }else{
+            $message = 'no';
+            $parties = collect();
+        }
+
+        return response()->json([
+            'message' => $message,
+            'parties' => $parties,
+        ], 201);
     }
 
     public function getBalanceList()

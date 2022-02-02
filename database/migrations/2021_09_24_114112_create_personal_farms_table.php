@@ -10,9 +10,9 @@ class CreatePersonalFarmsTable extends Migration
     {
         Schema::create('personal_farms', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('farm_type_id')->constrained('farm_types')->onDelete('cascade');
-            $table->foreignId('farm_subtype_id')->constrained('farm_subtypes')->onDelete('cascade');
-            $table->string('farm_name');
+            $table->foreignId('farm_type_id')->nullable()->constrained('farm_types')->onDelete('cascade');
+            $table->foreignId('farm_subtype_id')->nullable()->constrained('farm_subtypes')->onDelete('cascade');
+            $table->string('farm_name')->nullable();
             $table->string('farm_code')->nullable();
             $table->string('farm_noc')->nullable();
             $table->string('farm_image')->nullable();

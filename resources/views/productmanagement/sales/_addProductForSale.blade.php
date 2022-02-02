@@ -1,5 +1,5 @@
-<div id="AddProductSaleModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AddProductSaleModalLabel"
-    aria-hidden="true">
+<div id="AddProductSaleModal" class="modal fade MyModalClass" tabindex="-1" role="dialog"
+    aria-labelledby="AddProductSaleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header border-bottom">
@@ -132,9 +132,9 @@
 
         $('#AddProductSaleModal').modal({backdrop: 'static', keyboard: false})
 
-        $(".mySelectModal").select2({
-            dropdownParent: $("#AddProductSaleModal")
-        });
+        // $(".mySelectModal").select2({
+        //     dropdownParent: $("#AddProductSaleModal")
+        // });
 
         $(".ViewProductDetail").click(function(){
             let product_id = parseInt($(this).attr('ProductId'))

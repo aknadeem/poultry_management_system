@@ -11,9 +11,9 @@ class CreateExpensesTable extends Migration
         Schema::create('expenses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('category_id')->nullable()->constrained('expense_categories')->onDelete('cascade');
-            $table->decimal('amount');
-            $table->date('expense_date');
-            $table->text('remarks');
+            $table->decimal('amount')->nullable();
+            $table->date('expense_date')->nullable();
+            $table->text('remarks')->nullable();
             $table->string('picture')->nullable();
             $table->unsignedBigInteger('addedby')->nullable();
             $table->unsignedBigInteger('updatedby')->nullable();

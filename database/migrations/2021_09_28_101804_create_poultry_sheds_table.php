@@ -11,8 +11,8 @@ class CreatePoultryShedsTable extends Migration
     {
         Schema::create('poultry_sheds', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('shed_type');
+            $table->string('name')->nullable();
+            $table->string('shed_type')->nullable();
             $table->double('area')->nullable();
             $table->text('address')->nullable();
             $table->string('shed_logo')->nullable();

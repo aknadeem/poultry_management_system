@@ -10,6 +10,12 @@ class Constant
         'Paid' => 3,
     ];
     
+    const VACCINATION_STATUS = [
+        'UnPaid'   => 1,
+        'Pending' => 2,
+        'Paid' => 3,
+    ];
+    
     const AMOUNT_TYPE = [
         'ToPay'   => 1,
         'ToReceive' => 2,

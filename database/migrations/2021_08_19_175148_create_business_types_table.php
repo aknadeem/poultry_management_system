@@ -10,7 +10,7 @@ class CreateBusinessTypesTable extends Migration
     {
         Schema::create('business_types', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
+            $table->string('name')->unique()->nullable();
             $table->string('slug')->unique()->nullable();
             $table->softDeletes();
             $table->timestamps();

@@ -11,11 +11,11 @@ class CreatePartyBalanceLimitsTable extends Migration
         Schema::create('party_balance_limits', function (Blueprint $table) {
             $table->id();
             $table->foreignId('party_id')->nullable()->constrained('parties')->onDelete('cascade');
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->decimal('debit_limit');
-            $table->decimal('credit_limit');
-            $table->boolean('is_active')->default(1);
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->decimal('debit_limit')->nullable();
+            $table->decimal('credit_limit')->nullable();
+            $table->boolean('is_active')->default(1)->nullable();
             $table->text('remarks')->nullable();
             $table->unsignedBigInteger('addedby')->nullable();
             $table->unsignedBigInteger('updatedby')->nullable();

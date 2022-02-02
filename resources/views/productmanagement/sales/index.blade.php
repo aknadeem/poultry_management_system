@@ -53,7 +53,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                                 <th>Discount Amount</th>
                                 <th>Other Charges</th>
                                 <th>Final Amount</th>
-                                <th>Paid Amount</th>
+                                {{-- <th>Paid Amount</th> --}}
                                 <th>Options</th>
                             </tr>
                         </thead>
@@ -93,9 +93,9 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                                     @money($row->final_amount)
                                 </td>
 
-                                <td class="text-success fw-bold fs-5">
+                                {{-- <td class="text-success fw-bold fs-5">
                                     @money($row->final_amount)
-                                </td>
+                                </td> --}}
                                 <td>
                                     <a class="btn btn-info btn-sm" href="{{ route('productsales.show', $row?->id) }}"
                                         title="click to view"><i class="fa fa-eye"></i>

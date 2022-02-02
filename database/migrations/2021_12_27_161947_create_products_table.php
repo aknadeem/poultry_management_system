@@ -12,9 +12,9 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('product_number')->default(0);
-            $table->string('product_code')->unique();
-            $table->string('bar_code')->unique();
-            $table->string('product_name');
+            $table->string('product_code')->unique()->nullable();
+            $table->string('bar_code')->unique()->nullable();
+            $table->string('product_name')->nullable();
             $table->string('product_type')->nullable();
             $table->date('entry_date')->nullable();
             $table->date('purchase_date')->nullable();

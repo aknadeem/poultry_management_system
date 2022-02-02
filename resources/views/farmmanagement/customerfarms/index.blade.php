@@ -14,7 +14,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                         <li class="breadcrumb-item"><a href="#">Home</a>
                         </li>
                         <li class="breadcrumb-item">Farm Management</li>
-                        <li class="breadcrumb-item"> CUstomerFarms </li>
+                        <li class="breadcrumb-item"> CustomerFarms </li>
                         <li class="breadcrumb-item active"> index </li>
                     </ol>
                 </div>
@@ -31,11 +31,11 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                             <h4>Customer Farms</h4>
                         </div>
                         <div class="col-6 align-self-end text-end mb-2">
-                            <a class="btn btn-secondary btn-sm" href="{{ route('customerfarms.create') }}"
+                            {{-- <a class="btn btn-secondary btn-sm" href="{{ route('customerfarms.create') }}"
                                 title="Click to add new Farm" data-plugin="tippy" data-tippy-animation="scale"
                                 data-tippy-arrow="true"><i class="fa fa-plus"></i>
                                 Add Farm
-                            </a>
+                            </a> --}}
                         </div>
                     </div>
                     <table id="basic-datatable" class="table table-striped dt-responsive  w-100">

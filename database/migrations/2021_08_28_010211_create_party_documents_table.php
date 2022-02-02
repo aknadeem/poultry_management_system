@@ -11,8 +11,8 @@ class CreatePartyDocumentsTable extends Migration
         Schema::create('party_documents', function (Blueprint $table) {
             $table->id();
             $table->foreignId('party_id')->nullable()->constrained('parties')->onDelete('cascade');
-            $table->string('title');
-            $table->string('document_name');
+            $table->string('title')->nullable();
+            $table->string('document_name')->nullable();
             $table->boolean('is_active')->default(1);
             $table->text('remarks')->nullable();
             $table->unsignedBigInteger('addedby')->nullable();

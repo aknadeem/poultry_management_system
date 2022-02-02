@@ -168,7 +168,7 @@ class VendorController extends Controller
 
     public function storeAllType(Request $request)
     {
-        $table_name = $request->table_name;
+        $table_name = $request->tag_name;
         $validator = Validator::make($request->all(),[
             'name' => 'bail|required|string|unique:'.$table_name.',name',
         ]);

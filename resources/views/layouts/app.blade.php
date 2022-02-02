@@ -310,6 +310,11 @@
             $('.modal').modal('hide'); 
         });
 
+        $(document).ready(function () {
+            $(".mySelectModal").select2({
+                dropdownParent: $(".MyModalClass")
+            });
+        });
 
     </script>
 

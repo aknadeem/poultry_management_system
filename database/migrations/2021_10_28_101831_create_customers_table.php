@@ -11,10 +11,10 @@ class CreateCustomersTable extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('customer_type_id')->nullable()->constrained('customer_types')->onDelete('cascade');
-            $table->string('name');
-            $table->string('contact_no');
+            $table->string('name')->nullable();
+            $table->string('contact_no')->nullable();
             $table->string('email')->nullable();
-            $table->string('cnic')->unique();
+            $table->string('cnic')->unique()->nullable();
             $table->string('cnic_image_front')->nullable();
             $table->string('cnic_image_back')->nullable();
             $table->string('customer_image')->nullable();

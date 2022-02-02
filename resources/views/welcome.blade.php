@@ -1,6 +1,6 @@
 @php
-$load_css = Array('');
-$load_js = Array('apexChart', 'dashboard');
+$load_css = Array('select2');
+$load_js = Array('apexChart', 'dashboard','select2');
 @endphp
 @extends('layouts.app')
 
@@ -26,6 +26,14 @@ $load_js = Array('apexChart', 'dashboard');
                             <i class="mdi mdi-filter-variant"></i>
                         </a>
                     </form> --}}
+
+                    <a href="javascript: void(0);" class="btn btn-success btn-sm ms-2" id="openCashInModal">
+                        <i class="fas fa-arrow-down"></i> Cash in
+                    </a>
+
+                    <a href="javascript: void(0);" class="btn btn-danger btn-sm ms-2" id="openCashOutModal">
+                        <i class="fas fa-arrow-up"></i> Cash Out
+                    </a>
                 </div>
                 <h4 class="page-title">Home</h4>
             </div>
@@ -115,81 +123,6 @@ $load_js = Array('apexChart', 'dashboard');
         </div> <!-- end col-->
     </div>
     <!-- end row-->
-
-    <div class="row">
-        <div class="col-lg-4">
-            <div class="card">
-                <div class="card-body">
-                    <div class="dropdown float-end">
-                        <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            <i class="mdi mdi-dots-vertical"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end">
-                            <!-- item-->
-                            <a href="javascript:void(0);" class="dropdown-item">Sales Report</a>
-                            <!-- item-->
-                            <a href="javascript:void(0);" class="dropdown-item">Export Report</a>
-                            <!-- item-->
-                            <a href="javascript:void(0);" class="dropdown-item">Profit</a>
-                            <!-- item-->
-                            <a href="javascript:void(0);" class="dropdown-item">Action</a>
-                        </div>
-                    </div>
-
-                    <h4 class="header-title mb-0">Total Revenue</h4>
-
-                    <div class="widget-chart text-center" dir="ltr">
-
-                        <div id="total-revenue" class="mt-0" data-colors="#f86262"></div>
-
-                        <h5 class="text-muted mt-0">Total sales made today</h5>
-                        <h2>$178</h2>
-
-                        <p class="text-muted w-75 mx-auto sp-line-2">Traditional heading elements are designed to work
-                            best in the meat of your page content.</p>
-
-                        <div class="row mt-3">
-                            <div class="col-4">
-                                <p class="text-muted font-15 mb-1 text-truncate">Target</p>
-                                <h4><i class="fe-arrow-down text-danger me-1"></i>$7.8k</h4>
-                            </div>
-                            <div class="col-4">
-                                <p class="text-muted font-15 mb-1 text-truncate">Last week</p>
-                                <h4><i class="fe-arrow-up text-success me-1"></i>$1.4k</h4>
-                            </div>
-                            <div class="col-4">
-                                <p class="text-muted font-15 mb-1 text-truncate">Last Month</p>
-                                <h4><i class="fe-arrow-down text-danger me-1"></i>$15k</h4>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div> <!-- end card -->
-        </div> <!-- end col-->
-
-        <div class="col-lg-8">
-            <div class="card">
-                <div class="card-body pb-2">
-                    <div class="float-end d-none d-md-inline-block">
-                        <div class="btn-group mb-2">
-                            <button type="button" class="btn btn-xs btn-light">Today</button>
-                            <button type="button" class="btn btn-xs btn-light">Weekly</button>
-                            <button type="button" class="btn btn-xs btn-secondary">Monthly</button>
-                        </div>
-                    </div>
-
-                    <h4 class="header-title mb-3">Sales Analytics</h4>
-
-                    <div dir="ltr">
-                        <div id="sales-analytics" class="mt-4" data-colors="#3283f6,#43bee1"></div>
-                    </div>
-                </div>
-            </div> <!-- end card -->
-        </div> <!-- end col-->
-    </div>
-    <!-- end row -->
 
     <div class="row">
         <div class="col-xl-6">
@@ -565,4 +498,160 @@ $load_js = Array('apexChart', 'dashboard');
     <!-- end row -->
 
 </div> <!-- container -->
+
+
+<div id="CashInModal" class="modal fade MyModalClass" tabindex="-1" role="dialog" aria-labelledby="CashInModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header border-bottom">
+                <h4 class="modal-title" id="standard-modalLabel"> <span class="AddUpdate"> Receive </span> Payment From
+                    Party:
+                </h4>
+                <button type="button" class="btn-close ModalClosed" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form autocomplete="off" method="post" id="AddVaccinationForm" class="form_loader">
+                    @csrf
+                    <div class="row form-group">
+                        <input type="hidden" name="schedule_id" id="ScheduleId">
+                        <div class="col-sm-12 mb-2 ps-1">
+                            <label for="BalanceSelect"> Select Balance *</label>
+                            <select name="party_balance_id" id="BalanceSelect" class="form-control mySelectModal"
+                                required data-toggle="select2" data-width="100%">
+                                <option value="">dasd</option>
+                            </select>
+                            <span class="text-danger party_balance_id_error"> </span>
+                        </div>
+
+                        <div class="col-sm-4 mb-2 pe-0">
+                            <label for="TotalAmount" class="fs-6">Total Amount</label>
+                            <input type="number" step="any" min="0" placeholder="Total Amount" disabled
+                                class="form-control py-1 fs-6" id="TotalAmount">
+                        </div>
+                        <div class="col-sm-4 mb-2 px-1">
+                            <label for="PaidAmount" class="fs-6">Paid Amount</label>
+                            <input type="number" step="any" min="0" placeholder="Paid Amount" disabled
+                                class="form-control py-1 fs-6" id="PaidAmount">
+                        </div>
+                        <div class="col-sm-4 mb-2 ps-0">
+                            <label for="RemainingAmount" class="fs-6">Remaining Amount</label>
+                            <input type="number" step="any" min="0" placeholder="Remaining Amount" disabled
+                                class="form-control py-1 fs-6" id="RemainingAmount">
+                        </div>
+
+                        <div class="col-sm-4 mb-2 pe-0">
+                            <label for="AddAmount">Add Amount</label>
+                            <input type="number" step="any" min="0" placeholder="Add Amount" class="form-control"
+                                id="AddAmount">
+                        </div>
+
+                        <div class="col-sm-8 mb-2 ps-1">
+                            <label for="PaymentOption"> Payment Option *</label>
+                            <select name="payment_option" id="PaymentOption" class="form-control mySelectModal" required
+                                data-toggle="select2" data-width="100%">
+                                <option value="" selected disabled>Select Payment option </option>
+                                <option value="1">Cheque</option>
+                                <option value="2">Cash</option>
+                                <option value="3">Other</option>
+                            </select>
+                            <span class="text-danger payment_option_error"> </span>
+                        </div>
+
+                        <div class="col-sm-4 mb-2 pe-0">
+                            <label for="cheque_date" class="fs-6">Cheque Date</label>
+                            <input type="date" name="cheque_date" class="form-control ps-1 py-1 fs-6"
+                                placeholder="Enter amount" id="cheque_date">
+                            <span class="text-danger cheque_date_error"> </span>
+                        </div>
+
+                        <div class="col-sm-4 mb-2 pe-0 ps-1">
+                            <label for="cno" class="fs-6">Bank Name</label>
+                            <input type="text" name="bank_name" class="form-control py-1 fs-6"
+                                placeholder="Enter bank name" id="BankName">
+                            <span class="text-danger bank_name_error"> </span>
+                        </div>
+                        <div class="col-sm-4 mb-2 ps-1">
+                            <label for="cheque_picture" class="fs-6">Cheque Picture</label>
+                            <input type="file" name="cheque_picture" class="form-control ps-0 py-1 fs-6"
+                                placeholder="Enter amount" id="ChequePicture">
+                            <span class="text-danger cheque_picture_error"> </span>
+                        </div>
+
+                        <div class="col-sm-6 mb-2 pe-1">
+                            <label for="ReffNumber">Reference Number *</label>
+                            <input type="text" placeholder="Reference Number" name="reference_number" required
+                                class="form-control" id="ReffNumber">
+                            <span class="text-danger reference_number_error">
+                            </span>
+                        </div>
+
+                        <div class="col-sm-6 mb-2 ps-1">
+                            <label for="PaymentDate">Payment Date *</label>
+                            <input type="date" placeholder="Payment date" name="vaccination_date"
+                                value="{{today()->format('Y-m-d')}}" required class="form-control" id="PaymentDate">
+                            <span class="text-danger vaccination_date_error">
+                            </span>
+                        </div>
+
+                        <div class="col-sm-12 mb-2">
+                            <label for="Remarks"> Remarks *</label>
+                            <input type="text" placeholder="Enter remarks" name="remarks" required class="form-control"
+                                id="Remarks">
+                            <span class="text-danger remarks_error"> </span>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-4 mb-3">
+                            <button type="submit" id="sub"
+                                class="btn btn-secondary btn-sm waves-effect waves-light mt-3 AddUpdate">
+                                Submit
+                            </button>
+                            <button class="btn btn-light btn-sm waves-effect waves-light mt-3 ModalClosed"> Cancel
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+@endsection
+
+@section('custom_scripts')
+
+<script>
+    $(function() {
+        $('.ModalClosed').click(function () {
+            $('.modal').modal('hide'); 
+            $(this).find('form').trigger('reset');
+        });
+
+        $('#openCashInModal').click(function () {
+            $('#CashInModal').modal('show')
+
+            let uri = "{{ route('getPartyBalances')}}"
+            $.get(uri, function(res, status){
+                var html_code = '';
+                console.log(res)
+                if(res.message == 'yes'){
+                    html_code ='<option value="">Select Party</option>'; 
+                    for (var i = 0; i < res.balances.length; i++) {
+                        html_code+='<option value='+res.balances[i]?.party?.id+'>'+res.balances[i]?.party.name+'</option>'; 
+                    }
+                }else{
+                    html_code+='<option value="">No Data Found</option>'; 
+                }
+                $('#BalanceSelect').html(html_code);
+            });
+
+            // 
+
+        });
+
+        $('#openCashOutModal').click(function () {
+            alert('Cash Out')
+        });
+    });
+</script>
 @endsection

@@ -34,7 +34,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                         </div>
 
                         <div class="col-6 align-self-end text-end mb-2">
-                            <a class="btn btn-secondary btn-sm" href="{{ route('poultryshed.index') }}"
+                            <a class="btn btn-secondary btn-sm" href="{{ route('customerfarms.index') }}"
                                 title="Click to go back" data-plugin="tippy" data-tippy-animation="scale"
                                 data-tippy-arrow="true"><i class="fa fa-arrow-left"></i>
                                 Back

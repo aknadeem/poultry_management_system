@@ -80,12 +80,6 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
 @section('custom_scripts')
 <script>
     $(function() {
-
-        // $('.openAddPaymentModal').click(function () {
-        //     alert('hello')
-        //     // $('#AddPaymentModal').modal('show')
-        // });
-
         $('.ModalClosed').click(function () {
             // $(this).find('modal').hide();
             $('.modal').modal('hide'); 

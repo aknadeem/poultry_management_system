@@ -10,11 +10,11 @@ class CreateVendorsTable extends Migration
     {
         Schema::create('vendors', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('nic_name');
+            $table->string('name')->nullable();
+            $table->string('nic_name')->nullable();
             $table->string('email')->nullable();
             $table->foreignId('vendor_type_id')->nullable()->constrained('vendor_types')->onDelete('cascade');
-            $table->string('contact_number');
+            $table->string('contact_number')->nullable();
             $table->string('business_number')->nullable();
             $table->string('cnic_number')->unique();
             $table->string('cnic_image_front')->nullable();

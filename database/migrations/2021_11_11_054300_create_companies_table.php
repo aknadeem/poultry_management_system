@@ -11,9 +11,9 @@ class CreateCompaniesTable extends Migration
     {
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('nic_name');
-            $table->string('contact_no');
+            $table->string('name')->nullable();
+            $table->string('nic_name')->nullable();
+            $table->string('contact_no')->nullable();
             $table->foreignId('vendor_id')->nullable()->constrained('vendors')->onDelete('cascade');
             $table->unsignedBigInteger('country_id')->nullable();
             $table->unsignedBigInteger('province_id')->nullable();

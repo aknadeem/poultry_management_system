@@ -12,11 +12,11 @@ class CreatePartiesTable extends Migration
             $table->id();
             $table->boolean('is_vendor')->nullable();
             $table->boolean('is_customer')->nullable();
-            $table->string('name');
-            $table->string('guardian_name');
+            $table->string('name')->nullable();
+            $table->string('guardian_name')->nullable();
             $table->string('cnic_no')->nullable();
             $table->string('email')->nullable();
-            $table->string('contact_no');
+            $table->string('contact_no')->nullable();
             $table->string('business_no')->nullable();
             $table->string('manual_number')->nullable();
             $table->text('address')->nullable();
@@ -36,6 +36,8 @@ class CreatePartiesTable extends Migration
             $table->foreignId('city_id')->nullable()->constrained('cities')->onDelete('cascade');
             
             $table->foreignId('contact_person_id')->nullable()->constrained('conduct_people')->onDelete('cascade');
+            $table->decimal('balance')->nullable();
+            $table->tinyInteger('balance_type')->nullable();
             $table->unsignedBigInteger('addedby')->nullable();
             $table->unsignedBigInteger('updatedby')->nullable();
             $table->softDeletes();
