@@ -108,7 +108,7 @@ class EmployeeController extends Controller
             }
 
             $employee = Employee::create([
-                'personal_farm_id' => $request->personal_farm_id,
+                // 'personal_farm_id' => $request->personal_farm_id,
                 'employee_type_id' => $request->employee_type_id,
                 'employee_level_id' => $request->employee_level_id,
                 'name' =>  $request->name,
@@ -139,8 +139,14 @@ class EmployeeController extends Controller
             ]);
 
             if($employee){
-                $upload_to_folder = $employee_image_file->storeAs('employee/', $employee_image, 'public');
-                $upload_to_folder_sig = $employee_signature_file->storeAs('employee/', $employee_signature, 'public');
+
+                if($employee_image != null){
+                    $upload_to_folder = $employee_image_file->storeAs('employee/', $employee_image, 'public');
+                }
+
+                if($employee_signature != null){
+                    $upload_to_folder_sig = $employee_signature_file->storeAs('employee/', $employee_signature, 'public');
+                }
             }
         }
         catch (\Throwable $e) {
@@ -199,7 +205,7 @@ class EmployeeController extends Controller
 
 
             $Employee_data->update([
-                'personal_farm_id' => $request->personal_farm_id,
+                // 'personal_farm_id' => $request->personal_farm_id,
                 'employee_type_id' => $request->employee_type_id,
                 'employee_level_id' => $request->employee_level_id,
                 'name' =>  $request->name,
@@ -289,7 +295,7 @@ class EmployeeController extends Controller
     {
         $validator = Validator::make($request->all(),[
         // $this->validate($request, [
-            'personal_farm_id' => 'bail|nullable|integer',
+            // 'personal_farm_id' => 'bail|nullable|integer',
             'employee_type_id' => 'bail|nullable|integer',
             'employee_level_id' => 'bail|required|integer',
             'name' => 'bail|required|string',

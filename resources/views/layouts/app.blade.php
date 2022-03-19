@@ -229,6 +229,19 @@
     <script src="{{ asset('assets/js/pages/datatables.init.js') }}"></script>
     <?php } ?>
 
+    <?php if(in_array('buttons',$load_js)){ ?>
+
+    <script src="{{ asset('assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.flash.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+
+    <script src="{{ asset('assets/libs/pdfmake/build/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/pdfmake/build/vfs_fonts.js') }}"></script>
+
+    <?php } ?>
+
     <?php if(in_array('parsley',$load_js)){ ?>
     <script src="{{ asset('assets/libs/parsleyjs/parsley.min.js') }}"></script>
     <!-- Validation init js-->

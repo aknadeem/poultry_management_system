@@ -10,6 +10,8 @@ class CreateBrokersTable extends Migration
     {
         Schema::create('brokers', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('broker_number')->default(0);
+            $table->string('broker_code')->unique()->nullable();
             $table->string('name')->nullable();
             $table->string('guardian_name')->nullable();
             $table->string('cnic_no', 20)->nullable();

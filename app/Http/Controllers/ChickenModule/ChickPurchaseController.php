@@ -7,7 +7,10 @@ use App\Models\Feed;
 use App\Models\Party;
 use App\Models\Company;
 use App\Models\Employee;
+use App\Helpers\Constant;
+use App\Models\PartyFarm;
 use App\Models\ChickGrade;
+use App\Models\PartyBalance;
 use App\Models\PartyCompany;
 use App\Models\PersonalFarm;
 use Illuminate\Http\Request;
@@ -16,6 +19,7 @@ use App\Models\CompanyBalance;
 use App\Models\ChickenPurchase;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\PartyFarmChickHistory;
 use App\Models\PersonalFarmChickHistory;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CustomerFormRequest;
@@ -81,17 +85,20 @@ class ChickPurchaseController extends Controller
 
         $compaines = PartyCompany::where('is_active', 1)->with('vendor:id,name,guardian_name')->get(['id','party_id','company_name','company_address']);
 
-        return view('chickens.purchase.create', compact('purchase','compaines', 'chick_grades', 'personal_farms'));
+        $customers = Party::where([['is_active', 1],['is_customer', 1]])->whereHas('farm')->with('farm:id,party_id,farm_name,farm_code,farm_capacity')->get(['id','is_customer','name','cnic_no','contact_no']);
+
+        return view('chickens.purchase.create', compact('purchase','compaines', 'chick_grades', 'personal_farms','customers'));
     }
 
     public function store(Request $request)
     {
+        // $validator = Validator::make($request->all(),[
         $this->validate($request, [
-            'purchase_for' => 'bail|required|string',
-            'personal_farm_id' => 'bail|required|integer',
+            'customer_id' => 'bail|required|integer',
             'purchase_date' => 'bail|required|date',
             'chick_grade_id' => 'bail|required|integer',
             'company_id' => 'bail|required|integer',
+            'chick_entry_age' => 'bail|required|integer',
             'chick_weight' => 'bail|required|numeric',
             'quantity' => 'bail|required|numeric',
             'weight' => 'bail|nullable|numeric|min:0|max:50',
@@ -102,90 +109,121 @@ class ChickPurchaseController extends Controller
             'vehicle_number' => 'bail|nullable|string',
             'driver_name' => 'bail|nullable|string',
             'driver_contact' => 'bail|nullable|numeric',
-            'image_file' => 'mimes:jpeg,jpg,png|max:5000',
+            'image_file' => 'bail|nullabale|mimes:jpeg,jpg,png|max:5000',
         ],[
             'image_file.max'=> 'Maximum Image size to upload is 5MB (5000KB). If you are uploading a photo, try to reduce its resolution to make it under 5MB',
-        ]); 
-        // $country = $session?->user?->getAddress()?->country;
-        $message = 'Data created successfully!';
-        $title = 'Saved';
-        $icon_type = 'success';
-        try {
-            $purchase = null;
-            DB::transaction(function () use ($request) {
+        ]);
 
-                if ($request->hasFile('image_file')) {
-                    $path = 'chicks/';
-                    $image_file = $request->file('image_file');
-                    $extension = $request->file('image_file')->extension();
-                    $imageName = time().mt_rand(10,99).'.'.$extension;
-                }else{
-                    $imageName = null;
-                }
+        // if($validator->fails()){
+        //     return response()->json([
+        //         'error' => $validator->errors()->toArray(),
+        //         'success' => 'no',
+        //     ], 201);
+        // }
 
-                $purchase = ChickPurchase::create([
-                    'purchase_for' => $request->purchase_for,
-                    'personal_farm_id' => $request->personal_farm_id,
-                    'purchase_date' => $request->purchase_date,
-                    'chick_grade_id' => $request->chick_grade_id,
-                    'company_id' => $request->company_id,
-                    'weight' => $request->chick_weight,
-                    'quantity' => $request->quantity,
-                    'price' => $request->price,
-                    'discount_amount' => $request->discount_amount,
-                    'discount_percentage' => $request->discount_percentage,
-                    'total_price' => $request->total_price,
-                    'bilty_number' => $request->bilty_number,
-                    'bilty_charges' => $request->bilty_charges,
-                    'sale_order_number' => $request->sale_order_number,
-                    'delivery_order_number' => $request->delivery_order_number,
-                    'vehicle_number' => $request->vehicle_number,
-                    'driver_name' => $request->driver_name,
-                    'driver_contact' => $request->driver_contact,
-                    'picture' => $imageName,
-                    'addedby' => $this->auth_user_id,
-                ]);
-                if($purchase){
-                    if($request->has('personal_farm_id')){
-                        $personal_farm = PersonalFarm::find($request->personal_farm_id);
-                        if($personal_farm){
-                            $personal_farm->update([
-                                'folk_quantity' => $request->quantity,
-                                'is_occupied' => 1,
-                                'updatedby' => $this->auth_user_id,
-                            ]);
-                            $farm_folks = PersonalFarmChickHistory::create([
-                                'type' => 'chicks purchase',
-                                'personal_farm_id' => $request->personal_farm_id,
-                                'chick_purchase_id' => $purchase->id,
-                                'quantity' => $request->quantity,
-                                'folk_entry_date' => $request->purchase_date,
-                                'addedby' => $this->auth_user_id,
-                            ]);
-                        }
+        // dd($request->toArray());
+
+        if($request->customer_id == $request->vendor_id){
+            $message = 'You Cannot Purchase and Sale with Same Party';
+            $title = 'Warning';
+            $icon_type = 'danger';
+        }else{
+            $message = 'Data created successfully!';
+            $title = 'Saved';
+            $icon_type = 'success';
+
+            try {
+                $purchase = null;
+                DB::transaction(function () use ($request) {
+    
+                    if ($request->hasFile('image_file')) {
+                        $path = 'chicks/';
+                        $image_file = $request->file('image_file');
+                        $extension = $request->file('image_file')->extension();
+                        $imageName = time().mt_rand(10,99).'.'.$extension;
+                    }else{
+                        $imageName = null;
                     }
-                    $upload = $image_file->storeAs($path, $imageName, 'public');
-                    $companyBalance = CompanyBalance::create([
-                        'type' => 'chicken',
+    
+                    $purchase = ChickPurchase::create([
+                        'customer_id' => $request->customer_id,
+                        'purchase_date' => $request->purchase_date,
+                        'chick_grade_id' => $request->chick_grade_id,
                         'company_id' => $request->company_id,
-                        // 'chicken_purchase_id' => $purchase->id,
-                        'total_amount' => $request->total_price,
-                        'remaining_amount' => $request->total_price,
-                        'dr' => $request->total_price,
+                        'chick_entry_age' => $request->chick_entry_age,
+                        'weight' => $request->chick_weight,
+                        'quantity' => $request->quantity,
+                        'price' => $request->price,
+                        'discount_amount' => $request->discount_amount,
+                        'discount_percentage' => $request->discount_percentage,
+                        'total_price' => $request->total_price,
+                        'bilty_number' => $request->bilty_number,
+                        'bilty_charges' => $request->bilty_charges,
+                        'sale_order_number' => $request->sale_order_number,
+                        'delivery_order_number' => $request->delivery_order_number,
+                        'vehicle_number' => $request->vehicle_number,
+                        'driver_name' => $request->driver_name,
+                        'driver_contact' => $request->driver_contact,
+                        'picture' => $imageName,
                         'addedby' => $this->auth_user_id,
                     ]);
-                }     
-            });
+                    if($purchase){
+                        if($imageName){
+                            $upload = $image_file->storeAs($path, $imageName, 'public');
+                        }
+
+                        if($request->has('customer_farm_id')){
+                            $party_farm = PartyFarm::find($request->customer_farm_id);
+                            if($party_farm){
+                                $party_farm->update([
+                                    'folk_quantity' => $request->quantity,
+                                    'is_occupied' => 1,
+                                    'updatedby' => $this->auth_user_id,
+                                ]);
+                                $farm_folks = PartyFarmChickHistory::create([
+                                    'party_farm_id' => $request->customer_farm_id,
+                                    'chick_purchase_id' => $purchase->id,
+                                    'quantity' => $request->quantity,
+                                    'entry_date' => $request->purchase_date,
+                                    'description' => 'chicks purchase',
+                                    'addedby' => $this->auth_user_id,
+                                ]);
+                            }
+                        }
+                       
+                        $companyBalance = CompanyBalance::create([
+                            'type' => 'chick_purchase',
+                            'company_id' => $request->company_id,
+                            'model_id' => $purchase->id,
+                            // 'chicken_purchase_id' => $purchase->id,
+                            'total_amount' => $request->total_price,
+                            'remaining_amount' => $request->total_price,
+                            'dr' => $request->total_price,
+                            'addedby' => $this->auth_user_id,
+                        ]);
+
+                        $partyBalance = PartyBalance::create([
+                            'party_id' => $request->customer_id,
+                            'total_amount' => $request->total_price,
+                            'remaining_amount' => $request->total_price,
+                            'transaction_date' => $request->purchase_date,
+                            'amount_type' => Constant::AMOUNT_TYPE['ToReceive'],
+                            'narration' => 'chicks purchases for you',
+                            'addedby' => $request->addedby,
+                        ]);
+                    }     
+                });
+            }
+            catch (\Throwable $e) {
+                return $e;
+                $message = 'Something went wrong';
+                $title = 'Error';
+                $icon_type = 'warning';
+            }
         }
-        catch (\Throwable $e) {
-            return $e;
-            $message = 'Something went wrong';
-            $title = 'Error';
-            $icon_type = 'warning';
-        }
+
 
         Session::flash('swal_notification', ['title' => $title, 'icon_type' => $icon_type, 'message' => $message]);
-
         return redirect()->route('purchase.index');
     }
 

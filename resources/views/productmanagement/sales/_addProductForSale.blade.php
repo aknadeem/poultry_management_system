@@ -34,7 +34,7 @@
                         <input type="hidden" name="product_name_modal" id="ProductNameModal">
 
                         <div class="col-4 mb-1 px-1">
-                            <label class="font_bold" for="SalePrice"> Sale Price </label>
+                            <label class="font_bold" for="SalePrice"> {{$page}} Price </label>
                             <input type="number" min="0" step="any" class="form-control" name="product_price"
                                 placeholder="Product Price" id="SalePrice">
                             <span class="text-danger product_price_error"></span>
@@ -122,7 +122,7 @@
 <div id="ProductDetail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="ProductDetailLabel"
     aria-hidden="true">
     <div class="modal-dialog align-center">
-        <div class="modal-content" id="ProductDetailModalBody">
+        <div class="modal-content" style="background: #eee !important;" id="ProductDetailModalBody">
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div>

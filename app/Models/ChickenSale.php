@@ -19,11 +19,14 @@ class ChickenSale extends Model
         'discount_amount' => 'decimal:2',
         'discount_percentage' => 'float',
         'total_price' => 'decimal:2',
+        // 'manual_number' => 'string',
     ];
 
     public function customer()
     {
-        return $this->belongsTo('App\Models\Customer', 'customer_id', 'id');
+        return $this->belongsTo('App\Models\Party', 'party_id', 'id')->where('is_customer', 1)->withDefault([
+            'id' => null
+        ]);
     }
 
 }

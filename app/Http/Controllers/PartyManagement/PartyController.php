@@ -13,6 +13,7 @@ use App\Models\VendorType;
 use App\Models\FarmSubtype;
 use App\Models\BusinessType;
 use App\Models\CustomerType;
+use App\Models\PartyBalance;
 use App\Models\PartyCompany;
 use Illuminate\Http\Request;
 use App\Models\ConductPerson;
@@ -106,6 +107,7 @@ class PartyController extends Controller
         $icon_type = 'success';
         try {
             DB::transaction(function () use ($request) {
+
                 $party = Party::create([
                     'is_vendor' => $request->is_vendor,
                     'is_customer' => $request->is_customer,
@@ -127,14 +129,12 @@ class PartyController extends Controller
                     'province_id' => $request->province_id,
                     'city_id' => $request->city_id,
                     'contact_person_id' => $request->contact_person_id,
+                    'balance' => $request->opening_balance,
+                    'balance_type' => $request->balance_type,
                     'addedby' => $this->auth_user_id,
                 ]);
 
                 if($party){
-                    // $party->profile_picture  = $profile_picture;
-                    // $party->cnic_front  = $cnic_front;
-                    // $party->cnic_back  = $cnic_back;
-                    // $party->signature  = $signature;
                     $images = $this->uploadPartyImages($request);
 
                     $update_party = DB::table('parties')
@@ -193,6 +193,18 @@ class PartyController extends Controller
                         if($party_farm){
                             $upload_to_folder = $company_logo_file->storeAs('party/company/', $company_logo, 'public');
                         }
+                    }
+
+                    if($request->has('opening_balance') && $request->opening_balance > 0){
+                        $partyBalance = PartyBalance::create([
+                            'party_id' => $party->id,
+                            'total_amount' => $request->opening_balance,
+                            'remaining_amount' =>  $request->opening_balance,
+                            'transaction_date' => today()->format('Y-m-d'),
+                            'amount_type' => $request->balance_type,
+                            'narration' => 'Opening Balance',
+                            'addedby' => $this->auth_user_id,
+                        ]);
                     }
                 }
             });

@@ -24,6 +24,10 @@ use App\Http\Controllers\ProductManagement\ {
 
 use App\Http\Controllers\PaymentManagement\AccountPayableController;
 
+use App\Http\Controllers\ReportManagement\{
+    ChickReportController, ProductReportController,
+};
+
 Auth::routes();
 
 Route::get('/testpdf', function () {
@@ -106,9 +110,6 @@ Route::group(['middleware' => 'auth'], function(){
         Route::resource('personalfarms', PoultryShedController::class);
         Route::resource('customerfarms', CustomerFarmController::class);
         Route::resource('employee', EmployeeController::class);
-
-        
-
         Route::get('/vaccination-schedule-list', [VaccinationController::class, 'getScheduleList'])->name('getScheduleList');
         Route::post('/add-vaccination', [VaccinationController::class, 'addVaccination'])->name('addVaccination');
         Route::resource('vaccination', VaccinationController::class);
@@ -155,6 +156,30 @@ Route::group(['middleware' => 'auth'], function(){
 
     Route::group(['prefix' => '/paymentmanagement'], function(){
         Route::resource('payables', AccountPayableController::class);
+    });
+    
+    Route::group(['prefix' => '/reportmanagement'], function(){
+        Route::get('/chick-sale-report/{from_date}/{to_date}', [ChickReportController::class, 'makeSalesReport'])->name('chickreport.sale');
+        
+        Route::get('/chick-purchase-report/{from_date}/{to_date}', [ChickReportController::class, 'makePurchaseReport'])->name('chickreport.purchases');
+        Route::get('/chick-purchases', [ChickReportController::class, 'purchase_index'])->name('chickreport.purchases');
+        Route::resource('chickreport', ChickReportController::class);
+
+        
+
+        Route::get('/product-report-index', [ProductReportController::class, 'index'])->name('productreport.index');
+
+        Route::get('/product-report/{from_date}/{to_date}', [ProductReportController::class, 'makeProductReport'])->name('productreport');
+
+        Route::get('/product-report-purchase', [ProductReportController::class, 'purchase_report'])->name('productreport.purchase');
+
+        Route::get('/product-report-sale', [ProductReportController::class, 'sale_report'])->name('productreport.sale');
+
+
+        Route::get('/product-purchase-report/{from_date}/{to_date}', [ProductReportController::class, 'makeProductPurchaseReport'])->name('productreportpurchase');
+
+        Route::get('/product-sale/report/{from_date}/{to_date}', [ProductReportController::class, 'makeProductSaleReport'])->name('productreportsale');
+        
     });
     
 });

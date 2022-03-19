@@ -38,7 +38,7 @@ class ProductController extends Controller
 
         // $gn = str_pad($num, $length, 0, STR_PAD_LEFT)+1;
         // dd(str_pad($gn, $length, 0, STR_PAD_LEFT));
-        $products = Product::with('company:id,company_name','category:id,name')->get(['id','product_name','product_code','bar_code','party_company_id','product_category_id','quantity','purchase_date','is_active']);
+        $products = Product::with('company:id,company_name','category:id,name')->get(['id','product_name','product_group','product_code','bar_code','party_company_id','product_category_id','quantity','purchase_date','is_active']);
 
         // dd($products->toArray());
         return view('productmanagement.index', compact('products'));
@@ -94,6 +94,7 @@ class ProductController extends Controller
             $product = Product::create([
                 'party_company_id' => $request->company_id,
                 'product_category_id' => $request->product_category_id,
+                'product_group' => $request->product_group,
                 'product_name' => $request->product_name,
                 'batch_number' => $request->batch_number,
                 'serial_number' => $request->serial_number,
@@ -135,7 +136,9 @@ class ProductController extends Controller
             ]);
 
             if($product){
-                $upload_to_folder = $product_image_file->storeAs('products/', $product_picture, 'public');
+                if($product_picture != null){
+                    $upload_to_folder = $product_image_file->storeAs('products/', $product_picture, 'public');
+                }
             }
         }
         catch (\Throwable $e) {
@@ -197,6 +200,7 @@ class ProductController extends Controller
             $product_data->update([
                 'party_company_id' => $request->company_id,
                 'product_category_id' => $request->product_category_id,
+                'product_group' => $request->product_group,
                 'product_name' => $request->product_name,
                 'batch_number' => $request->batch_number,
                 'serial_number' => $request->serial_number,

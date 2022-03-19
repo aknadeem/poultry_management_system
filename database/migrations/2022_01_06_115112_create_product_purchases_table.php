@@ -12,28 +12,31 @@ class CreateProductPurchasesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('purchase_number')->default(0);
             $table->string('purchase_code')->nullable();
-            $table->foreignId('product_id')->nullable()->constrained('products')->onDelete('cascade');
+
+            $table->foreignId('product_category_id')->nullable()->constrained('product_categories')->onDelete('cascade');
+            $table->foreignId('party_company_id')->nullable()->constrained('party_companies')->onDelete('cascade');
             $table->date('purchase_date')->nullable();
             $table->date('expiry_date')->nullable();
-            $table->integer('quantity')->default(0);
-            $table->integer('bonus_quantity')->default(0);
-            $table->integer('total_quantity')->default(0);
-            $table->decimal('purchase_price')->nullable();
-            $table->decimal('total_price')->nullable();
+            $table->string('due_date_option')->nullable();
+            $table->string('manual_number')->nullable();
+
+            $table->decimal('total_amount')->nullable();
             $table->decimal('discount_amount')->nullable();
             $table->decimal('discount_percentage')->nullable();
-            $table->decimal('tax_amount')->nullable();
-            $table->decimal('tax_percentage')->nullable();
-            $table->decimal('final_price')->nullable();
-            $table->boolean('is_active')->default(1);
+            $table->decimal('other_charges')->nullable();
+            $table->decimal('final_amount')->nullable();
+            
+            $table->tinyInteger('payment_status')->default(1);
             $table->integer('warranty_period')->nullable();
+            
             $table->string('purchase_invoice')->nullable();
             $table->text('description')->nullable();
-            $table->unsignedBigInteger('party_company_id')->nullable();
+
             $table->unsignedBigInteger('addedby')->nullable();
             $table->unsignedBigInteger('updatedby')->nullable();
             $table->softDeletes();
             $table->timestamps();
+            
         });
     }
     public function down()

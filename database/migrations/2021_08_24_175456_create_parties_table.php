@@ -10,6 +10,8 @@ class CreatePartiesTable extends Migration
     {
         Schema::create('parties', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('party_number')->default(0);
+            $table->string('party_code')->unique()->nullable();
             $table->boolean('is_vendor')->nullable();
             $table->boolean('is_customer')->nullable();
             $table->string('name')->nullable();

@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 // use App\Contracts\TestInterfaceLog;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
@@ -27,6 +29,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Model::unguard();
+        \URL::forceScheme('https');
+
+        // if($this->app->environment('production')) {
+        //     \URL::forceScheme('https');
+        // }
 
         Blade::directive('money', function ($amount) {
             return "<?php echo number_format($amount, 0); ?>";
@@ -45,7 +52,6 @@ class AppServiceProvider extends ServiceProvider
             }
             return $status;
         });
-
         Blade::directive('Statuss', function ($my_status) {
             $status = '';
             if($my_status == '1'){
@@ -58,5 +64,23 @@ class AppServiceProvider extends ServiceProvider
             return $status;
         });
         // $this->app->bind(TestInterfaceLog::class);
+
+        DB::listen(function ($query) {
+            $location = collect(debug_backtrace())->filter(function ($trace) {
+                return !str_contains($trace['file'], 'vendor/');
+            })->first(); // grab the first element of non vendor/ calls
+
+            $bindings = implode(", ", $query->bindings); // format the bindings as string
+
+            Log::info("
+                ------------
+                Sql: $query->sql
+                Bindings: $bindings
+                Time: $query->time
+                File: ${location['file']}
+                Line: ${location['line']}
+                ------------
+            ");
+        });
     }
 }

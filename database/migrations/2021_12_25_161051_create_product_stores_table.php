@@ -11,7 +11,8 @@ class CreateProductStoresTable extends Migration
         Schema::create('product_stores', function (Blueprint $table) {
             $table->id();
             $table->string('store_name')->nullable();
-            $table->string('store_code')->nullable();
+            $table->unsignedBigInteger('store_number')->default(0);
+            $table->string('store_code')->unique()->nullable();
             $table->string('store_type')->nullable();
             $table->double('store_area')->nullable();
             $table->integer('total_racks')->default(0);

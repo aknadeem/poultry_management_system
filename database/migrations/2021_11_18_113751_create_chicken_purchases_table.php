@@ -12,7 +12,9 @@ class CreateChickenPurchasesTable extends Migration
         Schema::create('chicken_purchases', function (Blueprint $table) {
             $table->id();
             $table->string('purchase_status')->nullable();
-            $table->string('purchase_code')->nullable();
+
+            $table->unsignedBigInteger('purchase_number')->default(0);
+            $table->string('purchase_code')->unique()->nullable();
             $table->foreignId('supplier_id')->nullable()->constrained('customers')->onDelete('cascade');
             $table->foreignId('chick_grade_id')->nullable()->constrained('chick_grades')->onDelete('cascade');
             $table->string('bill_no')->nullable();

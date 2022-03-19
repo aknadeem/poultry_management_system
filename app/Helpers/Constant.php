@@ -8,12 +8,29 @@ class Constant
         'UnPaid'   => 1,
         'Pending' => 2,
         'Paid' => 3,
+        'Upcoming' => 4,
+        'Overdue' => 5,
     ];
-    
-    const VACCINATION_STATUS = [
-        'UnPaid'   => 1,
-        'Pending' => 2,
-        'Paid' => 3,
+
+    const PRODUCT_GROUP = [
+        'Feed'   => 1,
+        'Medicine' => 2,
+        'Chicks' => 3,
+        'Other' => 4,
+    ];
+
+    const PRODUCT_GROUP_VAL = [
+        1 => 'Feed',
+        2 => 'Medicine',
+        3 => 'Chicks',
+        4 => 'Other',
+    ];
+
+    const PRODUCT_GROUP_COLOR = [
+        1 => 'primary',
+        2 => 'danger',
+        3 => 'success',
+        4 => 'secondary',
     ];
     
     const AMOUNT_TYPE = [
@@ -50,5 +67,14 @@ class Constant
         'Received' => 8,
         'InProgress' => 9,
     ];
+
+    // const BALANCE_FOR = [
+    //     'Chick Purchase'  => 1,
+    //     'Chick Sale' => 2,
+    //     'Chicken Sale' => 3,
+    //     'Product Purchase' => 4,
+    //     'Product Sale' => 5,
+    //     'Other' => 6,
+    // ];
 
 }

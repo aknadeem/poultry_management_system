@@ -10,6 +10,8 @@ class CreateVendorsTable extends Migration
     {
         Schema::create('vendors', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('vendor_number')->default(0);
+            $table->string('vendor_code')->unique()->nullable();
             $table->string('name')->nullable();
             $table->string('nic_name')->nullable();
             $table->string('email')->nullable();

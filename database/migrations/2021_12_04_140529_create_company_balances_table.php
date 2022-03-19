@@ -11,6 +11,8 @@ class CreateCompanyBalancesTable extends Migration
     {
         Schema::create('company_balances', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('cb_number')->default(0);
+            $table->string('cb_code')->unique()->nullable();
             $table->string('type')->nullable();
             $table->decimal('total_amount')->nullable();
             $table->decimal('paid_amount')->default(0);

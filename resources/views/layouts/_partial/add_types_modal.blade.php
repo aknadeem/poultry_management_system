@@ -37,7 +37,7 @@
 @section('modal_scripts2')
 <script>
     $(function() {  
-      
+        $('#AddTypeModal').modal({backdrop: 'static', keyboard: false})
         var SelectBoxId = '';
         $('.OpenaddTypeModal').click(function () {
             // $('#TypeForm').find('span.text-danger').text('')

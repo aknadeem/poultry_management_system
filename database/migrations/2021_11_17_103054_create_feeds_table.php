@@ -13,6 +13,7 @@ class CreateFeedsTable extends Migration
         Schema::create('feeds', function (Blueprint $table) {
             $table->id();
             $table->string('feed_name')->unique()->nullable();
+            $table->unsignedBigInteger('feed_number')->default(0);
             $table->string('feed_code')->unique()->nullable();
             $table->foreignId('feed_category_id')->nullable()->constrained('feed_categories')->onDelete('cascade');
             $table->foreignId('feed_subcategory_id')->nullable()->constrained('feed_subcategories')->onDelete('cascade');

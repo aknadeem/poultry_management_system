@@ -165,16 +165,16 @@
                             </div>
 
                             <div class="dropdown">
-                                <a class="dropdown-item dropdown-toggle arrow-none" href="#" id="topnav-form"
-                                    role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <a class="dropdown-item" href="{{ route('feed.index') }}" id="topnav-form"
+                                    role="button">
                                     <i class="fas fa-braille"> </i> Feed
-                                    <div class="arrow-down"></div>
+                                    {{-- <div class="arrow-down"></div> --}}
                                 </a>
-                                <div class="dropdown-menu" aria-labelledby="topnav-form">
-                                    {{-- <a href="#" class="dropdown-item">Sales</a> --}}
+                                {{-- <div class="dropdown-menu" aria-labelledby="topnav-form">
+                                    <a href="#" class="dropdown-item">Sales</a>
                                     <a href="{{ route('feed.index') }}" class="dropdown-item"><i
                                             class="fas fa-credit-card"></i> Purchase</a>
-                                </div>
+                                </div> --}}
                             </div>
 
                             <div class="dropdown">
@@ -201,12 +201,26 @@
                             <div class="dropdown">
                                 <a class="dropdown-item dropdown-toggle arrow-none" href="#" id="topnav-form"
                                     role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fe-bookmark"></i> Chickens <div class="arrow-down"></div>
+                                    <i class="fe-bookmark"></i> Chicks <div class="arrow-down"></div>
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="topnav-form">
-                                    <a href="#" class="dropdown-item">Daily</a>
-                                    <a href="#" class="dropdown-item">Monthly</a>
-                                    <a href="#l" class="dropdown-item">Yearly</a>
+                                    <a href="{{ route('chickreport.index') }}" class="dropdown-item">Sale</a>
+                                    <a href="{{ route('chickreport.purchases') }}" class="dropdown-item">Purchase</a>
+                                    {{-- <a href="#l" class="dropdown-item">Yearly</a> --}}
+                                </div>
+                            </div>
+
+                            <div class="dropdown">
+                                <a class="dropdown-item dropdown-toggle arrow-none" href="#" id="topnav-form"
+                                    role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fe-file"></i> Products <div class="arrow-down"></div>
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="topnav-form">
+                                    <a href="{{ route('productreport.purchase') }}" class="dropdown-item">Product
+                                        Purchase</a>
+                                    <a href="{{ route('productreport.sale') }}" class="dropdown-item">Product
+                                        Sale</a>
+                                    <a href="{{ route('productreport.index') }}" class="dropdown-item">Products</a>
                                 </div>
                             </div>
                         </div>

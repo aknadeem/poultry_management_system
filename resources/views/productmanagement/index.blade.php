@@ -45,6 +45,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                             <tr>
                                 <th> # </th>
                                 <th> Product Code </th>
+                                <th> Product Group </th>
                                 <th> Product Name </th>
                                 <th> Company </th>
                                 <th> Product Category </th>
@@ -60,6 +61,12 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                             <tr>
                                 <td>{{ ++$key }}</td>
                                 <td>{{ $row?->product_code }}</td>
+                                <td>
+                                    <span
+                                        class="badge bg-{{ \App\Helpers\Constant::PRODUCT_GROUP_COLOR[$row->product_group] }} text-white fs-5">
+                                        {{ \App\Helpers\Constant::PRODUCT_GROUP_VAL[$row->product_group] }}
+                                    </span>
+                                </td>
                                 <td>{{ $row?->product_name }}</td>
                                 <td>{{ $row?->company?->company_name }}</td>
                                 <td>{{ $row?->category?->name }}</td>

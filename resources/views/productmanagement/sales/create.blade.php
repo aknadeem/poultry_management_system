@@ -269,7 +269,7 @@ $load_js = Array('tippy','select2')
         </div> <!-- end card body-->
     </div> <!-- end card -->
 </div>
-@include('productmanagement.sales._addProductForSale')
+@include('productmanagement.sales._addProductForSale', ['page' => 'Sale'])
 
 @endsection
 
@@ -548,7 +548,6 @@ $load_js = Array('tippy','select2')
                 $("#FinalPrice").val(TotalPrice - DiscountAmount);
             }
         });
-
         
         $('#TaxPercentage').on('keyup', function() {
             let Total_Price = parseFloat($('#TotalPrice').val())
@@ -577,7 +576,6 @@ $load_js = Array('tippy','select2')
                 $("#FinalPrice").val(Total_Price - DiscountAmount);
             }
         });
-
 
         $('#SaleProductItemForm').on('submit', function(){
             let Mproduct_id = parseInt($('#SelectProduct').val()) || 0

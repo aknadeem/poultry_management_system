@@ -12,6 +12,8 @@ class CreatePartyCompaniesTable extends Migration
             $table->id();
             $table->foreignId('party_id')->constrained('parties')->onDelete('cascade');
             $table->string('company_name')->nullable();
+
+            $table->unsignedBigInteger('company_number')->default(0);
             $table->string('company_code')->unique()->nullable();
             $table->string('nic_name')->nullable()->nullable();
             $table->foreignId('business_type_id')->constrained('business_types')->onDelete('cascade');

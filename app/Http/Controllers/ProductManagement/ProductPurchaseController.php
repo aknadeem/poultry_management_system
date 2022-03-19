@@ -13,10 +13,12 @@ use App\Models\PartyCompany;
 use App\Models\PersonalFarm;
 use Illuminate\Http\Request;
 use App\Models\EmployeeLevel;
+use App\Models\CompanyBalance;
 use App\Models\ProductCategory;
 use App\Models\ProductPurchase;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\ProductPurchaseDetail;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CustomerFormRequest;
 
@@ -83,6 +85,119 @@ class ProductPurchaseController extends Controller
     }
 
     public function store(Request $request)
+    {
+        $data = (new ProductSaleValidator())->validate($request->toArray());
+        $data['addedby'] = $this->auth_user_id; 
+
+        $message = 'Data created successfully';
+        $title = 'Success';
+        $icon_type = 'success';
+
+        try {
+            $saved = DB::transaction(function () use ($data) {
+                $purchase = ProductPurchase::create(
+                    Arr::except($data, 
+                    [
+                        'product_id','product_code', 'product_name','invoice_picture',
+                        'product_sale_price','product_qty','product_bonus_qty','product_total_qty',
+                        'product_discount','product_discount_percentage','product_total_price'
+                    ])
+                );
+                // $sale = ProductSale::create([
+                //     'division_id' => $data['division_id'],
+                //     'party_id' => $data['party_id'],
+                //     'product_category_id' => $data['product_category_id'],
+                //     'party_company_id' => $data['party_company_id'],
+                //     'sale_date' => $data['sale_date'],
+                //     'due_date_option' => $data['due_date_option'],
+                //     'manual_number' => $data['manual_number'],
+                //     'sale_type' => $data['sale_type'],
+                //     'total_amount' => $data['total_amount'],
+                //     'discount_amount' => $data['discount_amount'],
+                //     'discount_percentage' => 0,
+                //     'other_charges' => $data['other_charges'],
+                //     'final_amount' => $data['final_amount'],
+                //     'invoice_picture' => 'testing',
+                //     'description' => $data['description'],
+                //     'addedby' => $data['addedby'],
+                // ]);
+
+                $number = count($data['product_name']);  
+                if($number > 0)  
+                {  
+                    for($i=0; $i<$number; $i++)  
+                    {
+                        $purchaseDetail = ProductPurchaseDetail::create([
+                            'product_purchase_id' => $purchase->id,
+                            'product_id' => $data['product_id'][$i],
+                            'product_code' => $data['product_code'][$i],
+                            'product_name' => $data['product_name'][$i],
+
+                            'product_purchase_price' => $data['product_sale_price'][$i],
+                            'product_qty' => $data['product_qty'][$i],
+                            'product_bonus_qty' => $data['product_bonus_qty'][$i],
+
+                            'product_total_qty' => $data['product_total_qty'][$i],
+                            'product_discount' => $data['product_discount'][$i],
+                            'product_discount_percentage' => $data['product_discount_percentage'][$i],
+
+                            'product_total_price' => $data['product_total_price'][$i],
+                            'addedby' => $data['addedby'],
+                        ]);
+
+                        $product_update = Product::where('id', $data['product_id'][$i])->first(['id','quantity','updatedby','updated_at','created_at']);
+
+                        if($product_update != ''){
+                            $ex_qty = $product_update->quantity;
+                            $new_qty = $ex_qty + $data['product_total_qty'][$i];
+                            $product_update->update([
+                                'quantity' => $new_qty,
+                                'updatedby' => $data['addedby'],
+                            ]);
+                        }    
+                    }
+                }
+                
+                if($purchase){
+                    $companyBalanceId = DB::table('company_balances')->insertGetId([
+                        'type' => 'product_purchase',
+                        'company_id' => $data['party_company_id'],
+                        'total_amount' => $data['final_amount'],
+                        'remaining_amount' => $data['final_amount'],
+                        'transaction_date' => $data['sale_date'],
+                        'balance_type' => 'Product Purchae balance',
+                        'addedby' => $data['addedby'],
+                        'created_at' => $this->today_is,
+                        'addedby' => $this->auth_user_id,
+                    ]);
+
+                    $ac_payable = DB::table('account_payables')->insert([
+                        'amount_type' => 'product_purchase',
+                        'narration' => 'company balance on product purchase',
+                        'amount_status' => 'unpaid',
+                        'entry_date' => $this->today_is,
+                        'model_id' => $companyBalanceId,
+                        'total_amount' =>  $data['final_amount'],
+                        'remaining_amount' =>  $data['final_amount'],
+                        'dr' =>  $data['final_amount'],
+                        'created_at' => $this->today_is,
+                        'addedby' => $this->auth_user_id,
+                    ]);
+                }
+            });
+        }
+        catch (\Throwable $e) {
+            return $e;
+            $message = 'Something went wrong';
+            $title = 'Error';
+            $icon_type = 'warning';
+        }
+
+        Session::flash('swal_notification', ['title' => $title, 'icon_type' => $icon_type, 'message' => $message]);
+        return redirect()->route('productsales.index');
+    }
+
+    public function storeOld(Request $request)
     {
         $id = null;
         $this->validationRules($request, $id);

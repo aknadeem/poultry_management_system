@@ -10,6 +10,8 @@ class CreateConductPeopleTable extends Migration
     {
         Schema::create('conduct_people', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('person_number')->default(0);
+            $table->string('person_code')->unique()->nullable();
             $table->string('name')->nullable();
             $table->string('guardian_name')->nullable();
             $table->string('cnic_no', 20)->nullable();

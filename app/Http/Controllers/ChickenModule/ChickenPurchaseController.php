@@ -72,14 +72,18 @@ class ChickenPurchaseController extends Controller
     public function create()
     {
         $purchase = new ChickenPurchase();
+        dd('hello');
 
         // $vendors = Party::where([['is_vendor', 1], ['is_active', 1]])->with('company:id,party_id,company_name')->get(['id','name','guardian_name','cnic_no', 'contact_no', 'vendor_division_id']);
         $chick_grades = ChickGrade::get();
 
         $compaines = PartyCompany::where('is_active', 1)->with('vendor:id,name,guardian_name')->get(['id','party_id','company_name','company_address']);
 
+
+        $customers = Party::where([['is_active', 1],['is_customer', 1]])->whereHas('farm')->with('farm:id,party_id,farm_name,farm_code,farm_capacity')->get(['id','is_customer','name','cnic_no','contact_no']);
+
         // dd($compaines->toArray());
-        return view('chickens.purchase.create', compact('purchase','compaines', 'chick_grades'));
+        return view('chickens.purchase.create', compact('purchase','compaines', 'chick_grades','customers'));
     }
 
     public function store(Request $request)

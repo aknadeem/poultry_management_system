@@ -10,6 +10,7 @@ class CreatePartyBalancesTable extends Migration
     {
         Schema::create('party_balances', function (Blueprint $table) {
             $table->id();
+            
             $table->foreignId('party_id')->nullable()->constrained('parties')->onDelete('cascade');
             $table->date('transaction_date')->nullable();
             $table->decimal('total_amount');

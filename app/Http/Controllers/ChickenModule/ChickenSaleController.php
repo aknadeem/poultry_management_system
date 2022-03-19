@@ -10,13 +10,14 @@ use App\Models\Broker;
 use App\Models\Company;
 use App\Models\Customer;
 use App\Models\Employee;
+use App\Helpers\Constant;
 use App\Models\ChickenSale;
+use App\Models\PartyBalance;
 use Illuminate\Http\Request;
 use App\Models\BrokerBalance;
 use App\Models\ChickenPurchase;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\CustomerPartyBalance;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CustomerFormRequest;
 
@@ -38,7 +39,7 @@ class ChickenSaleController extends Controller
 
     public function getSalesList()
     {
-        $chicken_sales = ChickenSale::orderBy('id','DESC')->with('customer:id,name,farm_name,contact_no')->get();
+        $chicken_sales = ChickenSale::orderBy('id','DESC')->with('customer:id,name')->get();
         return DataTables::of($chicken_sales)
             ->addIndexColumn()
             ->addColumn('picture', function($row){
@@ -137,15 +138,20 @@ class ChickenSaleController extends Controller
                     'addedby' => $this->auth_user_id,
                 ]);
                 if($sale){
-                    $upload = $image_file->storeAs($path, $imageName, 'public');
-                    $pBalance = CustomerPartyBalance::create([
-                        'balance_type' => 'chicken sale',
+                    if($imageName != null){
+                        $upload = $image_file->storeAs($path, $imageName, 'public');
+                    }
+
+                    $partyBalance = PartyBalance::create([
                         'party_id' => $request->customer_id,
-                        'dr' => $request->total_price,
                         'total_amount' => $request->total_price,
-                        'narration' => 'chicken sale',
+                        'remaining_amount' => $request->total_price,
+                        'transaction_date' => $request->sale_date,
+                        'amount_type' => Constant::AMOUNT_TYPE['ToReceive'],
+                        'narration' => 'Chicken sale balance',
                         'addedby' => $this->auth_user_id,
                     ]);
+
                     $broker_balance = BrokerBalance::create([
                         'broker_id' => $request->broker_id,
                         'dr' => $request->broker_commission,

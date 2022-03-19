@@ -11,6 +11,8 @@ class CreateEmployeesTable extends Migration
         // Schema::dropIfExists('employees');
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('emp_number')->default(0);
+            $table->string('emp_code')->unique()->nullable();
             $table->string('general_type')->nullable();
             $table->string('name')->nullable();
             $table->string('guardian_name')->nullable();

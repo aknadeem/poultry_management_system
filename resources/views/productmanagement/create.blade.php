@@ -58,9 +58,28 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                             @endif
 
                             <div class="row">
-                                <div class="col-4 border border-2">
+                                <div class="col-xs-12 col-sm-4 col-md-4 border border-2">
                                     <div class="row mt-2">
-                                        <div class="col-12 mb-3">
+                                        <div class="col-12 mb-2">
+                                            <label class="fw-bold fs-5" for="ProductGroupSelect"> Select Product Group*
+                                            </label>
+                                            <select name="product_group" required id="ProductGroupSelect"
+                                                class="form-control mySelect fw-bold fs-5" data-toggle="select2"
+                                                data-width="100%">
+                                                <option value=""> Select Group</option>
+                                                @forelse (\App\Helpers\Constant::PRODUCT_GROUP as $key=>$value)
+                                                <option value="{{ $value }}">{{
+                                                    $key }}</option>
+                                                @empty
+                                                <option value="">No data Found</option>
+                                                @endforelse
+                                            </select>
+                                            @error('product_group')
+                                            <span class="text-danger product_group_error"> {{ $message }} </span>
+                                            @enderror
+                                        </div>
+
+                                        <div class="col-12 mb-2">
                                             <label class="font_bold" for="CompanySelect"> Select Company* </label>
                                             <select name="company_id" required id="CompanySelect"
                                                 class="form-control mySelect" data-toggle="select2" data-width="100%">
@@ -75,12 +94,13 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             @enderror
                                         </div>
 
-                                        <div class="col-12 mb-3">
-                                            <label class="font_bold" for="CategorySelect"> Select Category* </label>
+                                        <div class="col-12 mb-2">
+                                            <label class="font_bold" for="CategorySelect"> Select Product Category*
+                                            </label>
                                             <div class="input-group">
                                                 <select name="product_category_id" required id="CategorySelect"
                                                     class="form-control mySelect" data-toggle="select2"
-                                                    data-width="88%">
+                                                    data-width="90%">
                                                     <option value=""> Select category</option>
                                                     @forelse ($product_categories as $item)
                                                     <option value="{{ $item->id }}">{{ $item->name }}</option>
@@ -99,7 +119,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             @enderror
                                         </div>
 
-                                        <div class="col-sm-12 mb-3">
+                                        <div class="col-sm-12 mb-2">
                                             <label for="ProductName" class="font_bold"> Product Name* </label>
                                             <input type="text" placeholder="Product Name" name="product_name"
                                                 class="form-control"
@@ -111,7 +131,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             @enderror
                                         </div>
 
-                                        <div class="col-md-6 mb-3 pe-0">
+                                        <div class="col-md-6 mb-2 pe-0">
                                             <label for="BatchNumber" class="font_bold"> Batch Number </label>
                                             <input type="text" placeholder="Batch Number" name="batch_number"
                                                 class="form-control"
@@ -123,7 +143,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             @enderror
                                         </div>
 
-                                        <div class="col-md-6 mb-3">
+                                        <div class="col-md-6 mb-2">
                                             <label for="SerialNumber" class="font_bold"> Serial Number </label>
                                             <input type="text" placeholder="Serial number" name="serial_number"
                                                 class="form-control"
@@ -135,7 +155,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             @enderror
                                         </div>
 
-                                        <div class="col-sm-12 col-md-12 mb-3">
+                                        <div class="col-sm-12 col-md-12 mb-2">
                                             <label class="font_bold" for="ProductType"> Product Type* </label>
                                             <select name="product_type" required id="ProductType"
                                                 class="form-control mySelect" data-toggle="select2" data-width="100%"
@@ -151,7 +171,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             @enderror
                                         </div>
 
-                                        <div class="col-sm-12 col-md-12 mb-3">
+                                        <div class="col-sm-12 col-md-12 mb-2">
                                             <label class="font_bold" for="VaccinationGroup"> Vaccination Group </label>
 
                                             <div class="input-group">
@@ -177,7 +197,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             @enderror
                                         </div>
 
-                                        <div class="col-sm-12 col-md-6 mb-3">
+                                        <div class="col-sm-12 col-md-6 mb-2">
                                             <label class="font_bold" for="PackSizeUnit"> Pack Size(units) </label>
                                             <input type="number" step="any" min="0" class="form-control"
                                                 name="pack_size_unit" value="" placeholder="Pack size in unit"
@@ -188,7 +208,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             @enderror
                                         </div>
 
-                                        <div class="col-sm-12 col-md-6 mb-3 ps-0">
+                                        <div class="col-sm-12 col-md-6 mb-2 ps-0">
                                             <label class="font_bold" for="PackSizeUnitType"> Select Unit type </label>
                                             <select name="pack_size_unit_type" required id="PackSizeUnitType"
                                                 class="form-control mySelect" data-toggle="select2" data-width="100%"
@@ -204,9 +224,9 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                     </div>
                                 </div>
 
-                                <div class="col-8 border border-2">
+                                <div class="col-xs-12 col-sm-8 col-md-8 border border-2">
                                     <div class="row mt-2">
-                                        <div class="col-6 mb-3">
+                                        <div class="col-xs-12 col-md-6 mb-2">
                                             <label class="font_bold" for="StoresSelect"> Select Store* </label>
                                             <div class="input-group">
                                                 <select name="store_id" required id="StoresSelect"
@@ -230,7 +250,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             @enderror
                                         </div>
 
-                                        <div class="col-2 mb-3 ps-0">
+                                        <div class="col-xs-4 col-md-2 mb-2 ps-0">
                                             <label class="font_bold" for="RackNumber"> Rack Number </label>
                                             <input type="number" min="0" class="form-control" name="rack_number"
                                                 placeholder="Rack number" id="RackNumber">
@@ -240,7 +260,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             @enderror
                                         </div>
 
-                                        <div class="col-4 mb-3">
+                                        <div class="col-xs-4 col-md-4 mb-2">
                                             <label class="font_bold" for="InventoryLevel"> Inventory Level </label>
                                             <div class="row">
                                                 <div class="col-6">
@@ -254,7 +274,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             </div>
                                         </div>
 
-                                        <div class="col-4 mb-3">
+                                        <div class="col-4 mb-2">
                                             <label class="font_bold" for="MrpPrice"> MRP Price</label>
                                             <input type="number" step="any" min="0" class="form-control"
                                                 name="mrp_price" placeholder="MRP Price" id="MrpPrice">
@@ -264,7 +284,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             @enderror
                                         </div>
 
-                                        <div class="col-4 mb-3">
+                                        <div class="col-4 mb-2">
                                             <label class="font_bold" for="WholeSalePrice"> Whole Sale Price</label>
                                             <input type="number" step="any" min="0" class="form-control"
                                                 name="whole_sale_price" value="" placeholder="MRP Price"
@@ -275,7 +295,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             @enderror
                                         </div>
 
-                                        <div class="col-4 mb-3">
+                                        <div class="col-4 mb-2">
                                             <label class="font_bold" for="FullLessPrice">Full Less Price</label>
                                             <input type="number" step="any" min="0" class="form-control"
                                                 name="full_less_price" placeholder="Full less Price" id="FullLessPrice">
@@ -285,7 +305,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             @enderror
                                         </div>
 
-                                        <div class="col-4 mb-3">
+                                        <div class="col-4 mb-2">
                                             <label class="font_bold" for="StorePrice">Store Price</label>
                                             <input type="number" step="any" min="0" class="form-control"
                                                 name="store_price" placeholder="Store wise price" id="StorePrice">
@@ -295,7 +315,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             @enderror
                                         </div>
 
-                                        <div class="col-4 mb-3">
+                                        <div class="col-4 mb-2">
                                             <label class="font_bold" for="RetailPrice"> Retail Price</label>
                                             <input type="number" step="any" min="0" class="form-control"
                                                 name="retail_price" value="" placeholder="Retail Price"
@@ -306,7 +326,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             @enderror
                                         </div>
 
-                                        <div class="col-4 mb-3">
+                                        <div class="col-4 mb-2">
                                             <label class="font_bold" for="TradePrice"> Trade Price </label>
                                             <input type="number" step="any" min="0" class="form-control"
                                                 name="trade_price" value="" placeholder="Trade Price" id="TradePrice">
@@ -316,7 +336,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             @enderror
                                         </div>
 
-                                        <div class="col-4 mb-3">
+                                        <div class="col-4 mb-2">
                                             <label class="font_bold" for="PurchasePrice"> Purchase Price*</label>
                                             <input type="number" step="any" min="0" class="form-control"
                                                 name="purchase_price" placeholder="Purchase Price" id="PurchasePrice"
@@ -327,7 +347,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             @enderror
                                         </div>
 
-                                        <div class="col-4 mb-3">
+                                        <div class="col-4 mb-2">
                                             <label class="font_bold" for="SalePrice"> Sale Price*</label>
                                             <input type="number" step="any" min="0" class="form-control"
                                                 name="sale_price" value="" placeholder="Purchase Price" id="SalePrice"
@@ -338,7 +358,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             @enderror
                                         </div>
 
-                                        <div class="col-4 mb-3">
+                                        <div class="col-4 mb-2">
                                             <label class="font_bold" for="DiscountAmount"> Discount Amount</label>
                                             <input type="number" step="any" min="0" step="any" class="form-control"
                                                 name="discount_amount" value="" placeholder="Discount Amount"
@@ -348,7 +368,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             <span class="text-danger discount_amount_error"> {{ $message }} </span>
                                             @enderror
                                         </div>
-                                        <div class="col-4 mb-3">
+                                        <div class="col-4 mb-2">
                                             <label class="font_bold" for="TaxPercentage"> Tax % </label>
                                             <input type="number" step="any" min="0" step="any" class="form-control"
                                                 name="tax_percentage" value="" placeholder="Discount Amount"
@@ -359,7 +379,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             @enderror
                                         </div>
 
-                                        <div class="col-4 mb-3">
+                                        <div class="col-4 mb-2">
                                             <label class="font_bold" for="TaxAmount"> Tax Amount </label>
                                             <input type="number" step="any" min="0" step="any" class="form-control"
                                                 name="tax_amount" value="" placeholder="Discount Amount" id="TaxAmount">
@@ -369,7 +389,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             @enderror
                                         </div>
 
-                                        <div class="col-4 mb-3">
+                                        <div class="col-4 mb-2">
                                             <label class="font_bold" for="DiscountPercentage"> Discount Percentage %
                                             </label>
                                             <input type="number" step="any" min="0" step="any" class="form-control"
@@ -381,7 +401,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             @enderror
                                         </div>
 
-                                        <div class="col-4 mb-3">
+                                        <div class="col-4 mb-2">
                                             <label class="font_bold" for="WarrantyPeriod"> Warranty Period </label>
                                             <input type="text" class="form-control" name="warranty_period"
                                                 placeholder="Discount Percentage" id="WarrantyPeriod">
@@ -472,9 +492,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
-
                             <div class="row mt-2">
                                 <div class="col-sm-2 offset-sm-10 text-end">
                                     <button type="submit" id="sub" class="btn btn-secondary AddUpdate">

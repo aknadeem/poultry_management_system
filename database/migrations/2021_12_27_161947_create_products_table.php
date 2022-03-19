@@ -14,6 +14,7 @@ class CreateProductsTable extends Migration
             $table->unsignedBigInteger('product_number')->default(0);
             $table->string('product_code')->unique()->nullable();
             $table->string('bar_code')->unique()->nullable();
+            $table->tinyInteger('product_group')->nullable();
             $table->string('product_name')->nullable();
             $table->string('product_type')->nullable();
             $table->date('entry_date')->nullable();

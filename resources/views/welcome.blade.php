@@ -1,6 +1,6 @@
 @php
 $load_css = Array('select2');
-$load_js = Array('apexChart', 'dashboard','select2');
+$load_js = Array('dashboard','select2');
 @endphp
 @extends('layouts.app')
 
@@ -31,9 +31,9 @@ $load_js = Array('apexChart', 'dashboard','select2');
                         <i class="fas fa-arrow-down"></i> Cash in
                     </a>
 
-                    <a href="javascript: void(0);" class="btn btn-danger btn-sm ms-2" id="openCashOutModal">
+                    {{-- <a href="javascript: void(0);" class="btn btn-danger btn-sm ms-2" id="openCashOutModal">
                         <i class="fas fa-arrow-up"></i> Cash Out
-                    </a>
+                    </a> --}}
                 </div>
                 <h4 class="page-title">Home</h4>
             </div>
@@ -525,19 +525,19 @@ $load_js = Array('apexChart', 'dashboard','select2');
                         </div>
 
                         <div class="col-sm-4 mb-2 pe-0">
-                            <label for="TotalAmount" class="fs-6">Total Amount</label>
+                            <label for="TotalAmount" class="fw-bold fs-6">Total Amount</label>
                             <input type="number" step="any" min="0" placeholder="Total Amount" disabled
-                                class="form-control py-1 fs-6" id="TotalAmount">
+                                class="form-control py-1 fw-bold fs-6" id="TotalAmount">
                         </div>
                         <div class="col-sm-4 mb-2 px-1">
-                            <label for="PaidAmount" class="fs-6">Paid Amount</label>
+                            <label for="PaidAmount" class="text-success fw-bold fs-6">Paid Amount</label>
                             <input type="number" step="any" min="0" placeholder="Paid Amount" disabled
-                                class="form-control py-1 fs-6" id="PaidAmount">
+                                class="form-control text-success py-1 fw-bold  fs-6" id="PaidAmount">
                         </div>
                         <div class="col-sm-4 mb-2 ps-0">
-                            <label for="RemainingAmount" class="fs-6">Remaining Amount</label>
+                            <label for="RemainingAmount" class="text-danger fw-bold fs-6">Remaining Amount</label>
                             <input type="number" step="any" min="0" placeholder="Remaining Amount" disabled
-                                class="form-control py-1 fs-6" id="RemainingAmount">
+                                class="form-control text-danger py-1 fw-bold fs-6" id="RemainingAmount">
                         </div>
 
                         <div class="col-sm-4 mb-2 pe-0">
@@ -622,6 +622,7 @@ $load_js = Array('apexChart', 'dashboard','select2');
 
 <script>
     $(function() {
+        $('#CashInModal').modal({backdrop: 'static', keyboard: false})
         $('.ModalClosed').click(function () {
             $('.modal').modal('hide'); 
             $(this).find('form').trigger('reset');
@@ -629,12 +630,13 @@ $load_js = Array('apexChart', 'dashboard','select2');
 
         $('#openCashInModal').click(function () {
             $('#CashInModal').modal('show')
-
+            var balance_list={}
             let uri = "{{ route('getPartyBalances')}}"
             $.get(uri, function(res, status){
                 var html_code = '';
                 console.log(res)
                 if(res.message == 'yes'){
+                    balance_list = res.balances
                     html_code ='<option value="">Select Party</option>'; 
                     for (var i = 0; i < res.balances.length; i++) {
                         html_code+='<option value='+res.balances[i]?.party?.id+'>'+res.balances[i]?.party.name+'</option>'; 
@@ -645,8 +647,21 @@ $load_js = Array('apexChart', 'dashboard','select2');
                 $('#BalanceSelect').html(html_code);
             });
 
-            // 
-
+            $('#BalanceSelect').change(function () {
+                let b_id = parseInt($(this).val())
+                console.log(balance_list)
+                // alert(b_id)
+                let item = balance_list?.find(x => x.id == b_id)
+                if(item !=''){
+                    $('#TotalAmount').val(item?.total_amount || 0)
+                    $('#PaidAmount').val(item?.paid_amount || 0)
+                    $('#RemainingAmount').val(item?.remaining_amount || 0)
+                    $('#AddAmount').attr('max', item?.remaining_amount || 0)
+                    $('#AddAmount').val(item?.remaining_amount || 0)
+                }else{
+                    $('#AddAmount').attr('max', false)
+                }
+            });
         });
 
         $('#openCashOutModal').click(function () {

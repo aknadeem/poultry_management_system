@@ -20,6 +20,8 @@ class CreateBrokerBalancesTable extends Migration
             $table->string('status')->default('unpaid');
             $table->boolean('is_active')->default(1);
             $table->text('narration')->nullbale();
+            $table->unsignedBigInteger('addedby')->nullable();
+            $table->unsignedBigInteger('updatedby')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -49,8 +49,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                             @method('PUT')
                             @endif
 
-                            <div class="row form-group mt-2">
-                                <input type="hidden" name="purchase_id">
+                            <div class="row form-group mt-2 fs-5">
                                 <div class="col-sm-3 mb-2">
                                     <label for="pdate"> Purchase Date *</label>
                                     <input type="date" required placeholder="Enter date" name="purchase_date"
@@ -105,6 +104,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                 </div>
 
                                 <div class="col-sm-3 mb-2">
+                                    <input type="hidden" name="vendor_id" id="PartyVendorId">
                                     <label for="CompanyVendorName"> Vendor Name </label>
                                     <input type="text" placeholder="Vendor Name" name="vendor_name" readonly disabled
                                         class="form-control"
@@ -127,46 +127,42 @@ $load_js = Array('tippy','select2', 'sweetAlert')
 
                                 </div> --}}
                             </div>
-                            <div class="row">
+                            <div class="row fs-5">
                                 <div class="col-3 mb-2">
-                                    <label for="PurchaseForSelect">Select Purchase For *</label>
-                                    <select class="form-control mySelect" id="PurchaseForSelect" required
-                                        name="purchase_for" data-placeholder="Select Purchase Option"
-                                        data-toggle="select2" data-width="100%">
-                                        <option value="" selected> Select option </option>
-                                        <option value="personal"> Personal Farm </option>
-                                        <option value="customer"> Customer </option>
-                                        <option value="both"> Form Both </option>
+                                    <label for="CustomerSelect">Select customer *</label>
+                                    <select class="form-control mySelect" id="CustomerSelect" required
+                                        name="customer_id" data-placeholder="Select customer" data-toggle="select2"
+                                        data-width="100%">
+                                        <option value="" selected disabled> Select Customer </option>
+                                        @forelse ($customers as $item)
+                                        <option {{ old('customer_id') || $purchase?->customer_id ? 'selected'
+                                            : '' }} value="{{$item->id}}">{{$item->name}} [{{$item->cnic_no}}] </option>
+                                        @empty
+
+                                        @endforelse
                                     </select>
 
-                                    @error('purchase_for')
-                                    <span class="text-danger purchase_for_error"> {{ $message }} </span>
+                                    @error('customer_id')
+                                    <span class="text-danger customer_id_error"> {{ $message }} </span>
                                     @enderror
                                 </div>
 
                                 <div class="col-3 mb-2">
-                                    <label for="PersonalFarmSelect">Select Personal Farm *</label>
-                                    <select class="form-control mySelect" id="PersonalFarmSelect" required
-                                        name="personal_farm_id" data-placeholder="Select Farm" data-toggle="select2"
-                                        data-width="100%">
-                                        <option value="" selected> Select Farm Option </option>
-                                        @forelse ($personal_farms as $item)
-                                        <option {{ old('personal_farm_id') || $purchase?->personal_farm_id ? 'selected'
-                                            : '' }}
-                                            value="{{$item->id}}">
-                                            {{$item->farm_name}} </option>
-                                        @empty
-                                        @endforelse
-                                    </select>
+                                    <label for="CustomerFarmName">Farm Name *</label>
+                                    <input type="hidden" name="customer_farm_id" id="CustomerFarmId">
+                                    <input type="text" placeholder="Farm Name" name="customer_farm_name"
+                                        class="form-control" id="CustomerFarmName"
+                                        value="{{ $purchase?->customer_farm_name ?? old('customer_farm_name') }}"
+                                        readonly>
 
-                                    @error('personal_farm_id')
-                                    <span class="text-danger personal_farm_id_error"> {{ $message }} </span>
+                                    @error('customer_farm_name')
+                                    <span class="text-danger customer_farm_name_error"> {{ $message }} </span>
                                     @enderror
                                 </div>
 
                                 <div class="col-sm-3 mb-2">
                                     <label for="PersonalFarmCapacity"> Farm Capacity </label>
-                                    <input type="number" step="any" min="0" placeholder="Enter weight"
+                                    <input type="number" step="any" min="0" placeholder="Farm Capacity"
                                         name="personal_farm_capacity" class="form-control" id="PersonalFarmCapacity"
                                         value="{{ $purchase?->personal_farm_capacity ?? old('personal_farm_capacity') }}"
                                         readonly>
@@ -179,7 +175,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
 
                                 <div class="col-sm-3 mb-2">
                                     <label for="PersonalFarmAddress"> Farm Address </label>
-                                    <input type="text" placeholder="Enter weight" name="Personal_farm_address"
+                                    <input type="text" placeholder="Farm Address" name="Personal_farm_address"
                                         class="form-control" id="PersonalFarmAddress"
                                         value="{{ $purchase?->Personal_farm_address ?? old('Personal_farm_address') }}"
                                         readonly>
@@ -189,7 +185,34 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                     @enderror
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row fs-5">
+                                <div class="col-sm-3 mb-2">
+                                    <label for="ChickAgeSelect">Select Chick Age </label>
+
+                                    <select class="form-control mySelect" id="ChickAgeSelect" required
+                                        name="chick_entry_age" data-placeholder="Select chick age" data-toggle="select2"
+                                        data-width="100%">
+                                        <option value="" selected disabled> Select chick age </option>
+                                        @php
+                                        $days = '';
+                                        for($i = 1; $i <= 10; $i++) { if($i> 1){
+                                            $days = $i.' Days';
+                                            }else{
+                                            $days = $i.' Day';
+                                            }
+
+                                            echo '<option value="'.$i.'"> '.$days.'</option>';
+                                            }
+
+                                            @endphp
+                                    </select>
+
+                                    @error('chick_entry_age')
+                                    <span class="text-danger chick_entry_age_error"> {{ $message }} </span>
+                                    @enderror
+
+                                </div>
+
                                 <div class="col-sm-3 mb-2">
                                     <label for="ChickWeight"> Weight in Grams (gm) </label>
                                     <input type="number" step="any" min="0" max="50" placeholder="Enter weight"
@@ -312,7 +335,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
 
                                 <div class="col-sm-3 mb-2">
                                     <label for="Dcontact"> Driver Contact </label>
-                                    <input type="text" placeholder="Driver number" name="driver_contact"
+                                    <input type="number" min="0" placeholder="Driver number" name="driver_contact"
                                         value="{{ $purchase?->driver_contact ?? old('driver_contact') }}"
                                         class="form-control" id="Dcontact">
 
@@ -373,7 +396,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                     @endif
                                 </div>
                             </div>
-                            <div class="row form-group">
+                            <div class="row form-group fs-5">
                                 <div class="col-sm-4 mb-3">
                                     <button type="submit" id="sub"
                                         class="btn btn-secondary btn-sm waves-effect waves-light mt-3 AddUpdate">
@@ -383,9 +406,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                 </div>
                             </div>
                         </form>
-
                     </div>
-
                 </div> <!-- end card body-->
             </div> <!-- end card -->
         </div>
@@ -401,25 +422,28 @@ $load_js = Array('tippy','select2', 'sweetAlert')
     $(function() {
 
         var companies_list = <?php echo json_encode($compaines) ?>;
-        var personal_farm_list = <?php echo json_encode($personal_farms) ?>;
+        var customer_list = <?php echo json_encode($customers) ?>;
         console.log(companies_list)
         $( "#feedCompanyId" ).change(function() {
             let company_id_modal = parseInt($(this).val())
             let find_company = companies_list?.find(x => x.id === company_id_modal);
             if(find_company){
+                $('#PartyVendorId').val(find_company?.vendor?.id || '');
                 $('#CompanyVendorName').val(find_company?.vendor?.name || '');
                 $('#VendorGuardianName').val(find_company?.vendor?.guardian_name || '');
             }
         }); 
         
-        $( "#PersonalFarmSelect" ).change(function() {
-            let PersonalFarmId = parseInt($(this).val())
-            let Personal_farm = personal_farm_list?.find(x => x.id === PersonalFarmId);
+        $( "#CustomerSelect" ).change(function() {
+            let customer_id = parseInt($(this).val())
+            let customer = customer_list?.find(x => x.id === customer_id);
 
-            console.log(Personal_farm)
-            if(Personal_farm){
-                $('#PersonalFarmCapacity').val(Personal_farm?.farm_capacity);
-                $('#PersonalFarmAddress').val(Personal_farm?.farm_address || '');
+            console.log(customer.farm)
+            if(customer){
+                $('#CustomerFarmId').val(customer?.farm?.id);
+                $('#CustomerFarmName').val(customer?.farm?.farm_name);
+                $('#PersonalFarmCapacity').val(customer?.farm?.farm_capacity);
+                $('#PersonalFarmAddress').val(customer?.farm?.farm_address || '');
             }
         });
 

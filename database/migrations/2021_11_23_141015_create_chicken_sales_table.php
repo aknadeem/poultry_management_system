@@ -12,7 +12,8 @@ class CreateChickenSalesTable extends Migration
             $table->id();
             $table->string('sale_status')->nullable();
             $table->string('manual_number')->nullable();
-            $table->string('sale_code')->nullable();
+            $table->unsignedBigInteger('sale_number')->default(0);
+            $table->string('sale_code')->unique()->nullable();
             $table->string('bill_no')->nullable();
             $table->date('sale_date')->nullable();
             $table->foreignId('customer_id')->nullable()->constrained('parties')->onDelete('cascade');
