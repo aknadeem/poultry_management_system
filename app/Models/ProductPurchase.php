@@ -11,6 +11,10 @@ class ProductPurchase extends Model
 {
     use SoftDeletes, HasFactory;
 
+    const PAYMENT_UNPAID = 1;
+    const PAYMENT_PENDING = 2;
+    const PAYMENT_PAID = 3;
+
     public function product()
     {
         return $this->belongsTo('App\Models\Product', 'product_id', 'id');
@@ -29,9 +33,38 @@ class ProductPurchase extends Model
         'final_price' => 'decimal:2',
     ];
 
+    public function getStatusValueAttribute()
+    {
+        $status = [];
+        if($this->payment_status == ProductPurchase::PAYMENT_UNPAID){
+            $status['value'] = 'Un paid';
+            $status['color_name'] = 'danger';
+
+        }else if($this->payment_status == ProductPurchase::PAYMENT_PENDING){
+            $status = 'Pending';
+            $status['color_name'] = 'warning';
+        }else{
+            $status['value'] = 'Un paid';
+            $status['color_name'] = 'success';
+        }
+        return $status;
+    }
+
     public function company()
     {
         return $this->belongsTo('App\Models\PartyCompany', 'party_company_id', 'id')->withDefault([
+            'id' => null,
+        ]);
+    }
+
+    public function detail()
+    {
+        return $this->hasMany('App\Models\ProductPurchaseDetail', 'product_purchase_id', 'id');
+    }
+
+    public function productcategory()
+    {
+        return $this->belongsTo('App\Models\ProductCategory', 'product_category_id', 'id')->withDefault([
             'id' => null,
         ]);
     }

@@ -31,12 +31,12 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                         </div>
                         <div class="col-6 align-self-end text-end mb-2">
 
-                            <a class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#AddCompanyModal"
-                                href="javascript:void(0);" CustomerId="0" title="Click to add new company"
-                                data-plugin="tippy" data-tippy-animation="scale" data-tippy-arrow="true"><i
-                                    class="fa fa-plus"></i>
+                            {{-- <a class="btn btn-secondary btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#AddCompanyModal" href="javascript:void(0);" CustomerId="0"
+                                title="Click to add new company" data-plugin="tippy" data-tippy-animation="scale"
+                                data-tippy-arrow="true"><i class="fa fa-plus"></i>
                                 Company
-                            </a>
+                            </a> --}}
                         </div>
                     </div>
                     <table id="basic-datatable" class="table table-striped dt-responsive  w-100">

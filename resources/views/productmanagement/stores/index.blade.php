@@ -84,7 +84,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
 
         $(document).on('click', '.ViewDetailModal', function(){
             let StoreId = parseInt($(this).attr('StoreId')) || 0;
-            $.get("{{ url('/productManagement/productstores')}}/"+StoreId, function(result) {
+            $.get("{{ url('/ProductManagement/productstores')}}/"+StoreId, function(result) {
                 $('#DetailModal').modal('show');
                 $('#DetailData').html(result?.html_data);
             });

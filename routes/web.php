@@ -69,6 +69,9 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/get-users-list', [UserController::class, 'getUsersList'])->name('getUsersList');
         Route::get('/get-userlevels', [UserController::class, 'getUserLevelList'])->name('getUserLevelList');
         Route::resource('users', UserController::class);
+
+        Route::get('/user-level-list', [UserLevelController::class, 'getUserLevelsList'])->name('userlevel.list');
+
         Route::resource('userlevel', UserLevelController::class);
     });
     

@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use App\Models\Country;
 use App\Models\Product;
 use App\Models\Employee;
+use Illuminate\Support\Arr;
 use App\Models\EmployeeType;
 use App\Models\PartyCompany;
 use App\Models\PersonalFarm;
@@ -21,6 +22,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ProductPurchaseDetail;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CustomerFormRequest;
+use App\Models\Validators\ProductPurchaseValidator;
 
 class ProductPurchaseController extends Controller
 {
@@ -37,7 +39,9 @@ class ProductPurchaseController extends Controller
 
     public function index()
     {
-        $product_purchases = ProductPurchase::with('product:id,product_name,product_code,party_company_id,product_category_id','product.company:id,company_name','product.category:id,name')->orderBy('id', 'DESC')->get();
+        $product_purchases = ProductPurchase::with('company:id,party_id,company_name','productcategory:id,name')->orderBy('id', 'DESC')->get();
+
+        // dd($product_purchases->toArray());  
 
         return view('productmanagement.purchases.index', compact('product_purchases'));
     }
@@ -86,7 +90,8 @@ class ProductPurchaseController extends Controller
 
     public function store(Request $request)
     {
-        $data = (new ProductSaleValidator())->validate($request->toArray());
+        $data = (new ProductPurchaseValidator())->validate($request->toArray());
+        
         $data['addedby'] = $this->auth_user_id; 
 
         $message = 'Data created successfully';
@@ -103,24 +108,6 @@ class ProductPurchaseController extends Controller
                         'product_discount','product_discount_percentage','product_total_price'
                     ])
                 );
-                // $sale = ProductSale::create([
-                //     'division_id' => $data['division_id'],
-                //     'party_id' => $data['party_id'],
-                //     'product_category_id' => $data['product_category_id'],
-                //     'party_company_id' => $data['party_company_id'],
-                //     'sale_date' => $data['sale_date'],
-                //     'due_date_option' => $data['due_date_option'],
-                //     'manual_number' => $data['manual_number'],
-                //     'sale_type' => $data['sale_type'],
-                //     'total_amount' => $data['total_amount'],
-                //     'discount_amount' => $data['discount_amount'],
-                //     'discount_percentage' => 0,
-                //     'other_charges' => $data['other_charges'],
-                //     'final_amount' => $data['final_amount'],
-                //     'invoice_picture' => 'testing',
-                //     'description' => $data['description'],
-                //     'addedby' => $data['addedby'],
-                // ]);
 
                 $number = count($data['product_name']);  
                 if($number > 0)  
@@ -164,7 +151,7 @@ class ProductPurchaseController extends Controller
                         'company_id' => $data['party_company_id'],
                         'total_amount' => $data['final_amount'],
                         'remaining_amount' => $data['final_amount'],
-                        'transaction_date' => $data['sale_date'],
+                        // 'transaction_date' => $data['purchase_date'],
                         'balance_type' => 'Product Purchae balance',
                         'addedby' => $data['addedby'],
                         'created_at' => $this->today_is,
@@ -194,7 +181,7 @@ class ProductPurchaseController extends Controller
         }
 
         Session::flash('swal_notification', ['title' => $title, 'icon_type' => $icon_type, 'message' => $message]);
-        return redirect()->route('productsales.index');
+        return redirect()->route('productpurchases.index');
     }
 
     public function storeOld(Request $request)
@@ -414,24 +401,11 @@ class ProductPurchaseController extends Controller
     }
 
     public function show($id)
-    {
-        $customer = Employee::find($id);
-        if($customer){
-            $html_data = \View::make('layouts._partial.customerdetail', compact('customer'))->render();
-            $message = 'Employee Detail Data';
-            $success = 'yes';
-        }else{
-            $message = 'No employee detail found against this id';
-            $success = 'no';
-            $html_data = '';
-        }
-        return response()->json([
-            'message' => $message,
-            'success' => $success,
-            'html_data' => $html_data,
-        ], 201);
+    {   
 
-        return response()->json($data, 200, $headers);
+        $purchase = ProductPurchase::with('detail','company:id,party_id,company_name','productcategory:id,name')->orderBy('id', 'DESC')->findOrFail($id);
+        // dd($sale->toArray());
+        return view('productmanagement.purchases.purchase_detail', compact('purchase'));
     }
 
     public function edit($id)

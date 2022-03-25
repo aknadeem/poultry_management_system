@@ -161,8 +161,8 @@ $load_js = Array('tippy','select2')
 
                                     <div class="col-3 mb-2 px-1">
                                         <label class="font_bold" for="BonusQuantity"> Bonus Qty </label>
-                                        <input type="number" min="0" class="form-control" name="bonus_quantity"
-                                            placeholder="Bonus qty" id="BonusQuantity">
+                                        <input type="number" value="0" min="0" class="form-control"
+                                            name="bonus_quantity" placeholder="Bonus qty" id="BonusQuantity">
                                         @error('bonus_quantity')
                                         <span class="text-danger bonus_quantity_error"> {{ $message }} </span>
                                         @enderror

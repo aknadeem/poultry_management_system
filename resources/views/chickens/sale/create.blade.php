@@ -135,7 +135,7 @@ $load_js = Array('tippy','select2')
                                     @error('first_weight')
                                     <span class="text-danger first_weight_error"> {{ $message }} </span>
                                     @enderror
-
+                                    <span class="text-danger" id="FirstWeightError"></span>
                                 </div>
 
                                 <div class="col-sm-3 mb-2">
@@ -154,7 +154,7 @@ $load_js = Array('tippy','select2')
                                     <label for="NetWeight">Net Weight (kg) </label>
                                     <input type="number" step="any" min="1" placeholder="Enter weight in Kilo Gram (kg)"
                                         name="net_weight" class="form-control" id="NetWeight"
-                                        value="{{ $sale?->net_weight ?? old('net_weight') }}" required>
+                                        value="{{ $sale?->net_weight ?? old('net_weight') }}" readonly>
 
                                     @error('net_weight')
                                     <span class="text-danger net_weight_error"> {{ $message }} </span>
@@ -166,7 +166,7 @@ $load_js = Array('tippy','select2')
                                     <label for="TotalWeight"> Total Weight (kg) </label>
                                     <input type="number" step="any" min="1" placeholder="Enter weight in Kilo Gram (kg)"
                                         name="total_weight" class="form-control" id="TotalWeight"
-                                        value="{{ $sale?->total_weight ?? old('total_weight') }}" required>
+                                        value="{{ $sale?->total_weight ?? old('total_weight') }}" readonly>
 
                                     @error('total_weight')
                                     <span class="text-danger total_weight_error"> {{ $message }} </span>
@@ -319,6 +319,23 @@ $load_js = Array('tippy','select2')
         }
     });
 
+    $('#SecondWeight').on('keyup', function() {
+        let first_weight = parseFloat($('#FirstWeight').val())
+        let second_weight = parseFloat($(this).val())
+        if (first_weight > 0) {
+            if(first_weight > second_weight){
+                $("#FirstWeightError").html('Please make sure, first weight should be less then Second weight');
+            }else{
+                $("#FirstWeightError").html('');
+                let net_weight = second_weight-first_weight;
+                $("#NetWeight").val(net_weight);
+                $("#TotalWeight").val(net_weight);
+            }
+        } else {
+            $("#FirstWeightError").html('Please Enter First Weight, and should be greater then 0');
+        }
+    });
+    
     $('#PerkgPrice').on('keyup', function() {
         let total_weight = Number($('#TotalWeight').val())
         let per_kg_price = parseFloat($('#PerkgPrice').val())

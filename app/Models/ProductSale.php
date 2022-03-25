@@ -43,9 +43,7 @@ class ProductSale extends Model
 
     public function detail()
     {
-        return $this->hasOne(ProductSaleDetail::class, 'product_sale_id', 'id')->withDefault([
-            'id' => null,
-        ]);
+        return $this->hasMany(ProductSaleDetail::class, 'product_sale_id', 'id');
     }
 
     public function getStatusValueAttribute()

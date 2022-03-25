@@ -240,9 +240,9 @@
                             </div>
 
                             <div class="dropdown">
-                                <a class="dropdown-item dropdown-toggle arrow-none" href="#" id="topnav-form"
-                                    role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fe-bookmark"></i> UserGroup <div class="arrow-down"></div>
+                                <a class="dropdown-item arrow-none" href="{{ route('userlevel.index') }}"
+                                    id="topnav-form" role="button">
+                                    <i class="fa fa-users"></i> UserLevels
                                 </a>
                             </div>
                         </div>

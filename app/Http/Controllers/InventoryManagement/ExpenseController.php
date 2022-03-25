@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\InventoryManagement;
 
+use DB;
 use Session;
 use DataTables;
 use App\Models\Expense;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Models\ExpenseCategory;
-use DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CustomerFormRequest;
 
@@ -35,18 +36,13 @@ class ExpenseController extends Controller
         return DataTables::of($expenes)
             ->addIndexColumn()
             ->addColumn('picture', function($row){
-                $url= asset('storage/expenses/'.$row?->picture);
+                $url = asset('/storage/expenses/'.$row?->picture);
                 return '<img class="rounded-circle avatar-lg" src="'.$url.'"  alt="No image" />';
             })->addColumn('category_id', function($row){
                 return '<span>'.$row?->category?->name.'</span>';
             })
             ->addColumn('Actions', function($row){
-                return ' <a class="btn btn-secondary btn-sm ViewEmployeeModal"
-                ExpenseId="'.$row["id"].'" href="javascript:void(0);"
-                title="View Details" tabindex="0" data-plugin="tippy"
-                data-tippy-animation="scale" data-tippy-arrow="true"><i class="fa fa-eye"></i>
-                View
-            </a>
+                return '
             <a class="btn btn-info btn-sm openExpenseModal"
             ExpenseId="'.$row["id"].'" data-id="'.$row["id"].'" id="editEspenseModal" href="javascript:void(0);"
                 title="Click to edit"><i

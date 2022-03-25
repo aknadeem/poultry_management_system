@@ -131,7 +131,7 @@ class CustomerController extends Controller
 
     public function show($id)
     {
-        $customer = Customer::find($id);
+        $customer = Party::customer(1)->find($id);
         if($customer){
             $html_data = \View::make('layouts._partial.customerdetail', compact('customer'))->render();
             $message = 'Cutomer Detail Data';

@@ -57,6 +57,14 @@
 <script>
     $(function() {
 
+        
+
+        $(document).ready(function () {
+            $(".mySelectModal").select2({
+                dropdownParent: $("#AddVaccinationModal")
+            });
+        });
+
         $('#AddVaccinationModal').modal({backdrop: 'static', keyboard: false})
         $(document).on('click', '.OpenAddVaccinationModal', function(){
             let ScheduleId = parseInt($(this).attr('ScheduleId')) || 0;

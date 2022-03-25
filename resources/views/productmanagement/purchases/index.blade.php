@@ -43,16 +43,16 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Product code</th>
-                                <th>Product Name</th>
                                 <th>Company</th>
+                                <th>Category</th>
                                 <th>Date</th>
-                                <th>Qty</th>
-                                <th>Price</th>
+                                <th>Payment</th>
+                                <th>Status</th>
                                 <th>Total Price</th>
                                 <th>Discount</th>
                                 <th>Tax</th>
                                 <th>Final Price</th>
+                                <th>Option</th>
                                 {{-- <th>Status</th> --}}
                                 {{-- <th>Options</th> --}}
                             </tr>
@@ -60,42 +60,42 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                         <tbody>
                             @forelse ($product_purchases as $key=>$row)
                             <tr>
-                                <td>{{ ++$key }}</td>
-                                <td>{{ $row->product?->product_code }}</td>
-                                <td>{{ $row->product?->product_name }}</td>
-                                <td>{{ $row->product?->company?->company_name }}</td>
-                                <td>{{ $row->purchase_date->format('M d, Y') }}</td>
-                                <td>{{ $row->quantity }}</td>
-                                <td class="fw-bold fs-6">@money($row->purchase_price)</td>
-                                <td class="fw-bold fs-5"> @money($row->total_price)</td>
-                                <td class="text-success fw-bold fs-6">@money($row->discount_amount)</td>
-                                <td class="text-warning fw-bold fs-6">@money($row->tax_amount)</td>
-                                <td class="text-danger fw-bold fs-5">@money($row->final_price)</td>
-                                {{-- <td>
-                                    <a href="{{ route('updatestatus', ['id'=> $row->id, 'tag' => 'product_purchases']) }}"
-                                        title="Click to update Status" class="confirm-status">
+                                <td class="fs-6">{{ ++$key }}</td>
+                                <td>{{ $row->company?->company_name ?? 'Company'}}</td>
+                                <td>{{ $row->productcategory?->name ?? 'Category'}}</td>
+                                <td>{{ $row->purchase_date?->format('d M, Y') }}</td>
+                                <td class="text-{{ $row->status_value['color_name'] }} fs-6 fw-bold">{{
+                                    $row->status_value['value']
+                                    }}</td>
+                                <td class="fs-6">
+                                    <a href="{{ route('updatestatus', ['id'=> $row->id, 'tag' => 'product_sales']) }}"
+                                        title="Click to {{($row?->is_active) ? 'Inactive' : 'Active'}} this sale"
+                                        class="confirm-status">
                                         <div class="form-check form-switch">
-                                            <input type="checkbox" class="form-check-input" id="customSwitch1"
+                                            <input type="checkbox" class="form-check-input" id="SaleStatus"
                                                 {{($row?->is_active) ? 'checked' : ''}}>
-                                            <label class="form-check-label" for="customSwitch1"></label>
+                                            <label class="form-check-label" for="SaleStatus"></label>
                                         </div>
                                     </a>
-                                </td> --}}
-                                {{-- <td>
-                                    <a class="btn btn-info btn-sm" href="{{ route('productpurchases.edit', $row->id) }}"
-                                        title="Click to edit" tabindex="0" data-plugin="tippy"
-                                        data-tippy-animation="scale" data-tippy-arrow="true"><i
-                                            class="fa fa-pencil-alt"></i>
-                                        Edit
+                                </td>
+                                <td class="fw-bold fs-5">
+                                    @money($row->total_amount)
+                                </td>
+                                <td class="fw-bold fs-6">
+                                    @money($row->discount_amount)
+                                </td>
+                                <td class="fw-bold fs-6">
+                                    @money($row->other_charges)
+                                </td>
+                                <td class="text-danger fw-bold fs-5">
+                                    @money($row->final_amount)
+                                </td>
+                                <td>
+                                    <a class="btn btn-info btn-sm"
+                                        href="{{ route('productpurchases.show', $row?->id) }}" title="click to view"><i
+                                            class="fa fa-eye"></i>
                                     </a>
-                                    <a class="btn btn-danger btn-sm delete-confirm"
-                                        href="{{route('productpurchases.destroy', $row?->id)}}"
-                                        del_title="Purchase id {{$row?->id}}" title="Click to delete" tabindex="0"
-                                        data-plugin="tippy" data-tippy-animation="scale" data-tippy-arrow="true"><i
-                                            class="fa fa-trash"></i>
-                                        Delete
-                                    </a>
-                                </td> --}}
+                                </td>
                             </tr>
                             @empty
 

@@ -85,6 +85,11 @@
 
 <script>
     $(function() {
+        $(document).ready(function () {
+            $(".mySelectModal").select2({
+                dropdownParent: $("#AddModal")
+            });
+        });
 
         var userlevels_list = {};
 

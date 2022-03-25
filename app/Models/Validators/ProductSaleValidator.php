@@ -21,7 +21,7 @@ class ProductSaleValidator
                 'manual_number' => ['bail', 'nullable'],
                 'sale_type' => ['bail', 'required', 'string'],
                 'total_amount' => ['bail', 'required', 'numeric'],
-                'discount_amount' => ['bail', 'required', 'numeric'],
+                'discount_amount' => ['bail', 'nullable', 'numeric'],
                 'discount_percentage' => ['bail', 'nullable', 'numeric'],
                 'other_charges' => ['bail', 'required', 'numeric'],
                 'final_amount' => ['bail', 'required', 'numeric'],

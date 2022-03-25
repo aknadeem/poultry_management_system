@@ -1,4 +1,4 @@
-<div id="AddStoreModal" class="modal fade MyModalClass" tabindex="-1" role="dialog" aria-labelledby="AddStoreModalLabel"
+<div id="AddStoreModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AddStoreModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -16,23 +16,19 @@
                         <input type="hidden" id="FromPage">
 
                         <div class="col-sm-6 mb-2 pe-0">
-                            <label for="FarmSelect"> Select Farm *</label>
-                            <select name="farm_id" id="FarmSelect" class="form-control mySelectModal" required
-                                data-toggle="select2" data-width="100%">
-                                <option value="">dasd</option>
-                                <option value="">dasd</option>
-                                <option value="">dasd</option>
+                            <label for="FarmSelect"> Select Farm dsada *</label>
+                            <select name="farm_id" id="FarmSelect" class="form-control" required data-toggle="select2"
+                                data-width="100%">
+                                <option value="">No data foud</option>
                             </select>
                             <span class="text-danger farm_id_error"> </span>
                         </div>
 
                         <div class="col-sm-6 mb-2">
                             <label for="VaccineSelect"> Select Vaccine *</label>
-                            <select name="product_id" id="VaccineSelect" class="form-control mySelectModal" required
+                            <select name="product_id" id="VaccineSelect" class="form-control" required
                                 data-toggle="select2" data-width="100%">
-                                <option value="">dasd</option>
-                                <option value="">dasd</option>
-                                <option value="">dasd</option>
+                                <option value="">no data found</option>
                             </select>
                             <span class="text-danger product_id_error"> </span>
                         </div>
@@ -70,6 +66,14 @@
 @section('modal_scripts')
 <script>
     $(function() {
+
+        $(document).ready(function () {
+            $(".mySelectModal").select2({
+                dropdownParent: $("#AddStoreModal")
+            });
+        });
+
+
         $('#AddStoreModal').modal({backdrop: 'static', keyboard: false})
         $(".OpenAddStoreModal").click(function() {
             let Storeid = parseInt($(this).attr('StoreId')) || 0;

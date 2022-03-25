@@ -29,6 +29,11 @@ $load_js = Array('tippy','select2')
     <div class="row card">
         <div class="col-12 card-body">
             <div class="row mb-2">
+                @if ($errors->any())
+                @foreach ($errors->all() as $error)
+                <div>{{$error}}</div>
+                @endforeach
+                @endif
                 <div class="col-6 align-self-start">
                     <h4> Add Purchase Entry </h4>
                 </div>
@@ -59,7 +64,7 @@ $load_js = Array('tippy','select2')
                             <div class="row mt-2">
                                 <div class="col-12 mb-3">
                                     <label class="font_bold" for="GroupSelect"> Select Group* </label>
-                                    <select name="company_id" required id="GroupSelect" class="form-control mySelect"
+                                    <select name="product_group" required id="GroupSelect" class="form-control mySelect"
                                         data-toggle="select2" data-width="100%" id="">
                                         <option value=""> Select Group </option>
                                         @forelse ( App\Helpers\Constant::PRODUCT_GROUP as $key=>$val)
@@ -67,22 +72,22 @@ $load_js = Array('tippy','select2')
                                         @empty
                                         @endforelse
                                     </select>
-                                    @error('company_id')
-                                    <span class="text-danger company_id_error"> {{ $message }} </span>
+                                    @error('product_group')
+                                    <span class="text-danger product_group_error"> {{ $message }} </span>
                                     @enderror
                                 </div>
                                 <div class="col-12 mb-3">
                                     <label class="font_bold" for="CompanySelect"> Select Company* </label>
-                                    <select name="company_id" required id="CompanySelect" class="form-control mySelect"
-                                        data-toggle="select2" data-width="100%" id="">
+                                    <select name="party_company_id" required id="CompanySelect"
+                                        class="form-control mySelect" data-toggle="select2" data-width="100%" id="">
                                         <option value=""> Select company </option>
                                         @forelse ($companies as $item)
                                         <option value="{{ $item?->id }}"> {{ $item?->company_name }} </option>
                                         @empty
                                         @endforelse
                                     </select>
-                                    @error('company_id')
-                                    <span class="text-danger company_id_error"> {{ $message }} </span>
+                                    @error('party_company_id')
+                                    <span class="text-danger party_company_id_error"> {{ $message }} </span>
                                     @enderror
                                 </div>
                                 <div class="col-12 mb-3">
@@ -161,14 +166,14 @@ $load_js = Array('tippy','select2')
                                                 <label class="pt-1"> <b>Add Discount: &nbsp; </b> </label>
                                                 <input type="number" style="width:35%; float:right;"
                                                     id="DiscountOnTotal" name="discount_amount" class="form-control"
-                                                    placeholder="Add Discount">
+                                                    value="0" placeholder="Add Discount">
                                                 <span id="DiscountAmountGreaterError" Class="text-danger"></span>
                                                 <br>
                                                 <br>
                                                 <label class="pt-1"> <b> Other Charges*: &nbsp; </b> </label>
                                                 <input type="number" style="width:35%; float:right;"
                                                     placeholder="Other charges" id="RentPrice" name="other_charges"
-                                                    class="form-control" required>
+                                                    value="0" class="form-control" required>
                                                 <br>
                                                 <br>
                                                 <label class="pt-1"> <b> Final Amount*: &nbsp; </b> </label>
@@ -338,8 +343,8 @@ $load_js = Array('tippy','select2')
         });
 
         $('#ProductQuantity').on('keyup', function() {
-            let Quantity = Number($(this).val());
-            let PurchasePrice = parseFloat($('#SalePrice').val())
+            let Quantity = Number($('#ProductQuantity').val()) || 0
+            let PurchasePrice = parseFloat($('#SalePrice').val()) || 0
             let discountAmount = parseFloat($('#DiscountAmount').val()) || 0
             let TaxAmount = Number($('#TaxAmount').val()) || 0
             if (Quantity > 0 && PurchasePrice > 0) {
@@ -366,6 +371,7 @@ $load_js = Array('tippy','select2')
 
         $('#ProductBonusQuantity').on('keyup', function() {
             let ProductQuantity = parseInt($('#ProductQuantity').val())
+            let Purchase_Price = parseFloat($('#SalePrice').val())
             let ProductBonusQuantity = parseInt($(this).val());
             let priceWithOutDiscount = 0
             if(ProductQuantity > 0){
@@ -373,7 +379,11 @@ $load_js = Array('tippy','select2')
                     $("#QtyPriceError").html('');
                     let tQuantity = ProductQuantity + ProductBonusQuantity;
                     $("#totalQuantity").val(tQuantity);
+                    $("#TotalPrice").val(tQuantity*Purchase_Price);
+                    $("#FinalPrice").val(tQuantity*Purchase_Price);
                 }else{
+                    $("#TotalPrice").val(ProductQuantity*Purchase_Price);
+                    $("#FinalPrice").val(ProductQuantity*Purchase_Price);
                     $("#totalQuantity").val(ProductQuantity);
                 }
             }else{   
@@ -598,7 +608,7 @@ $load_js = Array('tippy','select2')
         function discountCalculation(){
             let GrandTotalAmount = parseFloat($('#GrandTotal').val())
             $('#DiscountOnTotal').on('keyup', function() {
-                let DiscountOnTotal = parseFloat($(this).val());
+                let DiscountOnTotal = parseFloat($(this).val()) || 0;
                 if(DiscountOnTotal > 0 && DiscountOnTotal < GrandTotalAmount){
                     $("#DiscountAmountGreaterError").html('');
                     $("#InvoiceFinalAmount").val(GrandTotalAmount - DiscountOnTotal);
@@ -611,12 +621,13 @@ $load_js = Array('tippy','select2')
         
         function RentCalculation(){
             $('#RentPrice').on('keyup', function() {
-                let GrandTotal_val = parseFloat($('#GrandTotal').val())
-                let DiscountOnTotal_val = parseFloat($('#DiscountOnTotal').val())
-                let Final_Amount = GrandTotal_val - DiscountOnTotal_val
-                let rentPrice = parseFloat($(this).val());
+                let GrandTotal_val = parseFloat($('#GrandTotal').val()) || 0 
+                let DiscountOnTotal_val = parseFloat($('#DiscountOnTotal').val()) || 0
+                let Final_Amount = parseFloat(GrandTotal_val - DiscountOnTotal_val)
+                let rentPrice = parseFloat($(this).val()) || 0;
+                let final_amt = Final_Amount+rentPrice;
                 if(rentPrice > 0){
-                    $("#InvoiceFinalAmount").val(Final_Amount + rentPrice);
+                    $("#InvoiceFinalAmount").val(Final_Amount+rentPrice);
                 }else{
                     $("#InvoiceFinalAmount").val(Final_Amount);
                 }

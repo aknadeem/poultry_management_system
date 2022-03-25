@@ -147,9 +147,8 @@ $load_js = Array('sweetAlert', 'jquery-confirm');
 
                     <div class="row">
                         <div class="col-sm-6">
-                            <div class="clearfix pt-5">
+                            {{-- <div class="clearfix pt-5">
                                 <h6 class="text-muted">Notes:</h6>
-
                                 <small class="text-muted">
                                     All accounts are to be paid within 7 days from receipt of
                                     invoice. To be paid by cheque or credit card or direct payment
@@ -157,8 +156,8 @@ $load_js = Array('sweetAlert', 'jquery-confirm');
                                     supplied as confirmation of work undertaken will be charged the
                                     agreed quoted fee noted above.
                                 </small>
-                            </div>
-                        </div> <!-- end col -->
+                            </div> --}}
+                        </div>
                         <div class="col-sm-6">
                             <div class="float-end fs-5">
                                 <p><b>Sub-total:</b> <span class="float-end">@money($sale?->total_amount)</span></p>

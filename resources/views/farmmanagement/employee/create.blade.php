@@ -158,11 +158,12 @@ $load_js = Array('tippy','select2','sweetAlert')
                                         name="basic_salary" value="{{ old('basic_salary', $employee?->basic_salary) }}"
                                         class="form-control" id="employeeBasicSalary">
                                     <span class="text-danger basic_salary_error"></span>
+                                    <span class="text-danger" id="BasicSalaryError"></span>
                                 </div>
 
                                 <div class="col-sm-3 mb-2">
                                     <label for="empOtherAmount"> Other Amount</label>
-                                    <input type="number" step="any" min="0" placeholder="Enter Basic Salary"
+                                    <input type="number" step="any" min="0" placeholder="Enter other amounts"
                                         name="other_amount" value="{{ old('other_amount', $employee?->other_amount) }}"
                                         class="form-control" id="empOtherAmount">
                                     <span class="text-danger other_amount_error"></span>
@@ -179,10 +180,10 @@ $load_js = Array('tippy','select2','sweetAlert')
                                 </div> --}}
 
                                 <div class="col-sm-3 mb-2">
-                                    <label for="employeeBasicSalary"> Net Salary* </label>
-                                    <input type="number" step="any" min="0" placeholder="Enter Basic Salary" required
+                                    <label for="employeeNetSalary"> Net Salary* </label>
+                                    <input type="number" step="any" min="0" placeholder="Enter Basic Salary" readonly
                                         name="net_salary" value="{{ old('net_salary', $employee?->net_salary) }}"
-                                        class="form-control" id="employeeBasicSalary">
+                                        class="form-control" id="employeeNetSalary">
                                     <span class="text-danger basic_salary_error"></span>
                                 </div>
 
@@ -200,9 +201,9 @@ $load_js = Array('tippy','select2','sweetAlert')
                                         id="empJoiningDate">
                                     <span class="text-danger joining_date_error"></span>
                                 </div>
-                                <div class="col-sm-3 mb-2">
+                                {{-- <div class="col-sm-3 mb-2">
                                     <label for="empFarm"> Select Farm </label>
-                                    <select name="personal_farm_id" id="empFarm" class="form-control mySelect" required
+                                    <select name="personal_farm_id" id="empFarm" class="form-control mySelect"
                                         data-toggle="select2" data-width="100%">
                                         <option value=""> Select Farm</option>
                                         @forelse ($farms as $item)
@@ -216,13 +217,22 @@ $load_js = Array('tippy','select2','sweetAlert')
                                         @endforelse
                                     </select>
                                     <span class="text-danger personal_farm_id_error"></span>
-                                </div>
+                                </div> --}}
 
                                 <div class="col-sm-3 mb-2">
                                     <label for="bloodGroup"> Blood Group </label>
-                                    <input type="text" placeholder="Enter Contract Period" name="blood_group" required
-                                        value="{{ old('blood_group', $employee?->blood_group) }}" class="form-control"
-                                        id="bloodGroup">
+                                    <select name="blood_group" class="form-control mySelect" required
+                                        data-toggle="select2" data-width="100%" id="bloodGroup">
+                                        <option value=""> Select Option</option>
+                                        <option value="A+">A+</option>
+                                        <option value="A-">A-</option>
+                                        <option value="B+">B+</option>
+                                        <option value="B-">B-</option>
+                                        <option value="O+">O+</option>
+                                        <option value="O-">O-</option>
+                                        <option value="AB+">AB+</option>
+                                        <option value="AB-">AB-</option>
+                                    </select>
                                     <span class="text-danger blood_group_error"></span>
                                 </div>
 
@@ -299,7 +309,18 @@ $load_js = Array('tippy','select2','sweetAlert')
 @section('custom_scripts')
 <script>
     $(function() {
-        
+
+        $('#empOtherAmount').on('keyup', function() {
+        let employeeBasicSalary = parseFloat($('#employeeBasicSalary').val())
+        let empOtherAmount = parseFloat($(this).val())
+        if (employeeBasicSalary > 0) {
+            $("#BasicSalaryError").html('');
+            let net_salary = employeeBasicSalary+empOtherAmount;
+            $("#employeeNetSalary").val(net_salary);
+        } else {
+            $("#BasicSalaryError").html('Please Enter Basic Salary, and should be greater then 0');
+        }
+    });
     });
 </script>
 @endsection

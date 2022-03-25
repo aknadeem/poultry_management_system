@@ -161,8 +161,8 @@ $load_js = Array('tippy','select2')
 
                                     <div class="col-3 mb-2 px-1">
                                         <label class="font_bold" for="BonusQuantity"> Bonus Qty </label>
-                                        <input type="number" min="0" class="form-control" name="bonus_quantity"
-                                            placeholder="Bonus qty" id="BonusQuantity">
+                                        <input type="number" value="0" min="0" class="form-control"
+                                            name="bonus_quantity" placeholder="Bonus qty" id="BonusQuantity">
                                         @error('bonus_quantity')
                                         <span class="text-danger bonus_quantity_error"> {{ $message }} </span>
                                         @enderror
@@ -193,7 +193,7 @@ $load_js = Array('tippy','select2')
                                     <div class="col-3 mb-2 px-1">
                                         <label class="font_bold" for="DiscountPercentage"> Discount % </label>
                                         <input type="number" step="any" min="0" step="any" class="form-control"
-                                            name="discount_percentage" value="" placeholder="Discount %"
+                                            name="discount_percentage" value="0" placeholder="Discount %"
                                             id="DiscountPercentage">
 
                                         @error('discount_percentage')
@@ -204,7 +204,7 @@ $load_js = Array('tippy','select2')
                                     <div class="col-3 mb-2 px-1">
                                         <label class="font_bold" for="DiscountAmount"> Discount Amount</label>
                                         <input type="number" step="any" min="0" step="any" class="form-control"
-                                            name="discount_amount" value="" placeholder="Discount Amount"
+                                            name="discount_amount" value="0" placeholder="Discount Amount"
                                             id="DiscountAmount">
 
                                         @error('discount_amount')
@@ -214,7 +214,8 @@ $load_js = Array('tippy','select2')
                                     <div class="col-3 mb-2 px-1">
                                         <label class="font_bold" for="TaxAmount"> Tax Amount </label>
                                         <input type="number" step="any" min="0" step="any" class="form-control"
-                                            name="tax_amount" value="" placeholder="Tax Amount" id="TaxAmount">
+                                            name="tax_amount" value="" placeholder="Tax Amount" id="TaxAmount"
+                                            value="0">
 
                                         @error('tax_amount')
                                         <span class="text-danger tax_amount_error"> {{ $message }} </span>
@@ -224,7 +225,7 @@ $load_js = Array('tippy','select2')
                                     <div class="col-3 mb-2 px-1">
                                         <label class="font_bold" for="TaxPercentage"> Tax % </label>
                                         <input type="number" step="any" min="0" step="any" class="form-control"
-                                            name="tax_percentage" value="" placeholder="Tax percentage"
+                                            name="tax_percentage" value="0" placeholder="Tax percentage"
                                             id="TaxPercentage">
 
                                         @error('tax_percentage')

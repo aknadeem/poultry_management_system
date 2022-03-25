@@ -1,6 +1,6 @@
 @php
 $load_css = Array('tables','sweetAlert', 'jquery-confirm');
-$load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
+$load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2');
 @endphp
 @extends('layouts.app')
 @section('content')
@@ -241,7 +241,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
 
         $('.viewCustomerDetailModal').click(function () {
             let customer_id = parseInt($(this).attr('CustomerId')) || 0;
-            $.get("{{ url('/customer')}}/"+customer_id, function(result) {
+            $.get("{{ url('/partymanagement/customers')}}/"+customer_id, function(result) {
                 // console.log(result)
                 $('#ViewCustomerModal').modal('show');
                 $('#CustomerDetailData').html(result?.html_data);

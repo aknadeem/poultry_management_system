@@ -210,14 +210,14 @@ $load_js = Array('tippy','select2')
                                                 <label class="pt-1"> <b>Add Discount: &nbsp; </b> </label>
                                                 <input type="number" style="width:35%; float:right;"
                                                     id="DiscountOnTotal" name="discount_amount" class="form-control"
-                                                    placeholder="Add Discount">
+                                                    value="0" placeholder="Add Discount">
                                                 <span id="DiscountAmountGreaterError" Class="text-danger"></span>
                                                 <br>
                                                 <br>
                                                 <label class="pt-1"> <b> Other Charges*: &nbsp; </b> </label>
                                                 <input type="number" style="width:35%; float:right;"
                                                     placeholder="Other charges" id="RentPrice" name="other_charges"
-                                                    class="form-control" required>
+                                                    value="0" class="form-control" required>
                                                 <br>
                                                 <br>
                                                 <label class="pt-1"> <b> Final Amount*: &nbsp; </b> </label>
@@ -406,8 +406,8 @@ $load_js = Array('tippy','select2')
         });
 
         $('#ProductQuantity').on('keyup', function() {
-            let Quantity = Number($(this).val());
-            let PurchasePrice = parseFloat($('#SalePrice').val())
+            let Quantity = Number($(this).val()) || 0;
+            let PurchasePrice = parseFloat($('#SalePrice').val()) || 0
             let discountAmount = parseFloat($('#DiscountAmount').val()) || 0
             let TaxAmount = Number($('#TaxAmount').val()) || 0
             if (Quantity > 0 && PurchasePrice > 0) {
@@ -433,8 +433,8 @@ $load_js = Array('tippy','select2')
         });
 
         $('#ProductBonusQuantity').on('keyup', function() {
-            let ProductQuantity = parseInt($('#ProductQuantity').val())
-            let ProductBonusQuantity = parseInt($(this).val());
+            let ProductQuantity = parseInt($('#ProductQuantity').val()) || 0
+            let ProductBonusQuantity = parseInt($(this).val()) || 0;
             let priceWithOutDiscount = 0
             if(ProductQuantity > 0){
                if(ProductBonusQuantity > 0){
@@ -450,8 +450,8 @@ $load_js = Array('tippy','select2')
         });
 
         $('#PurchasePrice').on('keyup', function() {
-            let ProductQuantity = Number($('#ProductQuantity').val())
-            let PurchasePrice = parseFloat($('#PurchasePrice').val())
+            let ProductQuantity = Number($('#ProductQuantity').val()) || 0
+            let PurchasePrice = parseFloat($('#PurchasePrice').val()) || 0
 
             if (ProductQuantity > 0 && PurchasePrice > 0) {
                 $("#QtyPriceError").html('');
@@ -468,9 +468,9 @@ $load_js = Array('tippy','select2')
         });
 
         $('#DiscountAmount').on('keyup', function() {
-            let total_price = Number($('#TotalPrice').val())
+            let total_price = Number($('#TotalPrice').val()) || 0
             let TaxAmount = Number($('#TaxAmount').val()) || 0
-            let discountAmount = parseFloat($(this).val());
+            let discountAmount = parseFloat($(this).val()) || 0;
             let priceWithOutDiscount = 0
             if(discountAmount > 0){
                 if (total_price > 0) {
@@ -498,7 +498,7 @@ $load_js = Array('tippy','select2')
         });
         
         $('#DiscountPercentage').on('keyup', function() {
-            let total_price = Number($('#TotalPrice').val())
+            let total_price = Number($('#TotalPrice').val()) || 0
             let discountPercentage = parseFloat($(this).val()) || 0
             let TaxAmount = Number($('#TaxAmount').val()) || 0
             let priceWithOutDiscount = 0
@@ -525,9 +525,9 @@ $load_js = Array('tippy','select2')
         });
 
         $('#TaxAmount').on('keyup', function() {
-            let TotalPrice = parseFloat($('#TotalPrice').val())
-            let DiscountAmount = parseFloat($('#DiscountAmount').val())
-            let taxAmount = parseFloat($(this).val());
+            let TotalPrice = parseFloat($('#TotalPrice').val()) || 0
+            let DiscountAmount = parseFloat($('#DiscountAmount').val()) || 0
+            let taxAmount = parseFloat($(this).val()) || 0;
             let priceWithOutDiscount = 0
             if(taxAmount > 0){
                 if (TotalPrice > 0) {
@@ -550,8 +550,8 @@ $load_js = Array('tippy','select2')
         });
         
         $('#TaxPercentage').on('keyup', function() {
-            let Total_Price = parseFloat($('#TotalPrice').val())
-            let DiscountAmount = parseFloat($('#DiscountAmount').val())
+            let Total_Price = parseFloat($('#TotalPrice').val()) || 0
+            let DiscountAmount = parseFloat($('#DiscountAmount').val()) || 0
 
             let taxPercentage = parseFloat($(this).val()) || 0;
             let priceWithOutTax = 0
@@ -656,7 +656,7 @@ $load_js = Array('tippy','select2')
             var TotalPriceArr = $('.product_total_price').get()
             var GrandTotal = 0
             $(TotalPriceArr).each(function(){
-                GrandTotal +=Number($(this).val())
+                GrandTotal +=Number($(this).val()) || 0
             });
             $('#GrandTotal').val(GrandTotal)
             discountCalculation()
@@ -664,9 +664,9 @@ $load_js = Array('tippy','select2')
         }
 
         function discountCalculation(){
-            let GrandTotalAmount = parseFloat($('#GrandTotal').val())
+            let GrandTotalAmount = parseFloat($('#GrandTotal').val()) || 0
             $('#DiscountOnTotal').on('keyup', function() {
-                let DiscountOnTotal = parseFloat($(this).val());
+                let DiscountOnTotal = parseFloat($(this).val()) || 0;
                 if(DiscountOnTotal > 0 && DiscountOnTotal < GrandTotalAmount){
                     $("#DiscountAmountGreaterError").html('');
                     $("#InvoiceFinalAmount").val(GrandTotalAmount - DiscountOnTotal);
@@ -679,8 +679,8 @@ $load_js = Array('tippy','select2')
         
         function RentCalculation(){
             $('#RentPrice').on('keyup', function() {
-                let GrandTotal_val = parseFloat($('#GrandTotal').val())
-                let DiscountOnTotal_val = parseFloat($('#DiscountOnTotal').val())
+                let GrandTotal_val = parseFloat($('#GrandTotal').val()) || 0
+                let DiscountOnTotal_val = parseFloat($('#DiscountOnTotal').val()) || 0
                 let Final_Amount = GrandTotal_val - DiscountOnTotal_val
                 let rentPrice = parseFloat($(this).val());
                 if(rentPrice > 0){
@@ -696,13 +696,13 @@ $load_js = Array('tippy','select2')
             $('#row-'+DelROwID).remove();
             SumAllPrice()
     
-            let GrandTotalAmount = parseFloat($('#GrandTotal').val())
-            let getDiscount = parseFloat($('#DiscountOnTotal').val())
+            let GrandTotalAmount = parseFloat($('#GrandTotal').val()) || 0
+            let getDiscount = parseFloat($('#DiscountOnTotal').val()) || 0
             if(getDiscount > 0){
                 $("#InvoiceFinalAmount").val(GrandTotalAmount-getDiscount);
             }
-            let fAmount = parseFloat($('#InvoiceFinalAmount').val())
-            let RentPrice = parseFloat($('#RentPrice').val())
+            let fAmount = parseFloat($('#InvoiceFinalAmount').val()) || 0
+            let RentPrice = parseFloat($('#RentPrice').val()) || 0
             if(RentPrice > 0){
                 $("#InvoiceFinalAmount").val(fAmount+RentPrice);
             }

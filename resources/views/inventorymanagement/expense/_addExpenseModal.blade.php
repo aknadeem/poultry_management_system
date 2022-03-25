@@ -1,4 +1,4 @@
-<div id="AddModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AddEmployeeModalLabel"
+<div id="AddModal" class="modal fade MyModalClass" tabindex="-1" role="dialog" aria-labelledby="AddEmployeeModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -71,7 +71,7 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<div id="AddExpenseCategoryModal" class="modal fade" tabindex="-1" role="dialog"
+<div id="AddExpenseCategoryModal" class="modal fade MyModalClass" tabindex="-1" role="dialog"
     aria-labelledby="AddExpenseCategoryModalLabel" aria-hidden="true">
     <div class="modal-dialog bg-grey">
         <div class="modal-content">
@@ -110,8 +110,10 @@
 <script>
     $(function() {
 
-        $(".mySelectModal").select2({
-            dropdownParent: $("#AddModal")
+        $(document).ready(function () {
+            $(".mySelectModal").select2({
+                dropdownParent: $("#AddModal")
+            });
         });
 
         var categories_list = {};

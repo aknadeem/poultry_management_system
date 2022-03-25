@@ -49,7 +49,7 @@
                         <div class="col-2 mb-2 px-1">
                             <label class="font_bold" for="ProductBonusQuantity"> Bonus Quantity </label>
                             <input type="number" min="0" class="form-control" name="bonus_quantity"
-                                placeholder="Bonus Qty" required id="ProductBonusQuantity">
+                                placeholder="Bonus Qty" value="0" required id="ProductBonusQuantity">
                             <span class="text-danger quantity_error"></span>
                         </div>
 
@@ -75,7 +75,7 @@
                         <div class="col-3 mb-2 px-1">
                             <label class="font_bold" for="DiscountAmount"> Discount Amount</label>
                             <input type="number" step="any" min="0" step="any" class="form-control"
-                                name="discount_amount" value="" placeholder="Discount Amount" id="DiscountAmount">
+                                name="discount_amount" value="0" placeholder="Discount Amount" id="DiscountAmount">
 
                             @error('discount_amount')
                             <span class="text-danger discount_amount_error"> {{ $message }} </span>
@@ -85,7 +85,7 @@
                         <div class="col-2 mb-2 px-1">
                             <label class="font_bold" for="DiscountPercentage"> Discount % </label>
                             <input type="number" step="any" min="0" step="any" class="form-control"
-                                name="discount_percentage" value="" placeholder="Discount %" id="DiscountPercentage">
+                                name="discount_percentage" value="0" placeholder="Discount %" id="DiscountPercentage">
 
                             @error('discount_percentage')
                             <span class="text-danger discount_percentage_error"> {{ $message }} </span>
