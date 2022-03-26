@@ -10,6 +10,12 @@ class LoginListener
 {
     public function handle(Login $event)
     {
-        Log::info("User # {$event->user->id} Signed in");
+        Log::info("
+            ------------
+            User #: {$event->user->id} Signed in
+            Name: {$event->user->name}
+            Email: {$event->user->email}
+            ------------
+        ");
     }
 }

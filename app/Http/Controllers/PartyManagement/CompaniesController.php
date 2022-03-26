@@ -26,7 +26,6 @@ class CompaniesController extends Controller
 
     public function index()
     {
-        // dd($this->auth_user_id);
         $companies = PartyCompany::with('businesstype:id,name','vendor:id,name')->get();
         return view('partymanagement.company.index', compact('companies'));
     }
@@ -130,13 +129,10 @@ class CompaniesController extends Controller
             'success' => $success,
             'html_data' => $html_data,
         ], 201);
-
-        // return response()->json($data, 200, $headers);
     }
 
     public function updateStatus($id, $tablename)
     {
-
         if ($tablename !='' && Schema::hasTable($tablename) ) {
             $company_data = DB::table($tablename)->where('id',$id)->first();
 

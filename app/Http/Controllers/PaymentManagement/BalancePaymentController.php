@@ -23,7 +23,6 @@ class BalancePaymentController extends Controller
 
     public function index()
     {
-        // dd('hello');
         return view('partymanagement.company.balance.index');
     }
 
@@ -153,7 +152,6 @@ class BalancePaymentController extends Controller
                 'balance' => $balance->toArray(),
             ], 201);
         }
-
     }
 
     public function edit($id)
@@ -179,5 +177,3 @@ class BalancePaymentController extends Controller
         return redirect()->route('company.index');
     }
 }
-
-

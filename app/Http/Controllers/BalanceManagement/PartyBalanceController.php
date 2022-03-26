@@ -112,7 +112,6 @@ class PartyBalanceController extends Controller
     public function getBalancePayments($id)
     {
         $payments = PartyBalancePayment::where('party_balance_id',$id)->with('party:id,name,email,is_vendor,is_customer,profile_picture,contact_no','user:id,name')->orderBy('id', 'DESC')->get();
-        // dd($payments->toArray());
         return view('balancemanagement.party_balances.balance_payments', compact('payments'));
     }
 
@@ -210,7 +209,7 @@ class PartyBalanceController extends Controller
             });
         }
         catch (\Throwable $e) {
-            return $e;
+            Log::error($e);
             $message = 'Something went wrong';
             $title = 'Error';
             $icon_type = 'warning';

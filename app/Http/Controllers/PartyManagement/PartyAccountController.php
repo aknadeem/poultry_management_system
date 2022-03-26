@@ -22,7 +22,6 @@ class PartyAccountController extends Controller
 
     public function index()
     {
-        // dd($this->auth_user_id);
         $party_accounts = PartyAccount::get();
         return view('partymanagement.company.index', compact('party_accounts'));
     }
@@ -50,7 +49,6 @@ class PartyAccountController extends Controller
         }else{
             $party_account = null;
         }
-
 
         if($request->party_account_id > 0){
             if($party_account !=''){
@@ -98,7 +96,6 @@ class PartyAccountController extends Controller
     {
        return 0;
     }
-
 
     public function edit($id)
     {

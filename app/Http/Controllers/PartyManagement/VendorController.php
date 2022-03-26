@@ -32,16 +32,13 @@ class VendorController extends Controller
     {
         $customers = Party::where('is_vendor', 1)->with('farm:id,party_id,farm_name,farm_type_id')->get(['id','is_customer','name', 'guardian_name','cnic_no', 'contact_no', 'customer_type_id','customer_division_id', 'profile_picture']);
         return view('partymanagement.vendors.index', compact('customers'));
-        // return view('partymanagement.customers.index');
     }
 
     public function create()
     {
-
         $party = new Party();
         $countries = Country::with('provinces:id,name,country_id',
         'provinces.cities:id,name,province_id')->get(['id','name']);
-
 
         $divisions = Division::get();
         $contact_persons = ConductPerson::get();
@@ -221,4 +218,3 @@ class VendorController extends Controller
     }
 
 }
-

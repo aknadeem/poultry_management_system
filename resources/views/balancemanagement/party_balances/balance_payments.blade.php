@@ -3,9 +3,9 @@ $load_css = Array('tables','sweetAlert', 'jquery-confirm','select2');
 $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','select2model')
 ;
 @endphp
-
 @extends('layouts.app')
 @section('content')
+@if ($payments->count() > 0)
 <div class="container-fluid">
     <!-- start page title -->
     <div class="row">
@@ -18,7 +18,11 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                         <li class="breadcrumb-item active"> PartyBalancePayments </li>
                     </ol>
                 </div>
-                <h6 class="page-title"> {{ $payments[0]->party?->name}} </h6>
+                <h6 class="page-title">
+                    @if ($payments)
+                    {{ $payments[0]?->party?->name ?? ''}}
+                    @endif
+                </h6>
             </div>
         </div>
     </div>
@@ -31,9 +35,9 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                             <h4>Balance Payments</h4>
                         </div>
                         <div class="col-6 align-self-end text-end mb-2">
-                            <a href="{{ asset('storage/party/'.$payments[0]->user?->profile_picture) }}" target="_blank"
-                                title="click to view">
-                                <img src="{{ asset('storage/party/'.$payments[0]->user?->profile_picture) }}"
+                            <a href="{{ asset('storage/party/'.$payments[0]?->user?->profile_picture) }}"
+                                target="_blank" title="click to view">
+                                <img src="{{ asset('storage/party/'.$payments[0]?->user?->profile_picture) }}"
                                     alt="No image" width="10%">
                             </a>
                         </div>
@@ -75,10 +79,14 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
         <div class="modal-content" id="CustomerDetailData">
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
+</div>
+@else
+<h4 class="mt-5 text-center text-danger"> No Payments Found</h4>
+<h4 class="mt-2 text-center text-danger"> <a href="{{URL::previous()}}"> <i class="fa fa-arrow-left" aria-hidden="true">
+        </i>
+        Go back </a> </h4>
+@endif
 @endsection
-
 @section('custom_scripts')
 <script>
     $(function() {

@@ -15,6 +15,7 @@ use App\Models\PartyCompany;
 use Illuminate\Http\Request;
 use App\Models\CompanyBalance;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CustomerFormRequest;
@@ -163,7 +164,7 @@ class FeedController extends Controller
             });
         }
         catch (\Throwable $e) {
-            return $e;
+            Log::error($e);
             $message = 'Data not save something went wrong!';
             $title = 'Error';
             $icon = 'danger';
@@ -271,7 +272,7 @@ class FeedController extends Controller
                 });
             }
             catch (\Throwable $e) {
-                return $e;
+                Log::error($e);
                 $message = 'Data not save something went wrong!';
                 $success = 'no';
             }

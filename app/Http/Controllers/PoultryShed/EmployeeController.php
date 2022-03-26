@@ -10,7 +10,9 @@ use App\Models\EmployeeType;
 use App\Models\PersonalFarm;
 use Illuminate\Http\Request;
 use App\Models\EmployeeLevel;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CustomerFormRequest;
 
@@ -52,7 +54,7 @@ class EmployeeController extends Controller
         return DataTables::of($employees)
             ->addIndexColumn()
             ->addColumn('employee_image', function($row){
-                $url= asset('storage/employee/'.$row?->employee_image);
+                $url = asset('storage/employee/'.$row->employee_image);
                 return '<img class="rounded-circle avatar-lg" src="'.$url.'"  alt="No image" />';
             })
             ->addColumn('Actions', function($row){
@@ -118,6 +120,7 @@ class EmployeeController extends Controller
                 'other_number' => $request->other_number,
                 'email' => $request->email,
                 'cnic_no' => $request->cnic_no,
+                'father_cnic_no' => $request->father_cnic_no,
                 'basic_salary' => $request->basic_salary,
                 'other_amount' => $request->other_amount,
                 'net_salary' => $request->net_salary,
@@ -150,7 +153,7 @@ class EmployeeController extends Controller
             }
         }
         catch (\Throwable $e) {
-            return $e;
+            Log::error($e);
             $message = 'Something went wrong';
             $title = 'Error';
             $icon_type = 'warning';
@@ -214,7 +217,7 @@ class EmployeeController extends Controller
                 'other_number' => $request->other_number,
                 'other_number' => $request->other_number,
                 'email' => $request->email,
-                'cnic_no' => $request->cnic_no,
+                'father_cnic_no' => $request->father_cnic_no,
                 'basic_salary' => $request->basic_salary,
                 'other_amount' => $request->other_amount,
                 'net_salary' => $request->net_salary,
@@ -245,7 +248,7 @@ class EmployeeController extends Controller
             }
         }
         catch (\Throwable $e) {
-            return $e;
+            Log::error($e);
             $message = 'Something went wrong';
             $title = 'Error';
             $icon_type = 'warning';
@@ -304,6 +307,7 @@ class EmployeeController extends Controller
             'other_number' => 'bail|nullable|numeric',
             'email' => 'bail|required|string',
             'cnic_no' => 'bail|required|numeric|unique:employees,cnic_no,'.$id,
+            'father_cnic_no' => 'nullable',
             'basic_salary' => 'bail|required|numeric',
             'other_amount' => 'bail|nullable|numeric',
             'net_salary' => 'bail|required|numeric',

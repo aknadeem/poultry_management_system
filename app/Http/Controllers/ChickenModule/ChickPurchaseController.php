@@ -18,6 +18,7 @@ use App\Models\ChickPurchase;
 use App\Models\CompanyBalance;
 use App\Models\ChickenPurchase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Models\PartyFarmChickHistory;
 use App\Models\PersonalFarmChickHistory;
@@ -215,7 +216,7 @@ class ChickPurchaseController extends Controller
                 });
             }
             catch (\Throwable $e) {
-                return $e;
+                Log::error($e);
                 $message = 'Something went wrong';
                 $title = 'Error';
                 $icon_type = 'warning';

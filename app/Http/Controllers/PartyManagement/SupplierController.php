@@ -21,7 +21,6 @@ class SupplierController extends Controller
 
     public function index()
     {
-        // dd($this->auth_user_id);
         $customers = Customer::where('type', 'supplier')->get();
         return view('partymanagement.customers.index', compact('customers'));
     }
@@ -53,7 +52,6 @@ class SupplierController extends Controller
         }else{
             $customer_data = null;
         }
-        // $country = $session?->user?->getAddress()?->country;
         if ($request->hasFile('image_file')) {
             if($customer_data?->image != null && \Storage::disk('public')->exists('customers/'.$customer_data?->image)){
                 \Storage::disk('public')->delete('customers/'.$customer_data?->image);

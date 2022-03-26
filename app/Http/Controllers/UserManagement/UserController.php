@@ -56,10 +56,6 @@ class UserController extends Controller
 
     public function index()
     {
-        // echo app_path().'<br>';     // '/var/www/mysite/app'
-        // echo storage_path(); // '/var/www/mysite/storage'
-        // dd(base_path());
-        // $users = User::with('userlevel')->get();
         return view('usermanagement.users.index');
     }
 
@@ -203,5 +199,4 @@ class UserController extends Controller
         Session::flash('swal_notification', ['title' => 'Deleted', 'icon_type' => 'success', 'message' => 'Data Deleted Successfully!']);
         return redirect()->route('users.index');
     }
-    
 }

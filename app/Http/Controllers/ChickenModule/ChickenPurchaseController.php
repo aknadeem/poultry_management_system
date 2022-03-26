@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use App\Models\CompanyBalance;
 use App\Models\ChickenPurchase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CustomerFormRequest;
@@ -167,7 +168,7 @@ class ChickenPurchaseController extends Controller
             });
         }
         catch (\Throwable $e) {
-            return $e;
+            Log::error($e);
             $message = 'Something went wrong';
             $title = 'Error';
             $icon_type = 'warning';

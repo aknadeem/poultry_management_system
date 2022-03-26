@@ -41,8 +41,6 @@ class ProductPurchaseController extends Controller
     {
         $product_purchases = ProductPurchase::with('company:id,party_id,company_name','productcategory:id,name')->orderBy('id', 'DESC')->get();
 
-        // dd($product_purchases->toArray());  
-
         return view('productmanagement.purchases.index', compact('product_purchases'));
     }
 
@@ -402,9 +400,7 @@ class ProductPurchaseController extends Controller
 
     public function show($id)
     {   
-
         $purchase = ProductPurchase::with('detail','company:id,party_id,company_name','productcategory:id,name')->orderBy('id', 'DESC')->findOrFail($id);
-        // dd($sale->toArray());
         return view('productmanagement.purchases.purchase_detail', compact('purchase'));
     }
 

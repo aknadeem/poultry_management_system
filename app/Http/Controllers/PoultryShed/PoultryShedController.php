@@ -7,6 +7,7 @@ use App\Models\FarmType;
 use App\Models\FarmSubtype;
 use App\Models\PersonalFarm;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -25,7 +26,6 @@ class PoultryShedController extends Controller
     public function index()
     {
         $farms = PersonalFarm::with('type:id,name', 'subtype:id,name')->get();
-        // dd($farms->toArray());
         return view('farmmanagement.personalfarms.index', compact('farms'));
     }
 
@@ -46,9 +46,7 @@ class PoultryShedController extends Controller
     {
         $id = null;
         $this->validationRules($request, $id);
-        // dd($this->validationRules($request, $id));
         try {
-
             $message = 'Data created successfully';
             $title = 'Success';
             $icon_type = 'success';
@@ -82,7 +80,7 @@ class PoultryShedController extends Controller
             }
         }
         catch (\Throwable $e) {
-            return $e;
+            Log::error($e);
             $message = 'Something went wrong';
             $title = 'Error';
             $icon_type = 'warning';
@@ -129,7 +127,6 @@ class PoultryShedController extends Controller
     public function edit($id)
     {
         $farm = PersonalFarm::with('country:id,name','province:id,name','city:id,name')->find($id);
-        // dd($farm->toArray());
         $countries = Country::with('provinces:id,name,country_id',
         'provinces.cities:id,name,province_id')->get(['id','name']);
 
@@ -186,7 +183,7 @@ class PoultryShedController extends Controller
             }
         }
         catch (\Throwable $e) {
-            return $e;
+            Log::error($e);
             $message = 'Something went wrong';
             $title = 'Error';
             $icon_type = 'warning';

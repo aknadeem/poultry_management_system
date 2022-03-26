@@ -75,5 +75,4 @@ class ChickReportController extends Controller
             ->rawColumns(['DateFrom','DateTo','company_id'])
             ->make(true);
     }
-
 }

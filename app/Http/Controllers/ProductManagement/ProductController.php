@@ -40,7 +40,6 @@ class ProductController extends Controller
         // dd(str_pad($gn, $length, 0, STR_PAD_LEFT));
         $products = Product::with('company:id,company_name','category:id,name')->get(['id','product_name','product_group','product_code','bar_code','party_company_id','product_category_id','quantity','purchase_date','is_active']);
 
-        // dd($products->toArray());
         return view('productmanagement.index', compact('products'));
     }
 

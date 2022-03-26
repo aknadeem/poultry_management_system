@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\PartyManagement;
 
+use Session;
 use App\Models\Country;
 use Illuminate\Http\Request;
 use App\Models\ConductPerson;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use Session;
 
 class ConductPersonController extends Controller
 {
-
     private $auth_user_id;
     public function __construct()
     {
@@ -32,7 +32,6 @@ class ConductPersonController extends Controller
 
         $countries = Country::with('provinces:id,name,country_id',
         'provinces.cities:id,name,province_id')->get(['id','name']);
-        // dd($countries->toArray());
 
         return view('partymanagement.conductperson.create', compact('conductperson', 'countries'));
     }
@@ -87,7 +86,7 @@ class ConductPersonController extends Controller
             }
         }
         catch (\Throwable $e) {
-            // return $e;
+            Log::error($e);
             $message = 'Something went wrong';
             $title = 'Error';
             $icon_type = 'warning';
@@ -141,7 +140,7 @@ class ConductPersonController extends Controller
             }
         }
         catch (\Throwable $e) {
-            // return $e;
+            Log::error($e);
             $message = 'Something went wrong';
             $title = 'Error';
             $icon_type = 'warning';

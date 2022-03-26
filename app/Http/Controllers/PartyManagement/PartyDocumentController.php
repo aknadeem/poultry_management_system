@@ -21,7 +21,6 @@ class PartyDocumentController extends Controller
 
     public function index()
     {
-        // dd($this->auth_user_id);
         $party_documents = PartyDocument::get();
         return view('partymanagement.company.index', compact('party_documents'));
     }

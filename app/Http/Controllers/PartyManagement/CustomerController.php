@@ -29,8 +29,6 @@ class CustomerController extends Controller
     public function index()
     {
         $customers = Party::where('is_customer', 1)->with('farm:id,party_id,farm_name,farm_type_id')->get(['id','is_customer','name', 'guardian_name','cnic_no', 'contact_no', 'customer_type_id','customer_division_id', 'profile_picture']);
-        // dd($customers->toArray());
-        // $customers = collect();
         return view('partymanagement.customers.index', compact('customers'));
         // return view('partymanagement.customers.index');
     }

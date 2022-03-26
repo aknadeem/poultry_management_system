@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Models\ProductCategory;
 use App\Models\VaccinationGroup;
 use App\Models\VaccinationSchedule;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
@@ -135,7 +136,7 @@ class VaccinationController extends Controller
             ]);
         }
         catch (\Throwable $e) {
-            return $e;
+            Log::error($e);
             $message = 'Something went wrong';
             $title = 'Error';
             $icon_type = 'warning';
@@ -182,7 +183,7 @@ class VaccinationController extends Controller
                 ]);
             }
             catch (\Throwable $e) {
-                return $e;
+                Log::error($e);
                 $message = 'Something went wrong';
                 $title = 'Error';
                 $icon_type = 'warning';

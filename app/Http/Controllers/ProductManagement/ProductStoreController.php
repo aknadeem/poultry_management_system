@@ -12,6 +12,7 @@ use App\Models\PersonalFarm;
 use App\Models\ProductStore;
 use Illuminate\Http\Request;
 use App\Models\EmployeeLevel;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CustomerFormRequest;
@@ -100,7 +101,7 @@ class ProductStoreController extends Controller
             $product_store = $product_store->toArray();
         }
         catch (\Throwable $e) {
-            return $e;
+            Log::error($e);
             $message = 'Something went wrong';
             $success = 'no';
             $product_store = [];
@@ -121,9 +122,7 @@ class ProductStoreController extends Controller
         $title = 'Success';
         $icon_type = 'success';
         try {
-
             $Employee_data = Employee::findOrFail($id);
-
             if ($request->hasFile('employee_image')) {
                 if($Employee_data?->employee_image != null && \Storage::disk('public')->exists('employee/'.$Employee_data?->employee_image)){
                     \Storage::disk('public')->delete('employee/'.$Employee_data?->employee_image);
@@ -198,7 +197,7 @@ class ProductStoreController extends Controller
             }
         }
         catch (\Throwable $e) {
-            return $e;
+            Log::error($e);
             $message = 'Something went wrong';
             $title = 'Error';
             $icon_type = 'warning';

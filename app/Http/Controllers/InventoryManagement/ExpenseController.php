@@ -36,7 +36,7 @@ class ExpenseController extends Controller
         return DataTables::of($expenes)
             ->addIndexColumn()
             ->addColumn('picture', function($row){
-                $url = asset('/storage/expenses/'.$row?->picture);
+                $url = asset('storage/expenses/'.$row?->picture);
                 return '<img class="rounded-circle avatar-lg" src="'.$url.'"  alt="No image" />';
             })->addColumn('category_id', function($row){
                 return '<span>'.$row?->category?->name.'</span>';

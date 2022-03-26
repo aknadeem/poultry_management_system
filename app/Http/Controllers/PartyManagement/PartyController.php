@@ -18,6 +18,7 @@ use App\Models\PartyCompany;
 use Illuminate\Http\Request;
 use App\Models\ConductPerson;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -35,9 +36,6 @@ class PartyController extends Controller
 
     public function index()
     {
-        // $currentDateTime = Carbon::now();
-        // $newDateTime = Carbon::now()->addDays(5)->format('Y-m-d');
-        // dd($newDateTime);
         $parties = Party::get();
         return view('partymanagement.party.index', compact('parties'));
     }
@@ -56,7 +54,6 @@ class PartyController extends Controller
 
         $vendor_types = VendorType::get();
         $business_types = BusinessType::get();
-        // dd($divisions->toArray());
         return view('partymanagement.party.create', compact('countries', 'party', 'divisions', 'customer_types', 'farm_types', 'farm_subtypes', 'business_types', 'vendor_types','contact_persons'));
     }
 
@@ -64,7 +61,6 @@ class PartyController extends Controller
     {   
         $party = Party::with('country:id,name','province:id,name','city:id,name', 'farm:id,party_id,farm_name', 'company:id,party_id,company_name')->findOrFail($id);
 
-        // dd($party->toArray());
         $countries = Country::with('provinces:id,name,country_id',
         'provinces.cities:id,name,province_id')->get(['id','name']);
 
@@ -76,7 +72,6 @@ class PartyController extends Controller
 
         $vendor_types = VendorType::get();
         $business_types = BusinessType::get();
-        // dd($divisions->toArray());
         return view('partymanagement.party.create', compact('countries', 'party', 'divisions', 'customer_types', 'farm_types', 'farm_subtypes', 'business_types', 'vendor_types','contact_persons'));
     }
 
@@ -100,8 +95,6 @@ class PartyController extends Controller
     {
         $id = null;
         $this->validationRules($request, $id);
-        // dd($this->validationRules($request, $id));
-        
         $message = 'Data created successfully';
         $title = 'Success';
         $icon_type = 'success';
@@ -210,7 +203,7 @@ class PartyController extends Controller
             });
         }
         catch (\Throwable $e) {
-            return $e;
+            Log::error($e);
             $message = 'Something went wrong';
             $title = 'Error';
             $icon_type = 'warning';

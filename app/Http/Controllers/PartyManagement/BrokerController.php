@@ -7,6 +7,7 @@ use App\Models\Broker;
 use App\Models\Country;
 use Illuminate\Http\Request;
 use App\Models\ConductPerson;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 
 class BrokerController extends Controller
@@ -33,8 +34,6 @@ class BrokerController extends Controller
 
         $countries = Country::with('provinces:id,name,country_id',
         'provinces.cities:id,name,province_id')->get(['id','name']);
-        // dd($countries->toArray());
-
         return view('partymanagement.brokers.create', compact('broker', 'countries'));
     }
     
@@ -88,7 +87,7 @@ class BrokerController extends Controller
             }
         }
         catch (\Throwable $e) {
-            return $e;
+            Log::error($e);
             $message = 'Something went wrong';
             $title = 'Error';
             $icon_type = 'warning';
@@ -142,7 +141,7 @@ class BrokerController extends Controller
             }
         }
         catch (\Throwable $e) {
-            // return $e;
+            Log::error($e);
             $message = 'Something went wrong';
             $title = 'Error';
             $icon_type = 'warning';

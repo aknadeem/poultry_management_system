@@ -88,12 +88,21 @@ $load_js = Array('tippy','select2','sweetAlert')
                                     <span class="text-danger email_error"></span>
                                 </div>
                                 <div class="col-sm-3 mb-2">
-                                    <label for="cnic"> CNIC *</label>
+                                    <label for="cnic"> Employee CNIC *</label>
                                     <input type="number" placeholder="Enter cnic" name="cnic_no"
                                         value="{{ old('cnic_no', $employee?->cnic_no) }}" class="form-control"
                                         id="employeeCnic">
                                     <span class="text-danger cnic_error"></span>
                                 </div>
+
+                                <div class="col-sm-3 mb-2">
+                                    <label for="employeeFatherCnic"> Employee Father CNIC</label>
+                                    <input type="number" placeholder="Enter cnic" name="father_cnic_no"
+                                        value="{{ old('father_cnic_no', $employee?->father_cnic_no ?? '') }}"
+                                        class="form-control" id="employeeFatherCnic">
+                                    <span class="text-danger father_cnic_no_error"></span>
+                                </div>
+
                                 <div class="col-sm-3 mb-2">
                                     <label for="employeeDate_of_birth"> Date of birth </label>
                                     <input type="date" placeholder="Enter date_of_birth" name="date_of_birth"

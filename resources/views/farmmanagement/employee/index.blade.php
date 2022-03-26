@@ -149,8 +149,8 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
             processing: true,
             info: true,
             ajax: "{{ route('getEmployeeList')}}",
-            "pageLength":20,
-            "aLengthMenu":[[30,40,50,-1],[30,40,50,"all"]],
+            "pageLength":10,
+            "aLengthMenu":[[10,30,50,-1],[10,30,50,"all"]],
             columns:[
                 // {data:'id', name:'id'},
                 {data:'DT_RowIndex'},

@@ -64,8 +64,8 @@ class AppServiceProvider extends ServiceProvider
             return $status;
         });
         // $this->app->bind(TestInterfaceLog::class);
-
-        DB::listen(function ($query) {
+        // checking query time, like laravelDebagbar package
+        /* DB::listen(function ($query) {
             $location = collect(debug_backtrace())->filter(function ($trace) {
                 return !str_contains($trace['file'], 'vendor/');
             })->first(); // grab the first element of non vendor/ calls
@@ -82,5 +82,6 @@ class AppServiceProvider extends ServiceProvider
                 ------------
             ");
         });
+       */ 
     }
 }

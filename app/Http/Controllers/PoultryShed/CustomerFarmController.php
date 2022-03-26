@@ -11,7 +11,6 @@ class CustomerFarmController extends Controller
     public function index()
     {
         $farms = PartyFarm::with('party:id,name,cnic_no','type:id,name', 'subtype:id,name')->get();
-        // dd($farms->toArray());
         return view('farmmanagement.customerfarms.index', compact('farms'));
     }
 
@@ -99,4 +98,3 @@ class CustomerFarmController extends Controller
         //
     }
 }
-

@@ -37,8 +37,6 @@ class ProductSaleController extends Controller
     public function index()
     {
         $product_sales = ProductSale::with('party:id,name,cnic_no,customer_division_id','party.division:id,name','company:id,company_name','productcategory:id,name')->get();
-
-        // dd($product_sales->toArray());
         return view('productmanagement.sales.index', compact('product_sales'));
     }
 
@@ -48,7 +46,6 @@ class ProductSaleController extends Controller
         $divisions = Division::get(['id','name','slug']);
         // $customers = Party::where('is_customer', 1)->get();
         $customers = Party::where('is_customer', 1)->get(['id','is_customer','name','cnic_no','customer_division_id']);
-        // dd($customers->toArray());
         $companies = PartyCompany::where('is_active', 1)->get(['id','company_name','company_code']);
         $categories = ProductCategory::where('is_active', 1)->get(['id','name','slug']);
         return view('productmanagement.sales.create', compact('pruchase','companies', 'categories','divisions','customers'));
@@ -142,7 +139,7 @@ class ProductSaleController extends Controller
             });
         }
         catch (\Throwable $e) {
-            return $e;
+            Log::error($e);
             $message = 'Something went wrong';
             $title = 'Error';
             $icon_type = 'warning';
@@ -158,7 +155,6 @@ class ProductSaleController extends Controller
 
         $items = ProductSaleDetail::where('product_sale_id', $id)->get();
 
-        // dd($sale->toArray());
         return view('productmanagement.sales.sale_detail', compact('sale','items'));
     }
     
@@ -182,4 +178,3 @@ class ProductSaleController extends Controller
         return redirect()->route('productpurchases.index');
     }
 }
-

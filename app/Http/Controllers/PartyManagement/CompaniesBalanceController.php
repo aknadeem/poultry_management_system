@@ -188,7 +188,6 @@ class CompaniesBalanceController extends Controller
     public function show($id)
     {   
         $balance_payments = CompanyBalancePayment::where('company_balance_id', $id)->with('company:id,company_name,company_logo','addedBy:id,name,user_level_id')->get();
-        // dd($balance_payments->toArray());
         return view('partymanagement.company.balancepayments.index', compact('balance_payments'));
     }
 

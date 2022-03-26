@@ -50,7 +50,6 @@ class PartyBalanceLimitController extends Controller
             $balance_limit = null;
         }
 
-
         if($request->party_balance_limit_id > 0){
             if($balance_limit !=''){
                 $message = 'A Company Data Updated successfully!';
@@ -94,7 +93,6 @@ class PartyBalanceLimitController extends Controller
     {
        return 0;
     }
-
 
     public function edit($id)
     {
