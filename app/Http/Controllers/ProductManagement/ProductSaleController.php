@@ -283,4 +283,10 @@ class ProductSaleController extends Controller
         Session::flash('swal_notification', ['title' => $title, 'icon_type' => $icon_type, 'message' => $message]);
         return back();
     }
+
+    public function getRebates()
+    {
+        $rebates = ProductSaleRebate::get();
+        return view('productmanagement.sales.sale_rebates', compact('rebates'));
+    }
 }

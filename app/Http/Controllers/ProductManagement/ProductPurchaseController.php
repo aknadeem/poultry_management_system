@@ -20,6 +20,7 @@ use App\Models\ProductPurchase;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\ProductPurchaseDetail;
+use App\Models\ProductPurchaseRebate;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CustomerFormRequest;
 use App\Models\Validators\ProductPurchaseValidator;
@@ -469,5 +470,11 @@ class ProductPurchaseController extends Controller
         $purchase->forceDelete();
         Session::flash('swal_notification', ['title' => 'Deleted', 'icon_type' => 'success', 'message' => 'Data Deleted Successfully!']);
         return redirect()->route('productpurchases.index');
+    }
+
+    public function getRebates()
+    {
+        $rebates = ProductPurchaseRebate::get();
+        return view('productmanagement.purchases.purchase_rebates', compact('rebates'));
     }
 }

@@ -31,6 +31,12 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','buttons');
                             <h4>Product Sales</h4>
                         </div>
                         <div class="col-6 align-self-end text-end mb-2">
+                            <a class="btn btn-warning btn-sm" href="{{ route('productsales.rebates') }}"
+                                title="Click to view" data-plugin="tippy" data-tippy-animation="scale"
+                                data-tippy-arrow="true"><i class="fa fa-eye"></i>
+                                Rebates
+                            </a>
+
                             <a class="btn btn-secondary btn-sm" href="{{ route('productsales.create') }}"
                                 title="Click to add new" data-plugin="tippy" data-tippy-animation="scale"
                                 data-tippy-arrow="true"><i class="fa fa-plus"></i>

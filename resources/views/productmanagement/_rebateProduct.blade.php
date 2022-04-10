@@ -56,7 +56,7 @@
 
                         <div class="col-sm-12 mb-2 pe-0">
                             <label for="rebateDescription"> Rebate Description* </label>
-                            <textarea name="rebate_desrciption" class="form-control" id="rebateDescription" rows="5"
+                            <textarea name="rebate_description" class="form-control" id="rebateDescription" rows="5"
                                 required></textarea>
                         </div>
 

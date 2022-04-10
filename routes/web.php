@@ -152,6 +152,8 @@ Route::group(['middleware' => 'auth'], function(){
 
         Route::get('/product-purchase-invoice/{id}', [ProductPurchaseController::class, 'getInvoice'])->name('productpurchases.invoice');
 
+        Route::get('/product-purchase-rebates', [ProductPurchaseController::class, 'getRebates'])->name('productpurchases.rebates');
+
         Route::resource('productpurchases', ProductPurchaseController::class);
 
         Route::get('/storelist', [ProductStoreController::class, 'getStoreList'])->name('storelist');
@@ -161,6 +163,8 @@ Route::group(['middleware' => 'auth'], function(){
         Route::post('/product-rebate', [ProductSaleController::class, 'productRebate'])->name('productRebate');
 
         Route::get('/product-sale-invoice/{id}', [ProductSaleController::class, 'getInvoice'])->name('productsales.invoice');
+
+        Route::get('/product-sale-rebates', [ProductSaleController::class, 'getRebates'])->name('productsales.rebates');
 
         Route::get('/storelist', [ProductStoreController::class, 'getStoreList'])->name('storelist');
         Route::resource('productstores', ProductStoreController::class);
