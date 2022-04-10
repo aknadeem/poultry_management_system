@@ -149,7 +149,18 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/productfilter/{company_id}/cat/{category_id}', [ProductController::class, 'companyAndCategoryFilter'])->name('productfilter');
 
         Route::resource('products', ProductController::class);
+
+        Route::get('/product-purchase-invoice/{id}', [ProductPurchaseController::class, 'getInvoice'])->name('productpurchases.invoice');
+
         Route::resource('productpurchases', ProductPurchaseController::class);
+
+        Route::get('/storelist', [ProductStoreController::class, 'getStoreList'])->name('storelist');
+
+        Route::get('/product-detail-item/{id}/type/{type}', [ProductSaleController::class, 'getProductDetailItem'])->name('getProductDetailItem');
+
+        Route::post('/product-rebate', [ProductSaleController::class, 'productRebate'])->name('productRebate');
+
+        Route::get('/product-sale-invoice/{id}', [ProductSaleController::class, 'getInvoice'])->name('productsales.invoice');
 
         Route::get('/storelist', [ProductStoreController::class, 'getStoreList'])->name('storelist');
         Route::resource('productstores', ProductStoreController::class);

@@ -58,7 +58,8 @@
                 let form_url = "{{ route('addalltypes')}}"
                 
                 let naame = $('#TypeName').val()
-                // let csrf_tok = "{{ csrf_token() }}"
+                let csrf_tok = "{{ csrf_token() }}"
+                alert(csrf_tok);
                 let TableName = $('#TableName').val()
                  console.log(form_url);
                 $.ajax({

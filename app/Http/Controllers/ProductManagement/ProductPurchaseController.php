@@ -398,6 +398,12 @@ class ProductPurchaseController extends Controller
         return redirect()->route('employee.index');
     }
 
+    public function getInvoice($id)
+    {   
+        $purchase = ProductPurchase::with('detail','company:id,party_id,company_name','productcategory:id,name')->orderBy('id', 'DESC')->findOrFail($id);
+        return view('productmanagement.purchases.purchase_invoice', compact('purchase'));
+    }
+
     public function show($id)
     {   
         $purchase = ProductPurchase::with('detail','company:id,party_id,company_name','productcategory:id,name')->orderBy('id', 'DESC')->findOrFail($id);

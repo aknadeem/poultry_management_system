@@ -188,8 +188,6 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
             $('.modal').modal('hide'); 
             $(this).find('form').trigger('reset');
         });
-
     });
 </script>
-
 @endsection

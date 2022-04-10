@@ -51,6 +51,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                                 <th>Total Price</th>
                                 <th>Discount</th>
                                 <th>Tax</th>
+                                <th class="text-danger">Rebate Amount</th>
                                 <th>Final Price</th>
                                 <th>Option</th>
                                 {{-- <th>Status</th> --}}
@@ -87,14 +88,23 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                                 <td class="fw-bold fs-6">
                                     @money($row->other_charges)
                                 </td>
+                                <td class="fw-bold fs-6 text-danger">
+                                    @money($row->rebate_amount)
+                                </td>
                                 <td class="text-danger fw-bold fs-5">
                                     @money($row->final_amount)
                                 </td>
                                 <td>
+                                    {{-- <a class="btn btn-info btn-sm"
+                                        href="{{ route('productpurchases.show', $row?->id) }}" title="click to view"><i
+                                            class="fa fa-eye"></i> Invoice
+                                    </a> --}}
+
                                     <a class="btn btn-info btn-sm"
                                         href="{{ route('productpurchases.show', $row?->id) }}" title="click to view"><i
-                                            class="fa fa-eye"></i>
+                                            class="fa fa-eye"></i> Detail
                                     </a>
+
                                 </td>
                             </tr>
                             @empty

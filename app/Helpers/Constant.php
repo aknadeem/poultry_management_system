@@ -67,14 +67,4 @@ class Constant
         'Received' => 8,
         'InProgress' => 9,
     ];
-
-    // const BALANCE_FOR = [
-    //     'Chick Purchase'  => 1,
-    //     'Chick Sale' => 2,
-    //     'Chicken Sale' => 3,
-    //     'Product Purchase' => 4,
-    //     'Product Sale' => 5,
-    //     'Other' => 6,
-    // ];
-
 }

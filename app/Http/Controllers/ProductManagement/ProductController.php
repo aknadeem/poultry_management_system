@@ -10,6 +10,7 @@ use App\Models\ProductStore;
 use Illuminate\Http\Request;
 use App\Models\ProductCategory;
 use App\Models\VaccinationGroup;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
@@ -141,7 +142,7 @@ class ProductController extends Controller
             }
         }
         catch (\Throwable $e) {
-            return $e;
+            Log::error($e);
             $message = 'Something went wrong';
             $title = 'Error';
             $icon_type = 'warning';

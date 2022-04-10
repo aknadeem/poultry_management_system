@@ -207,11 +207,18 @@
     <script src="{{ asset('assets/libs/select2/js/select2.min.js') }}"></script>
     <script type="text/javascript">
         $(function() {
-                $('.mySelect').select2();
+            $('.mySelect').select2();
                 $(document).on('select2:open', () => {
                     document.querySelector('.select2-search__field').focus();
                 });
             });
+
+        $(document).ready(function () {
+            $(".mySelectModal").select2({
+                dropdownParent: $(".MyModalClass")
+            });
+        });
+            
     </script>
     <?php }?>
 
@@ -323,11 +330,7 @@
             $('.modal').modal('hide'); 
         });
 
-        $(document).ready(function () {
-            $(".mySelectModal").select2({
-                dropdownParent: $(".MyModalClass")
-            });
-        });
+        
 
     </script>
 

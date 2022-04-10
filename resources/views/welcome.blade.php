@@ -6,7 +6,6 @@ $load_js = Array('dashboard','select2');
 
 @section('content')
 <div class="container-fluid">
-
     <!-- start page title -->
     <div class="row">
         <div class="col-12">

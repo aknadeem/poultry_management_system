@@ -1,6 +1,6 @@
 @php
 $load_css = Array('tables','sweetAlert', 'jquery-confirm');
-$load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
+$load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','buttons');
 @endphp
 @extends('layouts.app')
 @section('content')
@@ -48,10 +48,11 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                                 <th class="fs-6">Category</th>
                                 <th>Sale Date</th>
                                 <th class="fs-6">Payment Status</th>
-                                <th class="fs-6">Status</th>
+                                {{-- <th class="fs-6">Status</th> --}}
                                 <th>Total Amount</th>
                                 <th>Discount Amount</th>
                                 <th>Other Charges</th>
+                                <th class="text-danger">Rebate Amount</th>
                                 <th>Final Amount</th>
                                 {{-- <th>Paid Amount</th> --}}
                                 <th>Options</th>
@@ -69,7 +70,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                                 <td class="text-{{ $row->status_value['color_name'] }} fs-6 fw-bold">{{
                                     $row->status_value['value']
                                     }}</td>
-                                <td class="fs-6">
+                                {{-- <td class="fs-6">
                                     <a href="{{ route('updatestatus', ['id'=> $row->id, 'tag' => 'product_sales']) }}"
                                         title="Click to {{($row?->is_active) ? 'Inactive' : 'Active'}} this sale"
                                         class="confirm-status">
@@ -79,7 +80,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                                             <label class="form-check-label" for="SaleStatus"></label>
                                         </div>
                                     </a>
-                                </td>
+                                </td> --}}
                                 <td class="fw-bold fs-5">
                                     @money($row->total_amount)
                                 </td>
@@ -88,6 +89,9 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                                 </td>
                                 <td class="fw-bold fs-6">
                                     @money($row->other_charges)
+                                </td>
+                                <td class="fw-bold fs-6 text-danger">
+                                    @money($row->rebate_amount)
                                 </td>
                                 <td class="text-danger fw-bold fs-5">
                                     @money($row->final_amount)
@@ -98,7 +102,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                                 </td> --}}
                                 <td>
                                     <a class="btn btn-info btn-sm" href="{{ route('productsales.show', $row?->id) }}"
-                                        title="click to view"><i class="fa fa-eye"></i>
+                                        title="click to view"><i class="fa fa-eye"></i> Detail
                                     </a>
                                 </td>
                             </tr>

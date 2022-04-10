@@ -8,18 +8,22 @@ use Carbon\Carbon;
 use App\Models\Party;
 use App\Models\Product;
 use App\Models\Division;
+use App\Helpers\Constant;
 use App\Models\ProductSale;
 use Illuminate\Support\Arr;
 use App\Models\PartyBalance;
 use App\Models\PartyCompany;
 use Illuminate\Http\Request;
 use App\Models\ProductCategory;
+use App\Models\ProductPurchase;
 use App\Models\ProductSaleDetail;
+use App\Models\ProductSaleRebate;
+
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\ProductPurchaseDetail;
+use App\Models\ProductPurchaseRebate;
 use App\Models\Validators\ProductSaleValidator;
-
-use App\Helpers\Constant;
 
 class ProductSaleController extends Controller
 {
@@ -151,11 +155,19 @@ class ProductSaleController extends Controller
 
     public function show($id)
     {   
-        $sale = ProductSale::with('party:id,name,cnic_no,customer_division_id','party.division:id,name','company:id,company_name','productcategory:id,name')->findOrFail($id);
+        $sale = ProductSale::with('party:id,name,cnic_no,customer_division_id','party.division:id,name','company:id,company_name','productcategory:id,name','detail')->findOrFail($id);
 
         $items = ProductSaleDetail::where('product_sale_id', $id)->get();
 
         return view('productmanagement.sales.sale_detail', compact('sale','items'));
+    }
+    public function getInvoice($id)
+    {   
+        $sale = ProductSale::with('party:id,name,cnic_no,customer_division_id','party.division:id,name','company:id,company_name','productcategory:id,name','detail')->findOrFail($id);
+
+        $items = ProductSaleDetail::where('product_sale_id', $id)->get();
+
+        return view('productmanagement.sales.sale_invoice', compact('sale','items'));
     }
     
     public function destroy($id)
@@ -176,5 +188,99 @@ class ProductSaleController extends Controller
         $purchase->forceDelete();
         Session::flash('swal_notification', ['title' => 'Deleted', 'icon_type' => 'success', 'message' => 'Data Deleted Successfully!']);
         return redirect()->route('productpurchases.index');
+    }
+
+    public function getProductDetailItem($id, $type)
+    {
+        if($type == 'ProductSaleDetail'){
+            $item = ProductSaleDetail::find($id);
+        }else{
+            $item = ProductPurchaseDetail::find($id);
+        }
+        
+        if($item != ''){
+            $success = 'yes';
+            $data = $item->toArray();
+        }else{
+            $success = 'no';
+            $data = [];
+        }
+        
+        return response()->json([
+            'success' => $success,
+            'data' => $data,
+        ]);
+    }
+
+    public function productRebate(Request $request)
+    {
+        $message = 'Data updated successfully';
+        $title = 'Success';
+        $icon_type = 'success';
+
+        try{
+            $rebates = DB::transaction(function () use ($request) {
+                $product_detail_id = $request->product_detail_id;
+                $from_page = $request->from_page;
+                if($from_page == 'ProductSaleDetail'){
+                    $item = ProductSaleDetail::find($product_detail_id);
+                    $item_price = $item->product_sale_price;
+                    $SalePurchase = ProductSale::find($item->product_sale_id);
+                    $RebateModal = new ProductSaleRebate();
+                }else{
+                    $item = ProductPurchaseDetail::find($product_detail_id);
+                    $item_price = $item->product_purchase_price;
+                    $SalePurchase = ProductPurchase::find($item->product_purchase_id);
+                    $RebateModal = new ProductPurchaseRebate();
+                }
+        
+                $detail_id = $request->product_detail_id;
+                $rebateQty = $request->rebate_qty;
+                $rebateReason = $request->rebate_reason;
+        
+                $updateQty = $item->product_total_qty - $rebateQty;
+                $rebateAmount = $item_price * $rebateQty;
+                $updatePrice = $item->product_total_price - $rebateAmount;
+        
+                if($item != ''){
+                    $item->product_total_qty = $updateQty;                    $item->product_total_price = $updatePrice;
+                    $item->is_rebate = 1;
+                    $item->rebate_qty = $rebateQty;
+                    $item->updated_at = $this->today_is;
+                    $item->updatedby = $this->auth_user_id;
+                    $item->save();
+                }
+                if($SalePurchase != ''){
+        
+                    $final_amount = $SalePurchase->final_amount;
+                    $updateFinalPrice = $final_amount - $rebateAmount;
+        
+                    $SalePurchase->final_amount = $updateFinalPrice;
+                    $SalePurchase->is_rebate = 1;
+                    $SalePurchase->rebate_amount = $rebateAmount;
+                    $SalePurchase->updated_at = $this->today_is;
+                    $SalePurchase->updatedby = $this->auth_user_id;
+                    $SalePurchase->save();
+                }
+        
+                $RebateModal->create([
+                    'rebate_item_id' => $item->id,
+                    'product_id' => $item->product_id,
+                    'rebate_reason' => $rebateReason,
+                    'rebate_qty' => $rebateQty,
+                    'rebate_description' => $request->rebate_description,
+                    'addedby' => $this->auth_user_id,
+                ]);
+            });
+        }catch (\Throwable $e) {
+            return $e;
+            // Log::error($e);
+            $message = 'Something went wrong';
+            $title = 'Error';
+            $icon_type = 'warning';
+        }
+
+        Session::flash('swal_notification', ['title' => $title, 'icon_type' => $icon_type, 'message' => $message]);
+        return back();
     }
 }
