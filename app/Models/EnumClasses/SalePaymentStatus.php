@@ -1,7 +1,7 @@
 <?php
 namespace App\Models\EnumClasses;
 
-enum SalepaymentStatus :int {
+enum SalePaymentStatus: int{
     case UNPAID = 1;
     case PENDING = 2;
     case PAID = 3;
@@ -19,4 +19,3 @@ enum SalepaymentStatus :int {
     }
     
 }
-?>
