@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
 {
+    protected $guarded = [];
     use SoftDeletes, HasFactory;
 
     protected $dates = ['created_at','updated_at','deleted_at', 'reorder_level_date','purchase_date'];

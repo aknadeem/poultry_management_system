@@ -8,5 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class FarmType extends Model
 {
     use HasFactory;
+    protected $guarded = [];
+
     protected $table = 'farm_types';
 }

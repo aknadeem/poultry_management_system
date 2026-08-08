@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class VaccinationSchedule extends Model
 {
     use SoftDeletes, HasFactory;
+    protected $guarded = [];
+
     protected $table = 'vaccination_schedules';
 
     protected $dates = ['created_at','updated_at','deleted_at', 'schedule_date','vaccination_date'];

@@ -9,5 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Division extends Model
 {
     use SoftDeletes, HasFactory;
+    protected $guarded = [];
+
     protected $table = 'divisions';
 }

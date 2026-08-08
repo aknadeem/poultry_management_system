@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Employee extends Model implements HasCountryProvinceCity
 {
     use SoftDeletes, CountryPCRelationTrait;
+    protected $guarded = [];
+
     protected $table = 'employees';
     use HasFactory;
     protected $dates = ['created_at','updated_at', 'date_of_birth'];

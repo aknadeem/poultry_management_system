@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class CustomerBalance extends Model
 {
     use SoftDeletes;
+    protected $guarded = [];
+
     protected $table = 'customer_balances';
     use HasFactory;
 

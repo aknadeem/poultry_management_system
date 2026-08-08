@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PartyCompany extends Model
 {
+    protected $guarded = [];
     use SoftDeletes, HasFactory;
 
     public function vendor()

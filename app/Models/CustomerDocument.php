@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class CustomerDocument extends Model
 {
     use SoftDeletes;
+    protected $guarded = [];
+
     protected $table = 'customer_documents';
     use HasFactory;
 }

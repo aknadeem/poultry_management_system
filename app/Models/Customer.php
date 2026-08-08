@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Customer extends Model
 {
     use SoftDeletes;
+    protected $guarded = [];
+
     
     protected $table = 'customers';
     protected $dates = ['created_at','updated_at'];

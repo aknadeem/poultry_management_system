@@ -9,5 +9,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Broker extends Model implements HasCountryProvinceCity
 {
+    protected $guarded = [];
     use HasFactory, CountryPCRelationTrait;
 }

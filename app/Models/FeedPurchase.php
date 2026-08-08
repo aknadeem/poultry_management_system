@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class FeedPurchase extends Model
 {
+    protected $guarded = [];
     use HasFactory;
 
     public function company()

@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class ConductPerson extends Model
 {
     use SoftDeletes;
+    protected $guarded = [];
+
 
     protected $table = 'conduct_people';
     // use HasFactory;

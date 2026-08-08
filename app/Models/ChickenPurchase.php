@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ChickenPurchase extends Model
 {
     use SoftDeletes;
+    protected $guarded = [];
+
     protected $table = 'chicken_purchases';
     use HasFactory;
     protected $dates = ['created_at','updated_at', 'purchase_date'];

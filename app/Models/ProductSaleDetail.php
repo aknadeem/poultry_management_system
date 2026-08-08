@@ -8,5 +8,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ProductSaleDetail extends Model
 {
+    protected $guarded = [];
     use HasFactory, SoftDeletes;
 }

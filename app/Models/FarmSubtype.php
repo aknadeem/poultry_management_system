@@ -10,5 +10,7 @@ class FarmSubtype extends Model
 {
     use SoftDeletes;
     use HasFactory;
+    protected $guarded = [];
+
     protected $table = 'farm_subtypes';
 }

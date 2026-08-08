@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class CompanyBalancePayment extends Model
 {
     use SoftDeletes, HasFactory;
+    protected $guarded = [];
+
     protected $table = 'company_balance_payments';
     protected $dates = ['created_at','updated_at'];
 

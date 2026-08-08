@@ -18,8 +18,8 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        'Illuminate\Auth\Events\Login' => ['App\EventListeners\LoginListener'],
-        'Illuminate\Auth\Events\Logout' => ['App\EventListeners\LogoutListener'],
+        \Illuminate\Auth\Events\Login::class => [\App\EventListeners\LoginListener::class],
+        \Illuminate\Auth\Events\Logout::class => [\App\EventListeners\LogoutListener::class],
     ];
 
     /**

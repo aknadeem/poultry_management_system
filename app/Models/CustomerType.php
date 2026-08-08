@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class CustomerType extends Model
 {
     use SoftDeletes;
+    protected $guarded = [];
+
     protected $table = 'customer_types';
     use HasFactory;
 }

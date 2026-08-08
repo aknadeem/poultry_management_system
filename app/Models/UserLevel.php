@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserLevel extends Model
 {
+    protected $guarded = [];
+
     protected $table = 'user_levels';
     use HasFactory;
     protected $dates = ['created_at','updated_at'];

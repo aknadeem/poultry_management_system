@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class ChickPurchase extends Model
 {
     use HasFactory, SoftDeletes;
+    protected $guarded = [];
+
     protected $table = 'chick_purchases';
     protected $dates = ['created_at','updated_at', 'purchase_date'];
     protected $casts = [

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PartyFarm extends Model
 {
+    protected $guarded = [];
     use SoftDeletes, HasFactory;
 
     public function party()

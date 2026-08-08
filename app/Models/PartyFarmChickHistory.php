@@ -7,5 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class PartyFarmChickHistory extends Model
 {
+    protected $guarded = [];
     use HasFactory;
 }

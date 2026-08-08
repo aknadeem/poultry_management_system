@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Feed extends Model
 {
     use SoftDeletes, HasFactory;
+    protected $guarded = [];
+
     protected $table = 'feeds';
     protected $dates = ['created_at','updated_at', 'purchase_date'];
     protected $casts = [

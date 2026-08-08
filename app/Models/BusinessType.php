@@ -8,5 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class BusinessType extends Model
 {
     use HasFactory;
+    protected $guarded = [];
+
     protected $table = 'business_types';
 }

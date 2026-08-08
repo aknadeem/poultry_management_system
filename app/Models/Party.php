@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Party extends Model implements HasCountryProvinceCity
 {
+    protected $guarded = [];
+
     protected $table = 'parties';
     use SoftDeletes, HasFactory, CountryPCRelationTrait;
 

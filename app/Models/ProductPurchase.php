@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ProductPurchase extends Model
 {
+    protected $guarded = [];
     use SoftDeletes, HasFactory;
 
     const PAYMENT_UNPAID = 1;

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PartyDocument extends Model
 {
+    protected $guarded = [];
     use SoftDeletes;
     use HasFactory;
 }

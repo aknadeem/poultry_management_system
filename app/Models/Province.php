@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Province extends Model
 {
+    protected $guarded = [];
+
     protected $table = 'provinces';
     public $timestamps = false;
 

@@ -8,5 +8,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Vendor extends Model
 {
+    protected $guarded = [];
     use SoftDeletes, HasFactory;
 }

@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class PersonalFarm extends Model
 {
     use HasFactory, SoftDeletes;
+    protected $guarded = [];
+
     protected $table = 'personal_farms';
     protected $dates = ['created_at','updated_at', 'deleted_at'];
 

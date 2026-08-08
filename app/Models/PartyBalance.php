@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PartyBalance extends Model
 {
+    protected $guarded = [];
     use SoftDeletes,  HasFactory;
 
     protected $dates = ['created_at','updated_at', 'transaction_date'];
