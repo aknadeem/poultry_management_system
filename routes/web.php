@@ -68,29 +68,29 @@ Route::group(['middleware' => 'auth'], function(){
     Route::group(['prefix' => '/usermanagement'], function(){
         Route::get('/get-users-list', [UserController::class, 'getUsersList'])->name('getUsersList');
         Route::get('/get-userlevels', [UserController::class, 'getUserLevelList'])->name('getUserLevelList');
-        Route::resource('users', UserController::class);
+        Route::resource('users', UserController::class)->except(['create', 'update']);
 
         Route::get('/user-level-list', [UserLevelController::class, 'getUserLevelsList'])->name('userlevel.list');
 
-        Route::resource('userlevel', UserLevelController::class);
+        Route::resource('userlevel', UserLevelController::class)->only(['index']);
     });
     
     Route::group(['prefix' => '/partymanagement'], function(){
         Route::get('/division-customers/{division_id}', [PartyController::class, 'customersWithDivision'])->name('division.customers');
-        Route::resource('parties', PartyController::class);
-        Route::resource('vendors', VendorController::class);
+        Route::resource('parties', PartyController::class)->except(['show']);
+        Route::resource('vendors', VendorController::class)->except(['update']);
         Route::resource('customers', CustomerController::class)->except(['update']);
-        Route::resource('conductpersons', ConductPersonController::class);
+        Route::resource('conductpersons', ConductPersonController::class)->except(['show']);
 
-        Route::resource('partydocuments', PartyDocumentController::class);
-        Route::resource('partyaccounts', PartyAccountController::class);
-        Route::resource('balancelimits', PartyBalanceLimitController::class);
-        Route::resource('brokers', BrokerController::class);
+        Route::resource('partydocuments', PartyDocumentController::class)->except(['create', 'update']);
+        Route::resource('partyaccounts', PartyAccountController::class)->except(['create', 'update']);
+        Route::resource('balancelimits', PartyBalanceLimitController::class)->except(['create', 'update']);
+        Route::resource('brokers', BrokerController::class)->except(['show']);
     });
 
     Route::group(['prefix' => '/balancemanagement'], function(){
         Route::get('/getbrokersBalanceList', [BrokerBalanceController::class, 'getbrokersBalanceList'])->name('getbrokersBalanceList');
-        Route::resource('brokerbalance', BrokerBalanceController::class);
+        Route::resource('brokerbalance', BrokerBalanceController::class)->except(['create', 'update']);
 
         Route::get('/balance-with-company/{id}', [CompaniesBalanceController::class, 'getBalanceWithCompany'])->name('getBalanceWithCompany');
 
@@ -104,7 +104,7 @@ Route::group(['middleware' => 'auth'], function(){
         
         // Route::get('/getParties', [PartyBalanceController::class, 'getParties'])->name('getParties');
 
-        Route::resource('partybalance', PartyBalanceController::class);
+        Route::resource('partybalance', PartyBalanceController::class)->only(['index', 'show', 'store']);
 
         Route::get('/party-balance-payments/{id}', [PartyBalanceController::class, 'getBalancePayments'])->name('getBalancePayments');
     });
@@ -166,22 +166,29 @@ Route::group(['middleware' => 'auth'], function(){
 
         Route::get('/product-sale-rebates', [ProductSaleController::class, 'getRebates'])->name('productsales.rebates');
 
-        Route::get('/storelist', [ProductStoreController::class, 'getStoreList'])->name('storelist');
         Route::resource('productstores', ProductStoreController::class);
-        Route::resource('productsales', ProductSaleController::class);
+        Route::resource('productsales', ProductSaleController::class)->except(['edit', 'update']);
         
     });
 
     Route::group(['prefix' => '/paymentmanagement'], function(){
-        Route::resource('payables', AccountPayableController::class);
+        Route::resource('payables', AccountPayableController::class)->only(['index']);
     });
     
     Route::group(['prefix' => '/reportmanagement'], function(){
         Route::get('/chick-sale-report/{from_date}/{to_date}', [ChickReportController::class, 'makeSalesReport'])->name('chickreport.sale');
         
-        Route::get('/chick-purchase-report/{from_date}/{to_date}', [ChickReportController::class, 'makePurchaseReport'])->name('chickreport.purchases');
-        Route::get('/chick-purchases', [ChickReportController::class, 'purchase_index'])->name('chickreport.purchases');
-        Route::resource('chickreport', ChickReportController::class);
+        Route::get('/chick-purchase-report/{from_date}/{to_date}', [
+            ChickReportController::class,
+            'makePurchaseReport',
+        ])->name('chickreport.purchase.data');
+
+        Route::get('/chick-purchases', [
+            ChickReportController::class,
+            'purchase_index',
+        ])->name('chickreport.purchases');
+
+        Route::resource('chickreport', ChickReportController::class)->only(['index']);
 
         
 

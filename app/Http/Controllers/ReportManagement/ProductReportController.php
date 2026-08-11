@@ -76,6 +76,12 @@ class ProductReportController extends Controller
             ->addColumn('party_company_id', function($row){
                 return '<span> '.$row?->company?->company_name.'</span>';
             })
+            ->addColumn('total_price', function($row){
+                return $row->total_amount;
+            })
+            ->addColumn('final_price', function($row){
+                return $row->final_amount;
+            })
             ->rawColumns(['DateFrom','DateTo','party_company_id'])
             ->make(true);
     }

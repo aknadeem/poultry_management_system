@@ -417,14 +417,14 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                 </div>
                                 <div class="col-3 mb-2">
                                     <label class="font_bold" for="CnicFront">Cnic Front</label>
-                                    <input type="file" name="cnic_front" class="form-control" required id="CnicFront">
+                                    <input type="file" name="cnic_front" class="form-control" @if(!$party?->id) required @endif id="CnicFront">
                                     @error('cnic_front')
                                     <span class="text-danger cnic_front_error"> {{ $message }} </span>
                                     @enderror
                                 </div>
                                 <div class="col-3 mb-2">
                                     <label class="font_bold" for="CnicBack">Cnic Back</label>
-                                    <input type="file" required name="cnic_back" class="form-control" id="CnicBack">
+                                    <input type="file" name="cnic_back" class="form-control" @if(!$party?->id) required @endif id="CnicBack">
                                     @error('cnic_back')
                                     <span class="text-danger cnic_back_error"> {{ $message }} </span>
                                     @enderror

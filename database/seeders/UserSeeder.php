@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
                 'email' => 'admin@admin.com',
                 'user_level_id' => 1,
                 'password' => Hash::make(1234),
-            ],  
+            ],
         ];
         User::insert($user);
     }

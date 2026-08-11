@@ -40,34 +40,35 @@ class FeedController extends Controller
 
     public function getFeedList()
     {
-        // $feeds = Feed::with('category:id,name')->orderBy('id','DESC')->get();
-        // return DataTables::of($feeds)
-        //     ->addIndexColumn()
-        //     ->addColumn('feed_category_id', function($row){
-        //         return '<b>'. $row?->category?->name .'</b>';
-        //     })
-        //     ->addColumn('Actions', function($row){
-        //         return ' <a class="btn btn-secondary btn-sm" href="'.route("feed.show", $row["id"]).'"
-        //         title="View Details" tabindex="0" data-plugin="tippy"
-        //         data-tippy-animation="scale" data-tippy-arrow="true"><i class="fa fa-eye"></i>
-        //         View
-        //     </a>
-        //     <a class="btn btn-info btn-sm openFeedModal"
-        //         FeedId="'.$row["id"].'" data-id="'.$row["id"].'" id="editFeedModal" href="javascript:void(0);"
-        //         title="Click to edit"><i
-        //             class="fa fa-pencil-alt"></i>
-        //         Edit
-        //     </a>
-        //     <a class="btn btn-danger btn-sm delete-confirm"
-        //         href="'.route("feed.destroy", $row["id"]).'"
-        //         del_title="Feed '.$row["feed_name"].'" title="Click to delete"
-        //         tabindex="0" data-plugin="tippy" data-tippy-animation="scale"
-        //         data-tippy-arrow="true"><i class="fa fa-trash"></i>
-        //         Delete
-        //     </a>';
-        //     })
-        //     ->rawColumns(['feed_category_id','Actions'])
-        //     ->make(true);
+        $feeds = Feed::with('category:id,name')->orderBy('id', 'DESC')->get();
+
+        return DataTables::of($feeds)
+            ->addIndexColumn()
+            ->addColumn('feed_category_id', function ($row) {
+                return '<b>'.$row?->category?->name.'</b>';
+            })
+            ->addColumn('Actions', function ($row) {
+                return ' <a class="btn btn-secondary btn-sm" href="'.route('feed.show', $row['id']).'"
+                title="View Details" tabindex="0" data-plugin="tippy"
+                data-tippy-animation="scale" data-tippy-arrow="true"><i class="fa fa-eye"></i>
+                View
+            </a>
+            <a class="btn btn-info btn-sm openFeedModal"
+                FeedId="'.$row['id'].'" data-id="'.$row['id'].'" id="editFeedModal" href="javascript:void(0);"
+                title="Click to edit"><i
+                    class="fa fa-pencil-alt"></i>
+                Edit
+            </a>
+            <a class="btn btn-danger btn-sm delete-confirm"
+                href="'.route('feed.destroy', $row['id']).'"
+                del_title="Feed '.$row['feed_name'].'" title="Click to delete"
+                tabindex="0" data-plugin="tippy" data-tippy-animation="scale"
+                data-tippy-arrow="true"><i class="fa fa-trash"></i>
+                Delete
+            </a>';
+            })
+            ->rawColumns(['feed_category_id', 'Actions'])
+            ->make(true);
     }
 
 
