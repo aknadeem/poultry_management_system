@@ -5,34 +5,22 @@ namespace App\Actions\ChickenModule;
 use App\Models\ChickPurchase;
 use App\Models\PartyFarm;
 use App\Models\PartyFarmChickHistory;
+use App\Services\FileUploadService;
 use App\Services\FinancialBalanceService;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class UpdateChickPurchaseAction
 {
-    private $balanceService;
-
-    public function __construct(FinancialBalanceService $balanceService)
-    {
-        $this->balanceService = $balanceService;
+    public function __construct(
+        private FinancialBalanceService $balanceService,
+        private FileUploadService $uploadService,
+    ) {
     }
 
     public function execute(ChickPurchase $purchase, array $data, ?object $imageFile, int $userId): ChickPurchase
     {
         return DB::transaction(function () use ($purchase, $data, $imageFile, $userId) {
-            $imageName = $purchase->picture;
-
-            if ($imageFile) {
-                // Delete old image if exists
-                if ($purchase->picture && Storage::disk('public')->exists('chicks/' . $purchase->picture)) {
-                    Storage::disk('public')->delete('chicks/' . $purchase->picture);
-                }
-
-                $extension = $imageFile->extension();
-                $imageName = time() . mt_rand(10, 99) . '.' . $extension;
-                $imageFile->storeAs('chicks/', $imageName, 'public');
-            }
+            $imageName = $this->uploadService->replace($imageFile, 'chicks', $purchase->picture);
 
             $purchase->update([
                 'purchase_date' => $data['purchase_date'],
@@ -50,7 +38,6 @@ class UpdateChickPurchaseAction
                 'updatedby' => $userId,
             ]);
 
-            // Update associated farm history quant if exists
             $history = PartyFarmChickHistory::where('chick_purchase_id', $purchase->id)->first();
             if ($history) {
                 $history->update([

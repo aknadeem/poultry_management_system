@@ -3,26 +3,28 @@
 namespace App\Actions\ChickenModule;
 
 use App\Models\ChickenPurchase;
-use App\Models\CompanyBalance;
+use App\Services\FileUploadService;
+use App\Services\FinancialBalanceService;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class StoreChickenPurchaseAction
 {
+    public function __construct(
+        private FinancialBalanceService $balanceService,
+        private FileUploadService $uploadService,
+    ) {
+    }
+
     public function execute(array $data, ?object $imageFile, int $userId): ChickenPurchase
     {
         return DB::transaction(function () use ($data, $imageFile, $userId) {
-            $imageName = null;
-            if ($imageFile) {
-                $extension = $imageFile->extension();
-                $imageName = time() . mt_rand(10, 99) . '.' . $extension;
-            }
+            $imageName = $this->uploadService->store($imageFile, 'chicks');
 
             $purchase = ChickenPurchase::create([
                 'purchase_date' => $data['purchase_date'],
                 'chick_grade_id' => $data['chick_grade_id'],
                 'company_id' => $data['company_id'],
-                'weight' => $data['chick_weight'],
+                'weight' => $data['chick_weight'] ?? $data['weight'] ?? null,
                 'quantity' => $data['quantity'],
                 'price' => $data['price'],
                 'discount_amount' => $data['discount_amount'] ?? null,
@@ -35,24 +37,17 @@ class StoreChickenPurchaseAction
                 'vehicle_number' => $data['vehicle_number'] ?? null,
                 'driver_name' => $data['driver_name'] ?? null,
                 'driver_contact' => $data['driver_contact'] ?? null,
+                'personal_farm_id' => $data['personal_farm_id'] ?? null,
                 'picture' => $imageName,
                 'addedby' => $userId,
             ]);
 
-            if ($imageFile && $imageName) {
-                $imageFile->storeAs('chicks/', $imageName, 'public');
-            }
-
-            // Record Company Balance for this purchase
-            CompanyBalance::create([
-                'type' => 'chicken_purchase',
-                'model_id' => $purchase->id,
-                'company_id' => $data['company_id'],
-                'total_amount' => $data['total_price'],
-                'remaining_amount' => $data['total_price'],
-                'dr' => $data['total_price'],
-                'addedby' => $userId,
-            ]);
+            $this->balanceService->recordChickenPurchaseBalances(
+                $purchase->id,
+                (int) $data['company_id'],
+                (float) $data['total_price'],
+                $userId
+            );
 
             return $purchase;
         });

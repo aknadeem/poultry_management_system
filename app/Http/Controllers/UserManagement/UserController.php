@@ -6,51 +6,57 @@ use Session;
 use DataTables;
 use App\Models\User;
 use App\Models\UserRole;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
+use App\Actions\UserManagement\StoreUserAction;
+use App\Actions\UserManagement\UpdateUserAction;
+use App\Actions\UserManagement\DestroyUserAction;
+use App\Http\Requests\UserManagement\StoreUserRequest;
 
 class UserController extends Controller
 {
     private $auth_user_id;
+
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $this->auth_user_id= \Auth::user()->id;
+            $this->auth_user_id = \Auth::user()->id;
+
             return $next($request);
         });
     }
 
     public function getUsersList()
     {
-        $users = User::with('userRole:id,name,slug')->orderBy('id','DESC')->get();
+        $users = User::with('userRole:id,name,slug')->orderBy('id', 'DESC')->get();
+
         return DataTables::of($users)
             ->addIndexColumn()
-            ->addColumn('user_role_id', function($row){
+            ->addColumn('user_role_id', function ($row) {
                 return '<span>'.$row?->userRole?->name.'</span>';
             })
-            ->addColumn('Actions', function($row){
+            ->addColumn('Actions', function ($row) {
                 return ' <a class="btn btn-secondary btn-sm ViewUserModal"
-                UserId="'.$row["id"].'" href="javascript:void(0);"
+                UserId="'.$row['id'].'" href="javascript:void(0);"
                 title="View Details" tabindex="0" data-plugin="tippy"
                 data-tippy-animation="scale" data-tippy-arrow="true"><i class="fa fa-eye"></i>
                 View
             </a>
             <a class="btn btn-info btn-sm openUserModal"
-                UserId="'.$row["id"].'" data-id="'.$row["id"].'" id="editUserModal" href="javascript:void(0);"
+                UserId="'.$row['id'].'" data-id="'.$row['id'].'" id="editUserModal" href="javascript:void(0);"
                 title="Click to edit"><i
                     class="fa fa-pencil-alt"></i>
                 Edit
             </a>
             <a class="btn btn-danger btn-sm delete-confirm"
-                href="'.route("users.destroy", $row["id"]).'"
-                del_title="User: '.$row["name"].'" title="Click to delete"
+                href="'.route('users.destroy', $row['id']).'"
+                del_title="User: '.$row['name'].'" title="Click to delete"
                 tabindex="0" data-plugin="tippy" data-tippy-animation="scale"
                 data-tippy-arrow="true"><i class="fa fa-trash"></i>
                 Delete
             </a>';
             })
-            ->rawColumns(['user_role_id','Actions'])
+            ->rawColumns(['user_role_id', 'Actions'])
             ->make(true);
     }
 
@@ -61,142 +67,113 @@ class UserController extends Controller
 
     public function getUserRoleList()
     {
-        $userRoles = UserRole::get(['id','name']);
-        if($userRoles->count()  > 0){
-            $success = 'yes';
-            $data = $userRoles;
-        }else{
-            $success = 'no';
-            $data = $userRoles;
-        }
-        return response()->json([
-            'success' => $success,
-            'userroles' => $data,
-        ], 201);
+        $userRoles = UserRole::get(['id', 'name']);
 
+        return response()->json([
+            'success' => $userRoles->count() > 0 ? 'yes' : 'no',
+            'userroles' => $userRoles,
+        ], 201);
     }
 
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(),[
-            'name' => 'bail|required|string',
-            'user_role_id' => 'bail|required|integer',
-            'email' => 'bail|required|string',
-            'password' => 'bail|required|string',
-            'contact_no' => 'bail|required|string',
-            'image_file' => 'mimes:jpeg,jpg,png|max:5000',
-        ],[
-            'image_file.max'=> 'Maximum Image size to upload is 5MB (5000KB). If you are uploading a photo, try to reduce its resolution to make it under 5MB',
-        ]);
-        if($validator->fails()){
-            return response()->json([
-                'error' => $validator->errors()->toArray(),
-                'success' => 'no',
-            ], 201);
-        }
-        if($request->user_id_modal > 0){
-            $user_data = User::find($request->user_id_modal);
-        }else{
-            $user_data = null;
-        }
-        // $country = $session?->user?->getAddress()?->country;
-        if ($request->hasFile('image_file')) {
-            if($user_data?->picture != null && \Storage::disk('public')->exists('users/'.$user_data?->picture)){
-                \Storage::disk('public')->delete('users/'.$user_data?->picture);
-            }
-            $path = 'users/';
-            $image_file = $request->file('image_file');
-            $extension = $request->file('image_file')->extension();
-            $imageName = time().mt_rand(10,99).'.'.$extension;
-            $upload = $image_file->storeAs($path, $imageName, 'public');
-        }else{
-            $imageName = null;
-        }
+    public function store(
+        StoreUserRequest $request,
+        StoreUserAction $storeAction,
+        UpdateUserAction $updateAction
+    ) {
+        try {
+            $userId = (int) ($request->input('user_id_modal') ?? 0);
+            $imageFile = $request->file('image_file');
 
-        if($request->expense_id_modal > 0){
-            if($user_data !=''){
-                $message = 'Data Updated successfully!';
-                $success = 'yes';
-                if($user_data->picture !='' && $imageName == null){
-                    $imageName = $user_data->picture;
+            if ($userId > 0) {
+                $user = User::find($userId);
+                if (! $user) {
+                    return response()->json([
+                        'message' => 'No entry found against this id',
+                        'success' => 'no',
+                    ], 200);
                 }
-                $update_user = $user_data->update([
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'user_role_id' => $request->user_role_id,
-                    'contact_no' => $request->contact_no,
-                    'password' => $request->password,
-                    'picture' => $imageName,
-                    'updatedby' => $this->auth_user_id,
-                ]);
-            }else{
-                $message = 'No entry found against this id';
-                $success = 'no';
-            }
-        }else{
-            $sv_user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'user_role_id' => $request->user_role_id,
-                'contact_no' => $request->contact_no,
-                'password' => $request->password,
-                'picture' => $imageName,
-                'addedby' => $this->auth_user_id,
-            ]);
-            if($sv_user){
+
+                $updateAction->execute($user, $request->validated(), $imageFile, $this->auth_user_id);
+                $message = 'Data Updated successfully!';
+            } else {
+                $storeAction->execute($request->validated(), $imageFile, $this->auth_user_id);
                 $message = 'New User created successfully!';
-                $success = 'yes';
-            }else{
-                $message = 'Something went wrong';
-                $success = 'no';
             }
+
+            return response()->json([
+                'message' => $message,
+                'success' => 'yes',
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            Log::error($e);
+            if (app()->environment('testing')) {
+                throw $e;
+            }
+
+            return response()->json([
+                'message' => 'Something went wrong',
+                'success' => 'no',
+            ], 200);
         }
-        return response()->json([
-            'message' => $message,
-            'success' => $success,
-        ], 200);
     }
 
     public function show($id)
     {
-        $expense = User::find($id);
-        if($expense){
-            $html_data = \View::make('layouts._partial.customerdetail', compact('expense'))->render();
-            $message = 'Expense Detail Data';
-            $success = 'yes';
-        }else{
-            $message = 'No data found against this id';
-            $success = 'no';
-            $html_data = '';
+        $user = User::find($id);
+        if ($user) {
+            $html_data = \View::make('layouts._partial.customerdetail', ['expense' => $user])->render();
+
+            return response()->json([
+                'message' => 'User Detail Data',
+                'success' => 'yes',
+                'html_data' => $html_data,
+            ], 201);
         }
+
         return response()->json([
-            'message' => $message,
-            'success' => $success,
-            'html_data' => $html_data,
+            'message' => 'No data found against this id',
+            'success' => 'no',
+            'html_data' => '',
         ], 201);
     }
 
     public function edit($id)
     {
         $user = User::with('userRole:id,name')->find($id);
-        if($user){
-            $message = 'yes';
-            return response()->json([
-                'message' => $message,
-                'user' => $user->toArray(),
-            ], 201);
+        if (! $user) {
+            return response()->json(['message' => 'no'], 201);
         }
+
+        return response()->json([
+            'message' => 'yes',
+            'user' => $user->toArray(),
+        ], 201);
     }
 
-    public function destroy($id)
+    public function destroy($id, DestroyUserAction $action)
     {
-        $user = User::findOrFail($id);
-        $img_path = 'users/'.$user?->picture;
-        if($user?->picture != null && \Storage::disk('public')->exists($img_path)){
-            \Storage::disk('public')->delete($img_path);
+        try {
+            $user = User::findOrFail($id);
+            $action->execute($user);
+            Session::flash('swal_notification', [
+                'title' => 'Deleted',
+                'icon_type' => 'success',
+                'message' => 'Data Deleted Successfully!',
+            ]);
+        } catch (\Throwable $e) {
+            Log::error($e);
+            if (app()->environment('testing')) {
+                throw $e;
+            }
+            Session::flash('swal_notification', [
+                'title' => 'Error',
+                'icon_type' => 'warning',
+                'message' => 'Something went wrong',
+            ]);
         }
-        $user->delete();
-        Session::flash('swal_notification', ['title' => 'Deleted', 'icon_type' => 'success', 'message' => 'Data Deleted Successfully!']);
+
         return redirect()->route('users.index');
     }
 }

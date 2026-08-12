@@ -7,11 +7,11 @@ use DataTables;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use App\Models\CompanyBalance;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Models\CompanyBalancePayment;
-use Illuminate\Support\Facades\Validator;
-use App\Http\Requests\CustomerFormRequest;
+use App\Actions\PartyManagement\RecordCompanyBalancePaymentAction;
+use App\Http\Requests\PartyManagement\StoreCompanyBalancePaymentRequest;
 
 class CompaniesBalanceController extends Controller
 {
@@ -77,112 +77,36 @@ class CompaniesBalanceController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(StoreCompanyBalancePaymentRequest $request, RecordCompanyBalancePaymentAction $action)
     {
-        $validator = Validator::make($request->all(),[
-            'company_balance_id' => 'bail|required|integer',
-            'party_company_id' => 'bail|required|integer',
-            'amount_payment' => 'bail|required|numeric',
-            'payment_option' => 'bail|required|string',
-            'cheque_date' => 'bail|required_if:payment_option,cheque|date',
-            'bank_name' => 'bail|required_if:payment_option,cheque|string',
-            'cheque_picture' => 'bail|required_if:payment_option,cheque',
-            'description' => 'nullable',
-            'image_file' => 'nullable',
-        ]);
-        if($validator->fails()){
+        try {
+            $action->execute(
+                $request->validated(),
+                $request->file('cheque_picture'),
+                $request->file('image_file'),
+                $this->auth_user_id
+            );
+
             return response()->json([
-                'error' => $validator->errors()->toArray(),
+                'message' => 'Payment added successfully!',
+                'success' => 'yes',
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'error' => $e->errors(),
                 'success' => 'no',
             ], 201);
-        }
-        // $country = $session?->user?->getAddress()?->country;
-        if ($request->hasFile('cheque_picture')) {
-            $path = 'companies/payment/cheque/';
-            $cheque_picture_file = $request->file('cheque_picture');
-            $extension = $request->file('cheque_picture')->extension();
-            $cheque_picture = time().mt_rand(10,99).'.'.$extension;
-        }else{
-            $cheque_picture = null;
-        }
-        if ($request->hasFile('image_file')) {
-            $path = 'companies/payment/';
-            $image_file = $request->file('image_file');
-            $extension = $request->file('image_file')->extension();
-            $imageName = time().mt_rand(10,99).'.'.$extension;
-        }else{
-            $imageName = null;
-        }
-
-        $CompanyBalance = CompanyBalance::find($request->company_balance_id);
-        if($CompanyBalance !=''){
-            $payment = CompanyBalancePayment::create([
-                'company_balance_id' => $request->company_balance_id,
-                'party_company_id' => $request->party_company_id,
-                'paid_amount' => $request->amount_payment,
-                'payment_option' => $request->payment_option,
-                'cheque_date' => $request->cheque_date,
-                'bank_name' => $request->bank_name,
-                'cheque_picture' => $cheque_picture,
-                'invoice_picture' => $imageName,
-                'description' => $request->description,
-                'addedby' => $this->auth_user_id,
-            ]);
-            
-            if($payment){
-                $ex_paid = $CompanyBalance->paid_amount;
-                $new_paid = $ex_paid + $request->amount_payment;
-                $ex_remaining = $CompanyBalance->remaining_amount;
-                $new_rem = $ex_remaining - $request->amount_payment;
-                if($new_rem < 1){
-                    $balance_status = 'paid';
-                }else{
-                    $balance_status = 'pending';
-                }
-                $CompanyBalance->update([
-                    'paid_amount' =>  $new_paid,
-                    'remaining_amount' => $new_rem,
-                    'status' => $balance_status,
-                    'updatedby' => $this->auth_user_id,
-                ]);
-
-                $client = DB::table('account_payables')
-            ->where('product_id', '=', $request->get('product'))
-            ->first();
-
-                $ac_payable = DB::table('account_payables')->insert([
-                    'amount_type' => 'company_balance_payment',
-                    'amount_status' => 'paid',
-                    'entry_date' => today()->format('Y-m-d'),
-                    'model_id' => $payment->id,
-                    'total_amount' => $request->amount_payment,
-                    'paid_amount' => $request->amount_payment,
-                    'cr' => $request->amount_payment,
-                    'created_at' => $this->today_is,
-                    'addedby' => $this->auth_user_id,
-                ]);
-
-                if($cheque_picture != null){
-                    $cheque_picture_file->storeAs($path, $cheque_picture, 'public');
-                }
-                if($imageName != null){
-                    $image_file->storeAs($path, $imageName, 'public');
-                }
-                $message = 'Payment added successfully!';
-                $success = 'yes';
-            }else{
-                $message = 'Something went wrong';
-                $success = 'no';
+        } catch (\Throwable $e) {
+            Log::error($e);
+            if (app()->environment('testing')) {
+                throw $e;
             }
-        }else{
-            $message = 'No Balance Found against this record';
-            $success = 'no';
-        }
 
-        return response()->json([
-            'message' => $message,
-            'success' => $success,
-        ], 200);
+            return response()->json([
+                'message' => 'Something went wrong',
+                'success' => 'no',
+            ], 200);
+        }
     }
 
     public function show($id)

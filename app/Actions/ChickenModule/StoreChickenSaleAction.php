@@ -3,26 +3,22 @@
 namespace App\Actions\ChickenModule;
 
 use App\Models\ChickenSale;
+use App\Services\FileUploadService;
 use App\Services\FinancialBalanceService;
 use Illuminate\Support\Facades\DB;
 
 class StoreChickenSaleAction
 {
-    private $balanceService;
-
-    public function __construct(FinancialBalanceService $balanceService)
-    {
-        $this->balanceService = $balanceService;
+    public function __construct(
+        private FinancialBalanceService $balanceService,
+        private FileUploadService $uploadService,
+    ) {
     }
 
     public function execute(array $data, ?object $imageFile, int $userId): ChickenSale
     {
         return DB::transaction(function () use ($data, $imageFile, $userId) {
-            $imageName = null;
-            if ($imageFile) {
-                $extension = $imageFile->extension();
-                $imageName = time() . mt_rand(10, 99) . '.' . $extension;
-            }
+            $imageName = $this->uploadService->store($imageFile, 'chickens');
 
             $sale = ChickenSale::create([
                 'manual_number' => $data['manual_number'],
@@ -31,7 +27,7 @@ class StoreChickenSaleAction
                 'driver_name' => $data['driver_name'],
                 'driver_contact' => $data['driver_contact'],
                 'party_id' => $data['customer_id'],
-                'customer_id' => $data['customer_id'], // Keep both in sync to prevent relationship bugs
+                'customer_id' => $data['customer_id'],
                 'broker_id' => $data['broker_id'],
                 'first_weight' => $data['first_weight'] ?? null,
                 'second_weight' => $data['second_weight'] ?? null,
@@ -44,10 +40,6 @@ class StoreChickenSaleAction
                 'picture' => $imageName,
                 'addedby' => $userId,
             ]);
-
-            if ($imageFile && $imageName) {
-                $imageFile->storeAs('chickens/sales/', $imageName, 'public');
-            }
 
             $this->balanceService->recordChickenSaleBalances(
                 $sale->id,

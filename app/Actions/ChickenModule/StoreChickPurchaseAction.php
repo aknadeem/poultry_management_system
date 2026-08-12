@@ -5,17 +5,17 @@ namespace App\Actions\ChickenModule;
 use App\Models\ChickPurchase;
 use App\Models\PartyFarm;
 use App\Models\PartyFarmChickHistory;
+use App\Services\FileUploadService;
 use App\Services\FinancialBalanceService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class StoreChickPurchaseAction
 {
-    private $balanceService;
-
-    public function __construct(FinancialBalanceService $balanceService)
-    {
-        $this->balanceService = $balanceService;
+    public function __construct(
+        private FinancialBalanceService $balanceService,
+        private FileUploadService $uploadService,
+    ) {
     }
 
     public function execute(array $data, ?object $imageFile, int $userId): ChickPurchase
@@ -27,11 +27,7 @@ class StoreChickPurchaseAction
         }
 
         return DB::transaction(function () use ($data, $imageFile, $userId) {
-            $imageName = null;
-            if ($imageFile) {
-                $extension = $imageFile->extension();
-                $imageName = time() . mt_rand(10, 99) . '.' . $extension;
-            }
+            $imageName = $this->uploadService->store($imageFile, 'chicks');
 
             $purchase = ChickPurchase::create([
                 'customer_id' => $data['customer_id'],
@@ -56,11 +52,7 @@ class StoreChickPurchaseAction
                 'addedby' => $userId,
             ]);
 
-            if ($imageFile && $imageName) {
-                $imageFile->storeAs('chicks/', $imageName, 'public');
-            }
-
-            if (!empty($data['customer_farm_id'])) {
+            if (! empty($data['customer_farm_id'])) {
                 $partyFarm = PartyFarm::find($data['customer_farm_id']);
                 if ($partyFarm) {
                     $partyFarm->update([

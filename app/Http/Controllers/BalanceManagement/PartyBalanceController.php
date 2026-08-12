@@ -8,9 +8,12 @@ use App\Helpers\Constant;
 use App\Models\PartyBalance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Models\PartyBalancePayment;
 use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
+use App\Actions\BalanceManagement\RecordPartyBalancePaymentAction;
+use App\Http\Requests\BalanceManagement\StorePartyBalancePaymentRequest;
 
 class PartyBalanceController extends Controller
 {
@@ -115,111 +118,35 @@ class PartyBalanceController extends Controller
         return view('balancemanagement.party_balances.balance_payments', compact('payments'));
     }
 
-    public function store(Request $request)
+    public function store(StorePartyBalancePaymentRequest $request, RecordPartyBalancePaymentAction $action)
     {
-        $validator = Validator::make($request->all(),[
-            'balance_id' => 'bail|required|integer',
-            'party_id' => 'bail|required|integer',
-            'amount_payment' => 'bail|required|numeric',
-            'paid_date' => 'bail|required|date',
-            'payment_option' => 'bail|required|string',
-            'cheque_date' => 'bail|required_if:payment_option,cheque|date',
-            'bank_name' => 'bail|required_if:payment_option,cheque|string',
-            'cheque_picture' => 'bail|required_if:payment_option,cheque',
-            'description' => 'nullable',
-            'image_file' => 'nullable',
-        ]);
-        if($validator->fails()){
+        try {
+            $action->execute(
+                $request->validated(),
+                $request->file('cheque_picture'),
+                $request->file('image_file'),
+                $this->auth_user_id
+            );
+
             return response()->json([
-                'error' => $validator->errors()->toArray(),
+                'message' => 'Payment added successfully!',
+                'success' => 'yes',
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'error' => $e->errors(),
                 'success' => 'no',
             ], 201);
-        }
-        // $country = $session?->user?->getAddress()?->country;
-    
-        $message = 'Payment added successfully!';
-        $success = 'yes';
-
-        try {
-            $saved = DB::transaction(function () use ($request) {
-                if ($request->hasFile('cheque_picture')) {
-                    $path = 'parties/payment_receive/cheque/';
-                    $cheque_picture_file = $request->file('cheque_picture');
-                    $extension = $request->file('cheque_picture')->extension();
-                    $cheque_picture = time().mt_rand(10,99).'.'.$extension;
-                }else{
-                    $cheque_picture = null;
-                }
-                if ($request->hasFile('image_file')) {
-                    $path = 'parties/payment_receive/';
-                    $image_file = $request->file('image_file');
-                    $extension = $request->file('image_file')->extension();
-                    $imageName = time().mt_rand(10,99).'.'.$extension;
-                }else{
-                    $imageName = null;
-                }
-                $partyBalance = PartyBalance::find($request->balance_id);
-                if($partyBalance !=''){
-                    $payment = PartyBalancePayment::create([
-                        'party_balance_id' => $request->balance_id,
-                        'party_id' => $request->party_id,
-                        'paid_amount' => $request->amount_payment,
-                        'paid_date' => $request->paid_date,
-                        'payment_option' => $request->payment_option,
-                        'cheque_date' => $request->cheque_date,
-                        'bank_name' => $request->bank_name,
-                        'cheque_picture' => $cheque_picture,
-                        'invoice_picture' => $imageName,
-                        'narration' => $request->description,
-                        'addedby' => $this->auth_user_id,
-                    ]);
-                    
-                    if($payment){
-                        $ex_paid = $partyBalance->paid_amount;
-                        $new_paid = $ex_paid + $request->amount_payment;
-                        $ex_remaining = $partyBalance->remaining_amount;
-                        $new_rem = $ex_remaining - $request->amount_payment;
-                        if($new_rem < 1){
-                            $balance_status = Constant::PAYMENT_STATUS['Paid'];
-                        }else{
-                            $balance_status = Constant::PAYMENT_STATUS['Pending'];
-                        }
-                        $partyBalance->update([
-                            'paid_amount' =>  $new_paid,
-                            'remaining_amount' => $new_rem,
-                            'payment_status' => $balance_status,
-                            'updatedby' => $this->auth_user_id,
-                        ]);
-                        if($cheque_picture != null){
-                            $cheque_picture_file->storeAs($path, $cheque_picture, 'public');
-                        }
-                        if($imageName != null){
-                            $image_file->storeAs($path, $imageName, 'public');
-                        }
-                        $message = 'Payment added successfully!';
-                        $success = 'yes';
-                    }else{
-                        $message = 'Something went wrong';
-                        $success = 'no';
-                    }
-                }else{
-                    $message = 'No Balance Found against this record';
-                    $success = 'no';
-                }
-            });
-        }
-        catch (\Throwable $e) {
+        } catch (\Throwable $e) {
             Log::error($e);
-            $message = 'Something went wrong';
-            $title = 'Error';
-            $icon_type = 'warning';
+            if (app()->environment('testing')) {
+                throw $e;
+            }
+
+            return response()->json([
+                'message' => 'Something went wrong',
+                'success' => 'no',
+            ], 200);
         }
-
-        
-
-        return response()->json([
-            'message' => $message,
-            'success' => $success,
-        ], 200);
     }
 }

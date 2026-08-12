@@ -135,8 +135,8 @@ class ChickenSaleController extends Controller
 
     public function edit($id)
     {
-        $sale = ChickenSale::with('customer:id,name,contact_no,farm_name')->findOrFail($id);
-        $customers = Customer::get(['id', 'name', 'contact_no', 'farm_name']);
+        $sale = ChickenSale::with('customer:id,name,contact_no')->findOrFail($id);
+        $customers = Party::where('is_customer', 1)->get(['id', 'name', 'contact_no', 'cnic_no']);
         $brokers = Broker::where('is_active', 1)->get(['id', 'name', 'contact_no', 'cnic_no']);
         return view('chickens.sale.create', compact('sale', 'customers', 'brokers'));
     }

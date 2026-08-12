@@ -3,26 +3,23 @@
 namespace App\Actions\ChickenModule;
 
 use App\Models\ChickenPurchase;
-use App\Models\CompanyBalance;
+use App\Services\FileUploadService;
+use App\Services\FinancialBalanceService;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class DestroyChickenPurchaseAction
 {
+    public function __construct(
+        private FinancialBalanceService $balanceService,
+        private FileUploadService $uploadService,
+    ) {
+    }
+
     public function execute(ChickenPurchase $purchase): void
     {
         DB::transaction(function () use ($purchase) {
-            // Delete image if exists
-            $imgPath = 'chicks/' . $purchase->picture;
-            if ($purchase->picture && Storage::disk('public')->exists($imgPath)) {
-                Storage::disk('public')->delete($imgPath);
-            }
-
-            // Delete linked company balance
-            CompanyBalance::where('type', 'chicken_purchase')
-                ->where('model_id', $purchase->id)
-                ->delete();
-
+            $this->uploadService->delete('chicks', $purchase->picture);
+            $this->balanceService->deleteChickenPurchaseBalances($purchase->id);
             $purchase->delete();
         });
     }

@@ -2,25 +2,28 @@
 
 namespace App\Http\Controllers\InventoryManagement;
 
-use DB;
 use Session;
 use DataTables;
 use App\Models\Expense;
-use App\Models\Employee;
-use Illuminate\Http\Request;
 use App\Models\ExpenseCategory;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Storage;
+use App\Actions\InventoryManagement\StoreExpenseAction;
+use App\Actions\InventoryManagement\UpdateExpenseAction;
+use App\Actions\InventoryManagement\DestroyExpenseAction;
+use App\Http\Requests\InventoryManagement\StoreExpenseRequest;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Requests\CustomerFormRequest;
 
 class ExpenseController extends Controller
 {
     private $auth_user_id;
+
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $this->auth_user_id= \Auth::user()->id;
+            $this->auth_user_id = \Auth::user()->id;
+
             return $next($request);
         });
     }
@@ -32,136 +35,104 @@ class ExpenseController extends Controller
 
     public function getExpenseList()
     {
-        $expenes = Expense::with('category:id,name')->orderBy('id','DESC')->get();
+        $expenes = Expense::with('category:id,name')->orderBy('id', 'DESC')->get();
+
         return DataTables::of($expenes)
             ->addIndexColumn()
-            ->addColumn('picture', function($row){
+            ->addColumn('picture', function ($row) {
                 $url = asset('storage/expenses/'.$row?->picture);
+
                 return '<img class="rounded-circle avatar-lg" src="'.$url.'"  alt="No image" />';
-            })->addColumn('category_id', function($row){
+            })->addColumn('category_id', function ($row) {
                 return '<span>'.$row?->category?->name.'</span>';
             })
-            ->addColumn('Actions', function($row){
+            ->addColumn('Actions', function ($row) {
                 return '
             <a class="btn btn-info btn-sm openExpenseModal"
-            ExpenseId="'.$row["id"].'" data-id="'.$row["id"].'" id="editEspenseModal" href="javascript:void(0);"
+            ExpenseId="'.$row['id'].'" data-id="'.$row['id'].'" id="editEspenseModal" href="javascript:void(0);"
                 title="Click to edit"><i
                     class="fa fa-pencil-alt"></i>
                 Edit
             </a>
             <a class="btn btn-danger btn-sm delete-confirm"
-                href="'.route("expense.destroy", $row["id"]).'"
-                del_title="Expense: '.$row["id"].'" title="Click to delete"
+                href="'.route('expense.destroy', $row['id']).'"
+                del_title="Expense: '.$row['id'].'" title="Click to delete"
                 tabindex="0" data-plugin="tippy" data-tippy-animation="scale"
                 data-tippy-arrow="true"><i class="fa fa-trash"></i>
                 Delete
             </a>';
             })
-            ->rawColumns(['category_id','picture','Actions'])
+            ->rawColumns(['category_id', 'picture', 'Actions'])
             ->make(true);
     }
 
     public function getExpenseCategoryList()
     {
-        $categories = ExpenseCategory::get(['id','name']);
-        if($categories->count()  > 0){
+        $categories = ExpenseCategory::get(['id', 'name']);
+        if ($categories->count() > 0) {
             $success = 'yes';
             $data = $categories;
-        }else{
+        } else {
             $success = 'no';
             $data = $categories;
         }
+
         return response()->json([
             'success' => $success,
             'categories' => $data,
         ], 201);
-
     }
 
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(),[
-            'amount' => 'bail|required|numeric',
-            'expense_date' => 'bail|required|date',
-            'category_id' => 'bail|required|integer',
-            'remarks' => 'bail|required|string',
-            'image_file' => 'mimes:jpeg,jpg,png|max:5000',
-        ],[
-            'image_file.max'=> 'Maximum Image size to upload is 5MB (5000KB). If you are uploading a photo, try to reduce its resolution to make it under 5MB',
-        ]);
-        if($validator->fails()){
-            return response()->json([
-                'error' => $validator->errors()->toArray(),
-                'success' => 'no',
-            ], 201);
-        }
-        if($request->expense_id_modal > 0){
-            $exp_data = Expense::find($request->expense_id_modal);
-        }else{
-            $exp_data = null;
-        }
-        // $country = $session?->user?->getAddress()?->country;
-        if ($request->hasFile('image_file')) {
-            if($exp_data?->picture != null && \Storage::disk('public')->exists('expenses/'.$exp_data?->picture)){
-                \Storage::disk('public')->delete('expenses/'.$exp_data?->picture);
-            }
-            $path = 'expenses/';
-            $image_file = $request->file('image_file');
-            $extension = $request->file('image_file')->extension();
-            $imageName = time().mt_rand(10,99).'.'.$extension;
-            $upload = $image_file->storeAs($path, $imageName, 'public');
-        }else{
-            $imageName = null;
-        }
+    public function store(
+        StoreExpenseRequest $request,
+        StoreExpenseAction $storeAction,
+        UpdateExpenseAction $updateAction
+    ) {
+        try {
+            $expenseId = (int) ($request->input('expense_id_modal') ?? 0);
+            $imageFile = $request->hasFile('image_file') ? $request->file('image_file') : null;
 
-        if($request->expense_id_modal > 0){
-            if($exp_data !=''){
-                $message = 'Data Updated successfully!';
-                $success = 'yes';
-                if($exp_data->picture !='' && $imageName == null){
-                    $imageName = $exp_data->picture;
+            if ($expenseId > 0) {
+                $expense = Expense::find($expenseId);
+                if (! $expense) {
+                    return response()->json([
+                        'message' => 'No entry found against this id',
+                        'success' => 'no',
+                    ], 200);
                 }
-                $update_expense = $exp_data->update([
-                    'category_id' => $request->category_id,
-                    'expense_date' => $request->expense_date,
-                    'amount' => $request->amount,
-                    'remarks' => $request->remarks,
-                    'picture' => $imageName,
-                    'updatedby' => $this->auth_user_id,
-                ]);
-            }else{
-                $message = 'No entry found against this id';
-                $success = 'no';
-            }
-        }else{
-            $sv_expense = Expense::create([
-                'category_id' => $request->category_id,
-                'expense_date' => $request->expense_date,
-                'amount' => $request->amount,
-                'remarks' => $request->remarks,
-                'picture' => $imageName,
-                'addedby' => $this->auth_user_id,
-            ]);
-            if($sv_expense){
+
+                $updateAction->execute($expense, $request->validated(), $imageFile, $this->auth_user_id);
+                $message = 'Data Updated successfully!';
+            } else {
+                $storeAction->execute($request->validated(), $imageFile, $this->auth_user_id);
                 $message = 'New Expense created successfully!';
-                $success = 'yes';
-            }else{
-                $message = 'Something went wrong';
-                $success = 'no';
             }
+
+            return response()->json([
+                'message' => $message,
+                'success' => 'yes',
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            Log::error($e);
+            if (app()->environment('testing')) {
+                throw $e;
+            }
+
+            return response()->json([
+                'message' => 'Something went wrong',
+                'success' => 'no',
+            ], 200);
         }
-        return response()->json([
-            'message' => $message,
-            'success' => $success,
-        ], 200);
     }
 
     public function storeExpenseCategrory(Request $request)
     {
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'cat_name' => 'bail|required|string',
         ]);
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
                 'error' => $validator->errors()->toArray(),
                 'success' => 'no',
@@ -170,13 +141,14 @@ class ExpenseController extends Controller
         $sv_expense_cat = ExpenseCategory::create([
             'name' => $request->cat_name,
         ]);
-        if($sv_expense_cat){
+        if ($sv_expense_cat) {
             $message = 'New Category added successfully!';
             $success = 'yes';
-        }else{
+        } else {
             $message = 'Something went wrong';
             $success = 'no';
         }
+
         return response()->json([
             'message' => $message,
             'success' => $success,
@@ -186,15 +158,16 @@ class ExpenseController extends Controller
     public function show($id)
     {
         $expense = Expense::find($id);
-        if($expense){
+        if ($expense) {
             $html_data = \View::make('layouts._partial.customerdetail', compact('expense'))->render();
             $message = 'Expense Detail Data';
             $success = 'yes';
-        }else{
+        } else {
             $message = 'No data found against this id';
             $success = 'no';
             $html_data = '';
         }
+
         return response()->json([
             'message' => $message,
             'success' => $success,
@@ -205,8 +178,9 @@ class ExpenseController extends Controller
     public function edit($id)
     {
         $expense = Expense::with('category:id,name')->find($id);
-        if($expense){
+        if ($expense) {
             $message = 'yes';
+
             return response()->json([
                 'message' => $message,
                 'expense' => $expense->toArray(),
@@ -214,15 +188,28 @@ class ExpenseController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy($id, DestroyExpenseAction $action)
     {
-        $expense = Expense::findOrFail($id);
-        $img_path = 'expenses/'.$expense?->picture;
-        if($expense?->picture != null && \Storage::disk('public')->exists($img_path)){
-            \Storage::disk('public')->delete($img_path);
+        try {
+            $expense = Expense::findOrFail($id);
+            $action->execute($expense);
+            Session::flash('swal_notification', [
+                'title' => 'Deleted',
+                'icon_type' => 'success',
+                'message' => 'Data Deleted Successfully!',
+            ]);
+        } catch (\Throwable $e) {
+            Log::error($e);
+            if (app()->environment('testing')) {
+                throw $e;
+            }
+            Session::flash('swal_notification', [
+                'title' => 'Error',
+                'icon_type' => 'warning',
+                'message' => 'Something went wrong',
+            ]);
         }
-        $expense->delete();
-        Session::flash('swal_notification', ['title' => 'Deleted', 'icon_type' => 'success', 'message' => 'Data Deleted Successfully!']);
+
         return redirect()->route('expense.index');
     }
 }

@@ -55,13 +55,13 @@ class ChickenPurchaseController extends Controller
                 data-tippy-animation="scale" data-tippy-arrow="true"><i class="fa fa-eye"></i>
                 View
             </a>
-            <a class="btn btn-info btn-sm" href="' . route("purchase.edit", $row["id"]) . '"
+            <a class="btn btn-info btn-sm" href="' . route("chickenpurchase.edit", $row["id"]) . '"
                 title="Click to edit"><i
                     class="fa fa-pencil-alt"></i>
                 Edit
             </a>
             <a class="btn btn-danger btn-sm delete-confirm"
-                href="' . route("purchase.destroy", $row["id"]) . '"
+                href="' . route("chickenpurchase.destroy", $row["id"]) . '"
                 del_title="Chicken Purchase" title="Click to delete"
                 tabindex="0" data-plugin="tippy" data-tippy-animation="scale"
                 data-tippy-arrow="true"><i class="fa fa-trash"></i>
@@ -112,7 +112,7 @@ class ChickenPurchaseController extends Controller
             ]);
         }
 
-        return redirect()->route('purchase.index');
+        return redirect()->route('chickenpurchase.index');
     }
 
     public function edit($id)
@@ -152,7 +152,7 @@ class ChickenPurchaseController extends Controller
             ]);
         }
 
-        return redirect()->route('purchase.index');
+        return redirect()->route('chickenpurchase.index');
     }
 
     public function destroy($id, DestroyChickenPurchaseAction $action)
@@ -178,6 +178,6 @@ class ChickenPurchaseController extends Controller
             ]);
         }
 
-        return redirect()->route('purchase.index');
+        return redirect()->route('chickenpurchase.index');
     }
 }

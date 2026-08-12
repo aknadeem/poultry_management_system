@@ -42,9 +42,9 @@ class AppServiceProvider extends ServiceProvider
             $status = '';
             if($my_status == 1){
                 $status = '<span class="badge bg-danger"> UnPaid </span>';
-            }else if($my_status == 2){
+            }elseif($my_status == 2){
                 $status = '<span class="badge bg-warning"> Pending </span>';
-            }else if($my_status == 3){
+            }elseif($my_status == 3){
                 $status = '<span class="badge bg-success"> Paid </span>';
             }
             return $status;
@@ -53,9 +53,9 @@ class AppServiceProvider extends ServiceProvider
             $status = '';
             if($my_status == '1'){
                 $status = '<span class="badge bg-danger"> UnPaid </span>';
-            }else if($my_status == '2'){
+            }elseif($my_status == '2'){
                 $status = '<span class="badge bg-warning"> Pending </span>';
-            }else if($my_status == '3'){
+            }elseif($my_status == '3'){
                 $status = '<span class="badge bg-success"> Paid </span>';
             }
             return $status;

@@ -3,38 +3,25 @@
 namespace App\Actions\ChickenModule;
 
 use App\Models\ChickenSale;
+use App\Services\FileUploadService;
 use App\Services\FinancialBalanceService;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class UpdateChickenSaleAction
 {
-    private $balanceService;
-
-    public function __construct(FinancialBalanceService $balanceService)
-    {
-        $this->balanceService = $balanceService;
+    public function __construct(
+        private FinancialBalanceService $balanceService,
+        private FileUploadService $uploadService,
+    ) {
     }
 
     public function execute(ChickenSale $sale, array $data, ?object $imageFile, int $userId): ChickenSale
     {
         return DB::transaction(function () use ($sale, $data, $imageFile, $userId) {
-            $imageName = $sale->picture;
+            $imageName = $this->uploadService->replace($imageFile, 'chickens', $sale->picture);
 
-            if ($imageFile) {
-                // Delete old image if exists
-                if ($sale->picture && Storage::disk('public')->exists('chickens/' . $sale->picture)) {
-                    Storage::disk('public')->delete('chickens/' . $sale->picture);
-                }
-
-                $extension = $imageFile->extension();
-                $imageName = time() . mt_rand(10, 99) . '.' . $extension;
-                $imageFile->storeAs('chickens/', $imageName, 'public');
-            }
-
-            // Sync broker and manual number if passed, otherwise keep existing
             $brokerId = $data['broker_id'] ?? $sale->broker_id;
-            $brokerCommission = $data['broker_commission'] ?? $sale->broker_commission;
+            $brokerCommission = $data['broker_commission'] ?? 0;
             $manualNumber = $data['manual_number'] ?? $sale->manual_number;
 
             $sale->update([
@@ -44,7 +31,7 @@ class UpdateChickenSaleAction
                 'driver_name' => $data['driver_name'],
                 'driver_contact' => $data['driver_contact'],
                 'party_id' => $data['customer_id'],
-                'customer_id' => $data['customer_id'], // Sync both
+                'customer_id' => $data['customer_id'],
                 'broker_id' => $brokerId,
                 'first_weight' => $data['first_weight'] ?? $sale->first_weight,
                 'second_weight' => $data['second_weight'] ?? $sale->second_weight,
