@@ -139,7 +139,7 @@ Route::group(['middleware' => 'auth'], function(){
     Route::group(['prefix' => '/poultry'], function(){
         Route::get('/get-purchase-list', [ChickPurchaseController::class, 'getPurchaseList'])->name('getpurchaselist');
         Route::resource('purchase', ChickPurchaseController::class);
-        Route::resource('chickenpurchase', ChickenPurchaseController::class);
+        Route::resource('chickenpurchase', ChickenPurchaseController::class)->except(['show']);
 
         Route::get('/get-sales-list', [ChickenSaleController::class, 'getSalesList'])->name('getSalesList');
         Route::resource('sale', ChickenSaleController::class);
