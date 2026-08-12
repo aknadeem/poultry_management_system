@@ -95,7 +95,7 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/balance-with-company/{id}', [CompaniesBalanceController::class, 'getBalanceWithCompany'])->name('getBalanceWithCompany');
 
         Route::resource('companybalance', CompaniesBalanceController::class)->except([
-            'create', 'update'
+            'create', 'update', 'destroy',
         ]);
 
         Route::get('/partybalancelist', [PartyBalanceController::class, 'getBalanceList'])->name('getBalanceList');

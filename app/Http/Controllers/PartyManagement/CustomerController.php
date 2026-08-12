@@ -2,172 +2,147 @@
 
 namespace App\Http\Controllers\PartyManagement;
 
-use App\Models\Party;
-use App\Models\Country;
-use App\Models\Customer;
-use App\Models\Division;
-use App\Models\FarmType;
-use App\Models\FarmSubtype;
-use App\Models\CustomerType;
-use Illuminate\Http\Request;
-use App\Models\ConductPerson;
+use App\Actions\PartyManagement\DestroyPartyAction;
+use App\Actions\PartyManagement\StorePartyQuickAction;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
-use App\Http\Requests\CustomerFormRequest;
+use App\Http\Requests\PartyManagement\StorePartyQuickRequest;
+use App\Models\ConductPerson;
+use App\Models\Country;
+use App\Models\CustomerType;
+use App\Models\Division;
+use App\Models\FarmSubtype;
+use App\Models\FarmType;
+use App\Models\Party;
+use Illuminate\Support\Facades\Log;
 
 class CustomerController extends Controller
 {
     private $auth_user_id;
+
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $this->auth_user_id= \Auth::user()->id;
+            $this->auth_user_id = \Auth::user()->id;
+
             return $next($request);
         });
     }
 
     public function index()
     {
-        $customers = Party::where('is_customer', 1)->with('farm:id,party_id,farm_name,farm_type_id')->get(['id','is_customer','name', 'guardian_name','cnic_no', 'contact_no', 'customer_type_id','customer_division_id', 'profile_picture']);
+        $customers = Party::where('is_customer', 1)
+            ->with('farm:id,party_id,farm_name,farm_type_id')
+            ->get([
+                'id', 'is_customer', 'name', 'guardian_name', 'cnic_no', 'contact_no',
+                'customer_type_id', 'customer_division_id', 'profile_picture',
+            ]);
+
         return view('partymanagement.customers.index', compact('customers'));
-        // return view('partymanagement.customers.index');
     }
 
     public function create()
     {
         $party = new Party();
-        $countries = Country::with('provinces:id,name,country_id',
-        'provinces.cities:id,name,province_id')->get(['id','name']);
+        $countries = Country::with(
+            'provinces:id,name,country_id',
+            'provinces.cities:id,name,province_id'
+        )->get(['id', 'name']);
         $divisions = Division::get();
         $customer_types = CustomerType::get();
         $farm_types = FarmType::get();
         $farm_subtypes = FarmSubtype::get();
         $contact_persons = ConductPerson::get();
-        return view('partymanagement.customers.create', compact('countries', 'party', 'divisions', 'customer_types', 'farm_types', 'farm_subtypes','contact_persons'));
+
+        return view('partymanagement.customers.create', compact(
+            'countries',
+            'party',
+            'divisions',
+            'customer_types',
+            'farm_types',
+            'farm_subtypes',
+            'contact_persons'
+        ));
     }
 
-    public function store(Request $request)
+    public function store(StorePartyQuickRequest $request, StorePartyQuickAction $action)
     {
-        $validator = Validator::make($request->all(),[
-            'name' => 'bail|required|string',
-            'contact_no' => 'bail|required|numeric',
-            'email' => 'bail|required|string',
-            'farm_name' => 'bail|string',
-            'address' => 'bail|required|string',
-            'image_file' => 'nullable',
-        ]);
+        try {
+            $partyId = (int) $request->input('customer_id_modal', 0);
+            $action->execute(
+                $request->validated(),
+                $request->file('image_file'),
+                $this->auth_user_id,
+                ['is_customer' => 1, 'is_vendor' => 0]
+            );
 
-        if($validator->fails()){
             return response()->json([
-                'error' => $validator->errors()->toArray(),
+                'message' => $partyId > 0
+                    ? 'A customer Updated successfully!'
+                    : 'New customer created successfully!',
+                'success' => 'yes',
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'error' => $e->errors(),
                 'success' => 'no',
             ], 201);
-        }
-        if($request->customer_id_modal > 0){
-            $customer_data = Customer::find($request->customer_id_modal);
-        }else{
-            $customer_data = null;
-        }
-        // $country = $session?->user?->getAddress()?->country;
-        if ($request->hasFile('image_file')) {
-            if($customer_data?->image != null && \Storage::disk('public')->exists('customers/'.$customer_data?->image)){
-                \Storage::disk('public')->delete('customers/'.$customer_data?->image);
+        } catch (\Throwable $e) {
+            Log::error($e);
+            if (app()->environment('testing')) {
+                throw $e;
             }
-            $path = 'customers/';
-            $image_file = $request->file('image_file');
-            $extension = $request->file('image_file')->extension();
-            $imageName = time().mt_rand(10,99).'.'.$extension;
-            $upload = $image_file->storeAs($path, $imageName, 'public');
-        }else{
-            $imageName = null;
-        }
 
-        if($request->customer_id_modal > 0){
-            if($customer_data !=''){
-                $message = 'A customer Updated successfully!';
-                $success = 'yes';
-                if($customer_data->image !='' && $imageName == null){
-                    $imageName = $customer_data->image;
-                }
-                $update_customer = $customer_data->update([
-                    'name' => $request->name,
-                    'contact_no' => $request->contact_no,
-                    'email' => $request->email,
-                    'farm_name' => $request->farm_name,
-                    'address' => $request->address,
-                    'updatedby' => $this->auth_user_id,
-                    'image' => $imageName,
-                ]);
-            }else{
-                $message = 'No customer found against thi id';
-                $success = 'no';
-            }
-        }else{
-            $customer = Customer::create([
-                'name' => $request->name,
-                'contact_no' => $request->contact_no,
-                'email' => $request->email,
-                'farm_name' => $request->farm_name,
-                'type' => 'customer',
-                'address' => $request->address,
-                'image' => $imageName,
-                'addedby' => $this->auth_user_id,
-            ]);
-            if($customer){
-                $message = 'New customer created successfully!';
-                $success = 'yes';
-            }else{
-                $message = 'Something went wrong';
-                $success = 'no';
-            }
+            return response()->json([
+                'message' => 'Something went wrong',
+                'success' => 'no',
+            ], 200);
         }
-        return response()->json([
-            'message' => $message,
-            'success' => $success,
-        ], 200);
     }
 
     public function show($id)
     {
-        $customer = Party::customer(1)->find($id);
-        if($customer){
+        $customer = Party::customer(1)->with('farm')->find($id);
+        if ($customer) {
             $html_data = \View::make('layouts._partial.customerdetail', compact('customer'))->render();
-            $message = 'Cutomer Detail Data';
-            $success = 'yes';
-        }else{
-            $message = 'No customer found against this id';
-            $success = 'no';
-            $html_data = '';
-        }
-        return response()->json([
-            'message' => $message,
-            'success' => $success,
-            'html_data' => $html_data,
-        ], 201);
 
-        return response()->json($data, 200, $headers);
+            return response()->json([
+                'message' => 'Cutomer Detail Data',
+                'success' => 'yes',
+                'html_data' => $html_data,
+            ], 201);
+        }
+
+        return response()->json([
+            'message' => 'No customer found against this id',
+            'success' => 'no',
+            'html_data' => '',
+        ], 201);
     }
 
     public function edit($id)
     {
-        $customer = Customer::find($id);
-        if($customer){
-            $message = 'yes';
+        $party = Party::with('farm:id,party_id,farm_name')->find($id);
+        if ($party) {
             return response()->json([
-                'message' => $message,
-                'customer' => $customer->toArray(),
+                'message' => 'yes',
+                'customer' => [
+                    'id' => $party->id,
+                    'name' => $party->name,
+                    'contact_no' => $party->contact_no,
+                    'email' => $party->email,
+                    'farm_name' => $party->farm?->farm_name,
+                    'address' => $party->address,
+                    'image' => $party->profile_picture,
+                ],
             ], 201);
         }
     }
-    
-    public function destroy($id)
+
+    public function destroy($id, DestroyPartyAction $action)
     {
-        $customer = Customer::findOrFail($id);
-        $img_path = 'customers/'.$customer?->image;
-        if($customer?->image != null && \Storage::disk('public')->exists($img_path)){
-            \Storage::disk('public')->delete($img_path);
-        }
-        $customer->delete();
-        return redirect()->route('customer.index');
+        $party = Party::customer(1)->findOrFail($id);
+        $action->execute($party);
+
+        return redirect()->route('customers.index');
     }
 }

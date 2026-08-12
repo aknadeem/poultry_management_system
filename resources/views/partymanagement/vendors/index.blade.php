@@ -126,7 +126,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                                         Edit
                                     </a>
                                     <a class="btn btn-danger btn-sm delete-confirm"
-                                        href="{{route('customers.destroy', $customer->id ?? 0)}}"
+                                        href="{{route('vendors.destroy', $customer->id ?? 0)}}"
                                         del_title="Cutomer abc" title="Click to delete" tabindex="0" data-plugin="tippy"
                                         data-tippy-animation="scale" data-tippy-arrow="true"><i class="fa fa-trash"></i>
                                         Delete

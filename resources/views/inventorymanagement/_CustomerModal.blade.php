@@ -83,7 +83,7 @@
             $('#customerIdModal').val(customer_id);
             if(customer_id > 0){
                 $('.AddUpdate').html('Update');
-                $.get("/customer/"+customer_id+"/edit", function(cdata, status){
+                $.get("{{ url('/partymanagement/customers') }}/"+customer_id+"/edit", function(cdata, status){
                     console.log(cdata)
                     // alert(Task_AssignTo);
                     $('#customerIdModal').val(cdata?.customer?.id)
@@ -92,7 +92,7 @@
                     $('#customerEmail').val(cdata?.customer?.email)
                     $('#customerFarmName').val(cdata?.customer?.farm_name)
                     $('#customerAddress').val(cdata?.customer?.address)
-                    let img_url = "{{ asset('storage/customers/')}}"
+                    let img_url = "{{ asset('storage/party/')}}"
                     if(cdata?.customer?.image !=''){
                         $(".img-holder").empty();
                         img_url = img_url+'/'+cdata?.customer?.image;
@@ -112,10 +112,10 @@
             e.preventDefault();
             let EcustomerId = parseInt($('#customerIdModal').val());
             let form_type = 'POST'
-            let form_url = "{{ url('/customer')}}"
+            let form_url = "{{ url('/partymanagement/customers')}}"
             // if(EcustomerId > 0){
             //     form_type = 'PATCH'
-            //     form_url = "{{ url('/customer')}}/"+EcustomerId
+            //     form_url = "{{ url('/partymanagement/customers')}}/"+EcustomerId
             // }
             let CustomerForm = this;
             $.ajax({

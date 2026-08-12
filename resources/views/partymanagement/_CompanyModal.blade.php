@@ -89,7 +89,7 @@
                     $('#companyEmail').val(cdata?.company?.email)
                     $('#companyAddress').val(cdata?.company?.address)
                     $('#companyDescription').val(cdata?.company?.description)
-                    let img_url = "{{ asset('storage/companies/')}}"
+                    let img_url = "{{ asset('storage/party/company/')}}"
                     if(cdata?.company?.company_logo !=''){
                         $(".img-holder").empty();
                         img_url = img_url+'/'+cdata?.company?.company_logo;

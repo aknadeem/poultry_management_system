@@ -1,205 +1,145 @@
 <?php
 
-
 namespace App\Http\Controllers\PartyManagement;
 
-use App\Models\Company;
-use App\Models\PartyCompany;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Actions\PartyManagement\DestroyPartyCompanyAction;
+use App\Actions\PartyManagement\StorePartyCompanyAction;
+use App\Actions\PartyManagement\UpdateActiveStatusAction;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Schema;
+use App\Http\Requests\PartyManagement\StorePartyCompanyRequest;
+use App\Models\PartyCompany;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Validator;
-use App\Http\Requests\CustomerFormRequest;
 
 class CompaniesController extends Controller
 {
     private $auth_user_id;
+
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $this->auth_user_id= \Auth::user()->id;
+            $this->auth_user_id = \Auth::user()->id;
+
             return $next($request);
         });
     }
 
     public function index()
     {
-        $companies = PartyCompany::with('businesstype:id,name','vendor:id,name')->get();
+        $companies = PartyCompany::with('businesstype:id,name', 'vendor:id,name')->get();
+
         return view('partymanagement.company.index', compact('companies'));
     }
 
-    public function store(Request $request)
+    public function store(StorePartyCompanyRequest $request, StorePartyCompanyAction $action)
     {
-        $validator = Validator::make($request->all(),[
-            'name' => 'bail|required|string',
-            'contact_no' => 'bail|required|numeric',
-            'email' => 'bail|required|string',
-            'farm_name' => 'bail|string',
-            'address' => 'bail|required|string',
-            'image_file' => 'nullable',
-            'description' => 'nullable|string',
-        ]);
+        try {
+            $companyId = (int) $request->input('company_id_modal', 0);
+            $action->execute(
+                $request->validated(),
+                $request->file('image_file'),
+                $this->auth_user_id
+            );
 
-        if($validator->fails()){
             return response()->json([
-                'error' => $validator->errors()->toArray(),
+                'message' => $companyId > 0
+                    ? 'A Company Data Updated successfully!'
+                    : 'New Company Data created successfully!',
+                'success' => 'yes',
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'error' => $e->errors(),
                 'success' => 'no',
             ], 201);
-        }
-        
-        if($request->company_id_modal > 0){
-            $company_data = Company::find($request->company_id_modal);
-        }else{
-            $company_data = null;
-        }
-        // $country = $session?->user?->getAddress()?->country;
-        if ($request->hasFile('image_file')) {
-            if($company_data?->company_logo != null && \Storage::disk('public')->exists('companies/'.$company_data?->company_logo)){
-                \Storage::disk('public')->delete('companies/'.$company_data?->company_logo);
+        } catch (\Throwable $e) {
+            Log::error($e);
+            if (app()->environment('testing')) {
+                throw $e;
             }
-            $path = 'companies/';
-            $image_file = $request->file('image_file');
-            $extension = $request->file('image_file')->extension();
-            $imageName = time().mt_rand(10,99).'.'.$extension;
-            $upload = $image_file->storeAs($path, $imageName, 'public');
-        }else{
-            $imageName = null;
-        }
 
-        if($request->company_id_modal > 0){
-            if($company_data !=''){
-                $message = 'A Company Data Updated successfully!';
-                $success = 'yes';
-                if($company_data->image !='' && $imageName == null){
-                    $imageName = $company_data->image;
-                }
-                $update_company = $company_data->update([
-                    'name' => $request->name,
-                    'contact_no' => $request->contact_no,
-                    'email' => $request->email,
-                    'address' => $request->address,
-                    'company_logo' => $imageName,
-                    'description' => $request->description,
-                    'updatedby' => $this->auth_user_id,
-                ]);
-            }else{
-                $message = 'No Company detail found against this id';
-                $success = 'no';
-            }
-        }else{
-            $company = Company::create([
-                'name' => $request->name,
-                'contact_no' => $request->contact_no,
-                'email' => $request->email,
-                'address' => $request->address,
-                'company_logo' => $imageName,
-                'description' => $request->description,
-                'addedby' => $this->auth_user_id,
-            ]);
-            if($company){
-                $message = 'New Company Data created successfully!';
-                $success = 'yes';
-            }else{
-                $message = 'Something went wrong';
-                $success = 'no';
-            }
+            return response()->json([
+                'message' => 'Something went wrong',
+                'success' => 'no',
+            ], 200);
         }
-        return response()->json([
-            'message' => $message,
-            'success' => $success,
-        ], 200);
     }
 
     public function show($id)
     {
         $data = PartyCompany::with('businesstype', 'vendor:id,name')->find($id);
-        if($data){
+        if ($data) {
             $html_data = \View::make('layouts._partial.companydetail', compact('data'))->render();
-            $message = 'Company Detail Data';
-            $success = 'yes';
-        }else{
-            $message = 'No company detail found against this id';
-            $success = 'no';
-            $html_data = '';
+
+            return response()->json([
+                'message' => 'Company Detail Data',
+                'success' => 'yes',
+                'html_data' => $html_data,
+            ], 201);
         }
+
         return response()->json([
-            'message' => $message,
-            'success' => $success,
-            'html_data' => $html_data,
+            'message' => 'No company detail found against this id',
+            'success' => 'no',
+            'html_data' => '',
         ], 201);
     }
 
-    public function updateStatus($id, $tablename)
+    public function updateStatus($id, $tablename, UpdateActiveStatusAction $action)
     {
-        if ($tablename !='' && Schema::hasTable($tablename) ) {
-            $company_data = DB::table($tablename)->where('id',$id)->first();
-
-            if ($company_data->is_active == 0) {
-                $status = 1;
-            }else{
-                $status = 0;
-            }
-
-            $company = DB::table($tablename)->where('id',$id)->update(['is_active' => $status, 'updatedby' => $this->auth_user_id]);
-            if($company){
-                $message = 'Data Updated successfully!';
-                $success = 'yes';
-                $title = 'Success';
-                $icon_type = 'success';
-            }else{
-                $message = 'Data not updated, Something went wrong';
-                $success = 'no';
-                $title = 'Warning';
-                $icon_type = 'warning';
-            }
-        }else{
-            $message = 'Data not updated, Something went wrong';
-            $success = 'no';
-            $title = 'Warning';
-            $icon_type = 'warning';
+        try {
+            $action->execute((int) $id, (string) $tablename, $this->auth_user_id);
+            Session::flash('swal_notification', [
+                'title' => 'Success',
+                'icon_type' => 'success',
+                'message' => 'Data Updated successfully!',
+            ]);
+        } catch (\Throwable $e) {
+            Log::error($e);
+            Session::flash('swal_notification', [
+                'title' => 'Warning',
+                'icon_type' => 'warning',
+                'message' => 'Data not updated, Something went wrong',
+            ]);
         }
-        Session::flash('swal_notification', ['title' => $title, 'icon_type' => $icon_type, 'message' => $message]);
+
         return back();
     }
 
     public function getCompaniesList()
     {
         $companies = PartyCompany::get();
-        if($companies->count()  > 0){
-            $success = 'yes';
-            $data = $companies;
-        }else{
-            $success = 'no';
-            $data = $companies;
-        }
+
         return response()->json([
-            'success' => $success,
-            'companies' => $data,
+            'success' => $companies->count() > 0 ? 'yes' : 'no',
+            'companies' => $companies,
         ], 201);
     }
 
     public function edit($id)
     {
-        $company = PartyCompany::find($id);
-        if($company){
-            $message = 'yes';
+        $company = PartyCompany::with('vendor:id,name,contact_no,email,description')->find($id);
+        if ($company) {
             return response()->json([
-                'message' => $message,
-                'company' => $company->toArray(),
+                'message' => 'yes',
+                'company' => [
+                    'id' => $company->id,
+                    'name' => $company->company_name,
+                    'contact_no' => $company->vendor?->contact_no,
+                    'email' => $company->vendor?->email,
+                    'address' => $company->company_address,
+                    'description' => $company->vendor?->description,
+                    'company_logo' => $company->company_logo,
+                ],
             ], 201);
         }
     }
-    
-    public function destroy($id)
+
+    public function destroy($id, DestroyPartyCompanyAction $action)
     {
         $company = PartyCompany::findOrFail($id);
-        $img_path = 'party/company/'.$company?->company_logo;
-        if($company?->company_logo != null && \Storage::disk('public')->exists($img_path)){
-            \Storage::disk('public')->delete($img_path);
-        }
-        $company->delete();
+        $action->execute($company);
+
         return redirect()->route('company.index');
     }
 }

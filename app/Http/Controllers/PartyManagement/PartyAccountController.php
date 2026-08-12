@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers\PartyManagement;
 
-use App\Models\Company;
-use App\Models\PartyAccount;
-use Illuminate\Http\Request;
+use App\Actions\PartyManagement\DestroyPartyAccountAction;
+use App\Actions\PartyManagement\StorePartyAccountAction;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
-use App\Http\Requests\CustomerFormRequest;
+use App\Http\Requests\PartyManagement\StorePartyAccountRequest;
+use App\Models\PartyAccount;
+use Illuminate\Support\Facades\Log;
 
 class PartyAccountController extends Controller
 {
     private $auth_user_id;
+
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $this->auth_user_id= \Auth::user()->id;
+            $this->auth_user_id = \Auth::user()->id;
+
             return $next($request);
         });
     }
@@ -23,96 +25,59 @@ class PartyAccountController extends Controller
     public function index()
     {
         $party_accounts = PartyAccount::get();
+
         return view('partymanagement.company.index', compact('party_accounts'));
     }
 
-    public function store(Request $request)
+    public function store(StorePartyAccountRequest $request, StorePartyAccountAction $action)
     {
-        $validator = Validator::make($request->all(),[
-            'party_id' => 'bail|required|integer',
-            'account_title' => 'bail|required|string',
-            'account_number' => 'bail|required|string',
-            'bank_name' => 'bail|required|string',
-            'branch_code' => 'bail|nullable|string',
-            'opening_balance' => 'bail|required|numeric',
-        ]);
+        try {
+            $accountId = (int) $request->input('party_account_id', 0);
+            $action->execute($request->validated(), $this->auth_user_id);
 
-        if($validator->fails()){
             return response()->json([
-                'error' => $validator->errors()->toArray(),
+                'message' => $accountId > 0 ? 'A Data Updated successfully!' : 'Data created successfully!',
+                'success' => 'yes',
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'error' => $e->errors(),
                 'success' => 'no',
             ], 201);
-        }
-        
-        if($request->party_account_id > 0){
-            $party_account = PartyAccount::find($request->party_account_id);
-        }else{
-            $party_account = null;
-        }
+        } catch (\Throwable $e) {
+            Log::error($e);
+            if (app()->environment('testing')) {
+                throw $e;
+            }
 
-        if($request->party_account_id > 0){
-            if($party_account !=''){
-                $message = 'A Data Updated successfully!';
-                $success = 'yes';
-                $update_account = $party_account->update([
-                    'party_id' => $request->party_id,
-                    'account_title' => $request->account_title,
-                    'account_number' => $request->account_number,
-                    'bank_name' => $request->bank_name,
-                    // 'branch_code' => $request->branch_code,
-                    'opening_balance' => $request->opening_balance,
-                    'updatedby' => $this->auth_user_id,
-                ]);
-            }else{
-                $message = 'No data found against this id';
-                $success = 'no';
-            }
-        }else{
-            $PartyAccount = PartyAccount::create([
-                'party_id' => $request->party_id,
-                'account_title' => $request->account_title,
-                'account_number' => $request->account_number,
-                'bank_name' => $request->bank_name,
-                // 'branch_code' => $request->branch_code,
-                'opening_balance' => $request->opening_balance,
-                'dr' => $request->opening_balance,
-                'addedby' => $this->auth_user_id,
-            ]);
-            if($PartyAccount){
-                $message = 'Data created successfully!';
-                $success = 'yes';
-            }else{
-                $message = 'Something went wrong';
-                $success = 'no';
-            }
+            return response()->json([
+                'message' => 'Something went wrong',
+                'success' => 'no',
+            ], 200);
         }
-        return response()->json([
-            'message' => $message,
-            'success' => $success,
-        ], 200);
     }
 
     public function show($id)
     {
-       return 0;
+        return 0;
     }
 
     public function edit($id)
     {
         $party_account = PartyAccount::find($id);
-        if($party_account){
-            $message = 'yes';
+        if ($party_account) {
             return response()->json([
-                'message' => $message,
+                'message' => 'yes',
                 'party_account' => $party_account->toArray(),
             ], 201);
         }
     }
-    
-    public function destroy($id)
+
+    public function destroy($id, DestroyPartyAccountAction $action)
     {
-        $party_account = PartyAccount::findOrFail($id);
-        $party_account->delete();
+        $account = PartyAccount::findOrFail($id);
+        $action->execute($account);
+
         return redirect()->route('company.index');
     }
 }

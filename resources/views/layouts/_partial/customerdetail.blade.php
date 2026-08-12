@@ -4,7 +4,10 @@
 </div>
 <div class="card-body">
     <div class="d-flex align-items-start mb-1">
-        @if ($customer?->image !='')
+        @if ($customer?->profile_picture !='')
+        <img class="d-flex me-3 rounded-circle avatar-lg" src="{{ asset('storage/party/'.$customer?->profile_picture) ?? ''}}"
+            alt="No image">
+        @elseif ($customer?->image !='')
         <img class="d-flex me-3 rounded-circle avatar-lg" src="{{ asset('storage/customers/'.$customer?->image) ?? ''}}"
             alt="No image">
         @elseif ($customer?->company_logo !='')
@@ -20,7 +23,7 @@
             @if ($customer?->department)
             <p class=""><i class=" mdi mdi-office-building"></i> {{$customer?->department ?? ''}}</p>
             @else
-            <p class=""><i class=" mdi mdi-office-building"></i> {{$customer?->farm_name ?? ''}}</p>
+            <p class=""><i class=" mdi mdi-office-building"></i> {{$customer?->farm?->farm_name ?? $customer?->farm_name ?? ''}}</p>
             @endif
 
         </div>
