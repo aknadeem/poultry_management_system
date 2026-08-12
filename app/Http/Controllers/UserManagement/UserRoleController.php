@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\UserManagement;
 
-use App\Models\UserLevel;
+use App\Models\UserRole;
 use Illuminate\Http\Request;
 use DataTables;
 use App\Http\Controllers\Controller;
 
-class UserLevelController extends Controller
+class UserRoleController extends Controller
 {
     private $auth_user_id;
     public function __construct()
@@ -18,16 +18,16 @@ class UserLevelController extends Controller
         });
     }
 
-    public function getUserLevelsList()
+    public function getUserRolesList()
     {
-        $users = UserLevel::orderBy('id','DESC')->get();
-        return DataTables::of($users)
+        $roles = UserRole::orderBy('id','DESC')->get();
+        return DataTables::of($roles)
             ->addIndexColumn()
             ->make(true);
     }
 
     public function index()
     {
-        return view('usermanagement.userlevels.index');
+        return view('usermanagement.userroles.index');
     }
 }

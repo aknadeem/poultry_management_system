@@ -44,7 +44,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                         <thead>
                             <th>#</th>
                             <th>Name</th>
-                            <th>UserLevel</th>
+                            <th>User Role</th>
                             <th>Email</th>
                             <th>Actions</th>
                         </thead>
@@ -82,7 +82,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
             columns:[
                 {data:'DT_RowIndex'},
                 {data:'name'},
-                {data:'user_level_id'},
+                {data:'user_role_id'},
                 {data:'email'},
                 {data:'Actions'},
             ]

@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use App\Models\UserLevel;
+use App\Models\UserRole;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -11,21 +11,23 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
-        $this->userLevelSeeder();
+        $this->userRoleSeeder();
 		$user = [
             [
                 'name' => 'Super Admin',
                 'email' => 'admin@admin.com',
-                'user_level_id' => 1,
+                'user_role_id' => 1,
                 'password' => Hash::make(1234),
             ],
         ];
-        User::insert($user);
+        if (User::where('email', 'admin@admin.com')->doesntExist()) {
+            User::insert($user);
+        }
     }
 
-    protected function userLevelSeeder()
+    protected function userRoleSeeder()
     {
-    	if (UserLevel::count() == 0){
+    	if (UserRole::count() == 0){
 	        $data = [
 			    [
 			       'name' => 'Super Admin',
@@ -39,9 +41,9 @@ class UserSeeder extends Seeder
 			    ],
 			];
 
-			UserLevel::insert($data);
+			UserRole::insert($data);
 		} else {
-			echo "*UserLevel* Table Already has Data\n";
+			echo "*UserRole* Table Already has Data\n";
 		}
     }
 }

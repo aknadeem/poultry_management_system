@@ -39,7 +39,7 @@ test('model unguard is not globally enabled', function () {
 
 test('user model has relationship methods', function () {
     $user = new \App\Models\User();
-    expect(method_exists($user, 'userlevel'))->toBeTrue();
+    expect(method_exists($user, 'userRole'))->toBeTrue();
 });
 
 test('employee model can be instantiated', function () {

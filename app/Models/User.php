@@ -46,8 +46,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function userlevel()
+    public function userRole()
     {
-        return $this->belongsTo('App\Models\UserLevel', 'user_level_id', 'id');
+        return $this->belongsTo(\App\Models\UserRole::class, 'user_role_id', 'id');
     }
 }

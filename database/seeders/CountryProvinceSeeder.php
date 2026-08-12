@@ -70,9 +70,27 @@ class CountryProvinceSeeder extends Seeder
 
     protected function createCities()
     {
-    	$path = base_path().'/database/seeders/cities.sql';
-      	$sql = file_get_contents($path);
-      	DB::statement($sql);
-      	$this->command->info('Cities Seeded From SQL File');
+        if (City::count() > 0) {
+            echo "*City* Table Already has Data\n";
+            return;
+        }
+
+        if (DB::getDriverName() === 'sqlite') {
+            City::insert([
+                ['id' => 1, 'name' => 'Lahore', 'province_id' => 6],
+                ['id' => 2, 'name' => 'Karachi', 'province_id' => 7],
+                ['id' => 3, 'name' => 'Islamabad', 'province_id' => 4],
+                ['id' => 4, 'name' => 'Peshawar', 'province_id' => 5],
+                ['id' => 5, 'name' => 'Rawalpindi', 'province_id' => 6],
+                ['id' => 6, 'name' => 'Faisalabad', 'province_id' => 6],
+            ]);
+            $this->command?->info('Cities seeded (SQLite subset)');
+            return;
+        }
+
+        $path = base_path().'/database/seeders/cities.sql';
+        $sql = file_get_contents($path);
+        DB::statement($sql);
+        $this->command?->info('Cities Seeded From SQL File');
     }
 }

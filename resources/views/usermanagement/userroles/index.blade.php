@@ -16,10 +16,10 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                         <li class="breadcrumb-item"><a href="#">Home</a>
                         </li>
                         <li class="breadcrumb-item active">UserManagement</li>
-                        <li class="breadcrumb-item active">UserLevel</li>
+                        <li class="breadcrumb-item active">User Role</li>
                     </ol>
                 </div>
-                <h4 class="page-title">UserLevels</h4>
+                <h4 class="page-title">User Roles</h4>
             </div>
         </div>
     </div>
@@ -29,7 +29,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                 <div class="card-body">
                     <div class="row mb-2">
                         <div class="col-6 align-self-start">
-                            <h4>UserLevel</h4>
+                            <h4>User Role</h4>
                         </div>
                         <div class="col-6 align-self-end text-end mb-2">
                             {{-- <a class="btn btn-secondary btn-sm openUserModal" href="javascript:void(0);" UserId="0"
@@ -72,7 +72,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
             processing: true,
             serverSide: true,
             info: true,
-            ajax: "{{ route('userlevel.list')}}",
+            ajax: "{{ route('userrole.list')}}",
             // "start": "0",
             // "length": "10",
             "pageLength":10,

@@ -21,9 +21,9 @@ class ProductPurchase extends Model
         return $this->belongsTo('App\Models\Product', 'product_id', 'id');
     }
 
-    protected $dates = ['created_at','updated_at','deleted_at', 'purchase_date'];
-
     protected $casts = [
+        'purchase_date' => 'date',
+        'expiry_date' => 'date',
         'quantity' => 'integer',
         'total_quantity' => 'integer',
         'purchase_price' => 'decimal:2',

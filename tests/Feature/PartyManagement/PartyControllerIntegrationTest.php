@@ -12,14 +12,14 @@ use App\Models\PartyCompany;
 use App\Models\PartyFarm;
 use App\Models\Province;
 use App\Models\User;
-use App\Models\UserLevel;
+use App\Models\UserRole;
 use App\Models\VendorType;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 function seedPartyActionFixture(): array
 {
-    $userLevelId = UserLevel::query()->insertGetId([
+    $userRoleId = UserRole::query()->insertGetId([
         'name' => 'Admin',
         'slug' => 'admin',
         'created_at' => now(),
@@ -30,7 +30,7 @@ function seedPartyActionFixture(): array
         'name' => 'Creator User',
         'email' => 'creator@example.com',
         'password' => bcrypt('password'),
-        'user_level_id' => $userLevelId,
+        'user_role_id' => $userRoleId,
         'created_at' => now(),
         'updated_at' => now(),
     ]);
@@ -39,7 +39,7 @@ function seedPartyActionFixture(): array
         'name' => 'Updater User',
         'email' => 'updater@example.com',
         'password' => bcrypt('password'),
-        'user_level_id' => $userLevelId,
+        'user_role_id' => $userRoleId,
         'created_at' => now(),
         'updated_at' => now(),
     ]);

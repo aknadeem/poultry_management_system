@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\UserManagement\{ UserController, UserLevelController};
+use App\Http\Controllers\UserManagement\{ UserController, UserRoleController};
 use App\Http\Controllers\PoultryShed\ {
     PoultryShedController, EmployeeController, CustomerFarmController
 };
@@ -67,12 +67,12 @@ Route::group(['middleware' => 'auth'], function(){
 
     Route::group(['prefix' => '/usermanagement'], function(){
         Route::get('/get-users-list', [UserController::class, 'getUsersList'])->name('getUsersList');
-        Route::get('/get-userlevels', [UserController::class, 'getUserLevelList'])->name('getUserLevelList');
+        Route::get('/get-user-roles', [UserController::class, 'getUserRoleList'])->name('getUserRoleList');
         Route::resource('users', UserController::class)->except(['create', 'update']);
 
-        Route::get('/user-level-list', [UserLevelController::class, 'getUserLevelsList'])->name('userlevel.list');
+        Route::get('/user-role-list', [UserRoleController::class, 'getUserRolesList'])->name('userrole.list');
 
-        Route::resource('userlevel', UserLevelController::class)->only(['index']);
+        Route::resource('userrole', UserRoleController::class)->only(['index']);
     });
     
     Route::group(['prefix' => '/partymanagement'], function(){

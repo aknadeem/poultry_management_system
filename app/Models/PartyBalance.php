@@ -12,9 +12,8 @@ class PartyBalance extends Model
     protected $guarded = [];
     use SoftDeletes,  HasFactory;
 
-    protected $dates = ['created_at','updated_at', 'transaction_date'];
-
     protected $casts = [
+        'transaction_date' => 'date',
         'total_amount' => 'decimal:2',
         'paid_amount' => 'decimal:2',
         'remaining_amount' => 'decimal:2',

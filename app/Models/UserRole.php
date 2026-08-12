@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserLevel extends Model
+class UserRole extends Model
 {
+    use HasFactory;
+
     protected $guarded = [];
 
-    protected $table = 'user_levels';
-    use HasFactory;
-    protected $dates = ['created_at','updated_at'];
+    protected $dates = ['created_at', 'updated_at'];
 }

@@ -230,8 +230,8 @@ dataset('datatable endpoints', [
     'users' => [
         'getUsersList',
         [],
-        ['DT_RowIndex', 'name', 'user_level_id', 'email', 'Actions'],
-        'data.0.user_level_id',
+        ['DT_RowIndex', 'name', 'user_role_id', 'email', 'Actions'],
+        'data.0.user_role_id',
         '<span>Super Admin</span>',
     ],
     'party balances' => [
@@ -335,7 +335,7 @@ it('returns the fields consumed by :dataset', function (
 
 dataset('JSON lookup endpoints', [
     'companies' => ['getCompaniesList', 'companies', 'company_name', 'Fixture Company'],
-    'user levels' => ['getUserLevelList', 'userlevels', 'name', 'Super Admin'],
+    'user roles' => ['getUserRoleList', 'userroles', 'name', 'Super Admin'],
 ]);
 
 it('preserves the JSON lookup contract for :dataset', function (

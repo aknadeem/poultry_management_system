@@ -13,7 +13,7 @@ class CreateUserLevelsTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_levels', function (Blueprint $table) {
+        Schema::create('user_roles', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('slug')->unique();
@@ -28,6 +28,6 @@ class CreateUserLevelsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_levels');
+        Schema::dropIfExists('user_roles');
     }
 }

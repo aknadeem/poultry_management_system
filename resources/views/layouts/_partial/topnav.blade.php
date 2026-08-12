@@ -240,9 +240,9 @@
                             </div>
 
                             <div class="dropdown">
-                                <a class="dropdown-item arrow-none" href="{{ route('userlevel.index') }}"
+                                <a class="dropdown-item arrow-none" href="{{ route('userrole.index') }}"
                                     id="topnav-form" role="button">
-                                    <i class="fa fa-users"></i> UserLevels
+                                    <i class="fa fa-users"></i> User Roles
                                 </a>
                             </div>
                         </div>

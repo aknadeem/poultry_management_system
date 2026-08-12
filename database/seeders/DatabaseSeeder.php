@@ -9,11 +9,14 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
         $this->call([
-            CountryProvinceSeeder::class,  
-            UserSeeder::class,  
-            ExpenseCategorySeed::class,  
-	    ]); 
+            CountryProvinceSeeder::class,
+            UserSeeder::class,
+            ExpenseCategorySeed::class,
+	    ]);
+
+        if (app()->environment('local') && env('SEED_DEMO', false)) {
+            $this->call(DemoSeeder::class);
+        }
     }
 }

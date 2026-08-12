@@ -5,7 +5,7 @@ namespace App\Http\Controllers\UserManagement;
 use Session;
 use DataTables;
 use App\Models\User;
-use App\Models\UserLevel;
+use App\Models\UserRole;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -23,11 +23,11 @@ class UserController extends Controller
 
     public function getUsersList()
     {
-        $users = User::with('userlevel:id,name,slug')->orderBy('id','DESC')->get();
+        $users = User::with('userRole:id,name,slug')->orderBy('id','DESC')->get();
         return DataTables::of($users)
             ->addIndexColumn()
-            ->addColumn('user_level_id', function($row){
-                return '<span>'.$row?->userlevel?->name.'</span>';
+            ->addColumn('user_role_id', function($row){
+                return '<span>'.$row?->userRole?->name.'</span>';
             })
             ->addColumn('Actions', function($row){
                 return ' <a class="btn btn-secondary btn-sm ViewUserModal"
@@ -50,7 +50,7 @@ class UserController extends Controller
                 Delete
             </a>';
             })
-            ->rawColumns(['user_level_id','Actions'])
+            ->rawColumns(['user_role_id','Actions'])
             ->make(true);
     }
 
@@ -59,19 +59,19 @@ class UserController extends Controller
         return view('usermanagement.users.index');
     }
 
-    public function getUserLevelList()
+    public function getUserRoleList()
     {
-        $userlevels = UserLevel::get(['id','name']);
-        if($userlevels->count()  > 0){
+        $userRoles = UserRole::get(['id','name']);
+        if($userRoles->count()  > 0){
             $success = 'yes';
-            $data = $userlevels;
+            $data = $userRoles;
         }else{
             $success = 'no';
-            $data = $userlevels;
+            $data = $userRoles;
         }
         return response()->json([
             'success' => $success,
-            'userlevels' => $data,
+            'userroles' => $data,
         ], 201);
 
     }
@@ -80,7 +80,7 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'name' => 'bail|required|string',
-            'user_level_id' => 'bail|required|integer',
+            'user_role_id' => 'bail|required|integer',
             'email' => 'bail|required|string',
             'password' => 'bail|required|string',
             'contact_no' => 'bail|required|string',
@@ -123,7 +123,7 @@ class UserController extends Controller
                 $update_user = $user_data->update([
                     'name' => $request->name,
                     'email' => $request->email,
-                    'user_level_id' => $request->user_level_id,
+                    'user_role_id' => $request->user_role_id,
                     'contact_no' => $request->contact_no,
                     'password' => $request->password,
                     'picture' => $imageName,
@@ -137,7 +137,7 @@ class UserController extends Controller
             $sv_user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'user_level_id' => $request->user_level_id,
+                'user_role_id' => $request->user_role_id,
                 'contact_no' => $request->contact_no,
                 'password' => $request->password,
                 'picture' => $imageName,
@@ -178,7 +178,7 @@ class UserController extends Controller
 
     public function edit($id)
     {
-        $user = User::with('userlevel:id,name')->find($id);
+        $user = User::with('userRole:id,name')->find($id);
         if($user){
             $message = 'yes';
             return response()->json([

@@ -9,17 +9,14 @@ class ExpenseCategorySeed extends Seeder
 {
     public function run()
     {
-		$data = [
-            [
-                'name' => 'Employee Salary',
-            ], 
-            [
-                'name' => 'Electricity',
-            ], 
-            [
-                'name' => 'Water Material',
-            ],
+        $names = [
+            'Employee Salary',
+            'Electricity',
+            'Water Material',
         ];
-        ExpenseCategory::insert($data);
+
+        foreach ($names as $name) {
+            ExpenseCategory::firstOrCreate(['name' => $name]);
+        }
     }
 }

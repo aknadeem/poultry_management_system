@@ -40,19 +40,19 @@
                         </div>
 
                         <div class="col-6 pe-0">
-                            <label for="UserLevelSelect">Select Userlevel*</label>
+                            <label for="UserRoleSelect">Select User Role*</label>
                             <div class="input-group">
-                                <select class="form-control mySelectModal" id="UserLevelSelect" name="user_level_id"
-                                    data-placeholder="Select Userlevel" data-toggle="select2" data-width="90%">
-                                    <option value="0"> Select Userlevel </option>
+                                <select class="form-control mySelectModal" id="UserRoleSelect" name="user_role_id"
+                                    data-placeholder="Select User Role" data-toggle="select2" data-width="90%">
+                                    <option value="0"> Select User Role </option>
                                 </select>
                                 <span
-                                    class="btn input-group-text btn-dark btn-sm waves-effect waves-light AddUserLevelModal"
-                                    title="Click to add new UserLevel" data-plugin="tippy" data-tippy-animation="scale"
+                                    class="btn input-group-text btn-dark btn-sm waves-effect waves-light AddUserRoleModal"
+                                    title="Click to add new User Role" data-plugin="tippy" data-tippy-animation="scale"
                                     data-tippy-arrow="true"><i class="fa fa-plus pt-1"></i>
                                 </span>
                             </div>
-                            <span class="text-danger user_level_id_error"></span>
+                            <span class="text-danger user_role_id_error"></span>
                         </div>
                         <div class="col-sm-6">
                             <label for="image">Image</label>
@@ -91,7 +91,7 @@
             });
         });
 
-        var userlevels_list = {};
+        var userroles_list = {};
 
         $('#AddModal').modal({backdrop: 'static', keyboard: false}) 
         $(document).on('click', '.openUserModal', function(){
@@ -100,7 +100,7 @@
             let User_id = parseInt($(this).attr('UserId')) || 0;
             $('#AddModal').modal('show');
 
-            getUserLevelList()
+            getUserRoleList()
 
             $('#UserIdModal').val(User_id);
             if(User_id > 0){
@@ -111,8 +111,8 @@
                     $('#UserName').val(cdata?.user?.name)
                     $('#UserContactNo').val(cdata?.user?.contact_no)
                     $('#UserEmail').val(cdata?.user?.email)
-                    $('#UserLevelSelect').val(cdata?.user?.user_level_id)
-                    $('#UserLevelSelect').change()
+                    $('#UserRoleSelect').val(cdata?.user?.user_role_id)
+                    $('#UserRoleSelect').change()
                     $('#UserPassword').val('')
                     if(cdata?.user?.picture != null){
                         let img_url = "{{ asset('storage/users/')}}"
@@ -169,18 +169,18 @@
             $('.modal').modal('hide'); 
         });
 
-        function getUserLevelList(){
+        function getUserRoleList(){
             var html_code = '';
-            $.get("{{ route('getUserLevelList') }}", function(data, status){
+            $.get("{{ route('getUserRoleList') }}", function(data, status){
                 console.log(data)
-                userlevels_list = data?.userlevels
-                if(userlevels_list?.length > 0){
-                    html_code='<option value="" Selected disabled> Select UserLevel </option>';
-                    for (var i = 0; i < userlevels_list?.length; i++) {
-                        html_code+='<option value='+userlevels_list[i].id+'>'+userlevels_list[i].name+'</option>'; 
+                userroles_list = data?.userroles
+                if(userroles_list?.length > 0){
+                    html_code='<option value="" Selected disabled> Select User Role </option>';
+                    for (var i = 0; i < userroles_list?.length; i++) {
+                        html_code+='<option value='+userroles_list[i].id+'>'+userroles_list[i].name+'</option>'; 
                     }
                 }
-                $('#UserLevelSelect').html(html_code);
+                $('#UserRoleSelect').html(html_code);
                 // $('.kt-selectpicker').selectpicker("refresh");
             });
         }
