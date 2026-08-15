@@ -54,12 +54,8 @@
         type="text/css" />
     <?php } ?>
 
-    {{--
-    <?php //if(in_array('select2',$load_css)) { ?> --}}
-    <link href="{{ asset('assets/libs/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css" />
-    {{--
-    <?php //} ?> --}}
 
+    <link href="{{ asset('assets/libs/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css" />
 
     <?php if(in_array('jquery-confirm',$load_css)) { ?>
     <link href="{{ asset('assets/js/jquery-confirm/jquery-confirm.min.css') }}" rel="stylesheet" type="text/css" />

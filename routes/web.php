@@ -18,7 +18,7 @@ use App\Http\Controllers\InventoryManagement\ {FeedController, ExpenseController
 use App\Http\Controllers\ChickenModule\ {ChickenPurchaseController, ChickenSaleController, ChickPurchaseController};
 
 use App\Http\Controllers\ProductManagement\ {
-    ProductController, ProductPurchaseController, ProductStoreController, 
+    ProductController, ProductPurchaseController, ProductStoreController,
     ProductSaleController, VaccinationController
 };
 
@@ -32,12 +32,7 @@ Auth::routes();
 
 Route::get('/testpdf', function () {
     return view('productmanagement.sales.sale_detail');
-    // return response()->file(storage_path('file.pdf'));
 });
-
-// Route::get('/testpdf', function () {
-//     return response()->download(storage_path('file.pdf'), 'save-as-pdf');
-// });
 
 Route::group(['middleware' => 'auth'], function(){
 	Route::get('/', function () {

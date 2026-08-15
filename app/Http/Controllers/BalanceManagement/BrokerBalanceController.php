@@ -13,11 +13,11 @@ use App\Http\Requests\CustomerFormRequest;
 
 class BrokerBalanceController extends Controller
 {
-    private $auth_user_id;
+    private $authUserId;
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $this->auth_user_id= \Auth::user()->id;
+            $this->authUserId= \Auth::user()->id;
             return $next($request);
         });
     }
@@ -79,7 +79,7 @@ class BrokerBalanceController extends Controller
                     'address' => $request->address,
                     'company_logo' => $imageName,
                     'description' => $request->description,
-                    'updatedby' => $this->auth_user_id,
+                    'updatedby' => $this->authUserId,
                 ]);
             }else{
                 $message = 'No Company detail found against this id';
@@ -93,7 +93,7 @@ class BrokerBalanceController extends Controller
                 'address' => $request->address,
                 'company_logo' => $imageName,
                 'description' => $request->description,
-                'addedby' => $this->auth_user_id,
+                'addedby' => $this->authUserId,
             ]);
             if($company){
                 $message = 'New Company Data created successfully!';

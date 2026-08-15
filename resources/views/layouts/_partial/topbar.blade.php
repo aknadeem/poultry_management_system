@@ -9,195 +9,197 @@
                 </a>
             </li>
 
-            <li class="dropdown d-none d-lg-inline-block topbar-dropdown">
-                <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" data-bs-toggle="dropdown"
-                    href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                    <i class="fe-grid noti-icon"></i>
-                </a>
-                <div class="dropdown-menu dropdown-lg dropdown-menu-end">
+{{--            <li class="dropdown d-none d-lg-inline-block topbar-dropdown">--}}
+{{--                <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" data-bs-toggle="dropdown"--}}
+{{--                    href="#" role="button" aria-haspopup="false" aria-expanded="false">--}}
+{{--                    <i class="fe-grid noti-icon"></i>--}}
+{{--                </a>--}}
+{{--                <div class="dropdown-menu dropdown-lg dropdown-menu-end">--}}
 
-                    <div class="p-lg-1">
-                        <div class="row g-0">
-                            <div class="col">
-                                <a class="dropdown-icon-item" href="#">
-                                    <img src="{{ asset('assets/images/brands/slack.png')}}" alt="slack">
-                                    <span>Slack</span>
-                                </a>
-                            </div>
-                            <div class="col">
-                                <a class="dropdown-icon-item" href="#">
-                                    <img src="{{ asset('assets/images/brands/github.png') }}" alt="Github">
-                                    <span>GitHub</span>
-                                </a>
-                            </div>
-                            <div class="col">
-                                <a class="dropdown-icon-item" href="#">
-                                    <img src="{{ asset('assets/images/brands/dribbble.png') }}" alt="dribbble">
-                                    <span>Dribbble</span>
-                                </a>
-                            </div>
-                        </div>
+{{--                    <div class="p-lg-1">--}}
+{{--                        <div class="row g-0">--}}
+{{--                            <div class="col">--}}
+{{--                                <a class="dropdown-icon-item" href="#">--}}
+{{--                                    <img src="{{ asset('assets/images/brands/slack.png')}}" alt="slack">--}}
+{{--                                    <span>Slack</span>--}}
+{{--                                </a>--}}
+{{--                            </div>--}}
+{{--                            <div class="col">--}}
+{{--                                <a class="dropdown-icon-item" href="#">--}}
+{{--                                    <img src="{{ asset('assets/images/brands/github.png') }}" alt="Github">--}}
+{{--                                    <span>GitHub</span>--}}
+{{--                                </a>--}}
+{{--                            </div>--}}
+{{--                            <div class="col">--}}
+{{--                                <a class="dropdown-icon-item" href="#">--}}
+{{--                                    <img src="{{ asset('assets/images/brands/dribbble.png') }}" alt="dribbble">--}}
+{{--                                    <span>Dribbble</span>--}}
+{{--                                </a>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
 
-                        <div class="row g-0">
-                            <div class="col">
-                                <a class="dropdown-icon-item" href="#">
-                                    <img src="{{ asset('assets/images/brands/bitbucket.png') }}" alt="bitbucket">
-                                    <span>Bitbucket</span>
-                                </a>
-                            </div>
-                            <div class="col">
-                                <a class="dropdown-icon-item" href="#">
-                                    <img src="{{ asset('assets/images/brands/dropbox.png') }}" alt="dropbox">
-                                    <span>Dropbox</span>
-                                </a>
-                            </div>
-                            <div class="col">
-                                <a class="dropdown-icon-item" href="#">
-                                    <img src="{{ asset('assets/images/brands/g-suite.png') }}" alt="G Suite">
-                                    <span>G Suite</span>
-                                </a>
-                            </div>
+{{--                        <div class="row g-0">--}}
+{{--                            <div class="col">--}}
+{{--                                <a class="dropdown-icon-item" href="#">--}}
+{{--                                    <img src="{{ asset('assets/images/brands/bitbucket.png') }}" alt="bitbucket">--}}
+{{--                                    <span>Bitbucket</span>--}}
+{{--                                </a>--}}
+{{--                            </div>--}}
+{{--                            <div class="col">--}}
+{{--                                <a class="dropdown-icon-item" href="#">--}}
+{{--                                    <img src="{{ asset('assets/images/brands/dropbox.png') }}" alt="dropbox">--}}
+{{--                                    <span>Dropbox</span>--}}
+{{--                                </a>--}}
+{{--                            </div>--}}
+{{--                            <div class="col">--}}
+{{--                                <a class="dropdown-icon-item" href="#">--}}
+{{--                                    <img src="{{ asset('assets/images/brands/g-suite.png') }}" alt="G Suite">--}}
+{{--                                    <span>G Suite</span>--}}
+{{--                                </a>--}}
+{{--                            </div>--}}
 
-                        </div>
-                    </div>
+{{--                        </div>--}}
+{{--                    </div>--}}
 
-                </div>
-            </li>
+{{--                </div>--}}
+{{--            </li>--}}
 
-            {{-- <li class="dropdown d-none d-lg-inline-block topbar-dropdown">
-                <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" data-bs-toggle="dropdown"
-                    href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                    <img src="../assets/images/flags/us.jpg" alt="user-image" height="16">
-                </a>
-                <div class="dropdown-menu dropdown-menu-end">
+{{--            Countries Flags--}}
+{{--             <li class="dropdown d-none d-lg-inline-block topbar-dropdown">--}}
+{{--                <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" data-bs-toggle="dropdown"--}}
+{{--                    href="#" role="button" aria-haspopup="false" aria-expanded="false">--}}
+{{--                    <img src="../assets/images/flags/us.jpg" alt="user-image" height="16">--}}
+{{--                </a>--}}
+{{--                <div class="dropdown-menu dropdown-menu-end">--}}
 
-                    <!-- item-->
-                    <a href="javascript:void(0);" class="dropdown-item">
-                        <img src="../assets/images/flags/germany.jpg" alt="user-image" class="me-1" height="12"> <span
-                            class="align-middle">German</span>
-                    </a>
+{{--                    <!-- item-->--}}
+{{--                    <a href="javascript:void(0);" class="dropdown-item">--}}
+{{--                        <img src="../assets/images/flags/germany.jpg" alt="user-image" class="me-1" height="12"> <span--}}
+{{--                            class="align-middle">German</span>--}}
+{{--                    </a>--}}
 
-                    <!-- item-->
-                    <a href="javascript:void(0);" class="dropdown-item">
-                        <img src="../assets/images/flags/italy.jpg" alt="user-image" class="me-1" height="12"> <span
-                            class="align-middle">Italian</span>
-                    </a>
+{{--                    <!-- item-->--}}
+{{--                    <a href="javascript:void(0);" class="dropdown-item">--}}
+{{--                        <img src="../assets/images/flags/italy.jpg" alt="user-image" class="me-1" height="12"> <span--}}
+{{--                            class="align-middle">Italian</span>--}}
+{{--                    </a>--}}
 
-                    <!-- item-->
-                    <a href="javascript:void(0);" class="dropdown-item">
-                        <img src="../assets/images/flags/spain.jpg" alt="user-image" class="me-1" height="12"> <span
-                            class="align-middle">Spanish</span>
-                    </a>
+{{--                    <!-- item-->--}}
+{{--                    <a href="javascript:void(0);" class="dropdown-item">--}}
+{{--                        <img src="../assets/images/flags/spain.jpg" alt="user-image" class="me-1" height="12"> <span--}}
+{{--                            class="align-middle">Spanish</span>--}}
+{{--                    </a>--}}
 
-                    <!-- item-->
-                    <a href="javascript:void(0);" class="dropdown-item">
-                        <img src="../assets/images/flags/russia.jpg" alt="user-image" class="me-1" height="12"> <span
-                            class="align-middle">Russian</span>
-                    </a>
+{{--                    <!-- item-->--}}
+{{--                    <a href="javascript:void(0);" class="dropdown-item">--}}
+{{--                        <img src="../assets/images/flags/russia.jpg" alt="user-image" class="me-1" height="12"> <span--}}
+{{--                            class="align-middle">Russian</span>--}}
+{{--                    </a>--}}
 
-                </div>
-            </li> --}}
+{{--                </div>--}}
+{{--            </li>--}}
 
-            <li class="dropdown notification-list topbar-dropdown">
-                <a class="nav-link dropdown-toggle waves-effect waves-light" data-bs-toggle="dropdown" href="#"
-                    role="button" aria-haspopup="false" aria-expanded="false">
-                    <i class="fe-bell noti-icon"></i>
-                    <span class="badge bg-danger rounded-circle noti-icon-badge">9</span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-end dropdown-lg">
+{{--            Notifications--}}
+{{--            <li class="dropdown notification-list topbar-dropdown">--}}
+{{--                <a class="nav-link dropdown-toggle waves-effect waves-light" data-bs-toggle="dropdown" href="#"--}}
+{{--                    role="button" aria-haspopup="false" aria-expanded="false">--}}
+{{--                    <i class="fe-bell noti-icon"></i>--}}
+{{--                    <span class="badge bg-danger rounded-circle noti-icon-badge">9</span>--}}
+{{--                </a>--}}
+{{--                <div class="dropdown-menu dropdown-menu-end dropdown-lg">--}}
 
-                    <!-- item-->
-                    <div class="dropdown-item noti-title">
-                        <h5 class="m-0">
-                            <span class="float-end">
-                                <a href="" class="text-dark">
-                                    <small>Clear All</small>
-                                </a>
-                            </span>Notification
-                        </h5>
-                    </div>
+{{--                    <!-- item-->--}}
+{{--                    <div class="dropdown-item noti-title">--}}
+{{--                        <h5 class="m-0">--}}
+{{--                            <span class="float-end">--}}
+{{--                                <a href="" class="text-dark">--}}
+{{--                                    <small>Clear All</small>--}}
+{{--                                </a>--}}
+{{--                            </span>Notification--}}
+{{--                        </h5>--}}
+{{--                    </div>--}}
 
-                    <div class="noti-scroll" data-simplebar>
+{{--                    <div class="noti-scroll" data-simplebar>--}}
 
-                        <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item notify-item active">
-                            <div class="notify-icon">
-                                <img src="{{ asset('assets/images/users/user-1.jpg') }}"
-                                    class="img-fluid rounded-circle" alt="" />
-                            </div>
-                            <p class="notify-details">Cristina Pride</p>
-                            <p class="text-muted mb-0 user-msg">
-                                <small>Hi, How are you? What about our next meeting</small>
-                            </p>
-                        </a>
+{{--                        <!-- item-->--}}
+{{--                        <a href="javascript:void(0);" class="dropdown-item notify-item active">--}}
+{{--                            <div class="notify-icon">--}}
+{{--                                <img src="{{ asset('assets/images/users/user-1.jpg') }}"--}}
+{{--                                    class="img-fluid rounded-circle" alt="" />--}}
+{{--                            </div>--}}
+{{--                            <p class="notify-details">Cristina Pride</p>--}}
+{{--                            <p class="text-muted mb-0 user-msg">--}}
+{{--                                <small>Hi, How are you? What about our next meeting</small>--}}
+{{--                            </p>--}}
+{{--                        </a>--}}
 
-                        <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <div class="notify-icon bg-primary">
-                                <i class="mdi mdi-comment-account-outline"></i>
-                            </div>
-                            <p class="notify-details">Caleb Flakelar commented on Admin
-                                <small class="text-muted">1 min ago</small>
-                            </p>
-                        </a>
+{{--                        <!-- item-->--}}
+{{--                        <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
+{{--                            <div class="notify-icon bg-primary">--}}
+{{--                                <i class="mdi mdi-comment-account-outline"></i>--}}
+{{--                            </div>--}}
+{{--                            <p class="notify-details">Caleb Flakelar commented on Admin--}}
+{{--                                <small class="text-muted">1 min ago</small>--}}
+{{--                            </p>--}}
+{{--                        </a>--}}
 
-                        <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <div class="notify-icon">
-                                <img src="{{ asset('assets/images/users/user-4.jpg') }}"
-                                    class="img-fluid rounded-circle" alt="" />
-                            </div>
-                            <p class="notify-details">Karen Robinson</p>
-                            <p class="text-muted mb-0 user-msg">
-                                <small>Wow ! this admin looks good and awesome design</small>
-                            </p>
-                        </a>
+{{--                        <!-- item-->--}}
+{{--                        <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
+{{--                            <div class="notify-icon">--}}
+{{--                                <img src="{{ asset('assets/images/users/user-4.jpg') }}"--}}
+{{--                                    class="img-fluid rounded-circle" alt="" />--}}
+{{--                            </div>--}}
+{{--                            <p class="notify-details">Karen Robinson</p>--}}
+{{--                            <p class="text-muted mb-0 user-msg">--}}
+{{--                                <small>Wow ! this admin looks good and awesome design</small>--}}
+{{--                            </p>--}}
+{{--                        </a>--}}
 
-                        <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <div class="notify-icon bg-warning">
-                                <i class="mdi mdi-account-plus"></i>
-                            </div>
-                            <p class="notify-details">New user registered.
-                                <small class="text-muted">5 hours ago</small>
-                            </p>
-                        </a>
+{{--                        <!-- item-->--}}
+{{--                        <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
+{{--                            <div class="notify-icon bg-warning">--}}
+{{--                                <i class="mdi mdi-account-plus"></i>--}}
+{{--                            </div>--}}
+{{--                            <p class="notify-details">New user registered.--}}
+{{--                                <small class="text-muted">5 hours ago</small>--}}
+{{--                            </p>--}}
+{{--                        </a>--}}
 
-                        <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <div class="notify-icon bg-info">
-                                <i class="mdi mdi-comment-account-outline"></i>
-                            </div>
-                            <p class="notify-details">Caleb Flakelar commented on Admin
-                                <small class="text-muted">4 days ago</small>
-                            </p>
-                        </a>
+{{--                        <!-- item-->--}}
+{{--                        <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
+{{--                            <div class="notify-icon bg-info">--}}
+{{--                                <i class="mdi mdi-comment-account-outline"></i>--}}
+{{--                            </div>--}}
+{{--                            <p class="notify-details">Caleb Flakelar commented on Admin--}}
+{{--                                <small class="text-muted">4 days ago</small>--}}
+{{--                            </p>--}}
+{{--                        </a>--}}
 
-                        <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <div class="notify-icon bg-secondary">
-                                <i class="mdi mdi-heart"></i>
-                            </div>
-                            <p class="notify-details">Carlos Crouch liked
-                                <b>Admin</b>
-                                <small class="text-muted">13 days ago</small>
-                            </p>
-                        </a>
-                    </div>
+{{--                        <!-- item-->--}}
+{{--                        <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
+{{--                            <div class="notify-icon bg-secondary">--}}
+{{--                                <i class="mdi mdi-heart"></i>--}}
+{{--                            </div>--}}
+{{--                            <p class="notify-details">Carlos Crouch liked--}}
+{{--                                <b>Admin</b>--}}
+{{--                                <small class="text-muted">13 days ago</small>--}}
+{{--                            </p>--}}
+{{--                        </a>--}}
+{{--                    </div>--}}
 
-                    <!-- All-->
-                    <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
-                        View all
-                        <i class="fe-arrow-right"></i>
-                    </a>
+{{--                    <!-- All-->--}}
+{{--                    <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">--}}
+{{--                        View all--}}
+{{--                        <i class="fe-arrow-right"></i>--}}
+{{--                    </a>--}}
 
-                </div>
-            </li>
+{{--                </div>--}}
+{{--            </li>--}}
 
             <li class="dropdown notification-list topbar-dropdown">
                 <a class="nav-link dropdown-toggle nav-user me-0 waves-effect waves-light" data-bs-toggle="dropdown"
                     href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                    <img src="{{ asset('assets/images/logo/poultryLogo.png') }}" alt="user-image"
+                    <img src="{{ asset('assets/images/logo/poultryLogo.png') }}" alt="logo"
                         class="rounded-circle">
                     <span class="pro-user-name ms-1">
                         Admin <i class="mdi mdi-chevron-down"></i>

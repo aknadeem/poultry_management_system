@@ -30,12 +30,12 @@ use App\Actions\ChickenModule\DestroyChickenSaleAction;
 
 class ChickenSaleController extends Controller
 {
-    private $auth_user_id;
+    private $authUserId;
 
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $this->auth_user_id = \Auth::user()->id;
+            $this->authUserId = \Auth::user()->id;
             return $next($request);
         });
     }
@@ -91,7 +91,7 @@ class ChickenSaleController extends Controller
     public function store(StoreChickenSaleRequest $request, StoreChickenSaleAction $action)
     {
         try {
-            $action->execute($request->validated(), $request->file('image_file'), $this->auth_user_id);
+            $action->execute($request->validated(), $request->file('image_file'), $this->authUserId);
             Session::flash('swal_notification', [
                 'title' => 'Saved',
                 'icon_type' => 'success',
@@ -145,7 +145,7 @@ class ChickenSaleController extends Controller
     {
         try {
             $sale = ChickenSale::findOrFail($id);
-            $action->execute($sale, $request->validated(), $request->file('image_file'), $this->auth_user_id);
+            $action->execute($sale, $request->validated(), $request->file('image_file'), $this->authUserId);
             Session::flash('swal_notification', [
                 'title' => 'Updated',
                 'icon_type' => 'success',

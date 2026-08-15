@@ -11,12 +11,12 @@ use Illuminate\Support\Facades\Log;
 
 class PartyBalanceLimitController extends Controller
 {
-    private $auth_user_id;
+    private $authUserId;
 
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $this->auth_user_id = \Auth::user()->id;
+            $this->authUserId = \Auth::user()->id;
 
             return $next($request);
         });
@@ -33,7 +33,7 @@ class PartyBalanceLimitController extends Controller
     {
         try {
             $limitId = (int) $request->input('party_balance_limit_id', 0);
-            $action->execute($request->validated(), $this->auth_user_id);
+            $action->execute($request->validated(), $this->authUserId);
 
             return response()->json([
                 'message' => $limitId > 0 ? 'A Company Data Updated successfully!' : 'Data created successfully!',

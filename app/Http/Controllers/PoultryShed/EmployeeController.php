@@ -20,12 +20,12 @@ use App\Http\Requests\FarmManagement\UpdateEmployeeRequest;
 
 class EmployeeController extends Controller
 {
-    private $auth_user_id;
+    private $authUserId;
 
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $this->auth_user_id = \Auth::user()->id;
+            $this->authUserId = \Auth::user()->id;
 
             return $next($request);
         });
@@ -105,7 +105,7 @@ class EmployeeController extends Controller
                 $request->validated(),
                 $request->file('employee_image'),
                 $request->file('employee_signature'),
-                $this->auth_user_id
+                $this->authUserId
             );
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;
@@ -141,7 +141,7 @@ class EmployeeController extends Controller
                 $request->validated(),
                 $request->file('employee_image'),
                 $request->file('employee_signature'),
-                $this->auth_user_id
+                $this->authUserId
             );
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;

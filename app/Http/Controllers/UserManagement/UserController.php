@@ -15,12 +15,12 @@ use App\Http\Requests\UserManagement\StoreUserRequest;
 
 class UserController extends Controller
 {
-    private $auth_user_id;
+    private $authUserId;
 
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $this->auth_user_id = \Auth::user()->id;
+            $this->authUserId = \Auth::user()->id;
 
             return $next($request);
         });
@@ -93,10 +93,10 @@ class UserController extends Controller
                     ], 200);
                 }
 
-                $updateAction->execute($user, $request->validated(), $imageFile, $this->auth_user_id);
+                $updateAction->execute($user, $request->validated(), $imageFile, $this->authUserId);
                 $message = 'Data Updated successfully!';
             } else {
-                $storeAction->execute($request->validated(), $imageFile, $this->auth_user_id);
+                $storeAction->execute($request->validated(), $imageFile, $this->authUserId);
                 $message = 'New User created successfully!';
             }
 

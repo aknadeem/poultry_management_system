@@ -16,12 +16,12 @@ use App\Http\Requests\ProductManagement\StoreProductPurchaseRequest;
 
 class ProductPurchaseController extends Controller
 {
-    private $auth_user_id;
+    private $authUserId;
 
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $this->auth_user_id = \Auth::user()->id;
+            $this->authUserId = \Auth::user()->id;
             return $next($request);
         });
     }
@@ -47,7 +47,7 @@ class ProductPurchaseController extends Controller
     public function store(StoreProductPurchaseRequest $request, StoreProductPurchaseAction $action)
     {
         try {
-            $action->execute($request->validated(), $this->auth_user_id);
+            $action->execute($request->validated(), $this->authUserId);
             Session::flash('swal_notification', [
                 'title' => 'Success',
                 'icon_type' => 'success',
@@ -112,7 +112,7 @@ class ProductPurchaseController extends Controller
     {
         try {
             $purchase = ProductPurchase::findOrFail($id);
-            $action->execute($purchase, $this->auth_user_id);
+            $action->execute($purchase, $this->authUserId);
             Session::flash('swal_notification', [
                 'title' => 'Deleted',
                 'icon_type' => 'success',

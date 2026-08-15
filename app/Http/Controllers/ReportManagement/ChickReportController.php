@@ -13,11 +13,11 @@ use Yajra\DataTables\Facades\DataTables;
 
 class ChickReportController extends Controller
 {
-    private $auth_user_id;
+    private $authUserId;
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $this->auth_user_id= \Auth::user()->id;
+            $this->authUserId= \Auth::user()->id;
             return $next($request);
         });
     }
@@ -30,12 +30,8 @@ class ChickReportController extends Controller
 
     public function makeSalesReport($from_date, $to_date)
     {
-        // $from_date = Carbon::parse($from_date)->format('y-m-d'); 
-        // $to_date = Carbon::parse($to_date); 
-
-        // 2022-02-06
-        $from_date = $from_date; 
-        $to_date = $to_date; 
+        $from_date = $from_date;
+        $to_date = $to_date;
 
         $chicken_sales = ChickenSale::whereBetween('sale_date', [$from_date, $to_date])->orderBy('id','DESC')->with('customer:id,name,cnic_no,contact_no,is_customer')->get();
         return DataTables::of($chicken_sales)

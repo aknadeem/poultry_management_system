@@ -59,11 +59,11 @@ class Product extends Model
             
             if($ex_code >= 99999)
                 $length = 6;
-            else if($ex_code >= 999999)
+            elseif($ex_code >= 999999)
                 $length = 7;
-            else if($ex_code >= 9999999)
+            elseif($ex_code >= 9999999)
                 $length = 8;
-            else if($ex_code >= 99999999)
+            elseif($ex_code >= 99999999)
                 $length = 9;
             else
                 $length = 5;

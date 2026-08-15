@@ -66,7 +66,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
 <script>
     $(function() {
         $('.ModalClosed').click(function () {
-            $('.modal').modal('hide'); 
+            $('.modal').modal('hide');
             $(this).find('form').trigger('reset');
         });
 

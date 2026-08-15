@@ -19,11 +19,11 @@ use App\Http\Requests\CustomerFormRequest;
 
 class ProductStoreController extends Controller
 {
-    private $auth_user_id;
+    private $authUserId;
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $this->auth_user_id= \Auth::user()->id;
+            $this->authUserId= \Auth::user()->id;
             return $next($request);
         });
     }
@@ -96,7 +96,7 @@ class ProductStoreController extends Controller
                 'store_area' => $request->store_area,
                 'total_racks' => $request->total_racks,
                 'description' => $request->store_desciption,
-                'addedby' => $this->auth_user_id,
+                'addedby' => $this->authUserId,
             ]);
             $product_store = $product_store->toArray();
         }
@@ -184,7 +184,7 @@ class ProductStoreController extends Controller
 
                 'employee_image' => $employee_image,
                 'employee_signature' => $employee_signature,
-                'updatedby' => $this->auth_user_id,
+                'updatedby' => $this->authUserId,
             ]);
 
             if($Employee_data){

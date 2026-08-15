@@ -14,11 +14,11 @@ use Illuminate\Support\Facades\Validator;
 
 class PoultryShedController extends Controller
 {
-    private $auth_user_id;
+    private $authUserId;
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $this->auth_user_id= \Auth::user()->id;
+            $this->authUserId= \Auth::user()->id;
             return $next($request);
         });
     }
@@ -72,7 +72,7 @@ class PoultryShedController extends Controller
                 'country_id' => $request->country_id,
                 'province_id' => $request->province_id,
                 'city_id' => $request->city_id,
-                'addedby' => $this->auth_user_id,
+                'addedby' => $this->authUserId,
             ]);
 
             if($personal_farm){
@@ -175,7 +175,7 @@ class PoultryShedController extends Controller
                 'country_id' => $request->country_id,
                 'province_id' => $request->province_id,
                 'city_id' => $request->city_id,
-                'updatedby' => $this->auth_user_id,
+                'updatedby' => $this->authUserId,
             ]);
 
             if($party_farm){

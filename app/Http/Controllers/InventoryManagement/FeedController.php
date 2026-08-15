@@ -18,12 +18,12 @@ use App\Http\Requests\InventoryManagement\StoreFeedPurchaseRequest;
 
 class FeedController extends Controller
 {
-    private $auth_user_id;
+    private $authUserId;
 
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $this->auth_user_id = \Auth::user()->id;
+            $this->authUserId = \Auth::user()->id;
             return $next($request);
         });
     }
@@ -85,7 +85,7 @@ class FeedController extends Controller
             $action->execute(
                 $request->validated(),
                 $request->file('image_file'),
-                $this->auth_user_id
+                $this->authUserId
             );
             Session::flash('swal_notification', [
                 'title' => 'Success',
@@ -120,7 +120,7 @@ class FeedController extends Controller
         $feed->update([
             'feed_name' => $request->feed_name ?? $feed->feed_name,
             'feed_category_id' => $request->feed_category_id ?? $feed->feed_category_id,
-            'updatedby' => $this->auth_user_id,
+            'updatedby' => $this->authUserId,
         ]);
 
         return response()->json([

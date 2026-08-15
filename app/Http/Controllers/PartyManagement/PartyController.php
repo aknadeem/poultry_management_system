@@ -22,12 +22,12 @@ use Illuminate\Support\Facades\Session;
 
 class PartyController extends Controller
 {
-    private $auth_user_id;
+    private $authUserId;
 
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $this->auth_user_id = \Auth::user()->id;
+            $this->authUserId = \Auth::user()->id;
 
             return $next($request);
         });
@@ -103,7 +103,7 @@ class PartyController extends Controller
             $action->execute(
                 $request->validated(),
                 $this->partyFiles($request),
-                $this->auth_user_id
+                $this->authUserId
             );
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;
@@ -134,7 +134,7 @@ class PartyController extends Controller
                 $party,
                 $request->validated(),
                 $this->partyFiles($request),
-                $this->auth_user_id
+                $this->authUserId
             );
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;

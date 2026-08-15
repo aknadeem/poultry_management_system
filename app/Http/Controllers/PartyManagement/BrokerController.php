@@ -15,12 +15,12 @@ use Session;
 
 class BrokerController extends Controller
 {
-    private $auth_user_id;
+    private $authUserId;
 
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $this->auth_user_id = \Auth::user()->id;
+            $this->authUserId = \Auth::user()->id;
 
             return $next($request);
         });
@@ -65,7 +65,7 @@ class BrokerController extends Controller
             $action->execute(
                 $request->validated(),
                 $request->file('image_file'),
-                $this->auth_user_id
+                $this->authUserId
             );
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;
@@ -96,7 +96,7 @@ class BrokerController extends Controller
                 $broker,
                 $request->validated(),
                 $request->file('image_file'),
-                $this->auth_user_id
+                $this->authUserId
             );
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;

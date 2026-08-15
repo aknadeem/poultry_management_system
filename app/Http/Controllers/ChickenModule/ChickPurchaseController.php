@@ -34,12 +34,12 @@ use App\Actions\ChickenModule\DestroyChickPurchaseAction;
 
 class ChickPurchaseController extends Controller
 {
-    private $auth_user_id;
+    private $authUserId;
 
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $this->auth_user_id = \Auth::user()->id;
+            $this->authUserId = \Auth::user()->id;
             return $next($request);
         });
     }
@@ -98,7 +98,7 @@ class ChickPurchaseController extends Controller
     public function store(StoreChickPurchaseRequest $request, StoreChickPurchaseAction $action)
     {
         try {
-            $action->execute($request->validated(), $request->file('image_file'), $this->auth_user_id);
+            $action->execute($request->validated(), $request->file('image_file'), $this->authUserId);
             Session::flash('swal_notification', [
                 'title' => 'Saved',
                 'icon_type' => 'success',
@@ -154,7 +154,7 @@ class ChickPurchaseController extends Controller
     {
         try {
             $purchase = ChickPurchase::findOrFail($id);
-            $action->execute($purchase, $request->validated(), $request->file('image_file'), $this->auth_user_id);
+            $action->execute($purchase, $request->validated(), $request->file('image_file'), $this->authUserId);
             Session::flash('swal_notification', [
                 'title' => 'Updated',
                 'icon_type' => 'success',

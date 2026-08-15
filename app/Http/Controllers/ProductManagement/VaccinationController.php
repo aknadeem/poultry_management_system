@@ -19,11 +19,11 @@ use Illuminate\Support\Facades\Validator;
 
 class VaccinationController extends Controller
 {
-    private $auth_user_id;
+    private $authUserId;
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $this->auth_user_id= \Auth::user()->id;
+            $this->authUserId= \Auth::user()->id;
             return $next($request);
         });
     }
@@ -132,7 +132,7 @@ class VaccinationController extends Controller
                 'product_id' => $request->product_id,
                 'schedule_date' => $request->schedule_date,
                 'description' => $request->description,
-                'addedby' => $this->auth_user_id,
+                'addedby' => $this->authUserId,
             ]);
         }
         catch (\Throwable $e) {
@@ -147,7 +147,7 @@ class VaccinationController extends Controller
             'icon_type' => $icon_type,
             'message' => $message,
         ]);
-    } 
+    }
     
     public function addVaccination(Request $request)
     {
@@ -179,7 +179,7 @@ class VaccinationController extends Controller
                     'is_vaccinated' => 1,
                     'vaccination_date' => $request->vaccination_date,
                     'vaccinated_remarks' => $request->remarks,
-                    'updatedby' => $this->auth_user_id,
+                    'updatedby' => $this->authUserId,
                 ]);
             }
             catch (\Throwable $e) {

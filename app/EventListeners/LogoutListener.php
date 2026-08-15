@@ -10,7 +10,6 @@ class LogoutListener
     public function handle(Logout $event)
     {
         $ip = $_SERVER['REMOTE_ADDR'];
-        // Log::info("User # {$event->user->id} Signed out");
         Log::info("
             ------------
             User #: {$event->user->id} Signed out

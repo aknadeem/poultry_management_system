@@ -16,11 +16,11 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
-    private $auth_user_id;
+    private $authUserId;
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $this->auth_user_id= \Auth::user()->id;
+            $this->authUserId= \Auth::user()->id;
             return $next($request);
         });
     }
@@ -132,7 +132,7 @@ class ProductController extends Controller
                 'is_unwarranted' => $request->is_unwaranted,
                 'description' => $request->description,
                 'product_picture' => $product_picture,
-                'addedby' => $this->auth_user_id,
+                'addedby' => $this->authUserId,
             ]);
 
             if($product){
@@ -236,7 +236,7 @@ class ProductController extends Controller
                 'description' => $request->description,
                 // 'cnic_no' => 'bail|required|numeric|unique:employees,cnic_no,'.$id,
                 'product_picture' => $product_picture,
-                'updatedby' => $this->auth_user_id,
+                'updatedby' => $this->authUserId,
             ]);
 
             if($product_data){

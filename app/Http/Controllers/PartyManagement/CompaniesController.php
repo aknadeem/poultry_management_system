@@ -13,12 +13,12 @@ use Illuminate\Support\Facades\Session;
 
 class CompaniesController extends Controller
 {
-    private $auth_user_id;
+    private $authUserId;
 
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $this->auth_user_id = \Auth::user()->id;
+            $this->authUserId = \Auth::user()->id;
 
             return $next($request);
         });
@@ -38,7 +38,7 @@ class CompaniesController extends Controller
             $action->execute(
                 $request->validated(),
                 $request->file('image_file'),
-                $this->auth_user_id
+                $this->authUserId
             );
 
             return response()->json([
@@ -88,7 +88,7 @@ class CompaniesController extends Controller
     public function updateStatus($id, $tablename, UpdateActiveStatusAction $action)
     {
         try {
-            $action->execute((int) $id, (string) $tablename, $this->auth_user_id);
+            $action->execute((int) $id, (string) $tablename, $this->authUserId);
             Session::flash('swal_notification', [
                 'title' => 'Success',
                 'icon_type' => 'success',

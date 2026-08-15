@@ -23,12 +23,12 @@ use App\Http\Requests\ProductManagement\UpdateProductSaleRequest;
 
 class ProductSaleController extends Controller
 {
-    private $auth_user_id;
+    private $authUserId;
 
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $this->auth_user_id = \Auth::user()->id;
+            $this->authUserId = \Auth::user()->id;
 
             return $next($request);
         });
@@ -60,7 +60,7 @@ class ProductSaleController extends Controller
     public function store(StoreProductSaleRequest $request, StoreProductSaleAction $action)
     {
         try {
-            $action->execute($request->validated(), $request->file('invoice_picture'), $this->auth_user_id);
+            $action->execute($request->validated(), $request->file('invoice_picture'), $this->authUserId);
             Session::flash('swal_notification', [
                 'title' => 'Success',
                 'icon_type' => 'success',
@@ -128,7 +128,7 @@ class ProductSaleController extends Controller
     {
         try {
             $sale = ProductSale::findOrFail($id);
-            $action->execute($sale, $request->validated(), $request->file('invoice_picture'), $this->auth_user_id);
+            $action->execute($sale, $request->validated(), $request->file('invoice_picture'), $this->authUserId);
             Session::flash('swal_notification', [
                 'title' => 'Success',
                 'icon_type' => 'success',
@@ -155,7 +155,7 @@ class ProductSaleController extends Controller
     {
         try {
             $sale = ProductSale::findOrFail($id);
-            $action->execute($sale, $this->auth_user_id);
+            $action->execute($sale, $this->authUserId);
             Session::flash('swal_notification', [
                 'title' => 'Deleted',
                 'icon_type' => 'success',
@@ -214,7 +214,7 @@ class ProductSaleController extends Controller
     public function productRebate(Request $request, RecordProductSaleRebateAction $action)
     {
         try {
-            $action->execute($request->all(), $this->auth_user_id);
+            $action->execute($request->all(), $this->authUserId);
             Session::flash('swal_notification', [
                 'title' => 'Success',
                 'icon_type' => 'success',
