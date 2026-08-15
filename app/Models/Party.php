@@ -86,14 +86,16 @@ class Party extends Model implements HasCountryProvinceCity
         return $this->hasMany('App\Models\PartyBalance', 'party_id', 'id');
     }
 
-    public function scopeCustomer($query, $value)
+    #[Scope]
+    protected function customer(Builder $query, $value): void
     {
-        return $query->where('is_customer', $value);
+        $query->where('is_customer', $value);
     }
 
-    public function scopeVendor($query, $value)
+    #[Scope]
+    protected function vendor(Builder $query, $value): void
     {
-        return $query->where('is_vendor', $value);
+        $query->where('is_vendor', $value);
     }
 
     protected static function booted(): void
