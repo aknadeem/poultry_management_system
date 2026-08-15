@@ -5,7 +5,6 @@ use App\Models\City;
 use App\Models\ConductPerson;
 use App\Models\Country;
 use App\Models\Party;
-use App\Models\PartyFarm;
 use App\Models\Province;
 use App\Models\User;
 use Database\Seeders\UserSeeder;
@@ -86,23 +85,20 @@ test('broker store update and destroy via actions with contact_no column', funct
     expect(Broker::find($broker->id))->toBeNull();
 });
 
-test('customer modal store creates party and destroy soft-deletes party', function () {
+test('customer destroy soft-deletes party', function () {
     $this->withoutExceptionHandling();
 
-    $this->post(route('customers.store'), [
-        'customer_id_modal' => 0,
+    $party = Party::create([
+        'is_customer' => 1,
         'name' => 'Quick Customer',
-        'contact_no' => '03001112233',
+        'guardian_name' => 'Guardian',
+        'cnic_no' => '3520212345678',
         'email' => 'quick@example.com',
-        'farm_name' => 'Quick Farm',
+        'contact_no' => '03001112233',
         'address' => 'Multan',
-    ])
-        ->assertOk()
-        ->assertJson(['success' => 'yes']);
-
-    $party = Party::where('name', 'Quick Customer')->firstOrFail();
-    expect((int) $party->is_customer)->toBe(1);
-    expect(PartyFarm::where('party_id', $party->id)->value('farm_name'))->toBe('Quick Farm');
+        'manual_number' => 'Q-1',
+        'addedby' => User::query()->value('id'),
+    ]);
 
     $this->delete(route('customers.destroy', $party->id))
         ->assertRedirect(route('customers.index'));

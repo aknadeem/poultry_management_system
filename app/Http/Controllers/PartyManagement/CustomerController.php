@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\PartyManagement;
 
 use App\Actions\PartyManagement\DestroyPartyAction;
-use App\Actions\PartyManagement\StorePartyQuickAction;
+use App\Actions\PartyManagement\StorePartyAction;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\PartyManagement\StorePartyQuickRequest;
+use App\Http\Requests\PartyManagement\StorePartyRequest;
 use App\Models\ConductPerson;
 use App\Models\Country;
 use App\Models\CustomerType;
@@ -65,21 +65,17 @@ class CustomerController extends Controller
         ));
     }
 
-    public function store(StorePartyQuickRequest $request, StorePartyQuickAction $action)
+    public function store(StorePartyRequest $request, StorePartyAction $action)
     {
         try {
-            $partyId = (int) $request->input('customer_id_modal', 0);
             $action->execute(
                 $request->validated(),
-                $request->file('image_file'),
-                $this->authUserId,
-                ['is_customer' => 1, 'is_vendor' => 0]
+                $this->partyFiles($request),
+                $this->authUserId
             );
 
             return response()->json([
-                'message' => $partyId > 0
-                    ? 'A customer Updated successfully!'
-                    : 'New customer created successfully!',
+                'message' => 'New customer created successfully!',
                 'success' => 'yes',
             ], 200);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -145,5 +141,17 @@ class CustomerController extends Controller
         $action->execute($party);
 
         return redirect()->route('customers.index');
+    }
+
+    private function partyFiles($request): array
+    {
+        return [
+            'profile_picture' => $request->file('profile_picture'),
+            'cnic_front' => $request->file('cnic_front'),
+            'cnic_back' => $request->file('cnic_back'),
+            'signature_image' => $request->file('signature_image'),
+            'farm_image' => $request->file('farm_image'),
+            'company_logo' => $request->file('company_logo'),
+        ];
     }
 }

@@ -9,6 +9,7 @@ use App\Models\FarmSubtype;
 use App\Models\FarmType;
 use App\Models\Party;
 use App\Models\PartyCompany;
+use App\Models\PartyBalance;
 use App\Models\PartyFarm;
 use App\Models\Province;
 use App\Models\User;
@@ -270,20 +271,21 @@ it('creates a customer party with company data', function () {
         'province_id' => $fixture['provinceId'],
         'city_id' => $fixture['cityId'],
         'address' => 'Customer address',
+        'description' => 'Customer description',
 
-        // Vendor-specific fields
         'customer_division_id' => $fixture['divisionId'],
-        'customer_type_id' => $fixture['vendorTypeId'],
+        'customer_type_id' => $fixture['customerTypeId'],
         'farm_type_id' => $fixture['farmTypeId'],
         'farm_subtype_id' => $fixture['farmSubtypeId'],
         'farm_name' => 'Customer Farm Name',
+        'farm_noc' => 'NOC-001',
         'farm_address' => 'Customer Farm Address',
 
-        // Required documents
         'farm_image' => UploadedFile::fake()->image('farm-image.jpg'),
         'cnic_front' => UploadedFile::fake()->image('cnic-front.jpg'),
         'cnic_back' => UploadedFile::fake()->image('cnic-back.jpg'),
-        'company_logo' => UploadedFile::fake()->image('company-logo.jpg'),
+        'opening_balance' => 1000.00,
+        'balance_type' => 1,
     ];
 
     $response = $this
@@ -305,18 +307,17 @@ it('creates a customer party with company data', function () {
     expect($party)->not->toBeNull();
     expect($party->is_vendor)->toBe(0);
     expect($party->is_customer)->toBe(1);
+    expect($party->customer_division_id)->toBe($fixture['divisionId']);
+    expect($party->customer_type_id)->toBe($fixture['customerTypeId']);
 
-    expect($party->addedby)
-        ->toBe($fixture['creatorId']);
+    expect($party->addedby)->toBe($fixture['creatorId']);
+    expect($party->description)->toBe($CustomerPayload['description']);
 
     $farm = PartyFarm::query()
         ->where('party_id', $party->id)
         ->first();
 
     expect($farm)->not->toBeNull();
-
-    expect($farm->farm_code)
-        ->toBe($farm->farm_code]);
     expect($farm->farm_type_id)
         ->toBe($CustomerPayload['farm_type_id']);
     expect($farm->farm_subtype_id)
@@ -342,6 +343,23 @@ it('creates a customer party with company data', function () {
 
     Storage::disk('public')
         ->assertExists('party/farm/' . $farm->farm_image);
+
+    $partyBalance = PartyBalance::query()
+        ->where('party_id', $party->id)
+        ->first();
+
+    expect($partyBalance)->not->toBeNull();
+
+    expect((float) $partyBalance->total_amount)
+        ->toBe((float) $CustomerPayload['opening_balance']);
+    expect((float)$partyBalance->remaining_amount)
+        ->toBe((float)$CustomerPayload['opening_balance']);
+    expect($partyBalance->amount_type)
+        ->toBe($CustomerPayload['balance_type']);
+    expect($partyBalance->narration)
+        ->toBe('Opening Balance');
+    expect($partyBalance->addedby)
+        ->toBe($fixture['creatorId']);
 });
 
 it('updates a customer party without replacement farm_image and preserves attribution', function () {
