@@ -122,14 +122,16 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-components" role="button"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-hotel"></i> Companies <div class="arrow-down"></div>
+                            <i class="fas fa-hotel"></i> <i class="ti ti-buildings"></i> Companies <div class="arrow-down"></div>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="topnav-components">
                             <div class="dropdown">
                                 <a class="dropdown-item arrow-none" href="{{ route('company.index') }}" id="topnav-form"
                                     role="button">
-                                    <i class="fe-bookmark"></i> Companies
+                                    <i class="ti ti-list"></i> Companies
                                 </a>
+                            </div>
+                            <div class="dropdown">
                                 <a class="dropdown-item arrow-none" href="{{ route('companybalance.index') }}"
                                     id="topnav-form">
                                     <i class="fe-bookmark"></i> Companies Balance
@@ -140,7 +142,7 @@
 
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('expense.index') }}" id="topnav-dashboard">
-                            <i class="fas fa-hotel"></i> Expenses
+                            <i class="fas fa-wallet"></i> Expenses
                         </a>
                     </li>
 
@@ -201,7 +203,7 @@
                             <div class="dropdown">
                                 <a class="dropdown-item dropdown-toggle arrow-none" href="#" id="topnav-form"
                                     role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fe-bookmark"></i> Chicks <div class="arrow-down"></div>
+                                    <i class="fas fa-bird"></i> Chicks <div class="arrow-down"></div>
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="topnav-form">
                                     <a href="{{ route('chickreport.index') }}" class="dropdown-item">Sale</a>
