@@ -265,8 +265,8 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                     @enderror
                                 </div>
                                 <div class="col-4 mb-2">
-                                    <label class="font_bold" for="CustomerFarmAddress">Farm Address</label>
-                                    <input type="text" placeholder="Enter Farm Address" name="farm_address"
+                                    <label class="font_bold" for="CustomerFarmAddress">Farm Address*</label>
+                                    <input type="text" placeholder="Enter Farm Address" name="farm_address" required
                                         value="{{ old('farm_address') }}" class="form-control" id="CustomerFarmAddress">
                                     @error('farm_address')
                                     <span class="text-danger farm_address_error"> {{ $message }} </span>
@@ -284,14 +284,14 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                     @enderror
                                 </div>
                                 <div class="col-3 mb-2">
-                                    <label class="font_bold" for="CnicFront">Cnic Front</label>
+                                    <label class="font_bold" for="CnicFront">Cnic Front*</label>
                                     <input type="file" name="cnic_front" class="form-control" required id="CnicFront">
                                     @error('cnic_front')
                                     <span class="text-danger cnic_front_error"> {{ $message }} </span>
                                     @enderror
                                 </div>
                                 <div class="col-3 mb-2">
-                                    <label class="font_bold" for="CnicBack">Cnic Back</label>
+                                    <label class="font_bold" for="CnicBack">Cnic Back*</label>
                                     <input type="file" required name="cnic_back" class="form-control" id="CnicBack">
                                     @error('cnic_back')
                                     <span class="text-danger cnic_back_error"> {{ $message }} </span>

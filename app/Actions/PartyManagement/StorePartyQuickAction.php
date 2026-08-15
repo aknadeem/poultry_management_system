@@ -78,9 +78,15 @@ class StorePartyQuickAction
             ]);
 
             if ($isCustomer && ! empty($data['farm_name'])) {
+                $farmPicture = $this->uploadService->store($data['farm_image'], 'party_farm');
                 PartyFarm::create([
                     'party_id' => $party->id,
+                    'farm_type_id' => $data['farm_type_id'],
+                    'farm_subtype_id' => $data['farm_subtype_id'],
                     'farm_name' => $data['farm_name'],
+                    'farm_noc' => $data['farm_noc'],
+                    'farm_image' => $farmPicture,
+                    'farm_address' => $data['farm_address'],
                     'addedby' => $userId,
                 ]);
             }
