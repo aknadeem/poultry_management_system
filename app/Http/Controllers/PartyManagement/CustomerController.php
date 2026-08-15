@@ -31,6 +31,7 @@ class CustomerController extends Controller
     public function index()
     {
         $customers = Party::where('is_customer', 1)
+            ->orderBy('id','desc')
             ->with('farm:id,party_id,farm_name,farm_type_id')
             ->get([
                 'id', 'is_customer', 'name', 'guardian_name', 'cnic_no', 'contact_no',

@@ -18,6 +18,7 @@ class StorePartyQuickRequest extends FormRequest
             'name' => 'bail|required|string',
             'contact_no' => 'bail|required|numeric',
             'email' => 'bail|required|string',
+            'cnic_no' => 'bail|required|string',
             'farm_name' => 'bail|nullable|string',
             'address' => 'bail|required|string',
             'image_file' => 'bail|nullable|mimes:jpeg,jpg,png|max:5000',

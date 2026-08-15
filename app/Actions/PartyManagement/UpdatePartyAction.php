@@ -22,9 +22,11 @@ class UpdatePartyAction
     public function execute(Party $party, array $data, array $files, int $userId): Party
     {
         return DB::transaction(function () use ($party, $data, $files, $userId) {
+            $isCustomer = (int) ($data['is_customer'] ?? 0);
+            $isVendor = (int) ($data['is_vendor'] ?? 0);
             $party->update([
-                'is_vendor' => $data['is_vendor'] ?? null,
-                'is_customer' => $data['is_customer'] ?? null,
+                'is_vendor' => $isVendor,
+                'is_customer' => $isCustomer,
                 'name' => $data['name'],
                 'guardian_name' => $data['guardian_name'],
                 'cnic_no' => $data['cnic_no'],
@@ -61,7 +63,7 @@ class UpdatePartyAction
                     ->update($imageUpdates + ['updatedby' => $userId]);
             }
 
-            if (! empty($data['is_customer'])) {
+            if ($isCustomer) {
                 $farm = PartyFarm::firstOrNew(['party_id' => $party->id]);
                 $farm->fill([
                     'farm_type_id' => $data['farm_type_id'] ?? null,
@@ -85,7 +87,7 @@ class UpdatePartyAction
                 $farm->save();
             }
 
-            if (! empty($data['is_vendor'])) {
+            if ($isVendor) {
                 $company = PartyCompany::firstOrNew(['party_id' => $party->id]);
                 $company->fill([
                     'company_name' => $data['company_name'] ?? null,

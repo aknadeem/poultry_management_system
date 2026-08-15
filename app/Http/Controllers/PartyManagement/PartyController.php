@@ -35,7 +35,7 @@ class PartyController extends Controller
 
     public function index()
     {
-        $parties = Party::get();
+        $parties = Party::orderBy('id','desc')->get();
 
         return view('partymanagement.party.index', compact('parties'));
     }
@@ -60,7 +60,7 @@ class PartyController extends Controller
 
     public function edit($id)
     {
-        $party = Party::with('country:id,name', 'province:id,name', 'city:id,name', 'farm:id,party_id,farm_name', 'company:id,party_id,company_name')->findOrFail($id);
+        $party = Party::with('country:id,name', 'province:id,name', 'city:id,name', 'farm:id,party_id,farm_name,farm_noc,farm_address', 'company:id,party_id,company_name')->findOrFail($id);
 
         $countries = Country::with('provinces:id,name,country_id',
             'provinces.cities:id,name,province_id')->get(['id', 'name']);

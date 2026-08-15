@@ -163,6 +163,191 @@ function vendorPartyUpdatePayload(array $fixture, Party $party, PartyCompany $co
     ];
 }
 
+
+it('creates a vendor party with company data and preserves vendor division', function () {
+    Storage::fake('public');
+
+    $fixture = seedPartyActionFixture();
+
+    $payload = [
+        'is_vendor' => '1',
+        'name' => 'New Vendor Party',
+        'guardian_name' => 'Guardian Name',
+        'cnic_no' => '3520212345680',
+        'email' => 'newvendor@example.com',
+        'contact_no' => '03001234580',
+        'manual_number' => 'MN-006',
+
+        'country_id' => $fixture['countryId'],
+        'province_id' => $fixture['provinceId'],
+        'city_id' => $fixture['cityId'],
+        'address' => 'Vendor address',
+
+        // Vendor-specific fields
+        'vendor_division_id' => $fixture['divisionId'],
+        'vendor_type_id' => $fixture['vendorTypeId'],
+        'company_name' => 'New Vendor Company',
+        'business_type_id' => $fixture['businessTypeId'],
+        'company_address' => 'Company address',
+
+        // Required documents
+        'cnic_front' => UploadedFile::fake()->image('cnic-front.jpg'),
+        'cnic_back' => UploadedFile::fake()->image('cnic-back.jpg'),
+        'company_logo' => UploadedFile::fake()->image('company-logo.jpg'),
+    ];
+
+    $response = $this
+        ->actingAs(User::find($fixture['creatorId']))
+        ->post(route('parties.store'), $payload);
+
+    $response->assertRedirect(route('parties.index'));
+
+    $party = Party::query()
+        ->where('cnic_no', '3520212345680')
+        ->first();
+
+    expect($party)->not->toBeNull();
+    expect($party->is_vendor)->toBe(1);
+    expect($party->is_customer)->toBe(0);
+
+    // Critical assertion for the vendor_division_id issue
+    expect($party->vendor_division_id)
+        ->toBe($fixture['divisionId']);
+
+    expect($party->vendor_type_id)
+        ->toBe($fixture['vendorTypeId']);
+
+    expect($party->addedby)
+        ->toBe($fixture['creatorId']);
+
+    $company = PartyCompany::query()
+        ->where('party_id', $party->id)
+        ->first();
+
+    expect($company)->not->toBeNull();
+    expect($company->company_name)
+        ->toBe('New Vendor Company');
+
+    expect($company->business_type_id)
+        ->toBe($fixture['businessTypeId']);
+
+    expect($company->company_address)
+        ->toBe('Company address');
+
+    expect($company->addedby)
+        ->toBe($fixture['creatorId']);
+
+    expect($party->cnic_front)->not->toBeNull();
+    expect($party->cnic_back)->not->toBeNull();
+    expect($company->company_logo)->not->toBeNull();
+
+    Storage::disk('public')
+        ->assertExists('party/' . $party->cnic_front);
+
+    Storage::disk('public')
+        ->assertExists('party/' . $party->cnic_back);
+
+    Storage::disk('public')
+        ->assertExists('party/company/' . $company->company_logo);
+});
+
+it('creates a customer party with company data', function () {
+    Storage::fake('public');
+
+    $fixture = seedPartyActionFixture();
+
+    $CustomerPayload = [
+        'is_customer' => '1',
+        'name' => 'New Customer Party',
+        'guardian_name' => 'Guardian Name',
+        'cnic_no' => '2520212345681',
+        'email' => 'newCustomer@example.com',
+        'contact_no' => '03001234580',
+        'manual_number' => 'MN-006',
+
+        'country_id' => $fixture['countryId'],
+        'province_id' => $fixture['provinceId'],
+        'city_id' => $fixture['cityId'],
+        'address' => 'Customer address',
+
+        // Vendor-specific fields
+        'customer_division_id' => $fixture['divisionId'],
+        'customer_type_id' => $fixture['vendorTypeId'],
+        'farm_type_id' => $fixture['farmTypeId'],
+        'farm_subtype_id' => $fixture['farmSubtypeId'],
+        'farm_address' => 'Customer Farm Address',
+
+        // Required documents
+        'farm_image' => UploadedFile::fake()->image('farm-image.jpg'),
+        'cnic_front' => UploadedFile::fake()->image('cnic-front.jpg'),
+        'cnic_back' => UploadedFile::fake()->image('cnic-back.jpg'),
+        'company_logo' => UploadedFile::fake()->image('company-logo.jpg'),
+    ];
+
+    $response = $this
+        ->actingAs(User::find($fixture['creatorId']))
+        ->post(route('customers.store'), $CustomerPayload);
+
+    $response
+        ->assertOk()
+        ->assertJson([
+            'message' => 'New customer created successfully!',
+            'success' => 'yes',
+        ]);
+
+    $party = Party::query()
+        ->where('cnic_no', $CustomerPayload['cnic_no'])
+        ->first();
+
+    expect($party)->not->toBeNull();
+    expect($party->is_vendor)->toBe(0);
+    expect($party->is_customer)->toBe(1);
+
+    // Critical assertion for the vendor_division_id issue
+    expect($party->vendor_division_id)
+        ->toBe($fixture['divisionId']);
+
+    expect($party->vendor_type_id)
+        ->toBe($fixture['vendorTypeId']);
+
+    expect($party->addedby)
+        ->toBe($fixture['creatorId']);
+
+    $farm = PartyFarm::query()
+        ->where('party_id', $party->id)
+        ->first();
+
+    expect($farm)->not->toBeNull();
+
+    expect($farm->farm_code)
+        ->toBe($CustomerPayload['farm_code']);
+    expect($farm->farm_type_id)
+        ->toBe($CustomerPayload['farm_type_id']);
+    expect($farm->farm_subtype_id)
+        ->toBe($CustomerPayload['farm_subtype_id']);
+    expect($farm->farm_name)
+        ->toBe($CustomerPayload['farm_name']);
+    expect($farm->farm_noc)
+        ->toBe($CustomerPayload['farm_noc']);
+    expect($farm->addedby)
+        ->toBe($fixture['creatorId']);
+    expect($farm->farm_address)
+        ->toBe($CustomerPayload['farm_address']);
+    expect($farm->farm_image)->not->toBeNull();
+
+    expect($party->cnic_front)->not->toBeNull();
+    expect($party->cnic_back)->not->toBeNull();
+
+    Storage::disk('public')
+        ->assertExists('party/' . $party->cnic_front);
+
+    Storage::disk('public')
+        ->assertExists('party/' . $party->cnic_back);
+
+    Storage::disk('public')
+        ->assertExists('party/farm/' . $farm->farm_image);
+});
+
 it('updates a customer party without replacement farm_image and preserves attribution', function () {
     Storage::fake('public');
     Storage::disk('public')->put('party/existing-profile.jpg', 'profile-bytes');

@@ -24,9 +24,12 @@ class StorePartyAction
     public function execute(array $data, array $files, int $userId): Party
     {
         return DB::transaction(function () use ($data, $files, $userId) {
+            $isCustomer = (int) ($data['is_customer'] ?? 0);
+            $isVendor = (int) ($data['is_vendor'] ?? 0);
+
             $party = Party::create([
-                'is_vendor' => $data['is_vendor'] ?? null,
-                'is_customer' => $data['is_customer'] ?? null,
+                'is_vendor' => $isVendor,
+                'is_customer' => $isCustomer,
                 'name' => $data['name'],
                 'guardian_name' => $data['guardian_name'],
                 'cnic_no' => $data['cnic_no'],
@@ -60,7 +63,7 @@ class StorePartyAction
                 ->where('id', $party->id)
                 ->update($images + ['addedby' => $userId]);
 
-            if (! empty($data['is_customer'])) {
+            if ($isCustomer) {
                 $farmImage = $this->uploadService->store($files['farm_image'] ?? null, 'party/farm');
 
                 PartyFarm::create([
@@ -75,7 +78,7 @@ class StorePartyAction
                 ]);
             }
 
-            if (! empty($data['is_vendor'])) {
+            if ($isVendor) {
                 $companyLogo = $this->uploadService->store($files['company_logo'] ?? null, 'party/company');
 
                 PartyCompany::create([

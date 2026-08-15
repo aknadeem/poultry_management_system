@@ -64,11 +64,11 @@ class StorePartyQuickAction
             $picture = $this->uploadService->store($imageFile, 'party');
 
             $party = Party::create([
-                'is_customer' => $isCustomer ?: null,
-                'is_vendor' => $isVendor ?: null,
+                'is_customer' => $isCustomer ?: 0,
+                'is_vendor' => $isVendor ?: 0,
                 'name' => $data['name'],
                 'guardian_name' => $data['name'],
-                'cnic_no' => null,
+                'cnic_no' => $data['cnic_no'],
                 'email' => $data['email'],
                 'contact_no' => $data['contact_no'],
                 'address' => $data['address'],

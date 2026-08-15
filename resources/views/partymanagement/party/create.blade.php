@@ -269,7 +269,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                 <div class="col-4 mb-2">
                                     <label class="font_bold" for="customerFarmName">Farm Name *</label>
                                     <input type="text" placeholder="Enter Farm Name" name="farm_name"
-                                        value="{{ old('farm_name', $party?->farm_name) }}" class="form-control"
+                                        value="{{ old('farm_name', $party?->farm?->farm_name) }}" class="form-control"
                                         id="customerFarmName">
                                     @error('farm_name')
                                     <span class="text-danger farm_name_error"> {{ $message }} </span>
@@ -278,7 +278,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                 <div class="col-4 mb-2">
                                     <label class="font_bold" for="FarmNOC">Farm NOC *</label>
                                     <input type="text" placeholder="Enter Farm NOC number" name="farm_noc"
-                                        value="{{ old('farm_noc',$party?->darm_noc) }}" class="form-control"
+                                        value="{{ old('farm_noc',$party?->farm?->farm_noc) }}" class="form-control"
                                         id="FarmNOC">
                                     @error('farm_noc')
                                     <span class="text-danger farm_noc_error"> {{ $message }} </span>
@@ -292,9 +292,9 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                     @enderror
                                 </div>
                                 <div class="col-4 mb-2">
-                                    <label class="font_bold" for="CustomerFarmAddress">Farm Address</label>
+                                    <label class="font_bold" for="CustomerFarmAddress">Farm Address*</label>
                                     <input type="text" placeholder="Enter Farm Address" name="farm_address"
-                                        value="{{ old('farm_address', $party?->farm_address) }}" class="form-control"
+                                        value="{{ old('farm_address', $party?->farm?->farm_address) }}" class="form-control"
                                         id="CustomerFarmAddress">
                                     @error('farm_address')
                                     <span class="text-danger farm_address_error"> {{ $message }} </span>
@@ -312,6 +312,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             class="form-control mySelect" data-toggle="select2" data-width="89%">
                                             <option value=""> Select division </option>
                                             @forelse ($divisions as $item)
+
                                             <option {{ (! empty(old('vendor_division_id', $party?->
                                                 vendor_division_id)==$item->id) ?
                                                 'selected'
@@ -416,14 +417,14 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                     @enderror
                                 </div>
                                 <div class="col-3 mb-2">
-                                    <label class="font_bold" for="CnicFront">Cnic Front</label>
+                                    <label class="font_bold" for="CnicFront">Cnic Front*</label>
                                     <input type="file" name="cnic_front" class="form-control" @if(!$party?->id) required @endif id="CnicFront">
                                     @error('cnic_front')
                                     <span class="text-danger cnic_front_error"> {{ $message }} </span>
                                     @enderror
                                 </div>
                                 <div class="col-3 mb-2">
-                                    <label class="font_bold" for="CnicBack">Cnic Back</label>
+                                    <label class="font_bold" for="CnicBack">Cnic Back*</label>
                                     <input type="file" name="cnic_back" class="form-control" @if(!$party?->id) required @endif id="CnicBack">
                                     @error('cnic_back')
                                     <span class="text-danger cnic_back_error"> {{ $message }} </span>
