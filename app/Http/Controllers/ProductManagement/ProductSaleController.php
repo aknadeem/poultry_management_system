@@ -20,6 +20,7 @@ use App\Actions\ProductManagement\DestroyProductSaleAction;
 use App\Actions\ProductManagement\RecordProductSaleRebateAction;
 use App\Http\Requests\ProductManagement\StoreProductSaleRequest;
 use App\Http\Requests\ProductManagement\UpdateProductSaleRequest;
+use App\Http\Requests\ProductManagement\RecordProductSaleRebateRequest;
 
 class ProductSaleController extends Controller
 {
@@ -36,6 +37,7 @@ class ProductSaleController extends Controller
 
     public function index()
     {
+        $this->authorize('viewAny', ProductSale::class);
         $product_sales = ProductSale::with(
             'party:id,name,cnic_no,customer_division_id',
             'party.division:id,name',
@@ -48,6 +50,7 @@ class ProductSaleController extends Controller
 
     public function create()
     {
+        $this->authorize('create', ProductSale::class);
         $pruchase = new ProductSale();
         $divisions = Division::get(['id', 'name', 'slug']);
         $customers = Party::where('is_customer', 1)->get(['id', 'is_customer', 'name', 'cnic_no', 'customer_division_id']);
@@ -59,6 +62,7 @@ class ProductSaleController extends Controller
 
     public function store(StoreProductSaleRequest $request, StoreProductSaleAction $action)
     {
+        $this->authorize('create', ProductSale::class);
         try {
             $action->execute($request->validated(), $request->file('invoice_picture'), $this->authUserId);
             Session::flash('swal_notification', [
@@ -92,6 +96,7 @@ class ProductSaleController extends Controller
             'productcategory:id,name',
             'detail'
         )->findOrFail($id);
+        $this->authorize('view', $sale);
 
         $items = ProductSaleDetail::where('product_sale_id', $id)->get();
 
@@ -107,6 +112,7 @@ class ProductSaleController extends Controller
             'productcategory:id,name',
             'detail'
         )->findOrFail($id);
+        $this->authorize('view', $sale);
 
         $items = ProductSaleDetail::where('product_sale_id', $id)->get();
 
@@ -116,6 +122,7 @@ class ProductSaleController extends Controller
     public function edit($id)
     {
         $pruchase = ProductSale::findOrFail($id);
+        $this->authorize('update', $pruchase);
         $divisions = Division::get(['id', 'name', 'slug']);
         $customers = Party::where('is_customer', 1)->get(['id', 'is_customer', 'name', 'cnic_no', 'customer_division_id']);
         $companies = PartyCompany::where('is_active', 1)->get(['id', 'company_name', 'company_code']);
@@ -128,6 +135,7 @@ class ProductSaleController extends Controller
     {
         try {
             $sale = ProductSale::findOrFail($id);
+            $this->authorize('update', $sale);
             $action->execute($sale, $request->validated(), $request->file('invoice_picture'), $this->authUserId);
             Session::flash('swal_notification', [
                 'title' => 'Success',
@@ -155,6 +163,7 @@ class ProductSaleController extends Controller
     {
         try {
             $sale = ProductSale::findOrFail($id);
+            $this->authorize('delete', $sale);
             $action->execute($sale, $this->authUserId);
             Session::flash('swal_notification', [
                 'title' => 'Deleted',
@@ -179,6 +188,7 @@ class ProductSaleController extends Controller
     public function forceDelete($id)
     {
         $sale = ProductSale::findOrFail($id);
+        $this->authorize('delete', $sale);
         $sale->forceDelete();
         Session::flash('swal_notification', [
             'title' => 'Deleted',
@@ -211,10 +221,11 @@ class ProductSaleController extends Controller
         ]);
     }
 
-    public function productRebate(Request $request, RecordProductSaleRebateAction $action)
+    public function productRebate(RecordProductSaleRebateRequest $request, RecordProductSaleRebateAction $action)
     {
+        $this->authorize('update', ProductSale::class);
         try {
-            $action->execute($request->all(), $this->authUserId);
+            $action->execute($request->validated(), $this->authUserId);
             Session::flash('swal_notification', [
                 'title' => 'Success',
                 'icon_type' => 'success',

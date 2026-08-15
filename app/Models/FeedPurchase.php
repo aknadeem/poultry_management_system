@@ -7,7 +7,29 @@ use Illuminate\Database\Eloquent\Model;
 
 class FeedPurchase extends Model
 {
-    protected $guarded = [];
+    protected $fillable = [
+        'status',
+        'payment_status',
+        'feed_id',
+        'company_id',
+        'purchase_date',
+        'quantity',
+        'remaining_quantity',
+        'price',
+        'discount_amount',
+        'per_bag_discount_amount',
+        'discount_percentage',
+        'total_price',
+        'final_price',
+        'bilty_number',
+        'bilty_charges',
+        'sale_order_number',
+        'delivery_order_number',
+        'description',
+        'picture',
+        'addedby',
+        'updatedby',
+    ];
     use HasFactory;
 
     public function company()

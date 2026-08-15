@@ -9,7 +9,27 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class ChickenSale extends Model
 {
     use SoftDeletes;
-    protected $guarded = [];
+    protected $fillable = [
+        'manual_number',
+        'sale_date',
+        'vehicle_number',
+        'driver_name',
+        'driver_contact',
+        'party_id',
+        'customer_id',
+        'broker_id',
+        'first_weight',
+        'second_weight',
+        'net_weight',
+        'total_weight',
+        'per_kg_price',
+        'discount_amount',
+        'discount_percentage',
+        'total_price',
+        'picture',
+        'addedby',
+        'updatedby',
+    ];
 
     protected $table = 'chicken_sales';
     use HasFactory;

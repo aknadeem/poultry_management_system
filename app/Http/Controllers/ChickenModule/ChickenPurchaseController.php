@@ -30,11 +30,13 @@ class ChickenPurchaseController extends Controller
 
     public function index()
     {
+        $this->authorize('viewAny', ChickenPurchase::class);
         return view('chickens.purchase.index');
     }
 
     public function getPurchaseList()
     {
+        $this->authorize('viewAny', ChickenPurchase::class);
         $chicken_purchases = ChickenPurchase::orderBy('id', 'DESC')
             ->with('company:id,company_name')
             ->get();
@@ -74,6 +76,7 @@ class ChickenPurchaseController extends Controller
 
     public function create()
     {
+        $this->authorize('create', ChickenPurchase::class);
         $purchase = new ChickenPurchase();
         $chick_grades = ChickGrade::get();
         $compaines = PartyCompany::where('is_active', 1)
@@ -89,6 +92,7 @@ class ChickenPurchaseController extends Controller
 
     public function store(StoreChickenPurchaseRequest $request, StoreChickenPurchaseAction $action)
     {
+        $this->authorize('create', ChickenPurchase::class);
         try {
             $imageFile = $request->hasFile('image_file') ? $request->file('image_file') : null;
             $action->execute($request->validated(), $imageFile, $this->authUserId);
@@ -118,6 +122,7 @@ class ChickenPurchaseController extends Controller
     public function edit($id)
     {
         $purchase = ChickenPurchase::with('company:id,company_name,party_id', 'company.vendor:id,name,guardian_name')->findOrFail($id);
+        $this->authorize('update', $purchase);
         $chick_grades = ChickGrade::get();
         $compaines = PartyCompany::where('is_active', 1)
             ->with('vendor:id,name,guardian_name')
@@ -130,6 +135,7 @@ class ChickenPurchaseController extends Controller
     {
         try {
             $purchase = ChickenPurchase::findOrFail($id);
+            $this->authorize('update', $purchase);
             $imageFile = $request->hasFile('image_file') ? $request->file('image_file') : null;
             $action->execute($purchase, $request->validated(), $imageFile, $this->authUserId);
 
@@ -159,6 +165,7 @@ class ChickenPurchaseController extends Controller
     {
         try {
             $purchase = ChickenPurchase::findOrFail($id);
+            $this->authorize('delete', $purchase);
             $action->execute($purchase);
 
             Session::flash('swal_notification', [

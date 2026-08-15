@@ -9,7 +9,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ProductPurchase extends Model
 {
-    protected $guarded = [];
+    protected $fillable = [
+        'product_category_id',
+        'party_company_id',
+        'purchase_date',
+        'expiry_date',
+        'due_date_option',
+        'manual_number',
+        'total_amount',
+        'discount_amount',
+        'discount_percentage',
+        'other_charges',
+        'final_amount',
+        'payment_status',
+        'warranty_period',
+        'purchase_invoice',
+        'description',
+        'addedby',
+        'updatedby',
+    ];
     use SoftDeletes, HasFactory;
 
     const PAYMENT_UNPAID = 1;

@@ -246,20 +246,20 @@ class VaccinationController extends Controller
 
     public function destroy($id)
     {
-        $product = Product::findOrFail($id);
-        $product->delete();
+        $schedule = VaccinationSchedule::findOrFail($id);
+        $schedule->delete();
 
-        Session::flash('swal_notification', ['title' => 'Deleted', 'icon_type' => 'success', 'message' => 'Data Deleted Successfully!']);
+        Session::flash('swal_notification', ['title' => 'Deleted', 'icon_type' => 'success', 'message' => 'Vaccination schedule deleted successfully!']);
         
-        return redirect()->route('products.index');
+        return redirect()->route('vaccination.index');
     }
     
     public function forceDelete($id)
     {
-        $product = Product::findOrFail($id);
-        $product->forceDelete();
-        Session::flash('swal_notification', ['title' => 'Deleted', 'icon_type' => 'success', 'message' => 'Data Deleted Successfully!']);
-        return redirect()->route('products.index');
+        $schedule = VaccinationSchedule::findOrFail($id);
+        $schedule->forceDelete();
+        Session::flash('swal_notification', ['title' => 'Deleted', 'icon_type' => 'success', 'message' => 'Vaccination schedule deleted successfully!']);
+        return redirect()->route('vaccination.index');
     }
 }
 

@@ -9,7 +9,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Expense extends Model
 {
     use SoftDeletes;
-    protected $guarded = [];
+    protected $fillable = [
+        'category_id',
+        'amount',
+        'expense_date',
+        'remarks',
+        'picture',
+        'addedby',
+        'updatedby',
+    ];
 
     protected $table = 'expenses';
     use HasFactory;

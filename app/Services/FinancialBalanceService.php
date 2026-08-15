@@ -26,7 +26,7 @@ class FinancialBalanceService
             ->first();
 
         $companyPaid = $companyBalance ? (float) $companyBalance->paid_amount : 0.0;
-        $companyRemaining = $totalPrice - $companyPaid;
+        $companyRemaining = round($totalPrice - $companyPaid, 2);
 
         CompanyBalance::updateOrCreate(
             [
@@ -59,7 +59,7 @@ class FinancialBalanceService
         }
 
         $partyPaid = $partyBalance ? (float) $partyBalance->paid_amount : 0.0;
-        $partyRemaining = $totalPrice - $partyPaid;
+        $partyRemaining = round($totalPrice - $partyPaid, 2);
 
         PartyBalance::updateOrCreate(
             [
@@ -122,7 +122,7 @@ class FinancialBalanceService
         }
 
         $partyPaid = $partyBalance ? (float) $partyBalance->paid_amount : 0.0;
-        $partyRemaining = $totalPrice - $partyPaid;
+        $partyRemaining = round($totalPrice - $partyPaid, 2);
 
         PartyBalance::updateOrCreate(
             [
@@ -154,7 +154,7 @@ class FinancialBalanceService
         }
 
         $brokerPaid = $brokerBalance ? (float) $brokerBalance->paid_amount : 0.0;
-        $brokerRemaining = $brokerCommission - $brokerPaid;
+        $brokerRemaining = round($brokerCommission - $brokerPaid, 2);
 
         BrokerBalance::updateOrCreate(
             [
@@ -275,7 +275,7 @@ class FinancialBalanceService
             [
                 'party_id' => $partyId,
                 'total_amount' => $totalPrice,
-                'remaining_amount' => $totalPrice - $partyPaid,
+                'remaining_amount' => round($totalPrice - $partyPaid, 2),
                 'transaction_date' => $date,
                 'amount_type' => Constant::AMOUNT_TYPE['ToReceive'],
                 'narration' => "product sale balance {$pattern}",
@@ -332,10 +332,10 @@ class FinancialBalanceService
         float $paymentAmount,
         int $userId
     ): CompanyBalance {
-        $paid = (float) $balance->paid_amount + $paymentAmount;
-        $remaining = (float) $balance->total_amount - $paid;
+        $paid = round((float) $balance->paid_amount + $paymentAmount, 2);
+        $remaining = round((float) $balance->total_amount - $paid, 2);
         if ($remaining < 0) {
-            $remaining = 0;
+            $remaining = 0.0;
         }
 
         $balance->update([
@@ -376,10 +376,10 @@ class FinancialBalanceService
         float $paymentAmount,
         int $userId
     ): PartyBalance {
-        $paid = (float) ($balance->paid_amount ?? 0) + $paymentAmount;
-        $remaining = (float) $balance->total_amount - $paid;
+        $paid = round((float) ($balance->paid_amount ?? 0) + $paymentAmount, 2);
+        $remaining = round((float) $balance->total_amount - $paid, 2);
         if ($remaining < 0) {
-            $remaining = 0;
+            $remaining = 0.0;
         }
 
         $status = Constant::PAYMENT_STATUS['UnPaid'];
@@ -412,7 +412,7 @@ class FinancialBalanceService
             ->first();
 
         $companyPaid = $companyBalance ? (float) $companyBalance->paid_amount : 0.0;
-        $companyRemaining = $totalPrice - $companyPaid;
+        $companyRemaining = round($totalPrice - $companyPaid, 2);
 
         $payload = [
             'company_id' => $companyId,

@@ -28,6 +28,7 @@ class UserController extends Controller
 
     public function getUsersList()
     {
+        $this->authorize('viewAny', User::class);
         $users = User::with('userRole:id,name,slug')->orderBy('id', 'DESC')->get();
 
         return DataTables::of($users)
@@ -62,11 +63,13 @@ class UserController extends Controller
 
     public function index()
     {
+        $this->authorize('viewAny', User::class);
         return view('usermanagement.users.index');
     }
 
     public function getUserRoleList()
     {
+        $this->authorize('create', User::class);
         $userRoles = UserRole::get(['id', 'name']);
 
         return response()->json([
@@ -93,9 +96,11 @@ class UserController extends Controller
                     ], 200);
                 }
 
+                $this->authorize('update', $user);
                 $updateAction->execute($user, $request->validated(), $imageFile, $this->authUserId);
                 $message = 'Data Updated successfully!';
             } else {
+                $this->authorize('create', User::class);
                 $storeAction->execute($request->validated(), $imageFile, $this->authUserId);
                 $message = 'New User created successfully!';
             }
@@ -123,6 +128,7 @@ class UserController extends Controller
     {
         $user = User::find($id);
         if ($user) {
+            $this->authorize('view', $user);
             $html_data = \View::make('layouts._partial.customerdetail', ['expense' => $user])->render();
 
             return response()->json([
@@ -146,6 +152,7 @@ class UserController extends Controller
             return response()->json(['message' => 'no'], 201);
         }
 
+        $this->authorize('view', $user);
         return response()->json([
             'message' => 'yes',
             'user' => $user->toArray(),
@@ -156,6 +163,7 @@ class UserController extends Controller
     {
         try {
             $user = User::findOrFail($id);
+            $this->authorize('delete', $user);
             $action->execute($user);
             Session::flash('swal_notification', [
                 'title' => 'Deleted',

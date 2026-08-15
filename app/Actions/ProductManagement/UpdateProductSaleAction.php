@@ -36,38 +36,33 @@ class UpdateProductSaleAction
             $sale->detail()->delete();
 
             $sale->update(array_merge(
-                Arr::except($data, [
-                    'product_id', 'product_code', 'product_name', 'invoice_picture',
-                    'product_sale_price', 'product_qty', 'product_bonus_qty', 'product_total_qty',
-                    'product_discount', 'product_discount_percentage', 'product_total_price',
-                ]),
+                Arr::except($data, ['items', 'invoice_picture']),
                 [
                     'invoice_picture' => $imageName,
                     'updatedby' => $userId,
                 ]
             ));
 
-            $number = count($data['product_name'] ?? []);
-            for ($i = 0; $i < $number; $i++) {
-                $totalQty = (int) ($data['product_total_qty'][$i] ?? $data['product_qty'][$i] ?? 0);
+            foreach ($data['items'] ?? [] as $item) {
+                $totalQty = (int) ($item['product_total_qty'] ?? $item['product_qty'] ?? 0);
 
                 ProductSaleDetail::create([
-                    'product_sale_id' => $sale->id,
-                    'product_id' => $data['product_id'][$i],
-                    'product_code' => $data['product_code'][$i],
-                    'product_name' => $data['product_name'][$i],
-                    'product_sale_price' => $data['product_sale_price'][$i],
-                    'product_qty' => $data['product_qty'][$i],
-                    'product_bonus_qty' => $data['product_bonus_qty'][$i] ?? 0,
-                    'product_total_qty' => $totalQty,
-                    'product_discount' => $data['product_discount'][$i] ?? 0,
-                    'product_discount_percentage' => $data['product_discount_percentage'][$i] ?? 0,
-                    'product_total_price' => $data['product_total_price'][$i],
-                    'addedby' => $userId,
+                    'product_sale_id'             => $sale->id,
+                    'product_id'                  => $item['product_id'],
+                    'product_code'                => $item['product_code'],
+                    'product_name'                => $item['product_name'],
+                    'product_sale_price'          => $item['product_sale_price'],
+                    'product_qty'                 => $item['product_qty'],
+                    'product_bonus_qty'           => $item['product_bonus_qty'] ?? 0,
+                    'product_total_qty'           => $totalQty,
+                    'product_discount'            => $item['product_discount'] ?? 0,
+                    'product_discount_percentage' => $item['product_discount_percentage'] ?? 0,
+                    'product_total_price'         => $item['product_total_price'],
+                    'addedby'                     => $userId,
                 ]);
 
                 $this->inventoryService->decreaseProductStock(
-                    (int) $data['product_id'][$i],
+                    (int) $item['product_id'],
                     $totalQty,
                     $userId
                 );

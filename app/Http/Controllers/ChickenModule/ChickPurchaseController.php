@@ -46,11 +46,13 @@ class ChickPurchaseController extends Controller
 
     public function index()
     {
+        $this->authorize('viewAny', ChickPurchase::class);
         return view('chickens.purchase.index');
     }
 
     public function getPurchaseList()
     {
+        $this->authorize('viewAny', ChickPurchase::class);
         $chick_purchases = ChickPurchase::orderBy('id', 'DESC')->with('company:id,company_name')->get();
         return DataTables::of($chick_purchases)
             ->addIndexColumn()
@@ -86,6 +88,7 @@ class ChickPurchaseController extends Controller
 
     public function create()
     {
+        $this->authorize('create', ChickPurchase::class);
         $purchase = new ChickPurchase();
         $chick_grades = ChickGrade::get();
         $personal_farms = PersonalFarm::where('is_active', 1)->get();
@@ -97,6 +100,7 @@ class ChickPurchaseController extends Controller
 
     public function store(StoreChickPurchaseRequest $request, StoreChickPurchaseAction $action)
     {
+        $this->authorize('create', ChickPurchase::class);
         try {
             $action->execute($request->validated(), $request->file('image_file'), $this->authUserId);
             Session::flash('swal_notification', [
@@ -123,6 +127,8 @@ class ChickPurchaseController extends Controller
 
     public function show($id)
     {
+        $purchase = ChickPurchase::findOrFail($id);
+        $this->authorize('view', $purchase);
         $customer = Employee::find($id);
         if ($customer) {
             $html_data = \View::make('layouts._partial.customerdetail', compact('customer'))->render();
@@ -142,7 +148,8 @@ class ChickPurchaseController extends Controller
 
     public function edit($id)
     {
-        $purchase = ChickPurchase::with('company:id,company_name,party_id', 'company.vendor:id,name,guardian_name')->find($id);
+        $purchase = ChickPurchase::with('company:id,company_name,party_id', 'company.vendor:id,name,guardian_name')->findOrFail($id);
+        $this->authorize('update', $purchase);
         $personal_farms = PersonalFarm::where('is_active', 1)->get();
         $chick_grades = ChickGrade::get();
         $compaines = PartyCompany::where('is_active', 1)->with('vendor:id,name,guardian_name')->get(['id', 'party_id', 'company_name', 'company_address']);
@@ -154,6 +161,7 @@ class ChickPurchaseController extends Controller
     {
         try {
             $purchase = ChickPurchase::findOrFail($id);
+            $this->authorize('update', $purchase);
             $action->execute($purchase, $request->validated(), $request->file('image_file'), $this->authUserId);
             Session::flash('swal_notification', [
                 'title' => 'Updated',
@@ -178,6 +186,7 @@ class ChickPurchaseController extends Controller
     {
         try {
             $purchase = ChickPurchase::findOrFail($id);
+            $this->authorize('delete', $purchase);
             $action->execute($purchase);
             Session::flash('swal_notification', [
                 'title' => 'Deleted',

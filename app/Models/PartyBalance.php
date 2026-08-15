@@ -9,7 +9,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PartyBalance extends Model
 {
-    protected $guarded = [];
+    protected $fillable = [
+        'party_id',
+        'total_amount',
+        'paid_amount',
+        'remaining_amount',
+        'transaction_date',
+        'amount_type',
+        'payment_status',
+        'narration',
+        'addedby',
+        'updatedby',
+    ];
     use SoftDeletes,  HasFactory;
 
     protected $casts = [

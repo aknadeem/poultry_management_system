@@ -9,7 +9,33 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
 {
-    protected $guarded = [];
+    protected $fillable = [
+        'product_category_id',
+        'product_type_id',
+        'party_company_id',
+        'product_store_id',
+        'product_name',
+        'product_description',
+        'product_group',
+        'quantity',
+        'max_inventory_level',
+        'reorder_level',
+        'reorder_level_date',
+        'mrp_price',
+        'whole_sale_price',
+        'purchase_price',
+        'sale_price',
+        'trade_price',
+        'discount_amount',
+        'discount_percentage',
+        'tax_amount',
+        'tax_percentage',
+        'warranty_period',
+        'purchase_date',
+        'is_active',
+        'addedby',
+        'updatedby',
+    ];
     use SoftDeletes, HasFactory;
 
     protected $dates = ['created_at','updated_at','deleted_at', 'reorder_level_date','purchase_date'];

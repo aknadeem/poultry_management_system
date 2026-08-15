@@ -10,7 +10,36 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Party extends Model implements HasCountryProvinceCity
 {
-    protected $guarded = [];
+    protected $fillable = [
+        'is_vendor',
+        'is_customer',
+        'is_active',
+        'name',
+        'guardian_name',
+        'cnic_no',
+        'email',
+        'contact_no',
+        'business_no',
+        'manual_number',
+        'address',
+        'customer_type_id',
+        'vendor_type_id',
+        'customer_division_id',
+        'vendor_division_id',
+        'description',
+        'country_id',
+        'province_id',
+        'city_id',
+        'contact_person_id',
+        'balance',
+        'balance_type',
+        'profile_picture',
+        'cnic_front',
+        'cnic_back',
+        'signature',
+        'addedby',
+        'updatedby',
+    ];
 
     protected $table = 'parties';
     use SoftDeletes, HasFactory, CountryPCRelationTrait;

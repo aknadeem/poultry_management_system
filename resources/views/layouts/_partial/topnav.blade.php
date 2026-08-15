@@ -50,7 +50,7 @@
 
                             <div class="dropdown">
                                 <a class="dropdown-item" id="topnav-form" href="{{ route('partybalance.index') }}">
-                                    <i class="fas fa-dollar"></i> Party Balance
+                                    <i class="fas fa-money-check"></i> Party Balance
                                 </a>
                             </div>
 

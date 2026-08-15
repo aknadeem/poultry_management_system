@@ -9,7 +9,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class BrokerBalance extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $guarded = [];
+    protected $fillable = [
+        'broker_id',
+        'total_amount',
+        'paid_amount',
+        'remaining_amount',
+        'dr',
+        'cr',
+        'balance',
+        'narration',
+        'addedby',
+        'updatedby',
+    ];
 
 
     protected $table = 'broker_balances';

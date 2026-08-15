@@ -13,7 +13,20 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+        \App\Models\User::class => \App\Policies\UserPolicy::class,
+        \App\Models\ChickenSale::class => \App\Policies\ChickenSalePolicy::class,
+        \App\Models\ChickenPurchase::class => \App\Policies\ChickenPurchasePolicy::class,
+        \App\Models\ChickPurchase::class => \App\Policies\ChickPurchasePolicy::class,
+        \App\Models\ProductSale::class => \App\Policies\ProductSalePolicy::class,
+        \App\Models\ProductPurchase::class => \App\Policies\ProductPurchasePolicy::class,
+        \App\Models\Party::class => \App\Policies\PartyPolicy::class,
+        \App\Models\Product::class => \App\Policies\ProductPolicy::class,
+        \App\Models\Feed::class => \App\Policies\FeedPolicy::class,
+        \App\Models\Expense::class => \App\Policies\ExpensePolicy::class,
+        \App\Models\PartyBalance::class => \App\Policies\PartyBalancePolicy::class,
+        \App\Models\CompanyBalance::class => \App\Policies\CompanyBalancePolicy::class,
+        \App\Models\BrokerBalance::class => \App\Policies\BrokerBalancePolicy::class,
+        \App\Models\VaccinationSchedule::class => \App\Policies\VaccinationSchedulePolicy::class,
     ];
 
     /**

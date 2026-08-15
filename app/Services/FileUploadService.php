@@ -16,7 +16,22 @@ class FileUploadService
         }
 
         $extension = $file->extension();
-        $filename = time() . mt_rand(10, 99) . '.' . $extension;
+        if (empty($extension)) {
+            $extension = strtolower(pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION));
+        }
+
+        // Hardened extension blacklist to prevent RCE
+        $blacklist = [
+            'php', 'php3', 'php4', 'php5', 'php7', 'php8', 'phar', 'phtml',
+            'exe', 'bat', 'cmd', 'sh', 'pl', 'py', 'cgi', 'htaccess', 'js'
+        ];
+
+        if (in_array(strtolower($extension), $blacklist, true)) {
+            throw new \InvalidArgumentException('Uploaded file extension is not allowed.');
+        }
+
+        // Cryptographically secure, unpredictable filename to prevent IDOR / enumeration
+        $filename = bin2hex(random_bytes(16)) . '.' . $extension;
         $file->storeAs(rtrim($directory, '/') . '/', $filename, 'public');
 
         return $filename;

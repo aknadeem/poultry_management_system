@@ -42,11 +42,13 @@ class ChickenSaleController extends Controller
 
     public function index()
     {
+        $this->authorize('viewAny', ChickenSale::class);
         return view('chickens.sale.index');
     }
 
     public function getSalesList()
     {
+        $this->authorize('viewAny', ChickenSale::class);
         $chicken_sales = ChickenSale::orderBy('id', 'DESC')->with('customer:id,name')->get();
         return DataTables::of($chicken_sales)
             ->addIndexColumn()
@@ -82,6 +84,7 @@ class ChickenSaleController extends Controller
 
     public function create()
     {
+        $this->authorize('create', ChickenSale::class);
         $sale = new ChickenSale();
         $customers = Party::where('is_customer', 1)->with('farm:id,farm_name,party_id')->get(['id', 'name', 'contact_no', 'cnic_no']);
         $brokers = Broker::where('is_active', 1)->get(['id', 'name', 'contact_no', 'cnic_no']);
@@ -90,6 +93,7 @@ class ChickenSaleController extends Controller
 
     public function store(StoreChickenSaleRequest $request, StoreChickenSaleAction $action)
     {
+        $this->authorize('create', ChickenSale::class);
         try {
             $action->execute($request->validated(), $request->file('image_file'), $this->authUserId);
             Session::flash('swal_notification', [
@@ -116,6 +120,8 @@ class ChickenSaleController extends Controller
 
     public function show($id)
     {
+        $sale = ChickenSale::findOrFail($id);
+        $this->authorize('view', $sale);
         $customer = Employee::find($id);
         if ($customer) {
             $html_data = \View::make('layouts._partial.customerdetail', compact('customer'))->render();
@@ -136,6 +142,7 @@ class ChickenSaleController extends Controller
     public function edit($id)
     {
         $sale = ChickenSale::with('customer:id,name,contact_no')->findOrFail($id);
+        $this->authorize('update', $sale);
         $customers = Party::where('is_customer', 1)->get(['id', 'name', 'contact_no', 'cnic_no']);
         $brokers = Broker::where('is_active', 1)->get(['id', 'name', 'contact_no', 'cnic_no']);
         return view('chickens.sale.create', compact('sale', 'customers', 'brokers'));
@@ -145,6 +152,7 @@ class ChickenSaleController extends Controller
     {
         try {
             $sale = ChickenSale::findOrFail($id);
+            $this->authorize('update', $sale);
             $action->execute($sale, $request->validated(), $request->file('image_file'), $this->authUserId);
             Session::flash('swal_notification', [
                 'title' => 'Updated',
@@ -169,6 +177,7 @@ class ChickenSaleController extends Controller
     {
         try {
             $sale = ChickenSale::findOrFail($id);
+            $this->authorize('delete', $sale);
             $action->execute($sale);
             Session::flash('swal_notification', [
                 'title' => 'Deleted',

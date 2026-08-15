@@ -8,25 +8,37 @@ use Illuminate\Validation\ValidationException;
 
 class InventoryService
 {
+    /**
+     * Increase the product quantity, using a pessimistic lock to prevent
+     * race conditions when multiple requests touch the same product.
+     *
+     * Throws if the product does not exist (do not silently ignore missing
+     * products — a purchase referencing a non-existent product is a data
+     * integrity bug that must surface immediately).
+     */
     public function increaseProductStock(int $productId, int $quantity, int $userId): void
     {
-        $product = Product::find($productId);
-        if (! $product) {
-            return;
-        }
+        $product = Product::lockForUpdate()->findOrFail($productId);
 
         $product->update([
-            'quantity' => (int) $product->quantity + $quantity,
+            'quantity'  => (int) $product->quantity + $quantity,
             'updatedby' => $userId,
         ]);
     }
 
+    /**
+     * Decrease the product quantity, using a pessimistic lock to guarantee
+     * that no two concurrent requests can both read the same stock value and
+     * both succeed when combined they would exceed available stock.
+     *
+     * Throws ValidationException (surfaced as a 422) when stock is insufficient,
+     * so the transaction will roll back cleanly.
+     *
+     * Throws ModelNotFoundException if the product does not exist.
+     */
     public function decreaseProductStock(int $productId, int $quantity, int $userId): void
     {
-        $product = Product::find($productId);
-        if (! $product) {
-            return;
-        }
+        $product = Product::lockForUpdate()->findOrFail($productId);
 
         $newQty = (int) $product->quantity - $quantity;
         if ($newQty < 0) {
@@ -36,31 +48,33 @@ class InventoryService
         }
 
         $product->update([
-            'quantity' => $newQty,
+            'quantity'  => $newQty,
             'updatedby' => $userId,
         ]);
     }
 
+    /**
+     * Increase feed stock (total and remaining), using a pessimistic lock.
+     * Throws if the feed does not exist.
+     */
     public function increaseFeedStock(int $feedId, int $quantity, int $userId): void
     {
-        $feed = Feed::find($feedId);
-        if (! $feed) {
-            return;
-        }
+        $feed = Feed::lockForUpdate()->findOrFail($feedId);
 
         $feed->update([
-            'total_quantity' => (int) $feed->total_quantity + $quantity,
+            'total_quantity'     => (int) $feed->total_quantity + $quantity,
             'remaining_quantity' => (int) $feed->remaining_quantity + $quantity,
-            'updatedby' => $userId,
+            'updatedby'          => $userId,
         ]);
     }
 
+    /**
+     * Decrease feed remaining stock, using a pessimistic lock.
+     * Throws if the feed does not exist or stock is insufficient.
+     */
     public function decreaseFeedStock(int $feedId, int $quantity, int $userId): void
     {
-        $feed = Feed::find($feedId);
-        if (! $feed) {
-            return;
-        }
+        $feed = Feed::lockForUpdate()->findOrFail($feedId);
 
         $remaining = (int) $feed->remaining_quantity - $quantity;
         if ($remaining < 0) {
@@ -71,7 +85,7 @@ class InventoryService
 
         $feed->update([
             'remaining_quantity' => $remaining,
-            'updatedby' => $userId,
+            'updatedby'          => $userId,
         ]);
     }
 

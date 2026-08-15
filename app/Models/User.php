@@ -12,20 +12,29 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     protected $table = 'users';
-    protected $guarded = [];
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var string[]
+     * Never add 'is_admin', 'user_role_id', or similar privilege columns here
+     * unless that operation is explicitly intended.
+     *
+     * @var list<string>
      */
-    // protected $fillable = [
-    //     'name',
-    //     'email',
-    //     'email',
-    //     'password',
-    // ];
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'user_role_id',
+        'picture',
+        'cnic_no',
+        'contact_no',
+        'address',
+        'is_active',
+        'addedby',
+        'updatedby',
+    ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -49,5 +58,37 @@ class User extends Authenticatable
     public function userRole()
     {
         return $this->belongsTo(\App\Models\UserRole::class, 'user_role_id', 'id');
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->userRole?->slug === 'super-admin';
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->userRole?->slug === 'admin';
+    }
+
+    public function isHod(): bool
+    {
+        return $this->userRole?->slug === 'hod';
+    }
+
+    /**
+     * @param string|list<string> $roles
+     */
+    public function hasRole(string|array $roles): bool
+    {
+        $roleSlug = $this->userRole?->slug;
+        if (! $roleSlug) {
+            return false;
+        }
+
+        if (is_array($roles)) {
+            return in_array($roleSlug, $roles, true);
+        }
+
+        return $roleSlug === $roles;
     }
 }
