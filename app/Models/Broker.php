@@ -26,4 +26,13 @@ class Broker extends Model implements HasCountryProvinceCity
         'updatedby',
     ];
     use HasFactory, CountryPCRelationTrait;
+
+    protected static function booted(): void
+    {
+        static::created(function (Broker $broker) {
+            $broker->updateQuietly([
+                'broker_code' => 'BRK-' . str_pad((string) $broker->id, 3,'0',STR_PAD_LEFT),
+            ]);
+        });
+    }
 }

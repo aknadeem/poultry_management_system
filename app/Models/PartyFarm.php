@@ -23,4 +23,13 @@ class PartyFarm extends Model
     {
         return $this->belongsTo('App\Models\FarmSubtype', 'farm_subtype_id', 'id');
     }
+
+    protected static function booted(): void
+    {
+        static::created(function (PartyFarm $farm) {
+            $farm->updateQuietly([
+                'farm_code' => 'FARM-' . str_pad((string) $farm->id, 3,'0',STR_PAD_LEFT),
+            ]);
+        });
+    }
 }

@@ -31,5 +31,14 @@ class Expense extends Model
     {
         return $this->belongsTo('App\Models\ExpenseCategory', 'category_id', 'id');
     }
+
+    protected static function booted(): void
+    {
+        static::created(function (Expense $expense) {
+            $expense->updateQuietly([
+                'expense_code' => 'EXP-' . str_pad((string) $expense->id, 3,'0',STR_PAD_LEFT),
+            ]);
+        });
+    }
     
 }

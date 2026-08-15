@@ -84,15 +84,17 @@ class Product extends Model
             $ex_code = Product::max('product_number');
             
             if($ex_code >= 99999)
+            {
                 $length = 6;
-            elseif($ex_code >= 999999)
+            }elseif($ex_code >= 999999){
                 $length = 7;
-            elseif($ex_code >= 9999999)
+            }elseif($ex_code >= 9999999){
                 $length = 8;
-            elseif($ex_code >= 99999999)
+            }elseif($ex_code >= 99999999){
                 $length = 9;
-            else
+            }else{
                 $length = 5;
+            }
 
             $model->product_number = $ex_code+1;
             $new_number = str_pad($ex_code, $length, 0, STR_PAD_LEFT)+1;

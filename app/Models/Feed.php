@@ -32,4 +32,13 @@ class Feed extends Model
         return $this->hasMany('App\Models\FeedPurchase', 'feed_id', 'id');
     }
 
+    protected static function booted(): void
+    {
+        static::created(function (Feed $feed) {
+            $feed->updateQuietly([
+                'feed_code' => 'FD-' . str_pad((string) $feed->id, 3,'0',STR_PAD_LEFT),
+            ]);
+        });
+    }
+
 }

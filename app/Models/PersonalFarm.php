@@ -37,4 +37,13 @@ class PersonalFarm extends Model
     {
         return $this->belongsTo('App\Models\City', 'city_id', 'id');
     }
+
+    protected static function booted(): void
+    {
+        static::created(function (PersonalFarm $farm) {
+            $farm->updateQuietly([
+                'farm_code' => 'PF-' . str_pad((string) $farm->id, 3,'0',STR_PAD_LEFT),
+            ]);
+        });
+    }
 }

@@ -317,6 +317,8 @@ it('creates a customer party with company data', function () {
         ->where('party_id', $party->id)
         ->first();
 
+    dd($farm->toArray());
+
     expect($farm)->not->toBeNull();
     expect($farm->farm_type_id)
         ->toBe($CustomerPayload['farm_type_id']);

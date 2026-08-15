@@ -20,4 +20,13 @@ class PartyCompany extends Model
     {
         return $this->belongsTo('App\Models\BusinessType', 'business_type_id', 'id')->withDefault(['id' => null]);
     }
+
+    protected static function booted(): void
+    {
+        static::created(function (PartyCompany $company) {
+            $company->updateQuietly([
+                'company_code' => 'COMP-' . str_pad((string) $company->id, 3,'0',STR_PAD_LEFT),
+            ]);
+        });
+    }
 }
