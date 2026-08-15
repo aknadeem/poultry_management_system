@@ -71,3 +71,15 @@ test('company balance payment reduces remaining balance and records payable', fu
     expect(CompanyBalancePayment::count())->toBe(1);
     expect(AccountPayable::where('amount_type', 'company_balance_payment')->count())->toBe(1);
 });
+
+test('company balance payments show page handles empty payments successfully', function () {
+    $this->withoutExceptionHandling();
+
+    $this->get(route('companybalance.show', 1))
+        ->assertOk()
+        ->assertViewHas('balance_payments')
+        ->assertViewHas('company_balance')
+        ->assertSee('Fixture Company')
+        ->assertSee('Balance Payments');
+});
+

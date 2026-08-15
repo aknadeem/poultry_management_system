@@ -25,11 +25,13 @@ class CompaniesBalanceController extends Controller
 
     public function index()
     {
+        $this->authorize('viewAny', CompanyBalance::class);
         return view('partymanagement.company.balance.index');
     }
 
     public function getCompaniesBalanceList()
     {
+        $this->authorize('viewAny', CompanyBalance::class);
         $balances = CompanyBalance::with('company:id,company_name,company_address')->orderBy('id', 'DESC')->withCasts([
             'created_at' => 'date:d M, Y',
         ])->get();
@@ -75,6 +77,7 @@ class CompaniesBalanceController extends Controller
 
     public function store(StoreCompanyBalancePaymentRequest $request, RecordCompanyBalancePaymentAction $action)
     {
+        $this->authorize('create', CompanyBalance::class);
         try {
             $action->execute(
                 $request->validated(),
@@ -107,16 +110,20 @@ class CompaniesBalanceController extends Controller
 
     public function show($id)
     {
+        $company_balance = CompanyBalance::with('company:id,company_name,company_logo')->findOrFail($id);
+        $this->authorize('view', $company_balance);
+
         $balance_payments = CompanyBalancePayment::where('company_balance_id', $id)
             ->with('company:id,company_name,company_logo', 'addedBy:id,name,user_role_id')
             ->get();
 
-        return view('partymanagement.company.balancepayments.index', compact('balance_payments'));
+        return view('partymanagement.company.balancepayments.index', compact('balance_payments', 'company_balance'));
     }
 
     public function edit($id)
     {
-        $balance = CompanyBalance::with('company:id,company_name')->find($id);
+        $balance = CompanyBalance::with('company:id,company_name')->findOrFail($id);
+        $this->authorize('update', $balance);
         if ($balance) {
             return response()->json([
                 'message' => 'yes',

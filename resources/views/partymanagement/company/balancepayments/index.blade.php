@@ -18,7 +18,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                         <li class="breadcrumb-item active"> BalancePayments </li>
                     </ol>
                 </div>
-                <h6 class="page-title"> {{ $balance_payments[0]->company?->company_name}} </h6>
+                <h6 class="page-title"> {{ $company_balance->company?->company_name}} </h6>
             </div>
         </div>
     </div>
@@ -31,9 +31,9 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                             <h4>Balance Payments</h4>
                         </div>
                         <div class="col-6 align-self-end text-end mb-2">
-                            <a href="{{ asset('storage/party/company/'.$balance_payments[0]->company?->company_logo) }}"
+                            <a href="{{ asset('storage/party/company/'.$company_balance->company?->company_logo) }}"
                                 target="_blank" title="click to view">
-                                <img src="{{ asset('storage/party/company/'.$balance_payments[0]->company?->company_logo) }}"
+                                <img src="{{ asset('storage/party/company/'.$company_balance->company?->company_logo) }}"
                                     alt="No image" width="10%">
                             </a>
                             {{-- <a class="btn btn-secondary btn-sm" data-bs-toggle="modal"
