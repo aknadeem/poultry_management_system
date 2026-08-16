@@ -16,7 +16,7 @@ class StoreConductPersonAction
     public function execute(array $data, ?object $imageFile, int $userId): ConductPerson
     {
         return DB::transaction(function () use ($data, $imageFile, $userId) {
-            $picture = $this->uploadService->store($imageFile, 'conduct_persons');
+                $picture = $this->uploadService->store($imageFile, 'conduct_persons');
 
             return ConductPerson::create([
                 'name' => $data['name'],

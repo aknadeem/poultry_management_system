@@ -13,7 +13,6 @@ class ConductPerson extends Model
 
 
     protected $table = 'conduct_people';
-    // use HasFactory;
     protected $dates = ['created_at','updated_at'];
     protected $casts = [
         'country_id' => 'integer',
@@ -34,5 +33,14 @@ class ConductPerson extends Model
     public function city()
     {
         return $this->belongsTo('App\Models\City', 'city_id', 'id');
+    }
+
+    protected static function booted(): void
+    {
+        static::created(function (ConductPerson $person) {
+            $person->updateQuietly([
+                'person_code' => 'CP-' . str_pad((string) $person->id, 3,'0',STR_PAD_LEFT),
+            ]);
+        });
     }
 }

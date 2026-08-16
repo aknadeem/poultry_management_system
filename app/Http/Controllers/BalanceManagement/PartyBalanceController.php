@@ -29,15 +29,12 @@ class PartyBalanceController extends Controller
     public function index()
     {
         $balances = PartyBalance::with('party:id,name,cnic_no')->orderBy('id','DESC')->get();
-
-        // dd($balances->toArray());
         return view('balancemanagement.party_balances.index', compact('balances'));
     }
 
     public function getPartyBalances()
     {
         $balances = PartyBalance::with('party:id,name,cnic_no')->orderBy('id','DESC')->get();
-        // dd($balances->toArray());
         if($balances->count() > 0){
             $message = 'yes';
             $balances = $balances->toArray();
@@ -55,7 +52,6 @@ class PartyBalanceController extends Controller
     public function getParties()
     {
         $parties = Party::whereHas('balances')->orderBy('id','DESC')->get();
-        // dd($parties->toArray());
         if($parties->count() > 0){
             $message = 'yes';
             $parties = $parties->toArray();
@@ -114,7 +110,12 @@ class PartyBalanceController extends Controller
 
     public function getBalancePayments($id)
     {
-        $payments = PartyBalancePayment::where('party_balance_id',$id)->with('party:id,name,email,is_vendor,is_customer,profile_picture,contact_no','user:id,name')->orderBy('id', 'DESC')->get();
+        $payments = PartyBalancePayment::query()
+            ->where('party_balance_id',$id)
+            ->with('party:id,name,email,is_vendor,is_customer,profile_picture,contact_no','user:id,name'
+            ->orderBy('id', 'DESC')
+            ->get();
+        dd($payments->toArray());
         return view('balancemanagement.party_balances.balance_payments', compact('payments'));
     }
 

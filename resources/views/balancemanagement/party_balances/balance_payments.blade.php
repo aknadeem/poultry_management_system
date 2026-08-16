@@ -35,11 +35,13 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                             <h4>Balance Payments</h4>
                         </div>
                         <div class="col-6 align-self-end text-end mb-2">
-                            <a href="{{ asset('storage/party/'.$payments[0]?->user?->profile_picture) }}"
-                                target="_blank" title="click to view">
-                                <img src="{{ asset('storage/party/'.$payments[0]?->user?->profile_picture) }}"
-                                    alt="No image" width="10%">
-                            </a>
+                            @if($payments[0]?->party?->profile_picture)
+                                <a href="{{ asset('storage/party/'.$payments[0]?->party?->profile_picture) }}"
+                                    target="_blank" title="click to view">
+                                    <img src="{{ asset('storage/party/'.$payments[0]?->]party?->profile_picture) }}"
+                                        alt="No image" width="10%">
+                                </a>
+                            @endif
                         </div>
                     </div>
                     <table id="Balance-Datatables" class="table table-striped dt-responsive  w-100">

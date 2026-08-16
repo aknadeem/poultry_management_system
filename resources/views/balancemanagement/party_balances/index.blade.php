@@ -33,8 +33,8 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                         </div>
                         <div class="col-6 align-self-end text-end mb-2">
 
-                            <a class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#AddCompanyModal"
-                                href="javascript:void(0);" CustomerId="0" title="Click to add new company"
+                            <a class="btn btn-secondary btn-sm hidden" data-bs-toggle="modal"
+                                href="javascript:void(0);" title="Click to add new company"
                                 data-plugin="tippy" data-tippy-animation="scale" data-tippy-arrow="true"><i
                                     class="fa fa-plus"></i>
                                 Company
@@ -133,7 +133,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                             <label for="AddAmount">Amount</label>
                             <input type="number" name="amount_payment" class="form-control" placeholder="Enter amount"
                                 id="AddAmount" min="0" required>
-                            <span class="text-danger amount_payment_error"> </span>
+                            <span class="text-danger amount_payment_error"></span>
                         </div>
 
                         <div class="col-sm-6 mb-2">
@@ -144,54 +144,50 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                                 <option value="cash">Cash</option>
                                 <option value="other">Other</option>
                             </select>
-                            <span class="text-danger farm_name_error"> </span>
+                            <span class="text-danger farm_name_error"></span>
                         </div>
 
                         <div class="col-sm-4 mb-2">
                             <label for="cheque_date">Cheque Date</label>
-                            <input type="date" name="cheque_date" class="form-control" placeholder="Enter amount"
-                                id="cheque_date">
-                            <span class="text-danger cheque_date_error"> </span>
+                            <input type="date" name="cheque_date" class="form-control" placeholder="Enter cheque date" id="cheque_date">
+                            <span class="text-danger cheque_date_error"></span>
                         </div>
 
                         <div class="col-sm-4 mb-2">
-                            <label for="cno">Cheque Bank</label>
-                            <input type="text" name="bank_name" class="form-control" placeholder="Enter amount"
-                                id="BankName">
-                            <span class="text-danger bank_name_error"> </span>
+                            <label for="BankName">Cheque Bank</label>
+                            <input type="text" name="bank_name" class="form-control" placeholder="Enter bank name" id="BankName">
+                            <span class="text-danger bank_name_error"></span>
                         </div>
                         <div class="col-sm-4 mb-2">
-                            <label for="cheque_picture">Cheque Picture</label>
-                            <input type="file" name="cheque_picture" class="form-control" placeholder="Enter amount"
-                                id="ChequePicture">
-                            <span class="text-danger cheque_picture_error"> </span>
+                            <label for="ChequePicture">Cheque Picture</label>
+                            <input type="file" name="cheque_picture" class="form-control" placeholder="Enter amount" id="ChequePicture">
+                            <span class="text-danger cheque_picture_error"></span>
                         </div>
 
                         <div class="col-sm-4 mb-2">
                             <label for="reference_no"> Reference Number </label>
-                            <input type="text" name="reference_no" class="form-control" placeholder="Enter amount"
-                                id="reference_no">
-                            <span class="text-danger reference_no_error"> </span>
+                            <input type="text" name="reference_no" class="form-control" placeholder="Enter amount" id="reference_no">
+                            <span class="text-danger reference_no_error"></span>
                         </div>
 
                         <div class="col-sm-4 mb-2">
                             <label for="PaidDate"> Payment Date *</label>
                             <input type="date" name="paid_date" class="form-control" required id="PaidDate">
-                            <span class="text-danger paid_date_error"> </span>
+                            <span class="text-danger paid_date_error"></span>
                         </div>
 
                         <div class="col-sm-4 mb-2">
                             <label for="image_file"> Picture </label>
                             <input type="file" name="image_file" class="form-control" placeholder="Enter amount"
                                 id="image_file">
-                            <span class="text-danger image_file_error"> </span>
+                            <span class="text-danger image_file_error"></span>
                         </div>
 
                         <div class="col-sm-12 mb-2">
                             <label for="description"> Description </label>
                             <input type="text" name="description" class="form-control" placeholder="Enter amount"
                                 id="description">
-                            <span class="text-danger description_error"> </span>
+                            <span class="text-danger description_error"></span>
                         </div>
                     </div>
                     <div class="row form-group">
@@ -216,13 +212,12 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
 @section('custom_scripts')
 <script>
     $(function() {
-        $('#AddPaymentModal').modal({backdrop: 'static', keyboard: false}) 
+        $('#AddPaymentModal').modal({backdrop: 'static', keyboard: false})
         $(document).on("click", ".openAddPaymentModal", function(event) {
             let balance_id = parseInt($(this).attr('data-id')) || 0
             // alert(balance_id)
             let page_url = "{{ route('partybalance.index')}}/"+balance_id
             $.get(page_url, function(data, status){
-                console.log(data)
                 if(data?.balance){
                     $('#BalanceId').val(balance_id)
                     $('#PartyIdModal').val(data?.balance?.party_id)
@@ -240,7 +235,6 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
         $(document).on("submit", "#AddPaymentForm", function(e) {
             e.preventDefault();
             let balance_id = parseInt($(this).attr('data-id')) || 0
-            // alert(balance_id)x
             let form_url = "{{ route('partybalance.store')}}"
             let form_type = "POST"
             $.ajax({
@@ -277,12 +271,23 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                             location.reload();
                         });
                     }
+                },
+                error: function (xhr) {
+                    if (xhr.status === 422) {
+                        const errors = xhr.responseJSON?.errors || {};
+
+                        $.each(errors, function (field, messages) {
+                            $('#AddPaymentForm')
+                                .find('span.' + field + '_error')
+                                .text(messages[0]);
+                        });
+                    }
                 }
             });
         });
         $('.ModalClosed').click(function () {
             // $(this).find('modal').hide();
-            $('.modal').modal('hide'); 
+            $('.modal').modal('hide');
             $(this).find('form').trigger('reset');
         });
     });

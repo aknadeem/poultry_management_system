@@ -137,6 +137,9 @@ $load_js = Array('tippy','select2')
                                     <label class="font_bold" for="ProfileImage"> Profile Picture </label>
                                     <input type="file" name="image_file" class="form-control" id="ProfileImage">
 
+                                    @if($conductperson?->picture)
+                                        <img src="{{ $conductperson?->picture ? asset('storage/conduct_persons/' . $conductperson?->picture) : asset('assets/images/users/default.png') }}" alt="Profile" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                                    @endif
                                     @error('image_file')
                                     <span class="text-danger image_file_error"> {{ $message }} </span>
                                     @enderror

@@ -11,6 +11,7 @@ class Broker extends Model implements HasCountryProvinceCity
 {
     protected $fillable = [
         'name',
+        'broker_code',
         'guardian_name',
         'cnic_no',
         'email',
