@@ -57,8 +57,8 @@ class ProductStoreController extends Controller
                 data-tippy-animation="scale" data-tippy-arrow="true"><i class="fa fa-eye"></i>
                 View
             </a>
-            <a class="btn btn-info btn-sm"
-                href="'.route("productstores.edit", $row["id"]).'"
+            <a class="btn btn-info btn-sm OpenAddStoreModal"
+                StoreId="'.$row['id'].'" data-id="'.$row['id'].'" id="OpenAddStoreModal" href="javascript:void(0);"
                 title="Click to edit"><i
                     class="fa fa-pencil-alt"></i>
                 Edit
@@ -84,127 +84,62 @@ class ProductStoreController extends Controller
 
     public function store(Request $request)
     {
-        $id = null;
-        $this->validationRules($request, $id);
-
-        $message = 'Data created successfully';
-        $success = 'yes';
         try {
-            $product_store = ProductStore::create([
-                'store_name' => $request->store_name,
-                'store_type' => $request->store_type,
-                'store_area' => $request->store_area,
-                'total_racks' => $request->total_racks,
-                'description' => $request->store_desciption,
-                'addedby' => $this->authUserId,
-            ]);
-            $product_store = $product_store->toArray();
-        }
-        catch (\Throwable $e) {
+            $storeId = (int) ($request->input('store_id') ?? 0);
+
+            $this->validationRules($request, $storeId);
+
+            if ($storeId > 0) {
+                $store = ProductStore::find($storeId);
+
+                if (! $store) {
+                    return response()->json([
+                        'message' => 'No entry found against this id',
+                        'success' => 'no',
+                    ], 200);
+                }
+
+                $store->update([
+                    'store_name' => $request->store_name,
+                    'store_type' => $request->store_type,
+                    'store_area' => $request->store_area,
+                    'total_racks' => $request->total_racks,
+                    'description' => $request->store_desciption,
+                    'updatedby' => $this->authUserId,
+                ]);
+
+                $message = 'Data updated successfully';
+            } else {
+                $store = ProductStore::create([
+                    'store_name' => $request->store_name,
+                    'store_type' => $request->store_type,
+                    'store_area' => $request->store_area,
+                    'total_racks' => $request->total_racks,
+                    'description' => $request->store_desciption,
+                    'addedby' => $this->authUserId,
+                ]);
+
+                $message = 'Data created successfully';
+            }
+
+            return response()->json([
+                'message' => $message,
+                'success' => 'yes',
+                'data' => $store->toArray(),
+            ], 200);
+
+        } catch (\Throwable $e) {
             Log::error($e);
-            $message = 'Something went wrong';
-            $success = 'no';
-            $product_store = [];
+
+            if (app()->environment('testing')) {
+                throw $e;
+            }
+
+            return response()->json([
+                'message' => 'Something went wrong',
+                'success' => 'no',
+            ], 200);
         }
-
-        return response()->json([
-            'message' => $message,
-            'success' => $success,
-            'data' => $product_store,
-        ], 201);
-    }
-    
-    public function update(Request $request, $id)
-    {
-        $this->validationRules($request, $id);
-
-        $message = 'Data updated successfully';
-        $title = 'Success';
-        $icon_type = 'success';
-        try {
-            $Employee_data = Employee::findOrFail($id);
-            if ($request->hasFile('employee_image')) {
-                if($Employee_data?->employee_image != null && \Storage::disk('public')->exists('employee/'.$Employee_data?->employee_image)){
-                    \Storage::disk('public')->delete('employee/'.$Employee_data?->employee_image);
-                }
-                $employee_image_file = $request->file('employee_image');
-                $extension = $request->file('employee_image')->extension();
-                $employee_image = time().mt_rand(10,99).'.'.$extension;
-                
-            }else{
-                $employee_image = null;
-            }
-
-            if ($request->hasFile('employee_signature')) {
-                if($Employee_data?->employee_signature != null && \Storage::disk('public')->exists('employee/'.$Employee_data?->employee_signature)){
-                    \Storage::disk('public')->delete('employee/'.$Employee_data?->employee_signature);
-                }
-                $employee_signature_file = $request->file('employee_signature');
-                $extension = $request->file('employee_signature')->extension();
-                $employee_signature = time().mt_rand(10,99).'.'.$extension;
-                
-            }else{
-                $employee_signature = null;
-            }
-
-            if($Employee_data->employee_image !='' && $employee_image == null){
-                $employee_image = $Employee_data->employee_image;
-            }
-            
-            if($Employee_data->employee_signature !='' && $employee_image == null){
-                $employee_image = $Employee_data->employee_signature;
-            }
-
-
-            $Employee_data->update([
-                'personal_farm_id' => $request->personal_farm_id,
-                'employee_type_id' => $request->employee_type_id,
-                'employee_level_id' => $request->employee_level_id,
-                'name' =>  $request->name,
-                'guardian_name' => $request->guardian_name,
-                'contact_no' => $request->contact_no,
-                'other_number' => $request->other_number,
-                'other_number' => $request->other_number,
-                'email' => $request->email,
-                'cnic_no' => $request->cnic_no,
-                'basic_salary' => $request->basic_salary,
-                'other_amount' => $request->other_amount,
-                'net_salary' => $request->net_salary,
-                'contract_period' => $request->contract_period,
-                'date_of_birth' => $request->date_of_birth,
-                'joining_date' => $request->joining_date,
-                'is_police_record' => $request->is_police_record,
-                'address' => $request->address,
-                'description' => $request->description,
-                'blood_group' => $request->blood_group,
-                'country_id' => $request->country_id,
-                'province_id' => $request->province_id,
-                'province_id' => $request->province_id,
-                'city_id' => $request->city_id,
-
-                'employee_image' => $employee_image,
-                'employee_signature' => $employee_signature,
-                'updatedby' => $this->authUserId,
-            ]);
-
-            if($Employee_data){
-                if($request->hasFile('employee_image') && $employee_image != null){
-                    $upload_to_folder = $employee_image_file->storeAs('employee/', $employee_image, 'public');
-                }
-                if($request->hasFile('employee_signature') && $employee_signature != null){
-                    $upload_to_folder_sig = $employee_signature_file->storeAs('employee/', $employee_signature, 'public');
-                }
-            }
-        }
-        catch (\Throwable $e) {
-            Log::error($e);
-            $message = 'Something went wrong';
-            $title = 'Error';
-            $icon_type = 'warning';
-        }
-
-        Session::flash('swal_notification', ['title' => $title, 'icon_type' => $icon_type, 'message' => $message]);
-        return redirect()->route('employee.index');
     }
 
     public function show($id)
@@ -230,9 +165,16 @@ class ProductStoreController extends Controller
 
     public function edit($id)
     {
-        $store = new ProductStore();
-        $companies = PartyCompany::get();
-        return view('productmanagement.purchases.index', compact('store','companies'));
+        $store = ProductStore::find($id);
+
+        if (! $store) {
+            return response()->json(['message' => 'no'], 201);
+        }
+
+        return response()->json([
+            'message' => 'yes',
+            'store' => $store->toArray(),
+        ], 201);
     }
 
     public function validationRules($request, $id)

@@ -126,7 +126,7 @@
                     }
                 });
             }else{
-                $('.AddUpdate').html('Add');  
+                $('.AddUpdate').html('Add');
             }
         });
 

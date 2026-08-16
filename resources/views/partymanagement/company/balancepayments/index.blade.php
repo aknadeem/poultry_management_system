@@ -31,11 +31,13 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                             <h4>Balance Payments</h4>
                         </div>
                         <div class="col-6 align-self-end text-end mb-2">
-                            <a href="{{ asset('storage/party/company/'.$company_balance->company?->company_logo) }}"
-                                target="_blank" title="click to view">
-                                <img src="{{ asset('storage/party/company/'.$company_balance->company?->company_logo) }}"
-                                    alt="No image" width="10%">
-                            </a>
+                            @if($company_balance->company?->company_logo)
+                                <a href="{{ asset('storage/party/company/'.$company_balance->company?->company_logo) }}"
+                                    target="_blank" title="click to view">
+                                    <img src="{{ asset('storage/party/company/'.$company_balance->company?->company_logo) }}"
+                                        alt="Company Logo" width="10%">
+                                </a>
+                            @endif
                             {{-- <a class="btn btn-secondary btn-sm" data-bs-toggle="modal"
                                 data-bs-target="#AddCompanyModal" href="javascript:void(0);" CustomerId="0"
                                 title="Click to add new company" data-plugin="tippy" data-tippy-animation="scale"
@@ -60,7 +62,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                                 <td>{{++$key}}</td>
                                 <td>{{$item->paid_amount}}</td>
                                 <td>{{$item->payment_option}}</td>
-                                <td>{{$item?->user?->name}} </td>
+                                <td>{{$item?->addedBy?->name}} </td>
                                 <td>{{$item->created_at?->format('d M, Y h:i:s A')}}</td>
                             </tr>
                             @empty

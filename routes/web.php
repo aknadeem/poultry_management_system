@@ -161,7 +161,7 @@ Route::group(['middleware' => 'auth'], function(){
 
         Route::get('/product-sale-rebates', [ProductSaleController::class, 'getRebates'])->name('productsales.rebates');
 
-        Route::resource('productstores', ProductStoreController::class);
+        Route::resource('productstores', ProductStoreController::class)->except(['update']);
         Route::resource('productsales', ProductSaleController::class)->except(['edit', 'update']);
         
     });

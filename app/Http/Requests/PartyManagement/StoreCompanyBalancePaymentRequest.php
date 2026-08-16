@@ -18,9 +18,9 @@ class StoreCompanyBalancePaymentRequest extends FormRequest
             'party_company_id' => 'bail|required|integer',
             'amount_payment' => 'bail|required|numeric',
             'payment_option' => 'bail|required|string',
-            'cheque_date' => 'bail|required_if:payment_option,cheque|date',
-            'bank_name' => 'bail|required_if:payment_option,cheque|string',
-            'cheque_picture' => 'bail|required_if:payment_option,cheque',
+            'cheque_date' => 'bail|required_if:payment_option,cheque|nullable|date',
+            'bank_name' => 'bail|required_if:payment_option,cheque|nullable|string',
+            'cheque_picture' => 'bail|required_if:payment_option,cheque|nullable',
             'description' => 'nullable',
             'image_file' => 'nullable',
         ];

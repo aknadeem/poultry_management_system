@@ -324,6 +324,17 @@
                             location.reload();
                         });
                     }
+                },
+                error: function (xhr) {
+                    if (xhr.status === 422) {
+                        const errors = xhr.responseJSON?.errors || {};
+
+                        $.each(errors, function (field, messages) {
+                            $('#AddPaymentForm')
+                                .find('span.' + field + '_error')
+                                .text(messages[0]);
+                        });
+                    }
                 }
             });
         });
