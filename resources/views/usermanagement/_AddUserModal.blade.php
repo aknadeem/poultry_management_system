@@ -34,7 +34,7 @@
 
                         <div class="col-sm-6 mb-2">
                             <label for="UserPassword"> Password *</label>
-                            <input type="text" placeholder="Enter password" name="password" class="form-control"
+                            <input type="password" placeholder="Enter password" name="password" class="form-control"
                                 id="UserPassword">
                             <span class="text-danger password_error"></span>
                         </div>
@@ -106,7 +106,7 @@
             if(User_id > 0){
                 $('.AddUpdate').html('Update');
                 $.get("{{ url('/usermanagement/users')}}/"+User_id+"/edit" , function(cdata, status){
-                    console.log(cdata?.user)
+
                     $('#UserIdModal').val(cdata?.user?.id)
                     $('#UserName').val(cdata?.user?.name)
                     $('#UserContactNo').val(cdata?.user?.contact_no)
@@ -166,7 +166,7 @@
         });
         $('.ModalClosed').click(function () {
             $(this).find('form').trigger('reset');
-            $('.modal').modal('hide'); 
+            $('.modal').modal('hide');
         });
 
         function getUserRoleList(){
@@ -177,7 +177,7 @@
                 if(userroles_list?.length > 0){
                     html_code='<option value="" Selected disabled> Select User Role </option>';
                     for (var i = 0; i < userroles_list?.length; i++) {
-                        html_code+='<option value='+userroles_list[i].id+'>'+userroles_list[i].name+'</option>'; 
+                        html_code+='<option value='+userroles_list[i].id+'>'+userroles_list[i].name+'</option>';
                     }
                 }
                 $('#UserRoleSelect').html(html_code);

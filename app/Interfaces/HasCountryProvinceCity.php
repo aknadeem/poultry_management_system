@@ -7,4 +7,4 @@ interface HasCountryProvinceCity
     public function country(): BelongsTo;
     public function province(): BelongsTo;
     public function city(): BelongsTo;
-}   
+}
