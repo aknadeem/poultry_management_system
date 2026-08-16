@@ -112,10 +112,9 @@ class PartyBalanceController extends Controller
     {
         $payments = PartyBalancePayment::query()
             ->where('party_balance_id',$id)
-            ->with('party:id,name,email,is_vendor,is_customer,profile_picture,contact_no','user:id,name'
+            ->with('party:id,name,email,is_vendor,is_customer,profile_picture,contact_no','user:id,name')
             ->orderBy('id', 'DESC')
             ->get();
-        dd($payments->toArray());
         return view('balancemanagement.party_balances.balance_payments', compact('payments'));
     }
 
