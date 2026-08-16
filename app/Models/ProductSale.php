@@ -10,24 +10,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ProductSale extends Model
 {
-    protected $fillable = [
-        'party_id',
-        'party_company_id',
-        'product_category_id',
-        'sale_date',
-        'invoice_number',
-        'invoice_picture',
-        'total_amount',
-        'discount_amount',
-        'tax_amount',
-        'final_amount',
-        'payment_status',
-        'narration',
-        'is_rebate',
-        'rebate_amount',
-        'addedby',
-        'updatedby',
-    ];
     use HasFactory, SoftDeletes;
 
     const PAYMENT_UNPAID = 1;
@@ -71,7 +53,7 @@ class ProductSale extends Model
             $status['value'] = 'Un paid';
             $status['color_name'] = 'danger';
 
-        }else if($this->payment_status == ProductSale::PAYMENT_PENDING){
+        }elseif($this->payment_status == ProductSale::PAYMENT_PENDING){
             $status = 'Pending';
             $status['color_name'] = 'warning';
         }else{
@@ -87,19 +69,19 @@ class ProductSale extends Model
             $ex_code = ProductSale::max('sale_number');
             if($ex_code >= 99999)
                 $length = 6;
-            else if($ex_code >= 999999)
+            elseif($ex_code >= 999999)
                 $length = 7;
-            else if($ex_code >= 9999999)
+            elseif($ex_code >= 9999999)
                 $length = 8;
-            else if($ex_code >= 99999999)
+            elseif($ex_code >= 99999999)
                 $length = 9;
-            else if($ex_code >= 999999999)
+            elseif($ex_code >= 999999999)
                 $length = 10;
-            else if($ex_code >= 9999999999)
+            elseif($ex_code >= 9999999999)
                 $length = 11;
-            else if($ex_code >= 99999999999)
+            elseif($ex_code >= 99999999999)
                 $length = 12;
-            else if($ex_code >= 999999999999)
+            elseif($ex_code >= 999999999999)
                 $length = 13;
             else
                 $length = 5;

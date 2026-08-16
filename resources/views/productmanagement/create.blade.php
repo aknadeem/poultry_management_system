@@ -276,7 +276,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
 
                                         <div class="col-4 mb-2">
                                             <label class="font_bold" for="MrpPrice"> MRP Price</label>
-                                            <input type="number" step="any" min="0" class="form-control"
+                                            <input type="number" step="any" min="0" class="form-control form-control-lg"
                                                 name="mrp_price" placeholder="MRP Price" id="MrpPrice">
 
                                             @error('mrp_price')

@@ -33,7 +33,7 @@ class RecordProductSaleRebateAction
 
                 $itemPrice = $item->product_sale_price;
                 $salePurchase = ProductSale::find($item->product_sale_id);
-                $rebateModel = new ProductSaleRebate();
+                $rebateClass = ProductSaleRebate::class;
             } else {
                 $item = ProductPurchaseDetail::find($productDetailId);
                 if (! $item) {
@@ -44,7 +44,19 @@ class RecordProductSaleRebateAction
 
                 $itemPrice = $item->product_purchase_price;
                 $salePurchase = ProductPurchase::find($item->product_purchase_id);
-                $rebateModel = new ProductPurchaseRebate();
+                $rebateClass = ProductPurchaseRebate::class;
+            }
+
+            if (! $salePurchase) {
+                throw ValidationException::withMessages([
+                    'product_detail_id' => 'Parent record not found.',
+                ]);
+            }
+
+            if ($rebateQty > (int) $item->product_total_qty) {
+                throw ValidationException::withMessages([
+                    'rebate_qty' => 'Rebate quantity cannot exceed remaining quantity.',
+                ]);
             }
 
             $updateQty = $item->product_total_qty - $rebateQty;
@@ -59,17 +71,15 @@ class RecordProductSaleRebateAction
             $item->updatedby = $userId;
             $item->save();
 
-            if ($salePurchase) {
-                $salePurchase->final_amount = $salePurchase->final_amount - $rebateAmount;
-                $salePurchase->is_rebate = 1;
-                $salePurchase->rebate_amount = $rebateAmount;
-                $salePurchase->updated_at = $now;
-                $salePurchase->updatedby = $userId;
-                $salePurchase->save();
-            }
+            $salePurchase->final_amount = $salePurchase->final_amount - $rebateAmount;
+            $salePurchase->is_rebate = 1;
+            $salePurchase->rebate_amount = $rebateAmount;
+            $salePurchase->updated_at = $now;
+            $salePurchase->updatedby = $userId;
+            $salePurchase->save();
 
-            $rebateModel->create([
-                'rebate_item_id' => $item->id,
+            $rebateClass::create([
+                'rebate_item_id' => $salePurchase->id,
                 'product_id' => $item->product_id,
                 'rebate_reason' => $rebateReason,
                 'rebate_qty' => $rebateQty,

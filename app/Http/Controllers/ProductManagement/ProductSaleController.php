@@ -10,6 +10,7 @@ use App\Models\ProductCategory;
 use App\Models\ProductSale;
 use App\Models\ProductSaleDetail;
 use App\Models\ProductSaleRebate;
+use App\Models\ProductPurchase;
 use App\Models\ProductPurchaseDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -37,13 +38,12 @@ class ProductSaleController extends Controller
 
     public function index()
     {
-        $this->authorize('viewAny', ProductSale::class);
-        $product_sales = ProductSale::with(
+       // $this->authorize('viewAny', ProductSale::class);
+        $product_sales = ProductSale::with([
             'party:id,name,cnic_no,customer_division_id',
             'party.division:id,name',
             'company:id,company_name',
-            'productcategory:id,name'
-        )->get();
+            'productcategory:id,name'])->get();
 
         return view('productmanagement.sales.index', compact('product_sales'));
     }
@@ -223,7 +223,11 @@ class ProductSaleController extends Controller
 
     public function productRebate(RecordProductSaleRebateRequest $request, RecordProductSaleRebateAction $action)
     {
-        $this->authorize('update', ProductSale::class);
+        $fromPage = $request->validated()['from_page'] ?? null;
+        $this->authorize(
+            'update',
+            $fromPage === 'ProductPurchaseDetail' ? ProductPurchase::class : ProductSale::class
+        );
         try {
             $action->execute($request->validated(), $this->authUserId);
             Session::flash('swal_notification', [

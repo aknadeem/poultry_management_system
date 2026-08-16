@@ -3,6 +3,8 @@
 use App\Models\PartyBalance;
 use App\Models\Product;
 use App\Models\ProductSale;
+use App\Models\ProductSaleDetail;
+use App\Models\ProductSaleRebate;
 use App\Models\User;
 use Database\Seeders\UserSeeder;
 use Illuminate\Support\Facades\DB;
@@ -139,4 +141,61 @@ test('product sale destroy reverses inventory and deletes party balance', functi
             ->where('narration', 'like', "%(ProductSale #{$sale->id})%")
             ->count()
     )->toBe(0);
+});
+
+test('product sale rebate stores the sale id and reduces line totals', function () {
+    $this->withoutExceptionHandling();
+
+    $this->post(route('productsales.store'), productSalePayload())
+        ->assertRedirect();
+
+    $sale = ProductSale::firstOrFail();
+    $detail = ProductSaleDetail::query()->where('product_sale_id', $sale->id)->firstOrFail();
+
+    $this->from(route('productsales.show', $sale->id))
+        ->post(route('productRebate'), [
+            'from_page' => 'ProductSaleDetail',
+            'product_detail_id' => $detail->id,
+            'rebate_qty' => 2,
+            'rebate_reason' => 'Customer return',
+            'rebate_description' => 'Two units returned',
+        ])
+        ->assertRedirect();
+
+    $this->assertDatabaseHas('product_sale_rebates', [
+        'rebate_item_id' => $sale->id,
+        'product_id' => 1,
+        'rebate_qty' => 2,
+        'rebate_reason' => 'Customer return',
+    ]);
+
+    $detail->refresh();
+    $sale->refresh();
+
+    expect((int) $detail->product_total_qty)->toBe(8);
+    expect((int) $detail->is_rebate)->toBe(1);
+    expect((int) $detail->rebate_qty)->toBe(2);
+    expect((float) $sale->final_amount)->toBe(640.0);
+    expect((int) $sale->is_rebate)->toBe(1);
+    expect((float) $sale->rebate_amount)->toBe(160.0);
+    expect(ProductSaleRebate::count())->toBe(1);
+});
+
+test('product sale rebate rejects a quantity larger than remaining qty', function () {
+    $this->post(route('productsales.store'), productSalePayload())->assertRedirect();
+
+    $sale = ProductSale::firstOrFail();
+    $detail = ProductSaleDetail::query()->where('product_sale_id', $sale->id)->firstOrFail();
+
+    $this->from(route('productsales.show', $sale->id))
+        ->post(route('productRebate'), [
+            'from_page' => 'ProductSaleDetail',
+            'product_detail_id' => $detail->id,
+            'rebate_qty' => 11,
+            'rebate_reason' => 'Too many',
+            'rebate_description' => 'Should fail',
+        ])
+        ->assertSessionHasErrors('rebate_qty');
+
+    expect(ProductSaleRebate::count())->toBe(0);
 });

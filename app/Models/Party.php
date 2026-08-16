@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use App\Interfaces\HasCountryProvinceCity;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 
 class Party extends Model implements HasCountryProvinceCity
 {

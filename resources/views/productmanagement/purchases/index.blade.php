@@ -64,7 +64,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($store as $key=>$row)
+                            @forelse ($product_purchases as $key=>$row)
                             <tr>
                                 <td class="fs-6">{{ ++$key }}</td>
                                 <td>{{ $row->company?->company_name ?? 'Company'}}</td>

@@ -9,33 +9,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
 {
-    protected $fillable = [
-        'product_category_id',
-        'product_type_id',
-        'party_company_id',
-        'product_store_id',
-        'product_name',
-        'product_description',
-        'product_group',
-        'quantity',
-        'max_inventory_level',
-        'reorder_level',
-        'reorder_level_date',
-        'mrp_price',
-        'whole_sale_price',
-        'purchase_price',
-        'sale_price',
-        'trade_price',
-        'discount_amount',
-        'discount_percentage',
-        'tax_amount',
-        'tax_percentage',
-        'warranty_period',
-        'purchase_date',
-        'is_active',
-        'addedby',
-        'updatedby',
-    ];
     use SoftDeletes, HasFactory;
 
     protected $dates = ['created_at','updated_at','deleted_at', 'reorder_level_date','purchase_date'];
@@ -46,15 +19,26 @@ class Product extends Model
         'reorder_level_date' => 'date:Y-m-d',
         'mrp_price' => 'decimal:2',
         'whole_sale_price' => 'decimal:2',
+        'full_less_price' => 'decimal:2',
+        'store_price' => 'decimal:2',
+        'retail_price' => 'decimal:2',
         'purchase_price' => 'decimal:2',
         'sale_price' => 'decimal:2',
         'discount_amount' => 'decimal:2',
         'discount_percentage' => 'float',
         'tax_amount' => 'decimal:2',
         'tax_percentage' => 'float',
-        'max_inventory_level' => 'integer',
-        'warranty_period' => 'integer',
         'trade_price' => 'decimal:2',
+        'min_inventory_level' => 'integer',
+        'max_inventory_level' => 'integer',
+        'rack_number' => 'integer',
+        'warranty_period' => 'integer',
+        'is_taxable' => 'boolean',
+        'is_sale_on_tp' => 'boolean',
+        'is_claimable' => 'boolean',
+        'is_fridged' => 'boolean',
+        'is_narcotic' => 'boolean',
+        'is_unwarranted' => 'boolean',
     ];
 
     public function getExpiryDateValueAttribute()

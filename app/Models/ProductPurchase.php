@@ -21,6 +21,8 @@ class ProductPurchase extends Model
         'discount_percentage',
         'other_charges',
         'final_amount',
+        'is_rebate',
+        'rebate_amount',
         'payment_status',
         'warranty_period',
         'purchase_invoice',
