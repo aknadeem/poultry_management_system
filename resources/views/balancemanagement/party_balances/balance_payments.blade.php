@@ -38,7 +38,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                             @if($payments[0]?->party?->profile_picture)
                                 <a href="{{ asset('storage/party/'.$payments[0]?->party?->profile_picture) }}"
                                     target="_blank" title="click to view">
-                                    <img src="{{ asset('storage/party/'.$payments[0]?->party?->profile_picture) }}"
+                                    <img src="{{ asset('storage/party/'.$payments[0]?->party?->profile_picture) }}" alt="Party Profile">
                                         alt="No image" width="10%">
                                 </a>
                             @endif
