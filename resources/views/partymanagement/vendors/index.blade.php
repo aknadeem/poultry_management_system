@@ -118,7 +118,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                                         data-tippy-animation="scale" data-tippy-arrow="true"><i class="fa fa-eye"></i>
                                         View
                                     </a>
-                                    <a class="btn btn-info btn-sm openCustomerModal" data-bs-toggle="modal"
+                                    <a class="btn btn-info btn-sm openCustomerModal d-none" data-bs-toggle="modal"
                                         data-bs-target="#AddCustomerModal" CustomerId="{{ $customer->id ?? 0}}"
                                         href="javascript:void(0);" title="Click to edit" tabindex="0"
                                         data-plugin="tippy" data-tippy-animation="scale" data-tippy-arrow="true"><i

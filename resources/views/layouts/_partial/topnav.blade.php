@@ -54,7 +54,7 @@
                                 </a>
                             </div>
 
-                            <div class="dropdown">
+                            <div class="dropdown d-none">
                                 <a class="dropdown-item" id="topnav-form" href="{{ route('brokerbalance.index') }}">
                                     <i class="fas fa-money-check-alt"></i> Broker Balance
                                 </a>

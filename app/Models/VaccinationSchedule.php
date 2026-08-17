@@ -13,10 +13,13 @@ class VaccinationSchedule extends Model
 
     protected $table = 'vaccination_schedules';
 
-    protected $dates = ['created_at','updated_at','deleted_at', 'schedule_date','vaccination_date'];
-
-    // protected $casts = [];
-
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+        'schedule_date' => 'date',
+        'vaccination_date' => 'date',
+    ];
 
     public function farm()
     {
