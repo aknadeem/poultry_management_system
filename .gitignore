@@ -13,3 +13,17 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
+
+# AI / Agent configuration
+.mcp.json
+AGENTS.md
+CLAUDE.md
+boost.json
+opencode.json
+.codex/
+.github/skills/
+.zed/
+.agents/
+.claude/
+.cursor/
+.junie/
