@@ -11,12 +11,12 @@ class CreateAccountPayablesTable extends Migration
         Schema::create('account_payables', function (Blueprint $table) {
             $table->id();
             $table->date('entry_date')->nullable();
-            $table->decimal('dr')->nullable();
-            $table->decimal('cr')->nullable();
-            $table->decimal('balance')->nullable();
-            $table->decimal('total_amount')->nullable();
-            $table->decimal('paid_amount')->nullable();
-            $table->decimal('remaining_amount')->nullable();
+            $table->decimal('dr', 15, 2)->default(0)->nullable();
+            $table->decimal('cr', 15, 2)->default(0)->nullable();
+            $table->decimal('balance', 15, 2)->default(0)->nullable();
+            $table->decimal('total_amount', 15, 2)->default(0)->nullable();
+            $table->decimal('paid_amount', 15, 2)->default(0)->nullable();
+            $table->decimal('remaining_amount', 15, 2)->default(0)->nullable();
             $table->text('narration')->nullable();
             $table->string('amount_status')->nullable();
             $table->string('amount_type')->nullable();

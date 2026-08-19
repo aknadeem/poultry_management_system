@@ -22,13 +22,13 @@ class CreateChickPurchasesTable extends Migration
             $table->foreignId('party_farm_id')->nullable()->constrained('party_farms')->onDelete('cascade');
             $table->tinyInteger('chick_entry_age')->nullable();
             $table->integer('chick_current_age')->nullable();
-            $table->decimal('weight')->nullable();
+            $table->decimal('weight')->default(0)->nullable();
             $table->integer('quantity')->nullable();
-            $table->decimal('price')->nullable();
-            $table->decimal('discount_amount')->nullable();
+            $table->decimal('price', 15, 2)->default(0)->nullable();
+            $table->decimal('discount_amount', 15, 2)->nullable();
             $table->float('discount_percentage')->nullable();
-            $table->decimal('total_price')->nullable();
-            $table->decimal('final_price')->nullable();
+            $table->decimal('total_price', 15, 2)->default(0)->nullable();
+            $table->decimal('final_price', 15, 2)->default(0)->nullable();
 
             $table->string('bilty_number')->nullable();
             $table->string('bilty_charges')->nullable();

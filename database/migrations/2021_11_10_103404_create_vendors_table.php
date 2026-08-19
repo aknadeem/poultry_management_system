@@ -21,9 +21,9 @@ class CreateVendorsTable extends Migration
             $table->string('cnic_number')->unique();
             $table->string('cnic_image_front')->nullable();
             $table->string('cnic_image_back')->nullable();
-            $table->decimal('credit_limit')->nullable();
-            $table->decimal('debit_limit')->nullable();
-            $table->decimal('opening_balance')->nullable();
+            $table->decimal('credit_limit', 15, 2)->default(0)->nullable();
+            $table->decimal('debit_limit', 15, 2)->default(0)->nullable();
+            $table->decimal('opening_balance', 15, 2)->default(0)->nullable();
             $table->string('business_type')->nullable();
             $table->string('company_name')->nullable();
             $table->string('company_logo')->nullable();

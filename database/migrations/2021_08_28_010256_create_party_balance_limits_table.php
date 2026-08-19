@@ -13,8 +13,8 @@ class CreatePartyBalanceLimitsTable extends Migration
             $table->foreignId('party_id')->nullable()->constrained('parties')->onDelete('cascade');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-            $table->decimal('debit_limit')->nullable();
-            $table->decimal('credit_limit')->nullable();
+            $table->decimal('debit_limit', 15, 2)->default(0)->nullable();
+            $table->decimal('credit_limit', 15, 2)->default(0)->nullable();
             $table->boolean('is_active')->default(1)->nullable();
             $table->text('remarks')->nullable();
             $table->unsignedBigInteger('addedby')->nullable();

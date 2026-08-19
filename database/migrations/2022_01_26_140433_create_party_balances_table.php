@@ -13,9 +13,9 @@ class CreatePartyBalancesTable extends Migration
             
             $table->foreignId('party_id')->nullable()->constrained('parties')->onDelete('cascade');
             $table->date('transaction_date')->nullable();
-            $table->decimal('total_amount');
-            $table->decimal('paid_amount')->nullable();
-            $table->decimal('remaining_amount')->nullable();
+            $table->decimal('total_amount', 15, 2)->default(0)->nullable();
+            $table->decimal('paid_amount', 15, 2)->default(0)->nullable();
+            $table->decimal('remaining_amount', 15, 2)->default(0)->nullable();
             $table->tinyInteger('amount_type')->nullable();
             $table->tinyInteger('payment_status')->default(1);
             $table->boolean('is_active')->default(1);

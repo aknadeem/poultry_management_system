@@ -38,7 +38,7 @@ class CreatePartiesTable extends Migration
             $table->foreignId('city_id')->nullable()->constrained('cities')->onDelete('cascade');
             
             $table->foreignId('contact_person_id')->nullable()->constrained('conduct_people')->onDelete('cascade');
-            $table->decimal('balance')->nullable();
+            $table->decimal('balance', 15, 2)->default(0)->nullable();
             $table->tinyInteger('balance_type')->nullable();
             $table->unsignedBigInteger('addedby')->nullable();
             $table->unsignedBigInteger('updatedby')->nullable();

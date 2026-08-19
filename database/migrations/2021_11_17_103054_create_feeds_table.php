@@ -9,7 +9,6 @@ class CreateFeedsTable extends Migration
 
     public function up()
     {
-        // Schema::dropIfExists('feeds');
         Schema::create('feeds', function (Blueprint $table) {
             $table->id();
             $table->string('feed_name')->unique()->nullable();

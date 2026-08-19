@@ -8,7 +8,6 @@ class CreateEmployeesTable extends Migration
 {
     public function up()
     {
-        // Schema::dropIfExists('employees');
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('emp_number')->default(0);
@@ -20,9 +19,9 @@ class CreateEmployeesTable extends Migration
             $table->string('other_number')->nullable();
             $table->string('email')->nullable();
             $table->string('cnic_no')->nullable();
-            $table->decimal('basic_salary')->default(0);
-            $table->decimal('other_amount')->default(0);
-            $table->decimal('net_salary')->nullable(0);
+            $table->decimal('basic_salary', 15, 2)->default(0)->nullable();
+            $table->decimal('other_amount', 15, 2)->default(0)->nullable();
+            $table->decimal('net_salary', 15, 2)->default(0)->nullable();
             $table->string('contract_period')->nullable();
             $table->date('date_of_birth')->nullable();
             $table->string('employee_age')->nullable();

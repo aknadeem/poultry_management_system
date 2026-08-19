@@ -14,14 +14,14 @@ class CreateProductSaleDetailsTable extends Migration
             $table->unsignedBigInteger('product_id')->nullable();
             $table->string('product_code')->nullable();
             $table->string('product_name')->nullable();
-            $table->decimal('product_sale_price')->nullable();
+            $table->decimal('product_sale_price', 15, 2)->default(0)->nullable();
             
-            $table->integer('product_qty')->default(0);
-            $table->integer('product_bonus_qty')->default(0);
-            $table->integer('product_total_qty')->default(0);
-            $table->decimal('product_discount')->nullable();
-            $table->decimal('product_discount_percentage')->nullable();
-            $table->decimal('product_total_price')->nullable();
+            $table->integer('product_qty')->default(0)->nullable();
+            $table->integer('product_bonus_qty')->default(0)->nullable();
+            $table->integer('product_total_qty')->default(0)->nullable();
+            $table->decimal('product_discount', 15, 2)->default(0)->nullable();
+            $table->decimal('product_discount_percentage', 8, 2)->default(0)->nullable();
+            $table->decimal('product_total_price', 15, 2)->default(0)->nullable();
 
             $table->boolean('is_active')->default(1);
             $table->unsignedBigInteger('addedby')->nullable();

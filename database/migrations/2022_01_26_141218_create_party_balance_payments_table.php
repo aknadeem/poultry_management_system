@@ -13,7 +13,7 @@ class CreatePartyBalancePaymentsTable extends Migration
             $table->foreignId('party_id')->nullable()->constrained('parties')->onDelete('cascade');
             $table->foreignId('party_balance_id')->nullable()->constrained('party_balances')->onDelete('cascade');
 
-            $table->decimal('paid_amount')->nullable();
+            $table->decimal('paid_amount', 15, 2)->default(0)->nullable();
             $table->date('paid_date')->nullable();
 
             $table->string('payment_option')->nullable();

@@ -25,10 +25,10 @@ class CreateChickenSalesTable extends Migration
             $table->double('second_weight')->nullable();
             $table->double('net_weight')->nullable();
             $table->double('total_weight')->nullable();
-            $table->decimal('per_kg_price')->nullable();
-            $table->decimal('discount_amount')->nullable();
+            $table->decimal('per_kg_price', 15, 2)->default(0)->nullable();
+            $table->decimal('discount_amount', 15, 2)->nullable();
             $table->float('discount_percentage')->nullable();
-            $table->decimal('total_price')->nullable();
+            $table->decimal('total_price', 15, 2)->nullable();
 
             $table->string('vehicle_number')->nullable();
             $table->string('driver_name')->nullable();

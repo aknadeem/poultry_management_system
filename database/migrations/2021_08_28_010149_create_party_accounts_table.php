@@ -15,9 +15,9 @@ class CreatePartyAccountsTable extends Migration
             $table->string('account_number')->nullable();
             $table->string('bank_name')->nullable();
             $table->string('branch_code')->nullable();
-            $table->decimal('opening_balance')->nullable();
-            $table->decimal('dr')->nullable();
-            $table->decimal('cr')->nullable();
+            $table->decimal('opening_balance', 15, 2)->default(0)->nullable();
+            $table->decimal('dr', 15, 2)->default(0)->nullable();
+            $table->decimal('cr', 15, 2)->default(0)->nullable();
             $table->boolean('is_active')->default(1);
             $table->text('remarks')->nullable();
             $table->unsignedBigInteger('addedby')->nullable();

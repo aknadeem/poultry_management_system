@@ -501,7 +501,7 @@ $load_js = Array('dashboard','select2');
 
 <div id="CashInModal" class="modal fade MyModalClass" tabindex="-1" role="dialog" aria-labelledby="CashInModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header border-bottom">
                 <h4 class="modal-title" id="standard-modalLabel"> <span class="AddUpdate"> Receive </span> Payment From

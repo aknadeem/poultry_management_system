@@ -26,14 +26,14 @@ return new class extends Migration
             $table->boolean('is_rebate')->nullable()->default(0);
         });
         $this->addColumnIfMissing('product_purchases', 'rebate_amount', function (Blueprint $table) {
-            $table->double('rebate_amount')->nullable()->default(0);
+            $table->decimal('rebate_amount', 15, 2)->nullable()->default(0);
         });
 
         $this->addColumnIfMissing('product_sales', 'is_rebate', function (Blueprint $table) {
             $table->boolean('is_rebate')->nullable()->default(0);
         });
         $this->addColumnIfMissing('product_sales', 'rebate_amount', function (Blueprint $table) {
-            $table->double('rebate_amount')->nullable()->default(0);
+            $table->decimal('rebate_amount', 15, 2)->nullable()->default(0);
         });
     }
 

@@ -17,7 +17,7 @@ class CreateBrokersTable extends Migration
             $table->string('cnic_no', 20)->nullable();
             $table->string('email')->nullable();
             $table->string('contact_no', 20)->nullable();
-            $table->decimal('opening_balance')->default(0);
+            $table->decimal('opening_balance', 15, 2)->default(0)->default(0);
             $table->foreignId('country_id')->nullable()->constrained('countries')->onDelete('cascade');
             $table->foreignId('province_id')->nullable()->constrained('provinces')->onDelete('cascade');
             $table->foreignId('city_id')->nullable()->constrained('cities')->onDelete('cascade');

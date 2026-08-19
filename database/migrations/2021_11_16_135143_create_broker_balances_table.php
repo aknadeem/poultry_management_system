@@ -11,12 +11,12 @@ class CreateBrokerBalancesTable extends Migration
         Schema::create('broker_balances', function (Blueprint $table) {
             $table->id();
             $table->foreignId('broker_id')->nullable()->constrained('brokers')->onDelete('cascade');
-            $table->decimal('dr')->nullable();
-            $table->decimal('cr')->nullable();
-            $table->decimal('balance')->nullable();
-            $table->decimal('total_amount')->nullable();
-            $table->decimal('paid_amount')->nullable();
-            $table->decimal('remaining_amount')->nullable();
+            $table->decimal('dr', 15, 2)->default(0)->nullable();
+            $table->decimal('cr', 15, 2)->default(0)->nullable();
+            $table->decimal('balance', 15, 2)->default(0)->nullable();
+            $table->decimal('total_amount', 15, 2)->default(0)->nullable();
+            $table->decimal('paid_amount', 15, 2)->default(0)->nullable();
+            $table->decimal('remaining_amount', 15, 2)->default(0)->nullable();
             $table->string('status')->default('unpaid');
             $table->boolean('is_active')->default(1);
             $table->text('narration')->nullable();

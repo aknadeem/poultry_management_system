@@ -20,11 +20,11 @@ class CreateProductSalesTable extends Migration
             $table->string('due_date_option')->nullable();
             $table->string('manual_number')->nullable();
             $table->string('sale_type')->nullable();
-            $table->decimal('total_amount')->nullable();
-            $table->decimal('discount_amount')->nullable();
-            $table->decimal('discount_percentage')->nullable();
-            $table->decimal('other_charges')->nullable();
-            $table->decimal('final_amount')->nullable();
+            $table->decimal('total_amount', 15, 2)->default(0)->nullable();
+            $table->decimal('discount_amount', 15, 2)->default(0)->nullable();
+            $table->decimal('discount_percentage', 10, 2)->default(0)->nullable();
+            $table->decimal('other_charges', 15, 2)->default(0)->nullable();
+            $table->decimal('final_amount', 15, 2)->default(0)->nullable();
             $table->string('invoice_picture')->nullable();
             $table->text('description')->nullable();
             

@@ -21,16 +21,16 @@ class CreateChickenPurchasesTable extends Migration
             $table->date('purchase_date')->nullable();
             $table->foreignId('vendor_id')->nullable()->constrained('vendors')->onDelete('cascade');
             $table->foreignId('company_id')->nullable()->constrained('party_companies')->onDelete('cascade');
-            $table->decimal('weight')->nullable();
+            $table->decimal('weight')->default(0)->nullable();
             $table->integer('quantity')->nullable();
-            $table->decimal('price')->nullable();
-            $table->decimal('discount_amount')->nullable();
+            $table->decimal('price', 15, 2)->default(0)->nullable();
+            $table->decimal('discount_amount', 15, 2)->nullable();
             $table->float('discount_percentage')->nullable();
-            $table->decimal('total_price')->nullable();
+            $table->decimal('total_price', 15, 2)->nullable();
             $table->boolean('is_sold')->default(0);
 
             $table->string('bilty_number')->nullable();
-            $table->string('bilty_charges')->nullable();
+            $table->decimal('bilty_charges', 15, 2)->nullable();
             $table->string('purchase_for')->nullable();
             $table->foreignId('personal_farm_id')->nullable()->constrained('personal_farms')->onDelete('cascade');
             $table->foreignId('party_farm_id')->nullable()->constrained('party_farms')->onDelete('cascade');

@@ -13,7 +13,7 @@ class CreateExpensesTable extends Migration
             $table->unsignedBigInteger('expense_number')->default(0);
             $table->string('expense_code')->unique()->nullable();
             $table->foreignId('category_id')->nullable()->constrained('expense_categories')->onDelete('cascade');
-            $table->decimal('amount')->nullable();
+            $table->decimal('amount', 15, 2)->default(0)->nullable();
             $table->date('expense_date')->nullable();
             $table->text('remarks')->nullable();
             $table->string('picture')->nullable();

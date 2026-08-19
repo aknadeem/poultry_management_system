@@ -8,7 +8,6 @@ class CreateProductsTable extends Migration
 {
     public function up()
     {
-        // Schema::dropIfExists('products');
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('product_number')->default(0);
@@ -44,18 +43,18 @@ class CreateProductsTable extends Migration
             $table->integer('reorder_level_period')->nullable();
             $table->date('reorder_level_date')->nullable();
             
-            $table->decimal('mrp_price')->nullable();
-            $table->decimal('whole_sale_price')->nullable();
-            $table->decimal('full_less_price')->nullable();
-            $table->decimal('store_price')->nullable();
-            $table->decimal('retail_price')->nullable();
-            $table->decimal('trade_price')->nullable();
-            $table->decimal('purchase_price')->nullable();
-            $table->decimal('sale_price')->nullable();
-            $table->decimal('discount_amount')->nullable();
-            $table->decimal('discount_percentage')->nullable();
-            $table->decimal('tax_amount')->nullable();
-            $table->decimal('tax_percentage')->nullable();
+            $table->decimal('mrp_price', 15, 2)->default(0)->nullable();
+            $table->decimal('whole_sale_price', 15, 2)->default(0)->nullable();
+            $table->decimal('full_less_price', 15, 2)->default(0)->nullable();
+            $table->decimal('store_price', 15, 2)->default(0)->nullable();
+            $table->decimal('retail_price', 15, 2)->default(0)->nullable();
+            $table->decimal('trade_price', 15, 2)->default(0)->nullable();
+            $table->decimal('purchase_price', 15, 2)->default(0)->nullable();
+            $table->decimal('sale_price', 15, 2)->default(0)->nullable();
+            $table->decimal('discount_amount', 15, 2)->default(0)->nullable();
+            $table->decimal('discount_percentage', 10, 2)->default(0)->nullable();
+            $table->decimal('tax_amount', 15, 2)->default(0)->nullable();
+            $table->decimal('tax_percentage', 8, 2)->default(0)->nullable();
 
             $table->integer('warranty_period')->nullable();
             $table->boolean('is_taxable')->default(0)->nullable();

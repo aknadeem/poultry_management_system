@@ -12,26 +12,21 @@ class CreateProductPurchasesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('purchase_number')->default(0);
             $table->string('purchase_code')->nullable();
-
             $table->foreignId('product_category_id')->nullable()->constrained('product_categories')->onDelete('cascade');
             $table->foreignId('party_company_id')->nullable()->constrained('party_companies')->onDelete('cascade');
             $table->date('purchase_date')->nullable();
             $table->date('expiry_date')->nullable();
             $table->string('due_date_option')->nullable();
             $table->string('manual_number')->nullable();
-
-            $table->decimal('total_amount')->nullable();
-            $table->decimal('discount_amount')->nullable();
-            $table->decimal('discount_percentage')->nullable();
-            $table->decimal('other_charges')->nullable();
-            $table->decimal('final_amount')->nullable();
-            
+            $table->decimal('total_amount', 15, 2)->default(0)->nullable();
+            $table->decimal('discount_amount', 15, 2)->default(0)->nullable();
+            $table->decimal('discount_percentage', 10, 2)->default(0)->nullable();
+            $table->decimal('other_charges', 15, 2)->default(0)->nullable();
+            $table->decimal('final_amount', 15, 2)->default(0)->nullable();
             $table->tinyInteger('payment_status')->default(1);
             $table->integer('warranty_period')->nullable();
-            
             $table->string('purchase_invoice')->nullable();
             $table->text('description')->nullable();
-
             $table->unsignedBigInteger('addedby')->nullable();
             $table->unsignedBigInteger('updatedby')->nullable();
             $table->softDeletes();
