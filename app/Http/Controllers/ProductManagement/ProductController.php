@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\PartyCompany;
 use App\Models\ProductStore;
 use App\Models\ProductCategory;
+use App\Models\ProductType;
 use App\Models\VaccinationGroup;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -52,6 +53,7 @@ class ProductController extends Controller
     {
         $product = new Product();
         $companies = PartyCompany::where('is_active', 1)->get(['id', 'company_name', 'company_code']);
+        $productTypes = ProductType::get(['id', 'name']);
         $product_stores = ProductStore::get(['id', 'store_name', 'store_code', 'store_area', 'total_racks']);
         $vaccination_groups = VaccinationGroup::get(['id', 'name', 'slug']);
         $product_categories = ProductCategory::get(['id', 'name', 'slug']);
@@ -61,7 +63,8 @@ class ProductController extends Controller
             'companies',
             'product_stores',
             'vaccination_groups',
-            'product_categories'
+            'product_categories',
+            'productTypes'
         ));
     }
 
@@ -70,6 +73,7 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
         $companies = PartyCompany::where('is_active', 1)->get(['id', 'company_name', 'company_code']);
         $product_stores = ProductStore::get(['id', 'store_name', 'store_code', 'store_area', 'total_racks']);
+        $productTypes = ProductType::get(['id', 'name']);
         $vaccination_groups = VaccinationGroup::get(['id', 'name', 'slug']);
         $product_categories = ProductCategory::get(['id', 'name', 'slug']);
 
@@ -78,7 +82,8 @@ class ProductController extends Controller
             'companies',
             'product_stores',
             'vaccination_groups',
-            'product_categories'
+            'product_categories',
+            'productTypes'
         ));
     }
 

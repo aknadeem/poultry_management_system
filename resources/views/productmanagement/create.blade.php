@@ -48,7 +48,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                             @php
                             $required = 'required';
                             if($product->id){
-                            $company_id = $product->company_id;
+                            $company_id = $product->party_company_id;
                             $required = '';
                             }
                             @endphp
@@ -68,7 +68,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                                 data-width="100%">
                                                 <option value=""> Select Group</option>
                                                 @forelse (\App\Helpers\Constant::PRODUCT_GROUP as $key=>$value)
-                                                <option value="{{ $value }}">{{
+                                                <option {{ (! empty(old('product_group', $product->product_group))==$value ? 'selected' : '' ) }} value="{{ $value }}">{{
                                                     $key }}</option>
                                                 @empty
                                                 <option value="">No data Found</option>
@@ -85,7 +85,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                                 class="form-control mySelect" data-toggle="select2" data-width="100%">
                                                 <option value=""> Select company</option>
                                                 @forelse ($companies as $item)
-                                                <option value="{{ $item->id }}">{{ $item->company_name }}</option>
+                                                <option {{ (! empty(old('company_id', $product->party_company_id))==$item->id ? 'selected' : '' ) }} value="{{ $item->id }}">{{ $item->company_name }}</option>
                                                 @empty
                                                 @endforelse
                                             </select>
@@ -103,7 +103,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                                     data-width="90%">
                                                     <option value=""> Select category</option>
                                                     @forelse ($product_categories as $item)
-                                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                    <option {{ (! empty(old('product_category_id', $product->product_category_id))==$item->id ? 'selected' : '' ) }} value="{{ $item->id }}">{{ $item->name }}</option>
                                                     @empty
                                                     @endforelse
                                                 </select>
@@ -159,12 +159,13 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             <label class="font_bold" for="ProductType"> Product Type* </label>
                                             <select name="product_type" required id="ProductType"
                                                 class="form-control mySelect" data-toggle="select2" data-width="100%"
-                                                id="">
+                                                id=""> productTypes
                                                 <option value=""> Select Type</option>
-                                                <option value="import">Import</option>
-                                                <option value="export">Export</option>
-                                                <option value="local">Local</option>
-                                                <option value="other">Other</option>
+                                                @forelse ($productTypes as $item)
+                                                    <option {{ (! empty(old('product_type', $product->product_type_id))==$item->id ? 'selected' : '' ) }} value="{{ $item->id }}">{{ $item->name }}</option>
+                                                @empty
+                                                @endforelse
+
                                             </select>
                                             @error('product_type')
                                             <span class="text-danger product_type_error"> {{ $message }} </span>
@@ -180,7 +181,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                                     data-width="89%">
                                                     <option value=""> Select Group</option>
                                                     @forelse ($vaccination_groups as $item)
-                                                    <option value="{{ $item->id }}"> {{ $item->name }} </option>
+                                                    <option {{ (! empty(old('vaccination_group', $product->vaccination_group_id))==$item->id ? 'selected' : '' ) }} value="{{ $item->id }}"> {{ $item->name }} </option>
                                                     @empty
                                                     @endforelse
                                                 </select>
@@ -200,7 +201,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                         <div class="col-sm-12 col-md-6 mb-2">
                                             <label class="font_bold" for="PackSizeUnit"> Pack Size(units) </label>
                                             <input type="number" step="any" min="0" class="form-control"
-                                                name="pack_size_unit" value="" placeholder="Pack size in unit"
+                                                name="pack_size_unit" value="{{ old('pack_size_unit', $product->pack_size) }}" placeholder="Pack size in unit"
                                                 id="PackSizeUnit">
 
                                             @error('pack_size_unit')
@@ -214,8 +215,8 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                                 class="form-control mySelect" data-toggle="select2" data-width="100%"
                                                 id="">
                                                 <option value=""> Select Type</option>
-                                                <option value="gram">Gram</option>
-                                                <option value="kilo_gram">Kg</option>
+                                                <option {{ (! empty(old('pack_size_unit_type', $product->pack_size_unit_type))=='gram' ? 'selected' : '' ) }} value="gram">Gram</option>
+                                                <option {{ (! empty(old('pack_size_unit_type', $product->pack_size_unit_type))=='kilo_gram' ? 'selected' : '' ) }} value="kilo_gram">Kg</option>
                                             </select>
                                             @error('pack_size_unit_type')
                                             <span class="text-danger pack_size_unit_type_error"> {{ $message }} </span>
@@ -234,7 +235,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                                     data-width="88%">
                                                     <option value="" selected> Select Store</option>
                                                     @forelse ($product_stores as $store)
-                                                    <option value="{{ $store->id }}"> {{ $store->store_name }} </option>
+                                                    <option {{ (! empty(old('store_id', $product->product_store_id))==$store->id ? 'selected' : '' ) }} value="{{ $store->id }}"> {{ $store->store_name }} </option>
                                                     @empty
                                                     @endforelse
                                                 </select>
@@ -253,7 +254,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                         <div class="col-xs-4 col-md-2 mb-2 ps-0">
                                             <label class="font_bold" for="RackNumber"> Rack Number </label>
                                             <input type="number" min="0" class="form-control" name="rack_number"
-                                                placeholder="Rack number" id="RackNumber">
+                                                placeholder="Rack number" value="{{ old('rack_number', $product->rack_number) }}" id="RackNumber">
 
                                             @error('rack_number')
                                             <span class="text-danger rack_number_error"> {{ $message }} </span>
@@ -261,15 +262,15 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                         </div>
 
                                         <div class="col-xs-4 col-md-4 mb-2">
-                                            <label class="font_bold" for="InventoryLevel"> Inventory Level </label>
+                                            <label class="font_bold" for="MinLevel"> Inventory Level </label>
                                             <div class="row">
                                                 <div class="col-6">
                                                     <input type="number" min="0" class="form-control" name="min_level"
-                                                        placeholder="Min level" id="MinLevel">
+                                                        placeholder="Min level" id="MinLevel" value="{{ old('min_level', $product->min_inventory_level) }}">
                                                 </div>
                                                 <div class="col-6">
                                                     <input type="number" min="0" class="form-control" name="max_level"
-                                                        placeholder="Max level" id="MaxLevel">
+                                                        placeholder="Max level" id="MaxLevel" value="{{ old('max_level', $product->max_inventory_level) }}">
                                                 </div>
                                             </div>
                                         </div>
@@ -277,7 +278,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                         <div class="col-4 mb-2">
                                             <label class="font_bold" for="MrpPrice"> MRP Price</label>
                                             <input type="number" step="any" min="0" class="form-control form-control-lg"
-                                                name="mrp_price" placeholder="MRP Price" id="MrpPrice">
+                                                name="mrp_price" placeholder="MRP Price" id="MrpPrice" value="{{ old('mrp_price', $product->mrp_price) }}">
 
                                             @error('mrp_price')
                                             <span class="text-danger mrp_price_error"> {{ $message }} </span>
@@ -287,8 +288,8 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                         <div class="col-4 mb-2">
                                             <label class="font_bold" for="WholeSalePrice"> Whole Sale Price</label>
                                             <input type="number" step="any" min="0" class="form-control"
-                                                name="whole_sale_price" value="" placeholder="MRP Price"
-                                                id="WholeSalePrice">
+                                                name="whole_sale_price" placeholder="MRP Price"
+                                                id="WholeSalePrice" value="{{ old('whole_sale_price', $product->whole_sale_price) }}">
 
                                             @error('whole_sale_price')
                                             <span class="text-danger whole_sale_price_error"> {{ $message }} </span>
@@ -298,7 +299,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                         <div class="col-4 mb-2">
                                             <label class="font_bold" for="FullLessPrice">Full Less Price</label>
                                             <input type="number" step="any" min="0" class="form-control"
-                                                name="full_less_price" placeholder="Full less Price" id="FullLessPrice">
+                                                name="full_less_price" placeholder="Full less Price" id="FullLessPrice" value="{{ old('full_less_price', $product->full_less_price) }}">
 
                                             @error('full_less_price')
                                             <span class="text-danger full_less_price_error"> {{ $message }} </span>
@@ -308,7 +309,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                         <div class="col-4 mb-2">
                                             <label class="font_bold" for="StorePrice">Store Price</label>
                                             <input type="number" step="any" min="0" class="form-control"
-                                                name="store_price" placeholder="Store wise price" id="StorePrice">
+                                                name="store_price" placeholder="Store wise price" id="StorePrice" value="{{ old('store_price', $product->store_price) }}">
 
                                             @error('store_price')
                                             <span class="text-danger store_price_error"> {{ $message }} </span>
@@ -318,8 +319,8 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                         <div class="col-4 mb-2">
                                             <label class="font_bold" for="RetailPrice"> Retail Price</label>
                                             <input type="number" step="any" min="0" class="form-control"
-                                                name="retail_price" value="" placeholder="Retail Price"
-                                                id="RetailPrice">
+                                                name="retail_price" placeholder="Retail Price"
+                                                id="RetailPrice" value="{{ old('retail_price', $product->retail_price) }}">
 
                                             @error('retail_price')
                                             <span class="text-danger retail_price_error"> {{ $message }} </span>
@@ -329,7 +330,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                         <div class="col-4 mb-2">
                                             <label class="font_bold" for="TradePrice"> Trade Price </label>
                                             <input type="number" step="any" min="0" class="form-control"
-                                                name="trade_price" value="" placeholder="Trade Price" id="TradePrice">
+                                                name="trade_price" placeholder="Trade Price" id="TradePrice" value="{{ old('trade_price', $product->trade_price) }}">
 
                                             @error('trade_price')
                                             <span class="text-danger trade_price_error"> {{ $message }} </span>
@@ -340,7 +341,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             <label class="font_bold" for="PurchasePrice"> Purchase Price*</label>
                                             <input type="number" step="any" min="0" class="form-control"
                                                 name="purchase_price" placeholder="Purchase Price" id="PurchasePrice"
-                                                required>
+                                                required value="{{ old('purchase_price', $product->purchase_price) }}">
 
                                             @error('purchase_price')
                                             <span class="text-danger purchase_price_error"> {{ $message }} </span>
@@ -350,8 +351,8 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                         <div class="col-4 mb-2">
                                             <label class="font_bold" for="SalePrice"> Sale Price*</label>
                                             <input type="number" step="any" min="0" class="form-control"
-                                                name="sale_price" value="" placeholder="Purchase Price" id="SalePrice"
-                                                required>
+                                                name="sale_price" placeholder="Purchase Price" id="SalePrice"
+                                                required value="{{ old('sale_price', $product->sale_price) }}">
 
                                             @error('sale_price')
                                             <span class="text-danger sale_price_error"> {{ $message }} </span>
@@ -361,8 +362,8 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                         <div class="col-4 mb-2">
                                             <label class="font_bold" for="DiscountAmount"> Discount Amount</label>
                                             <input type="number" step="any" min="0" step="any" class="form-control"
-                                                name="discount_amount" value="" placeholder="Discount Amount"
-                                                id="DiscountAmount">
+                                                name="discount_amount" placeholder="Discount Amount"
+                                                id="DiscountAmount" value="{{ old('discount_amount', $product->discount_amount) }}">
 
                                             @error('discount_amount')
                                             <span class="text-danger discount_amount_error"> {{ $message }} </span>
@@ -371,8 +372,8 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                         <div class="col-4 mb-2">
                                             <label class="font_bold" for="TaxPercentage"> Tax % </label>
                                             <input type="number" step="any" min="0" step="any" class="form-control"
-                                                name="tax_percentage" value="" placeholder="Discount Amount"
-                                                id="TaxPercentage">
+                                                name="tax_percentage" placeholder="Discount Amount"
+                                                id="TaxPercentage" value="{{ old('tax_percentage', $product->tax_percentage) }}">
 
                                             @error('tax_percentage')
                                             <span class="text-danger tax_percentage_error"> {{ $message }} </span>
@@ -382,7 +383,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                         <div class="col-4 mb-2">
                                             <label class="font_bold" for="TaxAmount"> Tax Amount </label>
                                             <input type="number" step="any" min="0" step="any" class="form-control"
-                                                name="tax_amount" value="" placeholder="Discount Amount" id="TaxAmount">
+                                                name="tax_amount"  placeholder="Discount Amount" id="TaxAmount" value="{{ old('tax_amount', $product->tax_amount) }}">
 
                                             @error('tax_amount')
                                             <span class="text-danger tax_amount_error"> {{ $message }} </span>
@@ -393,8 +394,8 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             <label class="font_bold" for="DiscountPercentage"> Discount Percentage %
                                             </label>
                                             <input type="number" step="any" min="0" step="any" class="form-control"
-                                                name="discount_percentage" value="" placeholder="Discount Percentage"
-                                                id="DiscountPercentage">
+                                                name="discount_percentage" placeholder="Discount Percentage"
+                                                id="DiscountPercentage" value="{{ old('discount_percentage', $product->discount_percentage) }}">
 
                                             @error('discount_percentage')
                                             <span class="text-danger discount_percentage_error"> {{ $message }} </span>
@@ -404,7 +405,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                         <div class="col-4 mb-2">
                                             <label class="font_bold" for="WarrantyPeriod"> Warranty Period </label>
                                             <input type="text" class="form-control" name="warranty_period"
-                                                placeholder="Discount Percentage" id="WarrantyPeriod">
+                                                placeholder="Discount Percentage" id="WarrantyPeriod" value="{{ old('warranty_period', $product->warranty_period) }}">
 
                                             @error('warranty_period')
                                             <span class="text-danger warranty_period_error"> {{ $message }} </span>
@@ -427,7 +428,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             <div class="form-check mb-2 mt-1 form-check-inline">
                                                 <input class="form-check-input"
                                                     style="width: 1.7em !important; height: 1.7em !important;"
-                                                    type="checkbox" name="is_taxable" value="1" id="TaxableCheckBox">
+                                                    type="checkbox" name="is_taxable" value="1" {{ old('is_taxable', $product->is_taxable) == 1 ? 'checked' : '' }} id="TaxableCheckBox">
                                             </div>
                                             <span class="text-danger is_taxable_error"></span>
                                         </div>
@@ -436,7 +437,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             <div class="form-check mb-2 mt-1 form-check-inline">
                                                 <input class="form-check-input"
                                                     style="width: 1.7em !important; height: 1.7em !important;"
-                                                    type="checkbox" name="is_sale_on_tp" value="1" id="VendorCheckBox">
+                                                    type="checkbox" name="is_sale_on_tp" value="1" {{ old('is_sale_on_tp', $product->is_sale_on_tp) == 1 ? 'checked' : '' }} id="VendorCheckBox">
                                             </div>
                                             <span class="text-danger is_sale_on_tp_error"></span>
                                         </div>
@@ -445,7 +446,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             <div class="form-check mb-2 mt-1 form-check-inline">
                                                 <input class="form-check-input"
                                                     style="width: 1.7em !important; height: 1.7em !important;"
-                                                    type="checkbox" name="is_claimable" value="1"
+                                                    type="checkbox" name="is_claimable" value="1" {{ old('is_claimable', $product->is_claimable) == 1 ? 'checked' : '' }}
                                                     id="ClaimableCheckBox">
                                             </div>
                                             <span class="text-danger name_error"></span>
@@ -455,7 +456,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             <div class="form-check mb-2 mt-1 form-check-inline">
                                                 <input class="form-check-input"
                                                     style="width: 1.7em !important; height: 1.7em !important;"
-                                                    type="checkbox" name="is_fridged" value="1" id="FridgedCheckBox">
+                                                    type="checkbox" name="is_fridged" value="1" {{ old('is_fridged', $product->is_fridged) == 1 ? 'checked' : '' }} id="FridgedCheckBox">
                                             </div>
                                             <span class="text-danger name_error"></span>
                                         </div>
@@ -464,16 +465,16 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                             <div class="form-check mb-2 mt-1 form-check-inline">
                                                 <input class="form-check-input"
                                                     style="width: 1.7em !important; height: 1.7em !important;"
-                                                    type="checkbox" name="is_narcotic" value="1" id="NarcoticCheckBox">
+                                                    type="checkbox" name="is_narcotic" value="1" {{ old('is_narcotic', $product->is_narcotic) == 1 ? 'checked' : '' }} id="NarcoticCheckBox">
                                             </div>
-                                            <span class="text-danger"></span>
+                                            <span class="text-danger name_error"></span>
                                         </div>
                                         <div class="col-3 mb-2">
                                             <label class="font_bold" for=""> Is Un-Waranted: </label> <br>
                                             <div class="form-check mb-2 mt-1 form-check-inline">
                                                 <input class="form-check-input"
                                                     style="width: 1.7em !important; height: 1.7em !important;"
-                                                    type="checkbox" name="is_unwaranted" value="1"
+                                                    type="checkbox" name="is_unwaranted" value="1" {{ old('is_unwaranted', $product->is_unwarranted) == 1 ? 'checked' : '' }}
                                                     id="UnwarantedCheckBox">
                                             </div>
                                             <span class="text-danger"></span>
@@ -485,7 +486,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                         <div class="col-12 mb-2">
                                             <label class="font_bold" for="Description"> Description </label> <br>
                                             <textarea name="description" id="Description" style="width:100%" rows="5"
-                                                placeholder="Description"></textarea>
+                                                placeholder="Description">{{ old('description', $product->description) }}</textarea>
                                             @error('description')
                                             <span class="text-danger description_error"> {{ $message }} </span>
                                             @enderror
@@ -498,7 +499,7 @@ $load_js = Array('tippy','select2', 'sweetAlert')
                                     <button type="submit" id="sub" class="btn btn-secondary AddUpdate">
                                         Submit
                                     </button>
-                                    <button class="btn btn-danger ModalClosed">
+                                    <button class="btn btn-danger">
                                         Cancel
                                     </button>
                                 </div>

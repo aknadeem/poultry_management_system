@@ -33,7 +33,7 @@ class StoreProductRequest extends FormRequest
             'product_name' => ['bail', 'required', 'string'],
             'batch_number' => ['bail', 'nullable', 'string'],
             'serial_number' => ['bail', 'nullable', 'string'],
-            'product_type' => ['bail', 'required', 'string', Rule::in(['import', 'export', 'local', 'other'])],
+            'product_type' => ['bail', 'required', 'integer', 'exists:product_types,id'],
             'vaccination_group' => ['bail', 'nullable', 'integer', 'exists:vaccination_groups,id'],
             'pack_size_unit' => ['bail', 'nullable', 'numeric'],
             'pack_size_unit_type' => ['bail', 'nullable', 'string', Rule::in(['gram', 'kilo_gram'])],
