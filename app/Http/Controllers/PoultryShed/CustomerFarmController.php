@@ -2,16 +2,40 @@
 
 namespace App\Http\Controllers\PoultryShed;
 
+use Session;
+use App\Models\FarmSubtype;
+use App\Models\FarmType;
 use App\Models\PartyFarm;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Actions\FarmManagement\UpdateCustomerFarmAction;
+use App\Actions\FarmManagement\DestroyCustomerFarmAction;
+use App\Http\Requests\FarmManagement\UpdateCustomerFarmRequest;
 
 class CustomerFarmController extends Controller
 {
+    private $authUserId;
+
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->authUserId = \Auth::user()->id;
+
+            return $next($request);
+        });
+    }
+
     public function index()
     {
-        $farms = PartyFarm::with('party:id,name,cnic_no','type:id,name', 'subtype:id,name')->get();
-        return view('farmmanagement.customerfarms.index', compact('farms'));
+        $farms = PartyFarm::query()
+            ->whereHas('party', fn ($query) => $query->where('is_customer', 1))
+            ->with('party:id,name,cnic_no', 'type:id,name', 'subtype:id,name')
+            ->get();
+
+        $farm_types = FarmType::get(['id', 'name']);
+        $farm_subtypes = FarmSubtype::get(['id', 'name']);
+
+        return view('farmmanagement.customerfarms.index', compact('farms', 'farm_types', 'farm_subtypes'));
     }
 
     public function create()
@@ -19,12 +43,10 @@ class CustomerFarmController extends Controller
         return view('farmmanagement.customerfarms.create');
     }
 
-
-    public function store(Request $request)
+    public function store()
     {
         //
     }
-
 
     public function show($id)
     {
@@ -33,68 +55,94 @@ class CustomerFarmController extends Controller
 
     public function edit($id)
     {
-        //
+        $farm = PartyFarm::query()
+            ->whereHas('party', fn ($query) => $query->where('is_customer', 1))
+            ->with('party:id,name,cnic_no')
+            ->find($id);
+
+        if (! $farm) {
+            return response()->json(['message' => 'no'], 201);
+        }
+
+        return response()->json([
+            'message' => 'yes',
+            'farm' => $farm->toArray(),
+            'party' => [
+                'name' => $farm->party?->name,
+                'cnic_no' => $farm->party?->cnic_no,
+            ],
+        ], 200);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateCustomerFarmRequest $request, $id, UpdateCustomerFarmAction $action)
     {
-        //
+        try {
+            $farm = PartyFarm::query()
+                ->whereHas('party', fn ($query) => $query->where('is_customer', 1))
+                ->findOrFail($id);
+
+            $farm = $action->execute(
+                $farm,
+                $request->validated(),
+                $request->file('farm_image'),
+                $this->authUserId
+            );
+
+            return response()->json([
+                'message' => 'Data updated successfully',
+                'success' => 'yes',
+                'data' => $farm->toArray(),
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'error' => $e->errors(),
+                'success' => 'no',
+            ], 200);
+        } catch (\Throwable $e) {
+            Log::error($e);
+            if (app()->environment('testing')) {
+                throw $e;
+            }
+
+            return response()->json([
+                'message' => 'Something went wrong',
+                'success' => 'no',
+            ], 200);
+        }
     }
 
-    public function validationRules($request, $id)
+    public function destroy($id, DestroyCustomerFarmAction $action)
     {
-        // $validator = Validator::make($request->all(),[
-        $this->validate($request, [
-            'name' => 'bail|required|string',
-            'guardian_name' => 'bail|required|string',
-            'cnic_no' => 'bail|required|string|min:13|max:13|unique:parties,cnic_no,'.$id,
-            'email' => 'bail|nullable|string',
-            'contact_no' => 'bail|required|string|min:11|max:11',
-            'business_number' => 'bail|nullable|string|min:11|max:11',
-            'manual_number' => 'bail|required|string',
-            'country_id' => 'bail|required|integer',
-            'province_id' => 'bail|required|integer',
-            'city_id' => 'bail|required|integer',
-            'address' => 'bail|nullable|string',
-            'profile_picture' => 'bail|nullable|mimes:jpeg,jpg,png|max:5000',
-            'cnic_front' => 'bail|nullable|mimes:jpeg,jpg,png|max:5000',
-            'cnic_back' => 'bail|nullable|mimes:jpeg,jpg,png|max:5000',
-            'signature' => 'bail|nullable|mimes:jpeg,jpg,png|max:5000',
+        try {
+            $farm = PartyFarm::query()
+                ->whereHas('party', fn ($query) => $query->where('is_customer', 1))
+                ->findOrFail($id);
 
-            'customer_type_id' => 'bail|required_if:is_customer,==,1|integer',
-            'farm_type_id' => 'bail|required_if:is_customer,==,1|integer',
-            'farm_subtype_id' => 'bail|required_if:is_customer,==,1|integer',
-            'farm_name' => 'bail|required_if:is_customer,==,1|string',
-            'farm_noc' => 'bail|required_if:is_customer,==,1|string',
-            'farm_image' => 'bail|required_if:is_customer,==,1|mimes:jpeg,jpg,png|max:5000',
-            'farm_address' => 'bail|required_if:is_customer,==,1|string',
+            $action->execute($farm);
 
-            'vendor_division_id' => 'bail|required_if:is_vendor,==,1|integer',
-            'vendor_type_id' => 'bail|required_if:is_vendor,==,1|integer',
-            'company_name' => 'bail|required_if:is_vendor,==,1|string',
-            'business_type_id' => 'bail|required_if:is_vendor,==,1|integer',
-            'company_logo' => 'bail|required_if:is_vendor,==,1|mimes:jpeg,jpg,png|max:5000',
-            'company_address' => 'bail|required_if:is_vendor,==,1|string',
-        ],[
-            'cnic_no.min'=> 'The CNIC Number must be at least 13 Digits',
-            'cnic_no.max'=> 'The CNIC Number must not be greater than 13 Digits',
-            'contact_no.min'=> 'The Contact number must be at least 11 Digits',
-            'contact_no.max'=> 'The Contact number must not be greater than 11 Digits',
-            'farm_image.required_if'=> 'The farm image field is required',
-            'company_logo.required_if'=> 'The company logo field is required',
-        ]);
+            Session::flash('swal_notification', [
+                'title' => 'Deleted',
+                'icon_type' => 'success',
+                'message' => 'Data Deleted Successfully!',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Session::flash('swal_notification', [
+                'title' => 'Error',
+                'icon_type' => 'warning',
+                'message' => collect($e->errors())->flatten()->first() ?? 'Unable to delete this farm.',
+            ]);
+        } catch (\Throwable $e) {
+            Log::error($e);
+            if (app()->environment('testing')) {
+                throw $e;
+            }
+            Session::flash('swal_notification', [
+                'title' => 'Error',
+                'icon_type' => 'warning',
+                'message' => 'Something went wrong',
+            ]);
+        }
 
-        // if($validator->fails()){
-        //     return response()->json([
-        //         'error' => $validator->errors()->toArray(),
-        //         'success' => 'no',
-        //     ], 201);
-        // }
-    }
-
-  
-    public function destroy($id)
-    {
-        //
+        return redirect()->route('customerfarms.index');
     }
 }

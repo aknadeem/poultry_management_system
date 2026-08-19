@@ -1,6 +1,6 @@
 @php
-$load_css = Array('tables','sweetAlert', 'jquery-confirm');
-$load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
+$load_css = Array('tables','sweetAlert', 'jquery-confirm', 'select2');
+$load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm', 'select2');
 @endphp
 @extends('layouts.app')
 @section('content')
@@ -31,11 +31,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                             <h4>Customer Farms</h4>
                         </div>
                         <div class="col-6 align-self-end text-end mb-2">
-                            {{-- <a class="btn btn-secondary btn-sm" href="{{ route('customerfarms.create') }}"
-                                title="Click to add new Farm" data-plugin="tippy" data-tippy-animation="scale"
-                                data-tippy-arrow="true"><i class="fa fa-plus"></i>
-                                Add Farm
-                            </a> --}}
+                            {{-- Farms are created through Party/Customer management --}}
                         </div>
                     </div>
                     <table id="basic-datatable" class="table table-striped dt-responsive  w-100">
@@ -61,31 +57,25 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                                 <td>{{ $farm?->party?->cnic_no}}</td>
 
                                 <td>
-                                    {{-- <a class="btn btn-secondary btn-sm" href="javascript:void(0);"
-                                        title="View Details" tabindex="0" data-plugin="tippy"
-                                        data-tippy-animation="scale" data-tippy-arrow="true"><i class="fa fa-eye"></i>
-                                        View
-                                    </a> --}}
-                                    <a class="btn btn-info btn-sm" data-bs-toggle="modal" href="javascript:void(0);"
+                                    <a class="btn btn-info btn-sm OpenEditCustomerFarmModal"
+                                        FarmId="{{ $farm->id ?? 0 }}"
+                                        href="javascript:void(0);"
                                         title="Click to edit" tabindex="0" data-plugin="tippy"
                                         data-tippy-animation="scale" data-tippy-arrow="true"><i
                                             class="fa fa-pencil-alt"></i>
                                         Edit
                                     </a>
                                     <a class="btn btn-danger btn-sm delete-confirm"
-                                        href="{{route('customerfarms.destroy', $farm->id ?? 0)}}"
-                                        del_title="Customer Fame {{$farm?->farm_name}}" title="Click to delete"
+                                        href="{{ route('customerfarms.destroy', $farm->id ?? 0) }}"
+                                        del_title="Customer Farm {{ $farm?->farm_name }}"
+                                        title="Click to delete"
                                         tabindex="0" data-plugin="tippy" data-tippy-animation="scale"
                                         data-tippy-arrow="true"><i class="fa fa-trash"></i>
-
                                     </a>
-
                                 </td>
                             </tr>
                             @empty
-
                             @endforelse
-
                         </tbody>
                     </table>
                 </div> <!-- end card body-->
@@ -95,14 +85,13 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
     </div>
 </div>
 
+@include('farmmanagement._editCustomerFarmModal')
 
 @endsection
 
 @section('custom_scripts')
-
 <script>
     $(function() {
     });
 </script>
-
 @endsection
