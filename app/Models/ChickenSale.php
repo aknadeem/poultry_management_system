@@ -51,4 +51,11 @@ class ChickenSale extends Model
         ]);
     }
 
+    public function broker()
+    {
+        return $this->belongsTo('App\Models\Broker', 'broker_id', 'id')->withDefault([
+            'id' => null,
+        ]);
+    }
+
 }

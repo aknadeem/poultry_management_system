@@ -55,4 +55,23 @@ class ChickPurchase extends Model
     {
         return $this->belongsTo('App\Models\PartyCompany', 'company_id', 'id');
     }
+
+    public function customer()
+    {
+        return $this->belongsTo('App\Models\Party', 'customer_id', 'id')->withDefault([
+            'id' => null,
+        ]);
+    }
+
+    public function grade()
+    {
+        return $this->belongsTo('App\Models\ChickGrade', 'chick_grade_id', 'id')->withDefault([
+            'id' => null,
+        ]);
+    }
+
+    public function farmHistory()
+    {
+        return $this->hasOne('App\Models\PartyFarmChickHistory', 'chick_purchase_id', 'id');
+    }
 }

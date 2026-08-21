@@ -32,6 +32,11 @@ class StoreChickPurchaseRequest extends FormRequest
             'image_file' => 'bail|nullable|mimes:jpeg,jpg,png|max:5000',
             'customer_farm_id' => 'bail|nullable|integer',
             'vendor_id' => 'bail|nullable|integer',
+            'bilty_number' => 'bail|nullable|string',
+            'bilty_charges' => 'bail|nullable|numeric',
+            'sale_order_number' => 'bail|nullable|string',
+            'delivery_order_number' => 'bail|nullable|string',
+            'remarks' => 'bail|nullable|string',
         ];
     }
 

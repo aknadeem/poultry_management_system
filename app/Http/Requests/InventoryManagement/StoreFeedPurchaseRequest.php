@@ -28,6 +28,7 @@ class StoreFeedPurchaseRequest extends FormRequest
             'per_bag_discount' => 'bail|required|numeric',
             'sale_order_number' => 'bail|required|string',
             'delivery_order_number' => 'bail|required|string',
+            'description' => 'bail|nullable|string',
             'image_file' => 'nullable|mimes:jpeg,jpg,png|max:5000',
         ];
     }

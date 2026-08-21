@@ -28,6 +28,9 @@ class UpdateChickenSaleRequest extends FormRequest
             'manual_number' => 'bail|nullable|string',
             'broker_id' => 'bail|nullable|integer',
             'broker_commission' => 'bail|nullable|numeric',
+            'first_weight' => 'bail|nullable|numeric',
+            'second_weight' => 'bail|nullable|numeric',
+            'net_weight' => 'bail|nullable|numeric',
         ];
     }
 

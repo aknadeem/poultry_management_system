@@ -2,6 +2,9 @@
 
 namespace App\Support;
 
+use App\Models\ChickPurchase;
+use App\Models\ChickenSale;
+use App\Models\Feed;
 use App\Models\Party;
 use App\Models\PartyBalance;
 use App\Models\Product;
@@ -118,6 +121,26 @@ class InertiaShare
             'inertia.product-purchases.toggle-status' => route('inertia.product-purchases.toggle-status', ['productPurchase' => '__id__'], false),
             'productpurchases.invoice' => route('productpurchases.invoice', ['id' => '__id__'], false),
             'productfilter' => url('/ProductManagement/productfilter'),
+            'inertia.chick-sales.index' => route('inertia.chick-sales.index', [], false),
+            'inertia.chick-sales.create' => route('inertia.chick-sales.create', [], false),
+            'inertia.chick-sales.store' => route('inertia.chick-sales.store', [], false),
+            'inertia.chick-sales.show' => route('inertia.chick-sales.show', ['chick_sale' => '__id__'], false),
+            'inertia.chick-sales.edit' => route('inertia.chick-sales.edit', ['chick_sale' => '__id__'], false),
+            'inertia.chick-sales.update' => route('inertia.chick-sales.update', ['chick_sale' => '__id__'], false),
+            'inertia.chick-sales.destroy' => route('inertia.chick-sales.destroy', ['chick_sale' => '__id__'], false),
+            'inertia.chick-purchases.index' => route('inertia.chick-purchases.index', [], false),
+            'inertia.chick-purchases.create' => route('inertia.chick-purchases.create', [], false),
+            'inertia.chick-purchases.store' => route('inertia.chick-purchases.store', [], false),
+            'inertia.chick-purchases.show' => route('inertia.chick-purchases.show', ['chick_purchase' => '__id__'], false),
+            'inertia.chick-purchases.edit' => route('inertia.chick-purchases.edit', ['chick_purchase' => '__id__'], false),
+            'inertia.chick-purchases.update' => route('inertia.chick-purchases.update', ['chick_purchase' => '__id__'], false),
+            'inertia.chick-purchases.destroy' => route('inertia.chick-purchases.destroy', ['chick_purchase' => '__id__'], false),
+            'inertia.feeds.index' => route('inertia.feeds.index', [], false),
+            'inertia.feeds.create' => route('inertia.feeds.create', [], false),
+            'inertia.feeds.store' => route('inertia.feeds.store', [], false),
+            'inertia.feeds.show' => route('inertia.feeds.show', ['feed' => '__id__'], false),
+            'inertia.feeds.update' => route('inertia.feeds.update', ['feed' => '__id__'], false),
+            'inertia.feeds.destroy' => route('inertia.feeds.destroy', ['feed' => '__id__'], false),
         ];
     }
 
@@ -160,6 +183,27 @@ class InertiaShare
                     'update' => false,
                     'delete' => false,
                 ],
+                'chickSales' => [
+                    'viewAny' => false,
+                    'view' => false,
+                    'create' => false,
+                    'update' => false,
+                    'delete' => false,
+                ],
+                'chickPurchases' => [
+                    'viewAny' => false,
+                    'view' => false,
+                    'create' => false,
+                    'update' => false,
+                    'delete' => false,
+                ],
+                'feeds' => [
+                    'viewAny' => false,
+                    'view' => false,
+                    'create' => false,
+                    'update' => false,
+                    'delete' => false,
+                ],
             ];
         }
 
@@ -167,6 +211,9 @@ class InertiaShare
         $partyProbe = new Party;
         $productProbe = new Product;
         $purchaseProbe = new ProductPurchase;
+        $saleProbe = new ChickenSale;
+        $chickPurchaseProbe = new ChickPurchase;
+        $feedProbe = new Feed;
 
         return [
             'users' => [
@@ -200,6 +247,27 @@ class InertiaShare
                 'create' => $user->can('create', ProductPurchase::class),
                 'update' => $user->can('update', $purchaseProbe),
                 'delete' => $user->can('delete', $purchaseProbe),
+            ],
+            'chickSales' => [
+                'viewAny' => $user->can('viewAny', ChickenSale::class),
+                'view' => $user->can('viewAny', ChickenSale::class),
+                'create' => $user->can('create', ChickenSale::class),
+                'update' => $user->can('update', $saleProbe),
+                'delete' => $user->can('delete', $saleProbe),
+            ],
+            'chickPurchases' => [
+                'viewAny' => $user->can('viewAny', ChickPurchase::class),
+                'view' => $user->can('viewAny', ChickPurchase::class),
+                'create' => $user->can('create', ChickPurchase::class),
+                'update' => $user->can('update', $chickPurchaseProbe),
+                'delete' => $user->can('delete', $chickPurchaseProbe),
+            ],
+            'feeds' => [
+                'viewAny' => $user->can('viewAny', Feed::class),
+                'view' => $user->can('viewAny', Feed::class),
+                'create' => $user->can('create', Feed::class),
+                'update' => $user->can('update', $feedProbe),
+                'delete' => $user->can('delete', $feedProbe),
             ],
         ];
     }

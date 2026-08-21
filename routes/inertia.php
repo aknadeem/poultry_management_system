@@ -23,6 +23,9 @@ use App\Http\Controllers\Inertia\FarmManagement\PersonalFarmController as Inerti
 use App\Http\Controllers\Inertia\FarmManagement\VaccinationController as InertiaVaccinationController;
 use App\Http\Controllers\Inertia\ProductManagement\ProductController as InertiaProductController;
 use App\Http\Controllers\Inertia\ProductManagement\ProductPurchaseController as InertiaProductPurchaseController;
+use App\Http\Controllers\Inertia\InventoryManagement\ChickSaleController as InertiaChickSaleController;
+use App\Http\Controllers\Inertia\InventoryManagement\ChickPurchaseController as InertiaChickPurchaseController;
+use App\Http\Controllers\Inertia\InventoryManagement\FeedController as InertiaFeedController;
 use App\Http\Controllers\Inertia\UserManagement\UserController as InertiaUserController;
 use App\Http\Controllers\Inertia\UserManagement\UserRoleController as InertiaUserRoleController;
 use Illuminate\Support\Facades\Route;
@@ -182,6 +185,35 @@ Route::prefix('app')->group(function (): void {
             Route::delete('product-purchases/{productPurchase}', [InertiaProductPurchaseController::class, 'destroy'])->name('inertia.product-purchases.destroy');
             Route::put('product-purchases/{productPurchase}/status', [InertiaProductPurchaseController::class, 'toggleStatus'])
                 ->name('inertia.product-purchases.toggle-status');
+        });
+
+        Route::prefix('inventory')->group(function (): void {
+            Route::resource('chick-sales', InertiaChickSaleController::class)->names([
+                'index' => 'inertia.chick-sales.index',
+                'create' => 'inertia.chick-sales.create',
+                'store' => 'inertia.chick-sales.store',
+                'show' => 'inertia.chick-sales.show',
+                'edit' => 'inertia.chick-sales.edit',
+                'update' => 'inertia.chick-sales.update',
+                'destroy' => 'inertia.chick-sales.destroy',
+            ]);
+
+            Route::resource('chick-purchases', InertiaChickPurchaseController::class)->names([
+                'index' => 'inertia.chick-purchases.index',
+                'create' => 'inertia.chick-purchases.create',
+                'store' => 'inertia.chick-purchases.store',
+                'show' => 'inertia.chick-purchases.show',
+                'edit' => 'inertia.chick-purchases.edit',
+                'update' => 'inertia.chick-purchases.update',
+                'destroy' => 'inertia.chick-purchases.destroy',
+            ]);
+
+            Route::get('feeds', [InertiaFeedController::class, 'index'])->name('inertia.feeds.index');
+            Route::get('feeds/create', [InertiaFeedController::class, 'create'])->name('inertia.feeds.create');
+            Route::post('feeds', [InertiaFeedController::class, 'store'])->name('inertia.feeds.store');
+            Route::get('feeds/{feed}', [InertiaFeedController::class, 'show'])->name('inertia.feeds.show');
+            Route::put('feeds/{feed}', [InertiaFeedController::class, 'update'])->name('inertia.feeds.update');
+            Route::delete('feeds/{feed}', [InertiaFeedController::class, 'destroy'])->name('inertia.feeds.destroy');
         });
     });
 });
