@@ -2,11 +2,13 @@
 
 namespace App\Http\Requests\PartyManagement;
 
+use App\Http\Requests\Concerns\InertiaAwareFailedValidation;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class StoreLookupTypeRequest extends FormRequest
 {
+    use InertiaAwareFailedValidation;
     public const ALLOWED_TABLES = [
         'divisions',
         'customer_types',

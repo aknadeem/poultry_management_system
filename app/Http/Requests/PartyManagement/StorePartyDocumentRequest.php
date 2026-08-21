@@ -2,11 +2,13 @@
 
 namespace App\Http\Requests\PartyManagement;
 
+use App\Http\Requests\Concerns\InertiaAwareFailedValidation;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class StorePartyDocumentRequest extends FormRequest
 {
+    use InertiaAwareFailedValidation;
     public function authorize(): bool
     {
         return true;

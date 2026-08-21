@@ -88,6 +88,21 @@ class Party extends Model implements HasCountryProvinceCity
         return $this->hasMany('App\Models\PartyBalance', 'party_id', 'id');
     }
 
+    public function accounts()
+    {
+        return $this->hasMany(PartyAccount::class, 'party_id', 'id');
+    }
+
+    public function documents()
+    {
+        return $this->hasMany(PartyDocument::class, 'party_id', 'id');
+    }
+
+    public function balanceLimits()
+    {
+        return $this->hasMany(PartyBalanceLimit::class, 'party_id', 'id');
+    }
+
     #[Scope]
     protected function customer(Builder $query, $value): void
     {

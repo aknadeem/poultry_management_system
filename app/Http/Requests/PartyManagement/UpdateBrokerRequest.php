@@ -13,7 +13,10 @@ class UpdateBrokerRequest extends FormRequest
 
     public function rules(): array
     {
-        $id = $this->route('broker');
+        $routeBroker = $this->route('broker');
+        $id = $routeBroker instanceof \App\Models\Broker
+            ? $routeBroker->id
+            : $routeBroker;
 
         return [
             'name' => 'bail|required|string',

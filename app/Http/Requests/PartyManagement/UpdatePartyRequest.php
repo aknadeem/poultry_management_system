@@ -15,8 +15,8 @@ class UpdatePartyRequest extends FormRequest
 
     public function rules(): array
     {
-        $id = $this->route('party');
-        $party = Party::with('farm:id,party_id,farm_image', 'company:id,party_id,company_logo')->findOrFail($id);
+        $party = $this->partyFromRoute();
+        $id = $party->id;
 
         return array_merge($this->basePartyFieldRules($id), [
             'is_vendor' => 'bail|nullable',
@@ -26,7 +26,7 @@ class UpdatePartyRequest extends FormRequest
             'balance_type' => 'bail|nullable',
             'description' => 'bail|nullable|string',
             'contact_person_id' => 'bail|nullable|integer',
-            'customer_division_id' => 'bail|nullable|integer',
+            'customer_division_id' => 'bail|exclude_unless:is_customer,1|nullable|integer',
             'cnic_front' => [
                 'bail',
                 'nullable',
@@ -44,6 +44,7 @@ class UpdatePartyRequest extends FormRequest
             'signature_image' => 'bail|nullable|mimes:jpeg,jpg,png|max:5000',
             'farm_image' => [
                 'bail',
+                'exclude_unless:is_customer,1',
                 'nullable',
                 Rule::requiredIf(fn () => (int) $this->input('is_customer') === 1 && blank($party->farm?->farm_image)),
                 'mimes:jpeg,jpg,png',
@@ -51,6 +52,7 @@ class UpdatePartyRequest extends FormRequest
             ],
             'company_logo' => [
                 'bail',
+                'exclude_unless:is_vendor,1',
                 'nullable',
                 Rule::requiredIf(fn () => (int) $this->input('is_vendor') === 1 && blank($party->company?->company_logo)),
                 'mimes:jpeg,jpg,png',
@@ -87,17 +89,34 @@ class UpdatePartyRequest extends FormRequest
             'address' => 'bail|nullable|string',
             'profile_picture' => 'bail|nullable|mimes:jpeg,jpg,png|max:5000',
             'signature_image' => 'bail|nullable|mimes:jpeg,jpg,png|max:5000',
-            'customer_type_id' => 'bail|required_if:is_customer,==,1|integer',
-            'farm_type_id' => 'bail|required_if:is_customer,==,1|integer',
-            'farm_subtype_id' => 'bail|required_if:is_customer,==,1|integer',
-            'farm_name' => 'bail|required_if:is_customer,==,1|string',
-            'farm_noc' => 'bail|required_if:is_customer,==,1|string',
-            'farm_address' => 'bail|required_if:is_customer,==,1|string',
-            'vendor_division_id' => 'bail|required_if:is_vendor,==,1|integer',
-            'vendor_type_id' => 'bail|required_if:is_vendor,==,1|integer',
-            'company_name' => 'bail|required_if:is_vendor,==,1|string',
-            'business_type_id' => 'bail|required_if:is_vendor,==,1|integer',
-            'company_address' => 'bail|required_if:is_vendor,==,1|string',
+            'customer_type_id' => 'bail|exclude_unless:is_customer,1|required|integer',
+            'farm_type_id' => 'bail|exclude_unless:is_customer,1|required|integer',
+            'farm_subtype_id' => 'bail|exclude_unless:is_customer,1|required|integer',
+            'farm_name' => 'bail|exclude_unless:is_customer,1|required|string',
+            'farm_noc' => 'bail|exclude_unless:is_customer,1|required|string',
+            'farm_address' => 'bail|exclude_unless:is_customer,1|required|string',
+            'vendor_division_id' => 'bail|exclude_unless:is_vendor,1|required|integer',
+            'vendor_type_id' => 'bail|exclude_unless:is_vendor,1|required|integer',
+            'company_name' => 'bail|exclude_unless:is_vendor,1|required|string',
+            'business_type_id' => 'bail|exclude_unless:is_vendor,1|required|integer',
+            'company_address' => 'bail|exclude_unless:is_vendor,1|required|string',
         ];
+    }
+
+    private function partyFromRoute(): Party
+    {
+        $routeParty = $this->route('party')
+            ?? $this->route('customer')
+            ?? $this->route('vendor');
+
+        if ($routeParty instanceof Party) {
+            return $routeParty->loadMissing([
+                'farm:id,party_id,farm_image',
+                'company:id,party_id,company_logo',
+            ]);
+        }
+
+        return Party::with('farm:id,party_id,farm_image', 'company:id,party_id,company_logo')
+            ->findOrFail($routeParty);
     }
 }

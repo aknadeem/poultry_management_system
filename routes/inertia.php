@@ -6,6 +6,16 @@ use App\Http\Controllers\Inertia\Auth\LoginController;
 use App\Http\Controllers\Inertia\Auth\RegisterController;
 use App\Http\Controllers\Inertia\Auth\ResetPasswordController;
 use App\Http\Controllers\Inertia\DashboardController;
+use App\Http\Controllers\Inertia\PartyManagement\BrokerController as InertiaBrokerController;
+use App\Http\Controllers\Inertia\PartyManagement\ConductPersonController as InertiaConductPersonController;
+use App\Http\Controllers\Inertia\PartyManagement\CustomerController as InertiaCustomerController;
+use App\Http\Controllers\Inertia\PartyManagement\PartyBalanceController as InertiaPartyBalanceController;
+use App\Http\Controllers\Inertia\PartyManagement\LookupTypeController as InertiaLookupTypeController;
+use App\Http\Controllers\Inertia\PartyManagement\PartyAccountController as InertiaPartyAccountController;
+use App\Http\Controllers\Inertia\PartyManagement\PartyBalanceLimitController as InertiaPartyBalanceLimitController;
+use App\Http\Controllers\Inertia\PartyManagement\PartyController as InertiaPartyController;
+use App\Http\Controllers\Inertia\PartyManagement\PartyDocumentController as InertiaPartyDocumentController;
+use App\Http\Controllers\Inertia\PartyManagement\VendorController as InertiaVendorController;
 use App\Http\Controllers\Inertia\UserManagement\UserController as InertiaUserController;
 use App\Http\Controllers\Inertia\UserManagement\UserRoleController as InertiaUserRoleController;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +56,65 @@ Route::prefix('app')->group(function (): void {
                 'destroy' => 'inertia.users.destroy',
             ]);
             Route::get('userrole', [InertiaUserRoleController::class, 'index'])->name('inertia.user-roles.index');
+        });
+
+        Route::prefix('partymanagement')->group(function (): void {
+            Route::resource('parties', InertiaPartyController::class)->names([
+                'index' => 'inertia.parties.index',
+                'create' => 'inertia.parties.create',
+                'store' => 'inertia.parties.store',
+                'show' => 'inertia.parties.show',
+                'edit' => 'inertia.parties.edit',
+                'update' => 'inertia.parties.update',
+                'destroy' => 'inertia.parties.destroy',
+            ]);
+            Route::resource('customers', InertiaCustomerController::class)->names([
+                'index' => 'inertia.customers.index',
+                'create' => 'inertia.customers.create',
+                'store' => 'inertia.customers.store',
+                'show' => 'inertia.customers.show',
+                'edit' => 'inertia.customers.edit',
+                'update' => 'inertia.customers.update',
+                'destroy' => 'inertia.customers.destroy',
+            ]);
+            Route::resource('vendors', InertiaVendorController::class)->names([
+                'index' => 'inertia.vendors.index',
+                'create' => 'inertia.vendors.create',
+                'store' => 'inertia.vendors.store',
+                'show' => 'inertia.vendors.show',
+                'edit' => 'inertia.vendors.edit',
+                'update' => 'inertia.vendors.update',
+                'destroy' => 'inertia.vendors.destroy',
+            ]);
+            Route::resource('conductpersons', InertiaConductPersonController::class)->names([
+                'index' => 'inertia.conduct-persons.index',
+                'create' => 'inertia.conduct-persons.create',
+                'store' => 'inertia.conduct-persons.store',
+                'show' => 'inertia.conduct-persons.show',
+                'edit' => 'inertia.conduct-persons.edit',
+                'update' => 'inertia.conduct-persons.update',
+                'destroy' => 'inertia.conduct-persons.destroy',
+            ]);
+            Route::resource('brokers', InertiaBrokerController::class)->names([
+                'index' => 'inertia.brokers.index',
+                'create' => 'inertia.brokers.create',
+                'store' => 'inertia.brokers.store',
+                'show' => 'inertia.brokers.show',
+                'edit' => 'inertia.brokers.edit',
+                'update' => 'inertia.brokers.update',
+                'destroy' => 'inertia.brokers.destroy',
+            ]);
+            Route::resource('partybalances', InertiaPartyBalanceController::class)->only(['index', 'show'])->names([
+                'index' => 'inertia.party-balances.index',
+                'show' => 'inertia.party-balances.show',
+            ]);
+            Route::post('lookup-types', [InertiaLookupTypeController::class, 'store'])->name('inertia.lookup-types.store');
+            Route::post('partyaccounts', [InertiaPartyAccountController::class, 'store'])->name('inertia.party-accounts.store');
+            Route::delete('partyaccounts/{partyaccount}', [InertiaPartyAccountController::class, 'destroy'])->name('inertia.party-accounts.destroy');
+            Route::post('partydocuments', [InertiaPartyDocumentController::class, 'store'])->name('inertia.party-documents.store');
+            Route::delete('partydocuments/{partydocument}', [InertiaPartyDocumentController::class, 'destroy'])->name('inertia.party-documents.destroy');
+            Route::post('balancelimits', [InertiaPartyBalanceLimitController::class, 'store'])->name('inertia.party-balance-limits.store');
+            Route::delete('balancelimits/{balancelimit}', [InertiaPartyBalanceLimitController::class, 'destroy'])->name('inertia.party-balance-limits.destroy');
         });
     });
 });

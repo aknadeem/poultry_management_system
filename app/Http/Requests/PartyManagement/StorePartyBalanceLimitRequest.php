@@ -2,10 +2,12 @@
 
 namespace App\Http\Requests\PartyManagement;
 
+use App\Http\Requests\Concerns\InertiaAwareFailedValidation;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StorePartyBalanceLimitRequest extends FormRequest
 {
+    use InertiaAwareFailedValidation;
     public function authorize(): bool
     {
         return true;

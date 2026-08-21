@@ -13,7 +13,10 @@ class UpdateConductPersonRequest extends FormRequest
 
     public function rules(): array
     {
-        $id = $this->route('conductperson');
+        $routePerson = $this->route('conductperson');
+        $id = $routePerson instanceof \App\Models\ConductPerson
+            ? $routePerson->id
+            : $routePerson;
 
         return [
             'name' => 'bail|required|string',

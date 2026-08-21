@@ -69,6 +69,10 @@ const props = defineProps({
         type: String,
         default: 'Try a different search or clear the current filters.',
     },
+    actionsLabel: {
+        type: String,
+        default: 'Actions',
+    },
 });
 
 const emit = defineEmits(['update:search', 'sort', 'page', 'page-size', 'reset', 'update:selected']);
@@ -301,7 +305,7 @@ function toggleAll() {
                                     {{ direction === 'asc' ? '↑' : '↓' }}
                                 </span>
                             </th>
-                            <th v-if="showActions" class="text-end">Actions</th>
+                            <th v-if="showActions" class="text-end">{{ actionsLabel }}</th>
                         </tr>
                     </thead>
                     <tbody>

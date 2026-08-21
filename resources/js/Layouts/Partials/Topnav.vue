@@ -26,22 +26,22 @@ const { can } = usePermissions();
                             </a>
                             <div class="dropdown-menu">
                                 <div class="dropdown">
-                                    <a class="dropdown-item" :href="urls.parties"><b><i class="fas fa-users"></i> Parties</b></a>
+                                    <Link class="dropdown-item" :href="route('inertia.parties.index')"><b><i class="fas fa-users"></i> Parties</b></Link>
                                 </div>
                                 <div class="dropdown">
-                                    <a class="dropdown-item" :href="urls.customers"><i class="fas fa-user-tie"></i> Customers</a>
+                                    <Link class="dropdown-item" :href="route('inertia.customers.index')"><i class="fas fa-user-tie"></i> Customers</Link>
                                 </div>
                                 <div class="dropdown">
-                                    <a class="dropdown-item" :href="urls.vendors"><i class="fas fa-address-card"></i> Vendors</a>
+                                    <Link class="dropdown-item" :href="route('inertia.vendors.index')"><i class="fas fa-address-card"></i> Vendors</Link>
                                 </div>
                                 <div class="dropdown">
-                                    <a class="dropdown-item" :href="urls.conductPersons"><i class="fas fa-user-friends"></i> Contact Persons</a>
+                                    <Link class="dropdown-item" :href="route('inertia.conduct-persons.index')"><i class="fas fa-user-friends"></i> Contact Persons</Link>
                                 </div>
                                 <div class="dropdown">
-                                    <a class="dropdown-item" :href="urls.brokers"><i class="fas fa-money-check-alt"></i> Brokers</a>
+                                    <Link class="dropdown-item" :href="route('inertia.brokers.index')"><i class="fas fa-money-check-alt"></i> Brokers</Link>
                                 </div>
                                 <div class="dropdown">
-                                    <a class="dropdown-item" :href="urls.partyBalance"><i class="fas fa-money-check"></i> Party Balance</a>
+                                    <Link class="dropdown-item" :href="route('inertia.party-balances.index')"><i class="fas fa-money-check"></i> Party Balance</Link>
                                 </div>
                             </div>
                         </li>
