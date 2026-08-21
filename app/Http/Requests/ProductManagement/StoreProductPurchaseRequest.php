@@ -37,9 +37,10 @@ class StoreProductPurchaseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'party_company_id'    => ['bail', 'required', 'integer'],
-            'product_category_id' => ['bail', 'required', 'integer'],
+            'party_company_id'    => ['bail', 'required', 'integer', 'exists:party_companies,id'],
+            'product_category_id' => ['bail', 'required', 'integer', 'exists:product_categories,id'],
             'purchase_date'       => ['bail', 'required', 'date'],
+            'expiry_date'         => ['bail', 'nullable', 'date'],
             'total_amount'        => ['bail', 'required', 'numeric'],
             'discount_amount'     => ['bail', 'nullable', 'numeric'],
             'discount_percentage' => ['bail', 'nullable', 'numeric'],

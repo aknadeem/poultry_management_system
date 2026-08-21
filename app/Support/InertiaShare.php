@@ -4,6 +4,8 @@ namespace App\Support;
 
 use App\Models\Party;
 use App\Models\PartyBalance;
+use App\Models\Product;
+use App\Models\ProductPurchase;
 use App\Models\User;
 
 class InertiaShare
@@ -98,6 +100,24 @@ class InertiaShare
             'inertia.vaccinations.record' => route('inertia.vaccinations.record', [], false),
             'inertia.vaccinations.toggle-status' => route('inertia.vaccinations.toggle-status', ['vaccination' => '__id__'], false),
             'inertia.farm-lookup-types.store' => route('inertia.farm-lookup-types.store', [], false),
+            'inertia.products.index' => route('inertia.products.index', [], false),
+            'inertia.products.create' => route('inertia.products.create', [], false),
+            'inertia.products.store' => route('inertia.products.store', [], false),
+            'inertia.products.show' => route('inertia.products.show', ['product' => '__id__'], false),
+            'inertia.products.edit' => route('inertia.products.edit', ['product' => '__id__'], false),
+            'inertia.products.update' => route('inertia.products.update', ['product' => '__id__'], false),
+            'inertia.products.destroy' => route('inertia.products.destroy', ['product' => '__id__'], false),
+            'inertia.products.toggle-status' => route('inertia.products.toggle-status', ['product' => '__id__'], false),
+            'inertia.product-purchases.index' => route('inertia.product-purchases.index', [], false),
+            'inertia.product-purchases.create' => route('inertia.product-purchases.create', [], false),
+            'inertia.product-purchases.store' => route('inertia.product-purchases.store', [], false),
+            'inertia.product-purchases.show' => route('inertia.product-purchases.show', ['productPurchase' => '__id__'], false),
+            'inertia.product-purchases.destroy' => route('inertia.product-purchases.destroy', ['productPurchase' => '__id__'], false),
+            'inertia.product-purchases.rebates' => route('inertia.product-purchases.rebates', [], false),
+            'inertia.product-purchases.rebate' => route('inertia.product-purchases.rebate', [], false),
+            'inertia.product-purchases.toggle-status' => route('inertia.product-purchases.toggle-status', ['productPurchase' => '__id__'], false),
+            'productpurchases.invoice' => route('productpurchases.invoice', ['id' => '__id__'], false),
+            'productfilter' => url('/ProductManagement/productfilter'),
         ];
     }
 
@@ -126,11 +146,27 @@ class InertiaShare
                     'viewAny' => false,
                     'view' => false,
                 ],
+                'products' => [
+                    'viewAny' => false,
+                    'view' => false,
+                    'create' => false,
+                    'update' => false,
+                    'delete' => false,
+                ],
+                'productPurchases' => [
+                    'viewAny' => false,
+                    'view' => false,
+                    'create' => false,
+                    'update' => false,
+                    'delete' => false,
+                ],
             ];
         }
 
         $userProbe = new User;
         $partyProbe = new Party;
+        $productProbe = new Product;
+        $purchaseProbe = new ProductPurchase;
 
         return [
             'users' => [
@@ -150,6 +186,20 @@ class InertiaShare
             'partyBalances' => [
                 'viewAny' => $user->can('viewAny', PartyBalance::class),
                 'view' => $user->can('viewAny', PartyBalance::class),
+            ],
+            'products' => [
+                'viewAny' => $user->can('viewAny', Product::class),
+                'view' => $user->can('viewAny', Product::class),
+                'create' => $user->can('create', Product::class),
+                'update' => $user->can('update', $productProbe),
+                'delete' => $user->can('delete', $productProbe),
+            ],
+            'productPurchases' => [
+                'viewAny' => $user->can('viewAny', ProductPurchase::class),
+                'view' => $user->can('viewAny', ProductPurchase::class),
+                'create' => $user->can('create', ProductPurchase::class),
+                'update' => $user->can('update', $purchaseProbe),
+                'delete' => $user->can('delete', $purchaseProbe),
             ],
         ];
     }

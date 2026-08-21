@@ -20,12 +20,22 @@ class StoreProductAction
      */
     public function execute(array $data, ?object $pictureFile, int $userId): Product
     {
-        return DB::transaction(function () use ($data, $pictureFile, $userId) {
-            $attributes = $this->mapProductAttributes($data);
-            $attributes['product_picture'] = $this->uploadService->store($pictureFile, 'products');
-            $attributes['addedby'] = $userId;
+        $stagedPicture = null;
 
-            return Product::create($attributes);
-        });
+        try {
+            $stagedPicture = $this->uploadService->store($pictureFile, 'products');
+
+            return DB::transaction(function () use ($data, $stagedPicture, $userId): Product {
+                $attributes = $this->mapProductAttributes($data);
+                $attributes['product_picture'] = $stagedPicture;
+                $attributes['addedby'] = $userId;
+
+                return Product::query()->create($attributes);
+            });
+        } catch (\Throwable $exception) {
+            $this->uploadService->delete('products', $stagedPicture);
+
+            throw $exception;
+        }
     }
 }

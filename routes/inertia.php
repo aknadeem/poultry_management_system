@@ -21,6 +21,8 @@ use App\Http\Controllers\Inertia\FarmManagement\EmployeeController as InertiaFar
 use App\Http\Controllers\Inertia\FarmManagement\LookupTypeController as InertiaFarmLookupTypeController;
 use App\Http\Controllers\Inertia\FarmManagement\PersonalFarmController as InertiaPersonalFarmController;
 use App\Http\Controllers\Inertia\FarmManagement\VaccinationController as InertiaVaccinationController;
+use App\Http\Controllers\Inertia\ProductManagement\ProductController as InertiaProductController;
+use App\Http\Controllers\Inertia\ProductManagement\ProductPurchaseController as InertiaProductPurchaseController;
 use App\Http\Controllers\Inertia\UserManagement\UserController as InertiaUserController;
 use App\Http\Controllers\Inertia\UserManagement\UserRoleController as InertiaUserRoleController;
 use Illuminate\Support\Facades\Route;
@@ -156,6 +158,30 @@ Route::prefix('app')->group(function (): void {
             Route::post('vaccinations/record', [InertiaVaccinationController::class, 'record'])->name('inertia.vaccinations.record');
             Route::put('vaccinations/{vaccination}/status', [InertiaVaccinationController::class, 'toggleStatus'])->name('inertia.vaccinations.toggle-status');
             Route::post('lookup-types', [InertiaFarmLookupTypeController::class, 'store'])->name('inertia.farm-lookup-types.store');
+        });
+
+        Route::prefix('productmanagement')->group(function (): void {
+            Route::resource('products', InertiaProductController::class)->names([
+                'index' => 'inertia.products.index',
+                'create' => 'inertia.products.create',
+                'store' => 'inertia.products.store',
+                'show' => 'inertia.products.show',
+                'edit' => 'inertia.products.edit',
+                'update' => 'inertia.products.update',
+                'destroy' => 'inertia.products.destroy',
+            ]);
+            Route::put('products/{product}/status', [InertiaProductController::class, 'toggleStatus'])
+                ->name('inertia.products.toggle-status');
+
+            Route::get('product-purchases', [InertiaProductPurchaseController::class, 'index'])->name('inertia.product-purchases.index');
+            Route::get('product-purchases/create', [InertiaProductPurchaseController::class, 'create'])->name('inertia.product-purchases.create');
+            Route::post('product-purchases', [InertiaProductPurchaseController::class, 'store'])->name('inertia.product-purchases.store');
+            Route::get('product-purchases/rebates', [InertiaProductPurchaseController::class, 'rebates'])->name('inertia.product-purchases.rebates');
+            Route::post('product-purchases/rebate', [InertiaProductPurchaseController::class, 'rebate'])->name('inertia.product-purchases.rebate');
+            Route::get('product-purchases/{productPurchase}', [InertiaProductPurchaseController::class, 'show'])->name('inertia.product-purchases.show');
+            Route::delete('product-purchases/{productPurchase}', [InertiaProductPurchaseController::class, 'destroy'])->name('inertia.product-purchases.destroy');
+            Route::put('product-purchases/{productPurchase}/status', [InertiaProductPurchaseController::class, 'toggleStatus'])
+                ->name('inertia.product-purchases.toggle-status');
         });
     });
 });

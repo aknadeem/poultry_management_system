@@ -228,3 +228,138 @@ test('product purchase rebate rejects a quantity larger than remaining qty', fun
 
     expect(ProductPurchaseRebate::count())->toBe(0);
 });
+
+test('product purchase rolls back when inventory update fails', function () {
+    $this->mock(\App\Services\InventoryService::class, function ($mock): void {
+        $mock->shouldReceive('increaseProductStock')->once()->andThrow(new RuntimeException('stock failed'));
+    });
+
+    $this->withoutExceptionHandling();
+
+    expect(fn () => $this->post(route('productpurchases.store'), [
+        'party_company_id' => 1,
+        'product_category_id' => 1,
+        'purchase_date' => '2026-08-01',
+        'total_amount' => 500,
+        'discount_amount' => 0,
+        'discount_percentage' => 0,
+        'other_charges' => 0,
+        'final_amount' => 500,
+        'product_id' => [1],
+        'product_code' => ['PRODUCT-1'],
+        'product_name' => ['Fixture Product'],
+        'product_sale_price' => [50],
+        'product_qty' => [10],
+        'product_bonus_qty' => [0],
+        'product_total_qty' => [10],
+        'product_discount' => [0],
+        'product_discount_percentage' => [0],
+        'product_total_price' => [500],
+    ]))->toThrow(RuntimeException::class);
+
+    expect(ProductPurchase::count())->toBe(0)
+        ->and(ProductPurchaseDetail::count())->toBe(0)
+        ->and(CompanyBalance::count())->toBe(0)
+        ->and(AccountPayable::count())->toBe(0)
+        ->and((int) Product::query()->find(1)->quantity)->toBe(10);
+});
+
+test('product purchase rejects zero quantities and invalid company or product', function () {
+    $this->post(route('productpurchases.store'), [
+        'party_company_id' => 1,
+        'product_category_id' => 1,
+        'purchase_date' => '2026-08-01',
+        'total_amount' => 0,
+        'discount_amount' => 0,
+        'discount_percentage' => 0,
+        'other_charges' => 0,
+        'final_amount' => 0,
+        'product_id' => [1],
+        'product_code' => ['PRODUCT-1'],
+        'product_name' => ['Fixture Product'],
+        'product_sale_price' => [50],
+        'product_qty' => [0],
+        'product_bonus_qty' => [0],
+        'product_total_qty' => [0],
+        'product_discount' => [0],
+        'product_discount_percentage' => [0],
+        'product_total_price' => [0],
+    ])->assertSessionHasErrors('items.0.product_qty');
+
+    $this->post(route('productpurchases.store'), [
+        'party_company_id' => 999,
+        'product_category_id' => 1,
+        'purchase_date' => '2026-08-01',
+        'total_amount' => 500,
+        'discount_amount' => 0,
+        'discount_percentage' => 0,
+        'other_charges' => 0,
+        'final_amount' => 500,
+        'product_id' => [1],
+        'product_code' => ['PRODUCT-1'],
+        'product_name' => ['Fixture Product'],
+        'product_sale_price' => [50],
+        'product_qty' => [10],
+        'product_bonus_qty' => [0],
+        'product_total_qty' => [10],
+        'product_discount' => [0],
+        'product_discount_percentage' => [0],
+        'product_total_price' => [500],
+    ])->assertSessionHasErrors('party_company_id');
+
+    $this->post(route('productpurchases.store'), [
+        'party_company_id' => 1,
+        'product_category_id' => 1,
+        'purchase_date' => '2026-08-01',
+        'total_amount' => 500,
+        'discount_amount' => 0,
+        'discount_percentage' => 0,
+        'other_charges' => 0,
+        'final_amount' => 500,
+        'product_id' => [999],
+        'product_code' => ['MISSING'],
+        'product_name' => ['Missing'],
+        'product_sale_price' => [50],
+        'product_qty' => [10],
+        'product_bonus_qty' => [0],
+        'product_total_qty' => [10],
+        'product_discount' => [0],
+        'product_discount_percentage' => [0],
+        'product_total_price' => [500],
+    ])->assertSessionHasErrors('items.0.product_id');
+
+    expect(ProductPurchase::count())->toBe(0)
+        ->and((int) Product::query()->find(1)->quantity)->toBe(10);
+});
+
+test('each successful product purchase applies inventory and financials exactly once', function () {
+    $payload = [
+        'party_company_id' => 1,
+        'product_category_id' => 1,
+        'purchase_date' => '2026-08-01',
+        'total_amount' => 500,
+        'discount_amount' => 0,
+        'discount_percentage' => 0,
+        'other_charges' => 0,
+        'final_amount' => 500,
+        'product_id' => [1],
+        'product_code' => ['PRODUCT-1'],
+        'product_name' => ['Fixture Product'],
+        'product_sale_price' => [50],
+        'product_qty' => [10],
+        'product_bonus_qty' => [0],
+        'product_total_qty' => [10],
+        'product_discount' => [0],
+        'product_discount_percentage' => [0],
+        'product_total_price' => [500],
+    ];
+
+    $this->post(route('productpurchases.store'), $payload)->assertRedirect();
+    $this->post(route('productpurchases.store'), $payload)->assertRedirect();
+
+    expect(ProductPurchase::count())->toBe(2)
+        ->and(ProductPurchaseDetail::count())->toBe(2)
+        ->and(CompanyBalance::count())->toBe(2)
+        ->and(AccountPayable::count())->toBe(2)
+        ->and((int) Product::query()->find(1)->quantity)->toBe(30);
+});

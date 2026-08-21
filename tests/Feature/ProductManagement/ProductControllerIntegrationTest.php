@@ -61,6 +61,12 @@ beforeEach(function () {
         'slug' => 'nd-group',
         ...$timestamps,
     ]);
+    DB::table('product_types')->insert([
+        'id' => 1,
+        'name' => 'Local',
+        'slug' => 'local',
+        ...$timestamps,
+    ]);
 });
 
 function productPayload(array $overrides = []): array
@@ -72,7 +78,7 @@ function productPayload(array $overrides = []): array
         'product_name' => 'Broiler Starter Feed',
         'batch_number' => 'BN-100',
         'serial_number' => 'SN-200',
-        'product_type' => 'local',
+        'product_type' => 1,
         'vaccination_group' => 1,
         'pack_size_unit' => 25,
         'pack_size_unit_type' => 'kilo_gram',
@@ -116,7 +122,8 @@ test('product store persists every create-form field', function () {
         'product_name' => 'Broiler Starter Feed',
         'batch_number' => 'BN-100',
         'serial_number' => 'SN-200',
-        'product_type' => 'local',
+        'product_type' => 1,
+        'product_type_id' => 1,
         'vaccination_group_id' => 1,
         'pack_size' => 25,
         'pack_size_unit_type' => 'kilo_gram',
@@ -222,4 +229,72 @@ test('product destroy soft deletes the product', function () {
         ->assertRedirect(route('products.index'));
 
     $this->assertSoftDeleted('products', ['id' => $product->id]);
+});
+
+test('product picture replacement keeps the existing file when the new upload fails', function () {
+    Storage::fake('public');
+
+    $this->post(route('products.store'), productPayload([
+        'product_picture' => UploadedFile::fake()->image('feed.png'),
+    ]))->assertRedirect(route('products.index'));
+
+    $product = Product::query()->firstOrFail();
+    $existingPicture = $product->product_picture;
+    Storage::disk('public')->assertExists('products/'.$existingPicture);
+
+    $this->mock(\App\Services\FileUploadService::class, function ($mock): void {
+        $mock->shouldReceive('store')->once()->andThrow(new RuntimeException('upload failed'));
+        $mock->shouldReceive('delete')->zeroOrMoreTimes();
+    });
+
+    $this->withoutExceptionHandling();
+
+    expect(fn () => $this->put(route('products.update', $product->id), productPayload([
+        'product_name' => 'Should Not Persist',
+        'product_picture' => UploadedFile::fake()->image('replacement.png'),
+    ])))->toThrow(RuntimeException::class);
+
+    $product->refresh();
+    expect($product->product_name)->toBe('Broiler Starter Feed')
+        ->and($product->product_picture)->toBe($existingPicture);
+    Storage::disk('public')->assertExists('products/'.$existingPicture);
+});
+
+test('product destroy with purchase history soft deletes and keeps historical records', function () {
+    $this->post(route('products.store'), productPayload())
+        ->assertRedirect(route('products.index'));
+
+    $product = Product::query()->firstOrFail();
+
+    DB::table('product_purchases')->insert([
+        'id' => 1,
+        'party_company_id' => 1,
+        'product_category_id' => 1,
+        'purchase_date' => '2026-08-01',
+        'total_amount' => 100,
+        'final_amount' => 100,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+    DB::table('product_purchase_details')->insert([
+        'product_purchase_id' => 1,
+        'product_id' => $product->id,
+        'product_code' => $product->product_code,
+        'product_name' => $product->product_name,
+        'product_qty' => 5,
+        'product_total_qty' => 5,
+        'product_purchase_price' => 80,
+        'product_total_price' => 400,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    $this->delete(route('products.destroy', $product->id))
+        ->assertRedirect(route('products.index'));
+
+    $this->assertSoftDeleted('products', ['id' => $product->id]);
+    $this->assertDatabaseHas('product_purchase_details', [
+        'product_purchase_id' => 1,
+        'product_id' => $product->id,
+    ]);
 });

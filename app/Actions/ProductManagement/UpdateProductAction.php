@@ -20,18 +20,33 @@ class UpdateProductAction
      */
     public function execute(Product $product, array $data, ?object $pictureFile, int $userId): Product
     {
-        return DB::transaction(function () use ($product, $data, $pictureFile, $userId) {
-            $attributes = $this->mapProductAttributes($data);
-            $attributes['product_picture'] = $this->uploadService->replace(
-                $pictureFile,
-                'products',
-                $product->product_picture
-            );
-            $attributes['updatedby'] = $userId;
+        $existingPicture = $product->product_picture;
+        $stagedPicture = null;
 
-            $product->update($attributes);
+        try {
+            if ($pictureFile) {
+                $stagedPicture = $this->uploadService->store($pictureFile, 'products');
+            }
 
-            return $product->fresh();
-        });
+            $updated = DB::transaction(function () use ($product, $data, $existingPicture, $stagedPicture, $userId): Product {
+                $attributes = $this->mapProductAttributes($data);
+                $attributes['product_picture'] = $stagedPicture ?? $existingPicture;
+                $attributes['updatedby'] = $userId;
+
+                $product->update($attributes);
+
+                return $product->fresh();
+            });
+        } catch (\Throwable $exception) {
+            $this->uploadService->delete('products', $stagedPicture);
+
+            throw $exception;
+        }
+
+        if ($stagedPicture) {
+            $this->uploadService->delete('products', $existingPicture);
+        }
+
+        return $updated;
     }
 }

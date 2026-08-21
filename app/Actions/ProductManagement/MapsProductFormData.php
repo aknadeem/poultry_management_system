@@ -25,6 +25,7 @@ trait MapsProductFormData
             'batch_number' => $data['batch_number'] ?? null,
             'serial_number' => $data['serial_number'] ?? null,
             'product_type' => $data['product_type'] ?? null,
+            'product_type_id' => $data['product_type'] ?? null,
             'vaccination_group_id' => $data['vaccination_group'] ?? null,
             'pack_size' => $data['pack_size_unit'] ?? null,
             'pack_size_unit_type' => $data['pack_size_unit_type'] ?? null,
