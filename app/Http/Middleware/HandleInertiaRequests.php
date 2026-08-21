@@ -1,0 +1,99 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use App\Support\InertiaShare;
+use Illuminate\Http\Request;
+use Inertia\Middleware;
+
+class HandleInertiaRequests extends Middleware
+{
+    /**
+     * The root template that's loaded on the first page visit.
+     *
+     * @var string
+     */
+    protected $rootView = 'app';
+
+    /**
+     * Determines the current asset version.
+     */
+    public function version(Request $request): ?string
+    {
+        return parent::version($request);
+    }
+
+    /**
+     * Define the props that are shared by default.
+     *
+     * @return array<string, mixed>
+     */
+    public function share(Request $request): array
+    {
+        $user = $request->user();
+
+        if ($user !== null) {
+            $user->loadMissing('userRole');
+        }
+
+        $notification = $request->session()->get('swal_notification');
+
+        return [
+            ...parent::share($request),
+            'auth' => [
+                'user' => $user === null ? null : [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->userRole?->slug,
+                ],
+            ],
+            'flash' => [
+                'title' => is_array($notification) ? ($notification['title'] ?? null) : null,
+                'message' => is_array($notification) ? ($notification['message'] ?? null) : null,
+                'type' => is_array($notification) ? ($notification['icon_type'] ?? null) : null,
+                'status' => $request->session()->get('status'),
+            ],
+            'theme' => [
+                'logo' => asset('assets/images/logo/poultryLogo.png'),
+                'year' => now()->year,
+                'appName' => config('app.name', 'Poultry Management System'),
+            ],
+            'can' => InertiaShare::abilities($user),
+            'routes' => InertiaShare::routes(),
+            'urls' => [
+                'home' => url('/'),
+                'dashboard' => route('inertia.dashboard'),
+                'logout' => route('inertia.logout'),
+                'users' => route('inertia.users.index'),
+                'userRoles' => route('inertia.user-roles.index'),
+                'parties' => route('parties.index'),
+                'customers' => route('customers.index'),
+                'vendors' => route('vendors.index'),
+                'conductPersons' => route('conductpersons.index'),
+                'brokers' => route('brokers.index'),
+                'partyBalance' => route('partybalance.index'),
+                'brokerBalance' => route('brokerbalance.index'),
+                'customerFarms' => route('customerfarms.index'),
+                'productStores' => route('productstores.index'),
+                'employees' => route('employee.index'),
+                'products' => route('products.index'),
+                'productPurchases' => route('productpurchases.index'),
+                'productSales' => route('productsales.index'),
+                'vaccination' => route('vaccination.index'),
+                'companies' => route('company.index'),
+                'companyBalance' => route('companybalance.index'),
+                'expenses' => route('expense.index'),
+                'chickSales' => route('sale.index'),
+                'chickPurchases' => route('purchase.index'),
+                'feed' => route('feed.index'),
+                'payables' => route('payables.index'),
+                'chickSaleReport' => route('chickreport.index'),
+                'chickPurchaseReport' => route('chickreport.purchases'),
+                'productPurchaseReport' => route('productreport.purchase'),
+                'productSaleReport' => route('productreport.sale'),
+                'productReport' => route('productreport.index'),
+            ],
+        ];
+    }
+}

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\UserManagement;
 
+use App\Models\User;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -12,6 +13,16 @@ class StoreUserRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $user = $this->route('user');
+        if ($user instanceof User) {
+            $this->merge([
+                'user_id_modal' => $user->id,
+            ]);
+        }
     }
 
     public function rules(): array
@@ -44,6 +55,10 @@ class StoreUserRequest extends FormRequest
 
     protected function failedValidation(Validator $validator): void
     {
+        if ($this->header('X-Inertia')) {
+            parent::failedValidation($validator);
+        }
+
         throw new HttpResponseException(response()->json([
             'error' => $validator->errors()->toArray(),
             'success' => 'no',

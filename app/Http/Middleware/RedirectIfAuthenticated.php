@@ -23,6 +23,10 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
+                if ($request->is('app') || $request->is('app/*')) {
+                    return redirect()->route('inertia.dashboard');
+                }
+
                 return redirect(RouteServiceProvider::HOME);
             }
         }
