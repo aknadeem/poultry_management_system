@@ -1,9 +1,11 @@
 <?php
 
+use App\Models\ChickPurchase;
 use App\Models\FarmSubtype;
 use App\Models\FarmType;
 use App\Models\Party;
 use App\Models\PartyFarm;
+use App\Models\PartyFarmChickHistory;
 use App\Models\User;
 use App\Models\VaccinationSchedule;
 use Database\Seeders\UserSeeder;
@@ -163,6 +165,38 @@ test('customer farm destroy is blocked when linked to vaccination schedules', fu
         'schedule_date' => '2026-08-01',
         'is_vaccinated' => 0,
         'is_active' => 1,
+    ]);
+
+    $this->delete(route('customerfarms.destroy', $fixture['farmId']))
+        ->assertRedirect(route('customerfarms.index'))
+        ->assertSessionHas('swal_notification');
+
+    expect(PartyFarm::query()->find($fixture['farmId']))->not->toBeNull();
+});
+
+test('customer farm destroy is blocked when linked to chick purchases', function () {
+    $fixture = seedCustomerFarmFixture();
+
+    ChickPurchase::query()->create([
+        'party_farm_id' => $fixture['farmId'],
+        'purchase_date' => '2026-08-01',
+        'quantity' => 100,
+    ]);
+
+    $this->delete(route('customerfarms.destroy', $fixture['farmId']))
+        ->assertRedirect(route('customerfarms.index'))
+        ->assertSessionHas('swal_notification');
+
+    expect(PartyFarm::query()->find($fixture['farmId']))->not->toBeNull();
+});
+
+test('customer farm destroy is blocked when linked to chick purchase history', function () {
+    $fixture = seedCustomerFarmFixture();
+
+    PartyFarmChickHistory::query()->create([
+        'party_farm_id' => $fixture['farmId'],
+        'quantity' => 100,
+        'entry_date' => '2026-08-01',
     ]);
 
     $this->delete(route('customerfarms.destroy', $fixture['farmId']))

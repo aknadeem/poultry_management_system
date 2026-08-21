@@ -56,14 +56,15 @@ const { can } = usePermissions();
                                         <i class="fas fa-warehouse"></i> Farms <div class="arrow-down"></div>
                                     </a>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item" :href="urls.customerFarms">Customer Farms</a>
+                                        <Link class="dropdown-item" :href="route('inertia.personal-farms.index')">Personal Farms</Link>
+                                        <Link class="dropdown-item" :href="route('inertia.customer-farms.index')">Customer Farms</Link>
                                     </div>
                                 </div>
                                 <div class="dropdown">
                                     <a class="dropdown-item" :href="urls.productStores"><i class="fas fa-store-alt"></i> Store Mangement</a>
                                 </div>
                                 <div class="dropdown">
-                                    <a class="dropdown-item" :href="urls.employees"><i class="fas fa-id-card"></i> Employee</a>
+                                    <Link class="dropdown-item" :href="route('inertia.employees.index')"><i class="fas fa-id-card"></i> Employee</Link>
                                 </div>
                                 <div class="dropdown">
                                     <a class="dropdown-item" :href="urls.products"><i class="fas fa-store"></i> Products</a>
@@ -75,7 +76,7 @@ const { can } = usePermissions();
                                     <a class="dropdown-item" :href="urls.productSales"><i class="fas fa-shopping-bag"></i> Product Sales</a>
                                 </div>
                                 <div class="dropdown">
-                                    <a class="dropdown-item" :href="urls.vaccination"><i class="fas fa-syringe"></i> Vaccination</a>
+                                    <Link class="dropdown-item" :href="route('inertia.vaccinations.index')"><i class="fas fa-syringe"></i> Vaccination</Link>
                                 </div>
                             </div>
                         </li>

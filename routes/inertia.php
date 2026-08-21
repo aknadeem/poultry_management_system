@@ -16,6 +16,11 @@ use App\Http\Controllers\Inertia\PartyManagement\PartyBalanceLimitController as 
 use App\Http\Controllers\Inertia\PartyManagement\PartyController as InertiaPartyController;
 use App\Http\Controllers\Inertia\PartyManagement\PartyDocumentController as InertiaPartyDocumentController;
 use App\Http\Controllers\Inertia\PartyManagement\VendorController as InertiaVendorController;
+use App\Http\Controllers\Inertia\FarmManagement\CustomerFarmController as InertiaCustomerFarmController;
+use App\Http\Controllers\Inertia\FarmManagement\EmployeeController as InertiaFarmEmployeeController;
+use App\Http\Controllers\Inertia\FarmManagement\LookupTypeController as InertiaFarmLookupTypeController;
+use App\Http\Controllers\Inertia\FarmManagement\PersonalFarmController as InertiaPersonalFarmController;
+use App\Http\Controllers\Inertia\FarmManagement\VaccinationController as InertiaVaccinationController;
 use App\Http\Controllers\Inertia\UserManagement\UserController as InertiaUserController;
 use App\Http\Controllers\Inertia\UserManagement\UserRoleController as InertiaUserRoleController;
 use Illuminate\Support\Facades\Route;
@@ -115,6 +120,42 @@ Route::prefix('app')->group(function (): void {
             Route::delete('partydocuments/{partydocument}', [InertiaPartyDocumentController::class, 'destroy'])->name('inertia.party-documents.destroy');
             Route::post('balancelimits', [InertiaPartyBalanceLimitController::class, 'store'])->name('inertia.party-balance-limits.store');
             Route::delete('balancelimits/{balancelimit}', [InertiaPartyBalanceLimitController::class, 'destroy'])->name('inertia.party-balance-limits.destroy');
+        });
+
+        Route::prefix('farmmanagement')->group(function (): void {
+            Route::resource('personal-farms', InertiaPersonalFarmController::class)
+                ->except(['show'])
+                ->parameters(['personal-farms' => 'personalFarm'])
+                ->names([
+                    'index' => 'inertia.personal-farms.index',
+                    'create' => 'inertia.personal-farms.create',
+                    'store' => 'inertia.personal-farms.store',
+                    'edit' => 'inertia.personal-farms.edit',
+                    'update' => 'inertia.personal-farms.update',
+                    'destroy' => 'inertia.personal-farms.destroy',
+                ]);
+            Route::resource('customer-farms', InertiaCustomerFarmController::class)
+                ->only(['index', 'update', 'destroy'])
+                ->parameters(['customer-farms' => 'customerFarm'])
+                ->names([
+                    'index' => 'inertia.customer-farms.index',
+                    'update' => 'inertia.customer-farms.update',
+                    'destroy' => 'inertia.customer-farms.destroy',
+                ]);
+            Route::resource('employees', InertiaFarmEmployeeController::class)->names([
+                'index' => 'inertia.employees.index',
+                'create' => 'inertia.employees.create',
+                'store' => 'inertia.employees.store',
+                'show' => 'inertia.employees.show',
+                'edit' => 'inertia.employees.edit',
+                'update' => 'inertia.employees.update',
+                'destroy' => 'inertia.employees.destroy',
+            ]);
+            Route::get('vaccinations', [InertiaVaccinationController::class, 'index'])->name('inertia.vaccinations.index');
+            Route::post('vaccinations', [InertiaVaccinationController::class, 'store'])->name('inertia.vaccinations.store');
+            Route::post('vaccinations/record', [InertiaVaccinationController::class, 'record'])->name('inertia.vaccinations.record');
+            Route::put('vaccinations/{vaccination}/status', [InertiaVaccinationController::class, 'toggleStatus'])->name('inertia.vaccinations.toggle-status');
+            Route::post('lookup-types', [InertiaFarmLookupTypeController::class, 'store'])->name('inertia.farm-lookup-types.store');
         });
     });
 });

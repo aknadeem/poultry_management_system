@@ -117,7 +117,7 @@
                     $('#employeeDepartment').val(cdata?.employee?.department)
                     $('#employeeAddress').val(cdata?.employee?.address)
                     $('#employeeDescription').val(cdata?.employee?.description)
-                    let img_url = "{{ asset('storage/employees/')}}"
+                    let img_url = "{{ asset('storage/employee/')}}"
                     if(cdata?.employee?.employee_image !=''){
                         $(".img-holder").empty();
                         img_url = img_url+'/'+cdata?.employee?.employee_image;

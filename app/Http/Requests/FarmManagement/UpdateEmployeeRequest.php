@@ -14,9 +14,11 @@ class UpdateEmployeeRequest extends FormRequest
 
     public function rules(): array
     {
-        $id = $this->route('employee');
+        $employee = $this->route('employee');
+        $id = $employee instanceof \App\Models\Employee ? $employee->id : $employee;
 
         return [
+            'personal_farm_id' => 'bail|nullable|integer|exists:personal_farms,id',
             'employee_type_id' => 'bail|nullable|integer',
             'employee_level_id' => 'bail|required|integer',
             'name' => 'bail|required|string',
@@ -30,7 +32,7 @@ class UpdateEmployeeRequest extends FormRequest
                 'numeric',
                 Rule::unique('employees', 'cnic_no')->ignore($id),
             ],
-            'father_cnic_no' => 'nullable',
+            'father_cnic_no' => 'bail|nullable|string',
             'basic_salary' => 'bail|required|numeric',
             'other_amount' => 'bail|nullable|numeric',
             'net_salary' => 'bail|required|numeric',

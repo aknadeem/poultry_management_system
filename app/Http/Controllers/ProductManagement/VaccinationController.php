@@ -2,42 +2,41 @@
 
 namespace App\Http\Controllers\ProductManagement;
 
-use Session;
-use Carbon\Carbon;
-use App\Models\Product;
-use App\Models\PartyFarm;
-use App\Models\PartyCompany;
-use App\Models\ProductStore;
-use Illuminate\Http\Request;
-use App\Models\ProductCategory;
-use App\Models\VaccinationGroup;
-use App\Models\VaccinationSchedule;
-use Illuminate\Support\Facades\Log;
+use App\Actions\FarmManagement\RecordVaccinationAction;
+use App\Actions\FarmManagement\StoreVaccinationScheduleAction;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\FarmManagement\RecordVaccinationRequest;
+use App\Http\Requests\FarmManagement\StoreVaccinationScheduleRequest;
+use App\Models\PartyFarm;
+use App\Models\Product;
+use App\Models\VaccinationSchedule;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Support\Facades\Validator;
 
 class VaccinationController extends Controller
 {
-    private $authUserId;
+    private int $authUserId;
+
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $this->authUserId= \Auth::user()->id;
+            $this->authUserId = \Auth::user()->id;
+
             return $next($request);
         });
     }
-    // public function getVaccinationScheduleFarm()
-    // {
-        
-    // }
 
-    public function index()
+    public function index(): View
     {
         return view('farmmanagement.vaccination.index');
     }
 
-    public function getScheduleList()
+    public function getScheduleList(): JsonResponse
     {
         $stores = VaccinationSchedule::with('farm:id,farm_name','product:id,product_code,product_name')->orderBy('id','DESC')->withCasts([
             'schedule_date' => 'date:d M, Y',
@@ -79,7 +78,7 @@ class VaccinationController extends Controller
             ->make(true);
     }
 
-    public function create()
+    public function create(): JsonResponse
     {
         $products = Product::get(['id','product_code','product_name']);
         $farms = PartyFarm::get(['id','party_id','farm_name']);
@@ -99,44 +98,25 @@ class VaccinationController extends Controller
         }
     }
 
-    public function edit($id)
+    public function edit(int $id): void
     {
     }
 
-    public function store(Request $request)
-    {
-        $curent_date = today()->format('Y-m-d');
-        $validator = Validator::make($request->all(),[
-        // $this->validate($request, [
-            'farm_id' => 'bail|nullable|integer',
-            'product_id' => 'bail|nullable|integer',
-            'schedule_date' => 'bail|required|date|after_or_equal:'.$curent_date,
-            'desciption' => 'bail|nullable',
-        ],[
-            'schedule_date.after_or_equal' => 'The date must be after or equal to Current date: '.$curent_date
-        ]);
-
-        if($validator->fails()){
-            return response()->json([
-                'error' => $validator->errors()->toArray(),
-                'success' => 'no',
-            ], 201);
-        }
-
+    public function store(
+        StoreVaccinationScheduleRequest $request,
+        StoreVaccinationScheduleAction $action,
+    ): JsonResponse {
         $message = 'Vaccination schedule added successfully!';
         $title = 'Success';
         $icon_type = 'success';
+
         try {
-            $product = VaccinationSchedule::create([
-                'party_farm_id' => $request->farm_id,
-                'product_id' => $request->product_id,
-                'schedule_date' => $request->schedule_date,
-                'description' => $request->description,
-                'addedby' => $this->authUserId,
-            ]);
-        }
-        catch (\Throwable $e) {
+            $action->execute($request->validated(), $this->authUserId);
+        } catch (\Throwable $e) {
             Log::error($e);
+            if (app()->environment('testing')) {
+                throw $e;
+            }
             $message = 'Something went wrong';
             $title = 'Error';
             $icon_type = 'warning';
@@ -148,48 +128,33 @@ class VaccinationController extends Controller
             'message' => $message,
         ]);
     }
-    
-    public function addVaccination(Request $request)
-    {
-        $vacc_schedule= VaccinationSchedule::find($request->schedule_id);
 
-        if($vacc_schedule){
-            $schedule_date = $vacc_schedule?->schedule_date?->format('Y-m-d');
-            $validator = Validator::make($request->all(),[
-            // $this->validate($request, [
-                'farm_id' => 'bail|nullable|integer',
-                'product_id' => 'bail|nullable|integer',
-                'vaccination_date' => 'bail|required|date|after_or_equal:'.$schedule_date,
-                'remarks' => 'bail|nullable',
-            ],[
-                'vaccination_date.after_or_equal' => 'The date must be after or equal to Schedule date: '.$schedule_date
+    public function addVaccination(
+        RecordVaccinationRequest $request,
+        RecordVaccinationAction $action,
+    ): JsonResponse {
+        $schedule = VaccinationSchedule::query()->find($request->integer('schedule_id'));
+
+        if (! $schedule) {
+            return response()->json([
+                'title' => 'Error',
+                'icon_type' => 'warning',
+                'message' => 'No Data Found',
             ]);
-            if($validator->fails()){
-                return response()->json([
-                    'error' => $validator->errors()->toArray(),
-                    'success' => 'no',
-                ], 201);
+        }
+
+        $message = 'Vaccine has been  added successfully!';
+        $title = 'Success';
+        $icon_type = 'success';
+
+        try {
+            $action->execute($schedule, $request->validated(), $this->authUserId);
+        } catch (\Throwable $e) {
+            Log::error($e);
+            if (app()->environment('testing')) {
+                throw $e;
             }
-    
-            $message = 'Vaccine has been  added successfully!';
-            $title = 'Success';
-            $icon_type = 'success';
-            try {
-                $vacc_schedule->update([
-                    'is_vaccinated' => 1,
-                    'vaccination_date' => $request->vaccination_date,
-                    'vaccinated_remarks' => $request->remarks,
-                    'updatedby' => $this->authUserId,
-                ]);
-            }
-            catch (\Throwable $e) {
-                Log::error($e);
-                $message = 'Something went wrong';
-                $title = 'Error';
-                $icon_type = 'warning';
-            }
-        }else{
-            $message = 'No Data Found';
+            $message = 'Something went wrong';
             $title = 'Error';
             $icon_type = 'warning';
         }
@@ -201,11 +166,11 @@ class VaccinationController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id)
-    {  
+    public function update(Request $request, int $id): void
+    {
     }
 
-    public function show($id)
+    public function show(int $id): JsonResponse
     {
         $result = Product::with('company:id,company_name,company_code','productstore:id,store_name')->find($id);
         if($result){
@@ -223,28 +188,7 @@ class VaccinationController extends Controller
             'html_data' => $html_data,
         ], 201);
     }
-
-
-    public function validationRules($request, $id)
-    {
-        $curent_date = today()->format('Y-m-d');
-        $validator = Validator::make($request->all(),[
-        // $this->validate($request, [
-            'farm_id' => 'bail|nullable|integer',
-            'product_id' => 'bail|nullable|integer',
-            'schedule_date' => 'bail|required|date|after:tomorrow',
-            'desciption' => 'bail|nullable',
-        ]);
-
-        if($validator->fails()){
-            return response()->json([
-                'error' => $validator->errors()->toArray(),
-                'success' => 'no',
-            ], 201);
-        }
-    }
-
-    public function destroy($id)
+    public function destroy(int $id): RedirectResponse
     {
         $schedule = VaccinationSchedule::findOrFail($id);
         $schedule->delete();
@@ -254,7 +198,7 @@ class VaccinationController extends Controller
         return redirect()->route('vaccination.index');
     }
     
-    public function forceDelete($id)
+    public function forceDelete(int $id): RedirectResponse
     {
         $schedule = VaccinationSchedule::findOrFail($id);
         $schedule->forceDelete();

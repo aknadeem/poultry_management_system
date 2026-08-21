@@ -2,12 +2,15 @@
 
 namespace App\Http\Requests\FarmManagement;
 
+use App\Http\Requests\Concerns\InertiaAwareFailedValidation;
 use App\Models\PartyFarm;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class UpdateCustomerFarmRequest extends FormRequest
 {
+    use InertiaAwareFailedValidation;
+
     public function authorize(): bool
     {
         return true;
@@ -15,7 +18,12 @@ class UpdateCustomerFarmRequest extends FormRequest
 
     public function rules(): array
     {
-        $farm = PartyFarm::find($this->route('customerfarm'));
+        $farm = $this->route('customerfarm')
+            ?? $this->route('customer_farm')
+            ?? $this->route('customerFarm');
+        if (! $farm instanceof PartyFarm && $farm !== null) {
+            $farm = PartyFarm::query()->find($farm);
+        }
 
         return [
             'farm_type_id' => ['bail', 'required', 'integer', 'exists:farm_types,id'],

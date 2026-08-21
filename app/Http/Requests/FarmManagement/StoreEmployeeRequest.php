@@ -14,6 +14,7 @@ class StoreEmployeeRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'personal_farm_id' => 'bail|nullable|integer|exists:personal_farms,id',
             'employee_type_id' => 'bail|nullable|integer',
             'employee_level_id' => 'bail|required|integer',
             'name' => 'bail|required|string',
@@ -22,7 +23,7 @@ class StoreEmployeeRequest extends FormRequest
             'other_number' => 'bail|nullable|numeric',
             'email' => 'bail|required|string',
             'cnic_no' => 'bail|required|numeric|unique:employees,cnic_no',
-            'father_cnic_no' => 'nullable',
+            'father_cnic_no' => 'bail|nullable|string',
             'basic_salary' => 'bail|required|numeric',
             'other_amount' => 'bail|nullable|numeric',
             'net_salary' => 'bail|required|numeric',

@@ -210,23 +210,21 @@ $load_js = Array('tippy','select2','sweetAlert')
                                         id="empJoiningDate">
                                     <span class="text-danger joining_date_error"></span>
                                 </div>
-                                {{-- <div class="col-sm-3 mb-2">
+                                <div class="col-sm-3 mb-2">
                                     <label for="empFarm"> Select Farm </label>
                                     <select name="personal_farm_id" id="empFarm" class="form-control mySelect"
                                         data-toggle="select2" data-width="100%">
                                         <option value=""> Select Farm</option>
                                         @forelse ($farms as $item)
-                                        <option {{ (! empty(old('personal_farm_id')==$item->id) ? 'selected'
-                                            : '') || ($employee?->personal_farm_id==$item->id) ? 'selected'
-                                            : '' }} value="{{ $item?->id }}">
-                                            <p>{{ $item?->farm_name }}</p> <br> [ {{
-                                            $item?->farm_address }} ]
+                                        <option value="{{ $item->id }}"
+                                            @selected((string) old('personal_farm_id', $employee?->personal_farm_id) === (string) $item->id)>
+                                            {{ $item->farm_name }} [{{ $item->farm_address }}]
                                         </option>
                                         @empty
                                         @endforelse
                                     </select>
                                     <span class="text-danger personal_farm_id_error"></span>
-                                </div> --}}
+                                </div>
 
                                 <div class="col-sm-3 mb-2">
                                     <label for="bloodGroup"> Blood Group </label>

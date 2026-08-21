@@ -15,7 +15,7 @@
             src="{{ asset('storage/companies/'.$customer?->company_logo) ?? ''}}" alt="No image">
         @elseif ($customer?->employee_image !='')
         <img class="d-flex me-3 rounded-circle avatar-lg"
-            src="{{ asset('storage/employees/'.$customer?->employee_image) ?? ''}}" alt="No image">
+            src="{{ asset('storage/employee/'.$customer?->employee_image) ?? ''}}" alt="No image">
         @endif
         <div class="w-100">
             <h4 class="mt-0 mb-1"> {{$customer?->name ?? ''}} </h4>

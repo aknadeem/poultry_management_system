@@ -70,7 +70,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm');
                                 <td>
                                     @if ($company?->employee_image)
                                     <img class="rounded-circle avatar-lg"
-                                        src="{{ asset('storage/employees/'.$company?->employee_image) ?? ''}}"
+                                        src="{{ asset('storage/employee/'.$company?->employee_image) ?? ''}}"
                                         alt="No image">
                                     @else
                                     <b>No Image</b>
