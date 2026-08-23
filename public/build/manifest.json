@@ -1,0 +1,11 @@
+{
+  "resources/js/inertia/app.js": {
+    "file": "assets/app-9vWE8ocV.js",
+    "name": "app",
+    "src": "resources/js/inertia/app.js",
+    "isEntry": true,
+    "css": [
+      "assets/app-DHP5g-LR.css"
+    ]
+  }
+}
