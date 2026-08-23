@@ -63,13 +63,13 @@ class ChickPurchaseController extends Controller
                 return '<span> ' . $row?->company?->company_name . ' </span>';
             })
             ->addColumn('Actions', function($row){
-                return ' <a class="btn btn-secondary btn-sm"
+                return ' <a class="btn btn-secondary btn-sm d-none"
                 PurchaseId="' . $row["id"] . '" href="javascript:void(0);"
                 title="View Details" tabindex="0" data-plugin="tippy"
                 data-tippy-animation="scale" data-tippy-arrow="true"><i class="fa fa-eye"></i>
                 View
             </a>
-            <a class="btn btn-info btn-sm" href="' . route("purchase.edit", $row["id"]) . '"
+            <a class="btn btn-info btn-sm d-none" href="' . route("purchase.edit", $row["id"]) . '"
                 title="Click to edit"><i
                     class="fa fa-pencil-alt"></i>
                 Edit
