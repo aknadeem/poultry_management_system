@@ -48,13 +48,13 @@ class ExpenseController extends Controller
             })
             ->addColumn('Actions', function ($row) {
                 return '
-            <a class="btn btn-info btn-sm openExpenseModal"
+            <a class="btn btn-info btn-sm openExpenseModal d-none"
             ExpenseId="'.$row['id'].'" data-id="'.$row['id'].'" id="editEspenseModal" href="javascript:void(0);"
                 title="Click to edit"><i
                     class="fa fa-pencil-alt"></i>
                 Edit
             </a>
-            <a class="btn btn-danger btn-sm delete-confirm"
+            <a class="btn btn-danger btn-sm delete-confirm d-none"
                 href="'.route('expense.destroy', $row['id']).'"
                 del_title="Expense: '.$row['id'].'" title="Click to delete"
                 tabindex="0" data-plugin="tippy" data-tippy-animation="scale"

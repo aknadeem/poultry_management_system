@@ -54,10 +54,6 @@ Route::group(['middleware' => 'auth'], function(){
     ]);
 
     Route::get('/getCompaniesBalanceList', [CompaniesBalanceController::class, 'getCompaniesBalanceList'])->name('getCompaniesBalanceList');
-    
-    // Route::resource('companybalance', CompaniesBalanceController::class)->except([
-    //     'create', 'update'
-    // ]);
 
 
     Route::group(['prefix' => '/usermanagement'], function(){
@@ -117,7 +113,7 @@ Route::group(['middleware' => 'auth'], function(){
     Route::group(['prefix' => '/inventory'], function(){
         Route::get('/get-feed-list', [FeedController::class, 'getFeedList'])->name('getfeedlist');
 
-        Route::resource('feed', FeedController::class); 
+        Route::resource('feed', FeedController::class);
         
         Route::get('/expense-categories', [ExpenseController::class, 'getExpenseCategoryList'])->name('getExpenseCategoryList');
 

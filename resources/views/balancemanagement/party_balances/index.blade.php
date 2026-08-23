@@ -33,7 +33,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                         </div>
                         <div class="col-6 align-self-end text-end mb-2">
 
-                            <a class="btn btn-secondary btn-sm hidden" data-bs-toggle="modal"
+                            <a class="btn btn-secondary btn-sm d-none" data-bs-toggle="modal"
                                 href="javascript:void(0);" title="Click to add new company"
                                 data-plugin="tippy" data-tippy-animation="scale" data-tippy-arrow="true"><i
                                     class="fa fa-plus"></i>
