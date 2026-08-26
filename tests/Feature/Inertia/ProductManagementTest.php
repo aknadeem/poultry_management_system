@@ -68,7 +68,7 @@ function seedProductFixtures(): void
     DB::table('product_stores')->insert([
         'id' => 1,
         'store_name' => 'Main Store',
-        'store_code' => 'STORE-1',
+        'store_code' => '00001',
         'store_area' => 100,
         'total_racks' => 10,
         ...$timestamps,
@@ -486,3 +486,114 @@ it('does not register inertia product purchase edit or update routes', function 
     expect(Route::has('inertia.product-purchases.edit'))->toBeFalse()
         ->and(Route::has('inertia.product-purchases.update'))->toBeFalse();
 });
+
+it('redirects guests away from inertia product store pages', function () {
+    $this->get(route('inertia.product-stores.index'))->assertRedirect();
+});
+
+it('lists product stores through inertia', function () {
+    $this->actingAs(inertiaProductUser())
+        ->get(route('inertia.product-stores.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('ProductStores/Index')
+            ->has('stores.data')
+            ->has('filters')
+            ->where('stores.data.0.store_name', 'Main Store')
+            ->where('routes.inertia.product-stores.index', '/app/productmanagement/product-stores')
+            ->where('urls.productStores', route('inertia.product-stores.index'))
+        );
+});
+
+it('shows the create product store page', function () {
+    $this->actingAs(inertiaProductUser())
+        ->get(route('inertia.product-stores.create'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('ProductStores/Create')
+        );
+});
+
+it('creates a product store through inertia', function () {
+    $this->actingAs(inertiaProductUser())
+        ->post(route('inertia.product-stores.store'), [
+            'store_name' => 'New Test Store',
+            'store_type' => 'Retail',
+            'total_racks' => 15,
+            'store_area' => 250.5,
+            'store_desciption' => 'Test Description',
+        ])
+        ->assertRedirect(route('inertia.product-stores.index'));
+
+    $this->assertDatabaseHas('product_stores', [
+        'store_name' => 'New Test Store',
+        'store_type' => 'Retail',
+        'total_racks' => 15,
+        'store_area' => 250.5,
+        'description' => 'Test Description',
+    ]);
+});
+
+it('shows the edit product store page', function () {
+    $store = \App\Models\ProductStore::query()->firstOrFail();
+    $this->actingAs(inertiaProductUser())
+        ->get(route('inertia.product-stores.edit', $store))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('ProductStores/Edit')
+            ->where('store.store_name', $store->store_name)
+        );
+});
+
+it('updates a product store through inertia', function () {
+    $store = \App\Models\ProductStore::query()->firstOrFail();
+    $this->actingAs(inertiaProductUser())
+        ->put(route('inertia.product-stores.update', $store), [
+            'store_name' => 'Updated Test Store',
+            'store_type' => 'Warehouse',
+            'total_racks' => 8,
+            'store_area' => 500,
+            'store_desciption' => 'Updated Description',
+        ])
+        ->assertRedirect(route('inertia.product-stores.index'));
+
+    expect($store->refresh()->store_name)->toBe('Updated Test Store')
+        ->and($store->store_type)->toBe('Warehouse')
+        ->and((int) $store->total_racks)->toBe(8)
+        ->and((float) $store->store_area)->toBe(500.0)
+        ->and($store->description)->toBe('Updated Description');
+});
+
+it('shows the show product store page', function () {
+    $store = \App\Models\ProductStore::query()->firstOrFail();
+    $this->actingAs(inertiaProductUser())
+        ->get(route('inertia.product-stores.show', $store))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('ProductStores/Show')
+            ->where('store.store_name', $store->store_name)
+        );
+});
+
+it('toggles the product store active status', function () {
+    $store = \App\Models\ProductStore::query()->firstOrFail();
+    
+    // Set status to active first
+    $store->update(['is_active' => 1]);
+
+    $this->actingAs(inertiaProductUser())
+        ->put(route('inertia.product-stores.toggle-status', $store))
+        ->assertRedirect(route('inertia.product-stores.index'));
+
+    expect((int) $store->refresh()->is_active)->toBe(0);
+});
+
+it('deletes a product store through inertia', function () {
+    $store = \App\Models\ProductStore::query()->firstOrFail();
+    $this->actingAs(inertiaProductUser())
+        ->delete(route('inertia.product-stores.destroy', $store))
+        ->assertRedirect(route('inertia.product-stores.index'));
+
+    $this->assertSoftDeleted('product_stores', ['id' => $store->id]);
+});
+

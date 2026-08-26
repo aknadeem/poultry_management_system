@@ -23,6 +23,7 @@ use App\Http\Controllers\Inertia\FarmManagement\PersonalFarmController as Inerti
 use App\Http\Controllers\Inertia\FarmManagement\VaccinationController as InertiaVaccinationController;
 use App\Http\Controllers\Inertia\ProductManagement\ProductController as InertiaProductController;
 use App\Http\Controllers\Inertia\ProductManagement\ProductPurchaseController as InertiaProductPurchaseController;
+use App\Http\Controllers\Inertia\ProductManagement\ProductStoreController as InertiaProductStoreController;
 use App\Http\Controllers\Inertia\InventoryManagement\ChickSaleController as InertiaChickSaleController;
 use App\Http\Controllers\Inertia\InventoryManagement\ChickPurchaseController as InertiaChickPurchaseController;
 use App\Http\Controllers\Inertia\InventoryManagement\FeedController as InertiaFeedController;
@@ -175,6 +176,18 @@ Route::prefix('app')->group(function (): void {
             ]);
             Route::put('products/{product}/status', [InertiaProductController::class, 'toggleStatus'])
                 ->name('inertia.products.toggle-status');
+
+            Route::resource('product-stores', InertiaProductStoreController::class)->names([
+                'index' => 'inertia.product-stores.index',
+                'create' => 'inertia.product-stores.create',
+                'store' => 'inertia.product-stores.store',
+                'show' => 'inertia.product-stores.show',
+                'edit' => 'inertia.product-stores.edit',
+                'update' => 'inertia.product-stores.update',
+                'destroy' => 'inertia.product-stores.destroy',
+            ]);
+            Route::put('product-stores/{productStore}/status', [InertiaProductStoreController::class, 'toggleStatus'])
+                ->name('inertia.product-stores.toggle-status');
 
             Route::get('product-purchases', [InertiaProductPurchaseController::class, 'index'])->name('inertia.product-purchases.index');
             Route::get('product-purchases/create', [InertiaProductPurchaseController::class, 'create'])->name('inertia.product-purchases.create');

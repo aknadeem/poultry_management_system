@@ -77,7 +77,7 @@ class HandleInertiaRequests extends Middleware
                 'brokerBalance' => route('brokerbalance.index'),
                 'customerFarms' => route('inertia.customer-farms.index'),
                 'personalFarms' => route('inertia.personal-farms.index'),
-                'productStores' => route('productstores.index'),
+                'productStores' => route('inertia.product-stores.index'),
                 'employees' => route('inertia.employees.index'),
                 'products' => route('inertia.products.index'),
                 'productPurchases' => route('inertia.product-purchases.index'),

@@ -50,7 +50,7 @@ beforeEach(function () {
     DB::table('product_stores')->insert([
         'id' => 1,
         'store_name' => 'Main Store',
-        'store_code' => 'STORE-1',
+        'store_code' => '00001',
         'store_area' => 100,
         'total_racks' => 10,
         ...$timestamps,

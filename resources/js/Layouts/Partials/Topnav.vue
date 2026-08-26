@@ -61,7 +61,7 @@ const { can } = usePermissions();
                                     </div>
                                 </div>
                                 <div class="dropdown">
-                                    <a class="dropdown-item" :href="urls.productStores"><i class="fas fa-store-alt"></i> Store Mangement</a>
+                                    <Link class="dropdown-item" :href="route('inertia.product-stores.index')"><i class="fas fa-store-alt"></i> Store Mangement</Link>
                                 </div>
                                 <div class="dropdown">
                                     <Link class="dropdown-item" :href="route('inertia.employees.index')"><i class="fas fa-id-card"></i> Employee</Link>
