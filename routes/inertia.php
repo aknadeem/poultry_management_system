@@ -23,6 +23,7 @@ use App\Http\Controllers\Inertia\FarmManagement\PersonalFarmController as Inerti
 use App\Http\Controllers\Inertia\FarmManagement\VaccinationController as InertiaVaccinationController;
 use App\Http\Controllers\Inertia\ProductManagement\ProductController as InertiaProductController;
 use App\Http\Controllers\Inertia\ProductManagement\ProductPurchaseController as InertiaProductPurchaseController;
+use App\Http\Controllers\Inertia\ProductManagement\ProductSaleController as InertiaProductSaleController;
 use App\Http\Controllers\Inertia\ProductManagement\ProductStoreController as InertiaProductStoreController;
 use App\Http\Controllers\Inertia\InventoryManagement\ChickSaleController as InertiaChickSaleController;
 use App\Http\Controllers\Inertia\InventoryManagement\ChickPurchaseController as InertiaChickPurchaseController;
@@ -198,6 +199,16 @@ Route::prefix('app')->group(function (): void {
             Route::delete('product-purchases/{productPurchase}', [InertiaProductPurchaseController::class, 'destroy'])->name('inertia.product-purchases.destroy');
             Route::put('product-purchases/{productPurchase}/status', [InertiaProductPurchaseController::class, 'toggleStatus'])
                 ->name('inertia.product-purchases.toggle-status');
+
+            Route::get('product-sales', [InertiaProductSaleController::class, 'index'])->name('inertia.product-sales.index');
+            Route::get('product-sales/create', [InertiaProductSaleController::class, 'create'])->name('inertia.product-sales.create');
+            Route::post('product-sales', [InertiaProductSaleController::class, 'store'])->name('inertia.product-sales.store');
+            Route::get('product-sales/rebates', [InertiaProductSaleController::class, 'rebates'])->name('inertia.product-sales.rebates');
+            Route::post('product-sales/rebate', [InertiaProductSaleController::class, 'rebate'])->name('inertia.product-sales.rebate');
+            Route::get('product-sales/{productSale}', [InertiaProductSaleController::class, 'show'])->name('inertia.product-sales.show');
+            Route::delete('product-sales/{productSale}', [InertiaProductSaleController::class, 'destroy'])->name('inertia.product-sales.destroy');
+            Route::put('product-sales/{productSale}/status', [InertiaProductSaleController::class, 'toggleStatus'])
+                ->name('inertia.product-sales.toggle-status');
         });
 
         Route::prefix('inventory')->group(function (): void {

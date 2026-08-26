@@ -7,6 +7,9 @@ use App\Models\Product;
 use App\Models\ProductPurchase;
 use App\Models\ProductPurchaseDetail;
 use App\Models\ProductPurchaseRebate;
+use App\Models\ProductSale;
+use App\Models\ProductSaleDetail;
+use App\Models\ProductSaleRebate;
 use App\Models\ProductType;
 
 class ProductPresenter
@@ -172,5 +175,123 @@ class ProductPresenter
             'rebate_reason' => $rebate->rebate_reason,
             'rebate_description' => $rebate->rebate_description,
         ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function saleList(ProductSale $sale): array
+    {
+        return self::salePayload($sale, includeItems: false);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function sale(ProductSale $sale): array
+    {
+        return self::salePayload($sale, includeItems: true);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private static function salePayload(ProductSale $sale, bool $includeItems): array
+    {
+        $relations = ['party', 'company', 'productcategory'];
+        if ($includeItems) {
+            $relations[] = 'detail';
+        }
+
+        $sale->loadMissing($relations);
+        $payment = self::salePaymentStatus($sale->payment_status);
+
+        $payload = [
+            'id' => $sale->id,
+            'sale_code' => $sale->sale_code,
+            'division_id' => $sale->division_id,
+            'party_id' => $sale->party_id,
+            'party_name' => $sale->party?->name,
+            'party_company_id' => $sale->party_company_id,
+            'company_name' => $sale->company?->company_name,
+            'product_category_id' => $sale->product_category_id,
+            'category_name' => $sale->productcategory?->name,
+            'sale_date' => $sale->sale_date?->format('Y-m-d'),
+            'sale_date_label' => $sale->sale_date?->format('d M, Y'),
+            'due_date_option' => $sale->due_date_option,
+            'manual_number' => $sale->manual_number,
+            'sale_type' => $sale->sale_type,
+            'total_amount' => $sale->total_amount,
+            'discount_amount' => $sale->discount_amount,
+            'discount_percentage' => $sale->discount_percentage,
+            'other_charges' => $sale->other_charges,
+            'final_amount' => $sale->final_amount,
+            'is_rebate' => (bool) $sale->is_rebate,
+            'rebate_amount' => $sale->rebate_amount,
+            'payment_status' => $sale->payment_status,
+            'payment_status_label' => $payment['label'],
+            'payment_status_color' => $payment['color'],
+            'description' => $sale->description,
+            'is_active' => (bool) $sale->is_active,
+            'invoice_url' => route('productsales.invoice', $sale->id, false),
+        ];
+
+        if ($includeItems) {
+            $payload['items'] = $sale->detail
+                ->map(fn (ProductSaleDetail $item): array => self::saleItem($item))
+                ->all();
+        }
+
+        return $payload;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function saleItem(ProductSaleDetail $item): array
+    {
+        return [
+            'id' => $item->id,
+            'product_id' => $item->product_id,
+            'product_code' => $item->product_code,
+            'product_name' => $item->product_name,
+            'product_sale_price' => $item->product_sale_price,
+            'product_qty' => $item->product_qty,
+            'product_bonus_qty' => $item->product_bonus_qty,
+            'rebate_qty' => $item->rebate_qty,
+            'product_total_qty' => $item->product_total_qty,
+            'product_discount' => $item->product_discount,
+            'product_discount_percentage' => $item->product_discount_percentage,
+            'product_total_price' => $item->product_total_price,
+            'is_rebate' => (bool) $item->is_rebate,
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function saleRebate(ProductSaleRebate $rebate): array
+    {
+        return [
+            'id' => $rebate->id,
+            'rebate_item_id' => $rebate->rebate_item_id,
+            'product_id' => $rebate->product_id,
+            'rebate_qty' => $rebate->rebate_qty,
+            'rebate_reason' => $rebate->rebate_reason,
+            'rebate_description' => $rebate->rebate_description,
+        ];
+    }
+
+    /**
+     * @return array{label: string, color: string}
+     */
+    private static function salePaymentStatus(mixed $status): array
+    {
+        return match ((int) $status) {
+            ProductSale::PAYMENT_UNPAID => ['label' => 'Un paid', 'color' => 'danger'],
+            ProductSale::PAYMENT_PENDING => ['label' => 'Pending', 'color' => 'warning'],
+            ProductSale::PAYMENT_PAID => ['label' => 'Paid', 'color' => 'success'],
+            default => ['label' => 'Un paid', 'color' => 'secondary'],
+        };
     }
 }

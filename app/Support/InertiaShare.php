@@ -9,6 +9,7 @@ use App\Models\Party;
 use App\Models\PartyBalance;
 use App\Models\Product;
 use App\Models\ProductPurchase;
+use App\Models\ProductSale;
 use App\Models\User;
 
 class InertiaShare
@@ -128,6 +129,15 @@ class InertiaShare
             'inertia.product-purchases.rebate' => route('inertia.product-purchases.rebate', [], false),
             'inertia.product-purchases.toggle-status' => route('inertia.product-purchases.toggle-status', ['productPurchase' => '__id__'], false),
             'productpurchases.invoice' => route('productpurchases.invoice', ['id' => '__id__'], false),
+            'inertia.product-sales.index' => route('inertia.product-sales.index', [], false),
+            'inertia.product-sales.create' => route('inertia.product-sales.create', [], false),
+            'inertia.product-sales.store' => route('inertia.product-sales.store', [], false),
+            'inertia.product-sales.show' => route('inertia.product-sales.show', ['productSale' => '__id__'], false),
+            'inertia.product-sales.destroy' => route('inertia.product-sales.destroy', ['productSale' => '__id__'], false),
+            'inertia.product-sales.rebates' => route('inertia.product-sales.rebates', [], false),
+            'inertia.product-sales.rebate' => route('inertia.product-sales.rebate', [], false),
+            'inertia.product-sales.toggle-status' => route('inertia.product-sales.toggle-status', ['productSale' => '__id__'], false),
+            'productsales.invoice' => route('productsales.invoice', ['id' => '__id__'], false),
             'productfilter' => url('/ProductManagement/productfilter'),
             'inertia.chick-sales.index' => route('inertia.chick-sales.index', [], false),
             'inertia.chick-sales.create' => route('inertia.chick-sales.create', [], false),
@@ -191,6 +201,13 @@ class InertiaShare
                     'update' => false,
                     'delete' => false,
                 ],
+                'productSales' => [
+                    'viewAny' => false,
+                    'view' => false,
+                    'create' => false,
+                    'update' => false,
+                    'delete' => false,
+                ],
                 'chickSales' => [
                     'viewAny' => false,
                     'view' => false,
@@ -219,6 +236,7 @@ class InertiaShare
         $partyProbe = new Party;
         $productProbe = new Product;
         $purchaseProbe = new ProductPurchase;
+        $productSaleProbe = new ProductSale;
         $saleProbe = new ChickenSale;
         $chickPurchaseProbe = new ChickPurchase;
         $feedProbe = new Feed;
@@ -255,6 +273,13 @@ class InertiaShare
                 'create' => $user->can('create', ProductPurchase::class),
                 'update' => $user->can('update', $purchaseProbe),
                 'delete' => $user->can('delete', $purchaseProbe),
+            ],
+            'productSales' => [
+                'viewAny' => $user->can('viewAny', ProductSale::class),
+                'view' => $user->can('viewAny', ProductSale::class),
+                'create' => $user->can('create', ProductSale::class),
+                'update' => $user->can('update', $productSaleProbe),
+                'delete' => $user->can('delete', $productSaleProbe),
             ],
             'chickSales' => [
                 'viewAny' => $user->can('viewAny', ChickenSale::class),

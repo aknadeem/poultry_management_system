@@ -2,10 +2,14 @@
 
 use App\Models\AccountPayable;
 use App\Models\CompanyBalance;
+use App\Models\PartyBalance;
 use App\Models\Product;
 use App\Models\ProductPurchase;
 use App\Models\ProductPurchaseDetail;
 use App\Models\ProductPurchaseRebate;
+use App\Models\ProductSale;
+use App\Models\ProductSaleDetail;
+use App\Models\ProductSaleRebate;
 use App\Models\User;
 use App\Services\InventoryService;
 use Database\Seeders\UserSeeder;
@@ -41,6 +45,12 @@ function seedProductFixtures(): void
         'slug' => 'supplier',
         ...$timestamps,
     ]);
+    DB::table('divisions')->insert([
+        'id' => 1,
+        'name' => 'Fixture Division',
+        'slug' => 'fixture-division',
+        ...$timestamps,
+    ]);
     DB::table('parties')->insert([
         'id' => 1,
         'is_vendor' => true,
@@ -48,6 +58,7 @@ function seedProductFixtures(): void
         'name' => 'Fixture Party',
         'cnic_no' => '1000000000000',
         'contact_no' => '03000000000',
+        'customer_division_id' => 1,
         ...$timestamps,
     ]);
     DB::table('party_companies')->insert([
@@ -151,6 +162,34 @@ function inertiaPurchasePayload(array $overrides = []): array
     ], $overrides);
 }
 
+function inertiaSalePayload(array $overrides = []): array
+{
+    return array_merge([
+        'division_id' => 1,
+        'party_id' => 1,
+        'product_category_id' => 1,
+        'party_company_id' => 1,
+        'sale_date' => '2026-08-01',
+        'due_date_option' => 'cash',
+        'sale_type' => 'cash',
+        'total_amount' => 800,
+        'discount_amount' => 0,
+        'discount_percentage' => 0,
+        'other_charges' => 0,
+        'final_amount' => 800,
+        'product_id' => [1],
+        'product_code' => ['PRODUCT-1'],
+        'product_name' => ['Fixture Product'],
+        'product_sale_price' => [80],
+        'product_qty' => [10],
+        'product_bonus_qty' => [0],
+        'product_total_qty' => [10],
+        'product_discount' => [0],
+        'product_discount_percentage' => [0],
+        'product_total_price' => [800],
+    ], $overrides);
+}
+
 function seedCatalogProduct(array $overrides = []): Product
 {
     $attributes = array_merge([
@@ -172,6 +211,7 @@ function seedCatalogProduct(array $overrides = []): Product
 it('redirects guests away from inertia product pages', function () {
     $this->get(route('inertia.products.index'))->assertRedirect();
     $this->get(route('inertia.product-purchases.index'))->assertRedirect();
+    $this->get(route('inertia.product-sales.index'))->assertRedirect();
 });
 
 it('lists products through inertia with typed product_type options', function () {
@@ -437,6 +477,10 @@ it('forbids inertia product mutations for users without product privileges', fun
     $this->actingAs($user)
         ->post(route('inertia.product-purchases.store'), inertiaPurchasePayload())
         ->assertForbidden();
+
+    $this->actingAs($user)
+        ->post(route('inertia.product-sales.store'), inertiaSalePayload())
+        ->assertForbidden();
 });
 
 it('ignores arbitrary product sort columns', function () {
@@ -480,11 +524,211 @@ it('keeps blade product and purchase store routes working', function () {
         ->assertRedirect();
 
     expect(ProductPurchase::count())->toBe(1);
+
+    $this->actingAs(inertiaProductUser())
+        ->post(route('productsales.store'), inertiaSalePayload([
+            'product_id' => [$catalog->id],
+            'product_code' => [$catalog->product_code],
+            'product_name' => [$catalog->product_name],
+            'product_sale_price' => [80],
+            'product_qty' => [5],
+            'product_total_qty' => [5],
+            'product_total_price' => [400],
+            'total_amount' => 400,
+            'final_amount' => 400,
+        ]))
+        ->assertRedirect(route('productsales.index'));
+
+    expect(ProductSale::count())->toBe(1);
 });
 
 it('does not register inertia product purchase edit or update routes', function () {
     expect(Route::has('inertia.product-purchases.edit'))->toBeFalse()
         ->and(Route::has('inertia.product-purchases.update'))->toBeFalse();
+});
+
+it('does not register inertia product sale edit or update routes', function () {
+    expect(Route::has('inertia.product-sales.edit'))->toBeFalse()
+        ->and(Route::has('inertia.product-sales.update'))->toBeFalse();
+});
+
+it('creates a product sale through inertia exactly once per request', function () {
+    seedCatalogProduct(['quantity' => 100, 'sale_price' => 80]);
+
+    $this->actingAs(inertiaProductUser())
+        ->get(route('inertia.product-sales.create'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('ProductSales/Create')
+            ->has('divisions')
+            ->has('customers')
+            ->has('companies')
+            ->has('productCategories')
+        );
+
+    $this->actingAs(inertiaProductUser())
+        ->post(route('inertia.product-sales.store'), inertiaSalePayload())
+        ->assertRedirect(route('inertia.product-sales.index'));
+
+    expect(ProductSale::count())->toBe(1)
+        ->and(ProductSaleDetail::count())->toBe(1)
+        ->and((int) Product::query()->find(1)->quantity)->toBe(90);
+
+    $sale = ProductSale::query()->firstOrFail();
+
+    expect(
+        PartyBalance::where('party_id', 1)
+            ->where('narration', 'like', "%(ProductSale #{$sale->id})%")
+            ->count()
+    )->toBe(1);
+
+    $this->actingAs(inertiaProductUser())
+        ->get(route('inertia.product-sales.show', $sale))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('ProductSales/Show')
+            ->where('sale.invoice_url', route('productsales.invoice', $sale->id, false))
+            ->has('sale.items', 1)
+            ->where('urls.productSales', route('inertia.product-sales.index'))
+        );
+});
+
+it('destroys a product sale through inertia and reverses inventory and financials once', function () {
+    seedCatalogProduct(['quantity' => 100, 'sale_price' => 80]);
+
+    $this->actingAs(inertiaProductUser())
+        ->post(route('inertia.product-sales.store'), inertiaSalePayload())
+        ->assertRedirect();
+
+    $sale = ProductSale::query()->firstOrFail();
+
+    $this->actingAs(inertiaProductUser())
+        ->delete(route('inertia.product-sales.destroy', $sale))
+        ->assertRedirect(route('inertia.product-sales.index'));
+
+    expect(ProductSale::count())->toBe(0)
+        ->and(ProductSaleDetail::count())->toBe(0)
+        ->and((int) Product::query()->find(1)->quantity)->toBe(100)
+        ->and(
+            PartyBalance::where('party_id', 1)
+                ->where('narration', 'like', "%(ProductSale #{$sale->id})%")
+                ->count()
+        )->toBe(0);
+});
+
+it('rolls back an inertia product sale when inventory fails', function () {
+    seedCatalogProduct(['quantity' => 100, 'sale_price' => 80]);
+
+    $this->mock(InventoryService::class, function ($mock): void {
+        $mock->shouldReceive('decreaseProductStock')->once()->andThrow(new RuntimeException('stock failed'));
+    });
+
+    $this->actingAs(inertiaProductUser())->withoutExceptionHandling();
+
+    expect(fn () => $this->post(route('inertia.product-sales.store'), inertiaSalePayload()))
+        ->toThrow(RuntimeException::class);
+
+    expect(ProductSale::count())->toBe(0)
+        ->and(PartyBalance::count())->toBe(0)
+        ->and((int) Product::query()->find(1)->quantity)->toBe(100);
+});
+
+it('rejects invalid sale quantities and missing division', function () {
+    seedCatalogProduct(['quantity' => 100, 'sale_price' => 80]);
+
+    $this->actingAs(inertiaProductUser())
+        ->post(route('inertia.product-sales.store'), inertiaSalePayload([
+            'product_qty' => [0],
+        ]))
+        ->assertSessionHasErrors('items.0.product_qty');
+
+    $this->actingAs(inertiaProductUser())
+        ->post(route('inertia.product-sales.store'), inertiaSalePayload([
+            'division_id' => '',
+        ]))
+        ->assertSessionHasErrors('division_id');
+
+    expect(ProductSale::count())->toBe(0);
+});
+
+it('toggles product sale status on the product_sales table', function () {
+    seedCatalogProduct(['quantity' => 100, 'sale_price' => 80]);
+    $this->actingAs(inertiaProductUser())
+        ->post(route('inertia.product-sales.store'), inertiaSalePayload())
+        ->assertRedirect();
+
+    $sale = ProductSale::query()->firstOrFail();
+    expect((int) $sale->is_active)->toBe(1);
+
+    $this->actingAs(inertiaProductUser())
+        ->put(route('inertia.product-sales.toggle-status', $sale))
+        ->assertRedirect(route('inertia.product-sales.index'));
+
+    expect((int) $sale->refresh()->is_active)->toBe(0);
+});
+
+it('records a sale rebate through inertia and rejects invalid quantities', function () {
+    seedCatalogProduct(['quantity' => 100, 'sale_price' => 80]);
+    $this->actingAs(inertiaProductUser())
+        ->post(route('inertia.product-sales.store'), inertiaSalePayload())
+        ->assertRedirect();
+
+    $detail = ProductSaleDetail::query()->firstOrFail();
+
+    $this->actingAs(inertiaProductUser())
+        ->post(route('inertia.product-sales.rebate'), [
+            'from_page' => 'ProductSaleDetail',
+            'product_detail_id' => $detail->id,
+            'rebate_qty' => 0,
+        ])
+        ->assertSessionHasErrors('rebate_qty');
+
+    $this->actingAs(inertiaProductUser())
+        ->post(route('inertia.product-sales.rebate'), [
+            'from_page' => 'ProductSaleDetail',
+            'product_detail_id' => $detail->id,
+            'rebate_qty' => 11,
+        ])
+        ->assertSessionHasErrors('rebate_qty');
+
+    $this->actingAs(inertiaProductUser())
+        ->post(route('inertia.product-sales.rebate'), [
+            'from_page' => 'ProductSaleDetail',
+            'product_detail_id' => $detail->id,
+            'rebate_qty' => 2,
+            'rebate_reason' => 'Customer return',
+        ])
+        ->assertRedirect();
+
+    expect(ProductSaleRebate::count())->toBe(1)
+        ->and((int) $detail->refresh()->rebate_qty)->toBe(2);
+
+    $this->actingAs(inertiaProductUser())
+        ->get(route('inertia.product-sales.rebates'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('ProductSales/Rebates')
+            ->has('rebates', 1)
+        );
+});
+
+it('ignores arbitrary product sale sort columns', function () {
+    seedCatalogProduct(['quantity' => 100, 'sale_price' => 80]);
+    $this->actingAs(inertiaProductUser())
+        ->post(route('inertia.product-sales.store'), inertiaSalePayload())
+        ->assertRedirect();
+
+    $this->actingAs(inertiaProductUser())
+        ->get(route('inertia.product-sales.index', [
+            'sort' => 'drop table product_sales',
+            'direction' => 'asc',
+        ]))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('ProductSales/Index')
+            ->where('filters.sort', 'id')
+            ->where('filters.direction', 'asc')
+        );
 });
 
 it('redirects guests away from inertia product store pages', function () {
