@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
 import PageTitle from '../../Layouts/Partials/PageTitle.vue';
 import DataTable from '../../Components/DataTable/DataTable.vue';
@@ -24,7 +25,8 @@ const table = useDataTable({
     page: props.stores.current_page,
     perPage: props.stores.per_page,
 });
-const confirm = useConfirm();
+const confirmDialog = useConfirm();
+const dialogVariant = ref('danger');
 const columns = [
     { key: 'store_name', label: 'Store Name', sortable: true },
     { key: 'store_code', label: 'Store Code', sortable: true },
@@ -39,7 +41,8 @@ function fetchList() {
 }
 
 async function destroyStore(store) {
-    const confirmed = await confirm.ask({
+    dialogVariant.value = 'danger';
+    const confirmed = await confirmDialog.ask({
         title: 'Please Confirm!',
         message: `Are you sure, you want to delete Store: ${store.store_name}?`,
     });
@@ -49,8 +52,24 @@ async function destroyStore(store) {
     }
 }
 
-function toggleStatus(store) {
-    router.put(route('inertia.product-stores.toggle-status', store));
+async function askToggleStatus(store) {
+    dialogVariant.value = 'modern';
+    const confirmed = await confirmDialog.ask({
+        title: 'Confirm Please?',
+        message: 'Are you sure to continue?',
+    });
+
+    if (confirmed) {
+        router.put(route('inertia.product-stores.toggle-status', store));
+    }
+}
+
+function onConfirm() {
+    confirmDialog.confirm();
+}
+
+function onCancel() {
+    confirmDialog.cancel();
 }
 </script>
 
@@ -83,11 +102,26 @@ function toggleStatus(store) {
                     @reset="table.reset(listUrl)"
                 >
                     <template #cell.is_active="{ row }">
-                        <a v-if="can('products.update')" href="javascript:void(0);" @click="toggleStatus(row)">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" :checked="row.is_active" readonly>
+                        <button
+                            v-if="can('products.update')"
+                            type="button"
+                            class="btn btn-link p-0 border-0 align-baseline"
+                            title="Click to update Status"
+                            @click.prevent="askToggleStatus(row)"
+                        >
+                            <div class="form-check form-switch m-0">
+                                <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    :checked="Boolean(row.is_active)"
+                                    tabindex="-1"
+                                    @click.prevent
+                                >
                             </div>
-                        </a>
+                        </button>
+                        <div v-else class="form-check form-switch m-0">
+                            <input class="form-check-input" type="checkbox" :checked="Boolean(row.is_active)" disabled>
+                        </div>
                     </template>
                     <template #actions="{ row }">
                         <Link v-if="can('products.view')" :href="route('inertia.product-stores.show', row)" class="btn btn-secondary btn-sm">
@@ -103,6 +137,13 @@ function toggleStatus(store) {
                 </DataTable>
             </div>
         </div>
-        <ConfirmDialog :show="confirm.open.value" :title="confirm.title.value" :message="confirm.message.value" @confirm="confirm.confirm" @cancel="confirm.cancel" />
+        <ConfirmDialog
+            :show="confirmDialog.open.value"
+            :title="confirmDialog.title.value"
+            :message="confirmDialog.message.value"
+            :variant="dialogVariant"
+            @confirm="onConfirm"
+            @cancel="onCancel"
+        />
     </div>
 </template>

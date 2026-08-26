@@ -500,9 +500,11 @@ it('lists product stores through inertia', function () {
             ->has('stores.data')
             ->has('filters')
             ->where('stores.data.0.store_name', 'Main Store')
-            ->where('routes.inertia.product-stores.index', '/app/productmanagement/product-stores')
             ->where('urls.productStores', route('inertia.product-stores.index'))
         );
+
+    expect(\App\Support\InertiaShare::routes()['inertia.product-stores.index'])
+        ->toBe('/app/productmanagement/product-stores');
 });
 
 it('shows the create product store page', function () {
