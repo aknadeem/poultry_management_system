@@ -4,6 +4,7 @@ namespace App\Support;
 
 use App\Models\Broker;
 use App\Models\ChickGrade;
+use App\Models\ExpenseCategory;
 use App\Models\FeedCategory;
 use App\Models\Party;
 use App\Models\PartyCompany;
@@ -60,6 +61,17 @@ class InventoryLookups
                 ->where('is_active', 1)
                 ->with('vendor:id,name,guardian_name')
                 ->get(['id', 'party_id', 'company_name', 'company_address']),
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function expenseOptions(): array
+    {
+        return [
+            'today' => now()->toDateString(),
+            'categories' => ExpenseCategory::query()->orderBy('name')->get(['id', 'name']),
         ];
     }
 }

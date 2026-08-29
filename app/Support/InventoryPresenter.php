@@ -4,6 +4,7 @@ namespace App\Support;
 
 use App\Models\ChickPurchase;
 use App\Models\ChickenSale;
+use App\Models\Expense;
 use App\Models\Feed;
 use App\Models\FeedPurchase;
 
@@ -148,6 +149,29 @@ class InventoryPresenter
             'picture' => $purchase->picture,
             'picture_url' => $purchase->picture
                 ? asset('storage/feeds/'.$purchase->picture)
+                : null,
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function expense(Expense $expense): array
+    {
+        $expense->loadMissing('category:id,name');
+
+        return [
+            'id' => $expense->id,
+            'expense_code' => $expense->expense_code,
+            'category_id' => $expense->category_id,
+            'category_name' => $expense->category?->name,
+            'expense_date' => $expense->expense_date?->format('Y-m-d'),
+            'expense_date_label' => $expense->expense_date?->format('d M, Y'),
+            'amount' => $expense->amount,
+            'remarks' => $expense->remarks,
+            'picture' => $expense->picture,
+            'picture_url' => $expense->picture
+                ? asset('storage/expenses/'.$expense->picture)
                 : null,
         ];
     }

@@ -5,6 +5,7 @@ namespace App\Support;
 use App\Models\ChickPurchase;
 use App\Models\ChickenSale;
 use App\Models\CompanyBalance;
+use App\Models\Expense;
 use App\Models\Feed;
 use App\Models\Party;
 use App\Models\PartyBalance;
@@ -161,6 +162,14 @@ class InertiaShare
             'inertia.feeds.show' => route('inertia.feeds.show', ['feed' => '__id__'], false),
             'inertia.feeds.update' => route('inertia.feeds.update', ['feed' => '__id__'], false),
             'inertia.feeds.destroy' => route('inertia.feeds.destroy', ['feed' => '__id__'], false),
+            'inertia.expenses.index' => route('inertia.expenses.index', [], false),
+            'inertia.expenses.create' => route('inertia.expenses.create', [], false),
+            'inertia.expenses.store' => route('inertia.expenses.store', [], false),
+            'inertia.expenses.categories.store' => route('inertia.expenses.categories.store', [], false),
+            'inertia.expenses.show' => route('inertia.expenses.show', ['expense' => '__id__'], false),
+            'inertia.expenses.edit' => route('inertia.expenses.edit', ['expense' => '__id__'], false),
+            'inertia.expenses.update' => route('inertia.expenses.update', ['expense' => '__id__'], false),
+            'inertia.expenses.destroy' => route('inertia.expenses.destroy', ['expense' => '__id__'], false),
             'inertia.companies.index' => route('inertia.companies.index', [], false),
             'inertia.companies.create' => route('inertia.companies.create', [], false),
             'inertia.companies.store' => route('inertia.companies.store', [], false),
@@ -247,6 +256,13 @@ class InertiaShare
                     'update' => false,
                     'delete' => false,
                 ],
+                'expenses' => [
+                    'viewAny' => false,
+                    'view' => false,
+                    'create' => false,
+                    'update' => false,
+                    'delete' => false,
+                ],
                 'companies' => [
                     'viewAny' => false,
                     'view' => false,
@@ -270,6 +286,7 @@ class InertiaShare
         $saleProbe = new ChickenSale;
         $chickPurchaseProbe = new ChickPurchase;
         $feedProbe = new Feed;
+        $expenseProbe = new Expense;
 
         return [
             'users' => [
@@ -331,6 +348,13 @@ class InertiaShare
                 'create' => $user->can('create', Feed::class),
                 'update' => $user->can('update', $feedProbe),
                 'delete' => $user->can('delete', $feedProbe),
+            ],
+            'expenses' => [
+                'viewAny' => $user->can('viewAny', Expense::class),
+                'view' => $user->can('viewAny', Expense::class),
+                'create' => $user->can('create', Expense::class),
+                'update' => $user->can('update', $expenseProbe),
+                'delete' => $user->can('delete', $expenseProbe),
             ],
             'companies' => [
                 'viewAny' => $user->can('viewAny', PartyCompany::class),

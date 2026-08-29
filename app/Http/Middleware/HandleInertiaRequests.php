@@ -85,7 +85,7 @@ class HandleInertiaRequests extends Middleware
                 'vaccination' => route('inertia.vaccinations.index'),
                 'companies' => route('company.index'),
                 'companyBalance' => route('companybalance.index'),
-                'expenses' => route('expense.index'),
+                'expenses' => route('inertia.expenses.index'),
                 'chickSales' => route('inertia.chick-sales.index'),
                 'chickPurchases' => route('inertia.chick-purchases.index'),
                 'feed' => route('inertia.feeds.index'),

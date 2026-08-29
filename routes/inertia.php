@@ -30,6 +30,7 @@ use App\Http\Controllers\Inertia\ProductManagement\ProductStoreController as Ine
 use App\Http\Controllers\Inertia\InventoryManagement\ChickSaleController as InertiaChickSaleController;
 use App\Http\Controllers\Inertia\InventoryManagement\ChickPurchaseController as InertiaChickPurchaseController;
 use App\Http\Controllers\Inertia\InventoryManagement\FeedController as InertiaFeedController;
+use App\Http\Controllers\Inertia\InventoryManagement\ExpenseController as InertiaExpenseController;
 use App\Http\Controllers\Inertia\ReportManagement\ChickReportController as InertiaChickReportController;
 use App\Http\Controllers\Inertia\ReportManagement\ProductReportController as InertiaProductReportController;
 use App\Http\Controllers\Inertia\UserManagement\UserController as InertiaUserController;
@@ -242,6 +243,15 @@ Route::prefix('app')->group(function (): void {
             Route::get('feeds/{feed}', [InertiaFeedController::class, 'show'])->name('inertia.feeds.show');
             Route::put('feeds/{feed}', [InertiaFeedController::class, 'update'])->name('inertia.feeds.update');
             Route::delete('feeds/{feed}', [InertiaFeedController::class, 'destroy'])->name('inertia.feeds.destroy');
+
+            Route::get('expenses', [InertiaExpenseController::class, 'index'])->name('inertia.expenses.index');
+            Route::get('expenses/create', [InertiaExpenseController::class, 'create'])->name('inertia.expenses.create');
+            Route::post('expenses', [InertiaExpenseController::class, 'store'])->name('inertia.expenses.store');
+            Route::post('expenses/categories', [InertiaExpenseController::class, 'storeCategory'])->name('inertia.expenses.categories.store');
+            Route::get('expenses/{expense}', [InertiaExpenseController::class, 'show'])->name('inertia.expenses.show');
+            Route::get('expenses/{expense}/edit', [InertiaExpenseController::class, 'edit'])->name('inertia.expenses.edit');
+            Route::put('expenses/{expense}', [InertiaExpenseController::class, 'update'])->name('inertia.expenses.update');
+            Route::delete('expenses/{expense}', [InertiaExpenseController::class, 'destroy'])->name('inertia.expenses.destroy');
         });
 
         Route::prefix('partymanagement')->group(function (): void {

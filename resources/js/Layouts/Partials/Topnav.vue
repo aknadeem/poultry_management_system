@@ -96,7 +96,7 @@ const { can } = usePermissions();
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" :href="urls.expenses"><i class="fas fa-wallet"></i> Expenses</a>
+                            <Link class="nav-link" :href="route('inertia.expenses.index')"><i class="fas fa-wallet"></i> Expenses</Link>
                         </li>
 
                         <li class="nav-item dropdown">

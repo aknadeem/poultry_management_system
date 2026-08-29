@@ -4,6 +4,8 @@ use App\Models\BrokerBalance;
 use App\Models\ChickPurchase;
 use App\Models\ChickenSale;
 use App\Models\CompanyBalance;
+use App\Models\Expense;
+use App\Models\ExpenseCategory;
 use App\Models\Feed;
 use App\Models\FeedPurchase;
 use App\Models\PartyBalance;
@@ -175,6 +177,7 @@ it('redirects guests away from inertia inventory pages', function () {
     $this->get(route('inertia.chick-sales.index'))->assertRedirect();
     $this->get(route('inertia.chick-purchases.index'))->assertRedirect();
     $this->get(route('inertia.feeds.index'))->assertRedirect();
+    $this->get(route('inertia.expenses.index'))->assertRedirect();
 });
 
 it('lists chick sales through inertia', function () {
@@ -462,6 +465,15 @@ it('forbids inertia inventory mutations for users without privileges', function 
     $this->actingAs($user)
         ->post(route('inertia.feeds.store'), inertiaFeedPayload())
         ->assertForbidden();
+
+    $this->actingAs($user)
+        ->post(route('inertia.expenses.store'), [
+            'category_id' => 1,
+            'amount' => 100,
+            'expense_date' => '2026-06-01',
+            'remarks' => 'Forbidden expense',
+        ])
+        ->assertForbidden();
 });
 
 it('ignores arbitrary inventory sort columns', function () {
@@ -484,6 +496,16 @@ it('ignores arbitrary inventory sort columns', function () {
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('Feeds/Index')
+            ->where('filters.sort', 'id')
+        );
+
+    $this->actingAs(inertiaInventoryUser())
+        ->get(route('inertia.expenses.index', [
+            'sort' => 'drop table expenses',
+        ]))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Expenses/Index')
             ->where('filters.sort', 'id')
         );
 });
@@ -520,4 +542,115 @@ it('keeps blade sale purchase and feed store routes working', function () {
 
 it('does not register an inertia feed edit page', function () {
     expect(Route::has('inertia.feeds.edit'))->toBeFalse();
+});
+
+function inertiaExpensePayload(array $overrides = []): array
+{
+    return array_merge([
+        'category_id' => 1,
+        'amount' => 2500.50,
+        'expense_date' => '2026-06-15',
+        'remarks' => 'Office supplies',
+    ], $overrides);
+}
+
+it('creates shows updates and deletes an expense through inertia', function () {
+    DB::table('expense_categories')->insert([
+        'id' => 1,
+        'name' => 'Fixture Expense Category',
+        'created_at' => '2026-06-01 00:00:00',
+        'updated_at' => '2026-06-01 00:00:00',
+    ]);
+
+    $this->actingAs(inertiaInventoryUser())
+        ->get(route('inertia.expenses.create'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Expenses/Create')
+            ->has('categories')
+            ->has('today')
+        );
+
+    $this->actingAs(inertiaInventoryUser())
+        ->post(route('inertia.expenses.store'), inertiaExpensePayload([
+            'image_file' => UploadedFile::fake()->image('expense.png'),
+        ]))
+        ->assertRedirect(route('inertia.expenses.index'));
+
+    $expense = Expense::query()->firstOrFail();
+    expect((float) $expense->amount)->toBe(2500.50)
+        ->and($expense->remarks)->toBe('Office supplies')
+        ->and($expense->picture)->not->toBeNull();
+
+    Storage::disk('public')->assertExists('expenses/'.$expense->picture);
+
+    $this->actingAs(inertiaInventoryUser())
+        ->get(route('inertia.expenses.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Expenses/Index')
+            ->has('expenses.data', 1)
+            ->where('expenses.data.0.category_name', 'Fixture Expense Category')
+        );
+
+    $this->actingAs(inertiaInventoryUser())
+        ->get(route('inertia.expenses.show', $expense))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Expenses/Show')
+            ->where('expense.amount', 2500.5)
+            ->where('expense.category_name', 'Fixture Expense Category')
+        );
+
+    $this->actingAs(inertiaInventoryUser())
+        ->get(route('inertia.expenses.edit', $expense))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Expenses/Edit')
+            ->where('expense.id', $expense->id)
+            ->has('categories')
+        );
+
+    $this->actingAs(inertiaInventoryUser())
+        ->put(route('inertia.expenses.update', $expense), inertiaExpensePayload([
+            'amount' => 3000,
+            'remarks' => 'Updated office supplies',
+        ]))
+        ->assertRedirect(route('inertia.expenses.index'));
+
+    expect((float) $expense->refresh()->amount)->toBe(3000.0)
+        ->and($expense->remarks)->toBe('Updated office supplies');
+
+    $this->actingAs(inertiaInventoryUser())
+        ->delete(route('inertia.expenses.destroy', $expense))
+        ->assertRedirect(route('inertia.expenses.index'));
+
+    expect(Expense::count())->toBe(0)
+        ->and(Storage::disk('public')->files('expenses'))->toBe([]);
+});
+
+it('creates an expense category through inertia and keeps form state helpers', function () {
+    $this->actingAs(inertiaInventoryUser())
+        ->from(route('inertia.expenses.create'))
+        ->post(route('inertia.expenses.categories.store'), [
+            'cat_name' => 'Travel',
+        ])
+        ->assertRedirect(route('inertia.expenses.create'));
+
+    $category = ExpenseCategory::query()->where('name', 'Travel')->firstOrFail();
+
+    expect($category->name)->toBe('Travel');
+
+    $this->actingAs(inertiaInventoryUser())
+        ->get(route('inertia.expenses.create'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Expenses/Create')
+            ->where('categories.0.name', 'Travel')
+        );
+});
+
+it('registers inertia expense edit routes', function () {
+    expect(Route::has('inertia.expenses.edit'))->toBeTrue()
+        ->and(Route::has('inertia.expenses.categories.store'))->toBeTrue();
 });
