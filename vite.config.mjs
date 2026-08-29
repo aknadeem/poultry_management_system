@@ -17,4 +17,20 @@ export default defineConfig({
             },
         }),
     ],
+    build: {
+        rolldownOptions: {
+            output: {
+                // Vite 8 / Rolldown still accepts manualChunks (mapped to codeSplitting groups).
+                manualChunks(id) {
+                    if (
+                        /node_modules[\\/](vue|@vue|@inertiajs)([\\/]|$)/.test(id)
+                    ) {
+                        return 'vendor';
+                    }
+
+                    return null;
+                },
+            },
+        },
+    },
 });

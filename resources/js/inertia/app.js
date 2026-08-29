@@ -1,17 +1,17 @@
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import AppLayout from '../Layouts/AppLayout.vue';
 import AuthLayout from '../Layouts/AuthLayout.vue';
 
-const pages = import.meta.glob('../Pages/**/*.vue', { eager: true });
+const pages = import.meta.glob('../Pages/**/*.vue');
 
 createInertiaApp({
-    resolve: (name) => {
-        const page = pages[`../Pages/${name}.vue`];
-
-        if (! page) {
-            throw new Error(`Inertia page not found: ${name}`);
-        }
+    resolve: async (name) => {
+        const page = await resolvePageComponent(
+            `../Pages/${name}.vue`,
+            pages,
+        );
 
         page.default.layout = name.startsWith('Auth/') ? AuthLayout : AppLayout;
 
