@@ -1,9 +1,11 @@
 <script setup>
 import PageTitle from '../../Layouts/Partials/PageTitle.vue';
 import { Link } from '@inertiajs/vue3';
+import { usePermissions } from '../../Composables/usePermissions';
 import { useRoute } from '../../Utils/route';
 
 const route = useRoute();
+const { can } = usePermissions();
 
 defineProps({
     company: { type: Object, required: true },
@@ -12,12 +14,19 @@ defineProps({
 
 <template>
     <div class="container-fluid">
-        <PageTitle title="Party Management" :crumbs="['Home', 'PartyManagement', 'Companies', 'Detail']" />
+        <PageTitle title="Company" :crumbs="['Home', 'Company', 'Detail']" />
         <div class="card">
             <div class="card-body">
                 <div class="row mb-2">
                     <div class="col-6"><h4>Company Detail</h4></div>
                     <div class="col-6 text-end">
+                        <Link
+                            v-if="can('companies.update')"
+                            :href="route('inertia.companies.edit', company)"
+                            class="btn btn-info btn-sm me-1"
+                        >
+                            <i class="fa fa-pencil-alt"></i> Edit
+                        </Link>
                         <Link :href="route('inertia.companies.index')" class="btn btn-secondary btn-sm">
                             <i class="fa fa-arrow-left"></i> Back
                         </Link>
@@ -37,20 +46,24 @@ defineProps({
                                     <td>{{ company.company_code }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Address</th>
-                                    <td>{{ company.company_address }}</td>
+                                    <th>Business Type</th>
+                                    <td>{{ company.business_type || '—' }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Business Type</th>
-                                    <td>{{ company.business_type }}</td>
+                                    <th>Address</th>
+                                    <td>{{ company.company_address || '—' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Description</th>
+                                    <td>{{ company.description || '—' }}</td>
                                 </tr>
                                 <tr>
                                     <th>Vendor Info</th>
                                     <td>
                                         <div v-if="company.vendor_name">
                                             <strong>Name:</strong> {{ company.vendor_name }}<br>
-                                            <strong>Contact:</strong> {{ company.contact_no }}<br>
-                                            <strong>Email:</strong> {{ company.email }}
+                                            <strong>Contact:</strong> {{ company.contact_no || '—' }}<br>
+                                            <strong>Email:</strong> {{ company.email || '—' }}
                                         </div>
                                         <div v-else class="text-muted">No associated vendor</div>
                                     </td>
@@ -63,15 +76,19 @@ defineProps({
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Added On</th>
-                                    <td>{{ company.created_at }}</td>
+                                    <th>Entry Date</th>
+                                    <td>{{ company.created_at || '—' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Updated Date</th>
+                                    <td>{{ company.updated_at || '—' }}</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="col-md-4 mb-3 text-center">
                         <div class="border p-2 rounded bg-light" style="min-height: 200px; display: flex; align-items: center; justify-content: center;">
-                            <img v-if="company.company_logo" :src="company.company_logo" alt="Logo" class="img-fluid" style="max-height: 180px;">
+                            <img v-if="company.company_logo_url" :src="company.company_logo_url" alt="Logo" class="img-fluid" style="max-height: 180px;">
                             <div v-else class="text-muted text-center py-5">
                                 <i class="fa fa-image fa-3x mb-2"></i>
                                 <p>No Logo Available</p>

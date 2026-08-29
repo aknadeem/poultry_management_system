@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
+import { Link, router } from '@inertiajs/vue3';
 import PageTitle from '../../Layouts/Partials/PageTitle.vue';
-import { Link } from '@inertiajs/vue3';
 import PaymentForm from '../../Components/CompanyBalances/PaymentForm.vue';
 import { usePermissions } from '../../Composables/usePermissions';
 import { useRoute } from '../../Utils/route';
@@ -15,22 +15,51 @@ defineProps({
 });
 
 const showPaymentModal = ref(false);
+
+function statusClass(status) {
+    const value = String(status || '').toLowerCase();
+    if (value === 'paid') {
+        return 'bg-success';
+    }
+    if (value === 'unpaid') {
+        return 'bg-danger';
+    }
+
+    return 'bg-warning';
+}
+
+function onPaymentClose() {
+    showPaymentModal.value = false;
+    router.reload({ only: ['balance', 'payments'] });
+}
 </script>
 
 <template>
     <div class="container-fluid">
-        <PageTitle title="Balance Management" :crumbs="['Home', 'BalanceManagement', 'Company Balances', 'Detail']" />
+        <PageTitle title="Balance Payments" :crumbs="['Home', 'BalancePayments']" />
         <div class="card">
             <div class="card-body">
                 <div class="row mb-3">
-                    <div class="col-6"><h4>Balance Detail</h4></div>
+                    <div class="col-6">
+                        <h4>Balance Payments</h4>
+                        <h6 class="text-muted mb-0">{{ balance.company_name }}</h6>
+                    </div>
                     <div class="col-6 text-end">
-                        <Link :href="route('inertia.company-balances.index')" class="btn btn-secondary btn-sm me-2">
+                        <a
+                            v-if="balance.company_logo_url"
+                            :href="balance.company_logo_url"
+                            target="_blank"
+                            class="me-2"
+                            title="click to view"
+                        >
+                            <img :src="balance.company_logo_url" alt="Company Logo" style="width: 10%; max-width: 80px;">
+                        </a>
+                        <Link :href="route('inertia.company-balances.index')" class="btn btn-secondary btn-sm me-1">
                             <i class="fa fa-arrow-left"></i> Back
                         </Link>
-                        <button 
-                            v-if="can('companyBalances.create') && Number(balance.remaining_amount) > 0" 
-                            type="button" 
+                        <button
+                            v-if="can('companyBalances.create') && Number(balance.remaining_amount) > 0"
+                            type="button"
                             class="btn btn-primary btn-sm"
                             @click="showPaymentModal = true"
                         >
@@ -39,11 +68,10 @@ const showPaymentModal = ref(false);
                     </div>
                 </div>
 
-                <div class="row">
-                    <!-- Balance Summary -->
+                <div class="row mb-4">
                     <div class="col-md-5">
                         <div class="card bg-light">
-                            <div class="card-body container-fluid">
+                            <div class="card-body">
                                 <div class="row mb-2">
                                     <div class="col-4 fw-bold">Company:</div>
                                     <div class="col-8">{{ balance.company_name }}</div>
@@ -54,20 +82,20 @@ const showPaymentModal = ref(false);
                                 </div>
                                 <div class="row mb-2">
                                     <div class="col-4 fw-bold">Total:</div>
-                                    <div class="col-8">Rs {{ Number(balance.total_amount).toLocaleString() }}</div>
+                                    <div class="col-8">{{ Number(balance.total_amount).toLocaleString() }}</div>
                                 </div>
                                 <div class="row mb-2">
                                     <div class="col-4 fw-bold">Paid:</div>
-                                    <div class="col-8 text-success">Rs {{ Number(balance.paid_amount).toLocaleString() }}</div>
+                                    <div class="col-8 text-success">{{ Number(balance.paid_amount).toLocaleString() }}</div>
                                 </div>
                                 <div class="row mb-2">
                                     <div class="col-4 fw-bold">Remaining:</div>
-                                    <div class="col-8 text-danger fw-bold">Rs {{ Number(balance.remaining_amount).toLocaleString() }}</div>
+                                    <div class="col-8 text-danger fw-bold">{{ Number(balance.remaining_amount).toLocaleString() }}</div>
                                 </div>
                                 <div class="row mb-2">
                                     <div class="col-4 fw-bold">Status:</div>
                                     <div class="col-8">
-                                        <span class="badge" :class="balance.status === 'Paid' ? 'bg-success' : (balance.status === 'Unpaid' ? 'bg-danger' : 'bg-warning')">
+                                        <span class="badge" :class="statusClass(balance.status)">
                                             {{ balance.status }}
                                         </span>
                                     </div>
@@ -75,62 +103,41 @@ const showPaymentModal = ref(false);
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Payments Table -->
-                    <div class="col-md-7">
-                        <h5 class="mb-3">Payment History</h5>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Amount</th>
-                                        <th>Method</th>
-                                        <th>Details</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-if="payments.length === 0">
-                                        <td colspan="4" class="text-center text-muted">No payments recorded.</td>
-                                    </tr>
-                                    <tr v-for="payment in payments" :key="payment.id">
-                                        <td>{{ payment.created_at }}</td>
-                                        <td class="text-success fw-bold">Rs {{ Number(payment.paid_amount).toLocaleString() }}</td>
-                                        <td>
-                                            <span v-if="payment.payment_option == 1" class="badge bg-primary">Cash</span>
-                                            <span v-if="payment.payment_option == 2" class="badge bg-info">Cheque</span>
-                                        </td>
-                                        <td>
-                                            <div style="font-size: 0.85em;">
-                                                <div v-if="payment.payment_option == 2">
-                                                    Bank: {{ payment.bank_name }} <br>
-                                                    Chq Date: {{ payment.cheque_date }}
-                                                    <span v-if="payment.cheque_picture">
-                                                        <br><a :href="payment.cheque_picture" target="_blank">View Cheque</a>
-                                                    </span>
-                                                </div>
-                                                <div v-if="payment.description" class="text-muted mt-1 fst-italic">
-                                                    {{ payment.description }}
-                                                </div>
-                                                <div v-if="payment.invoice_picture">
-                                                    <a :href="payment.invoice_picture" target="_blank">View Invoice/Receipt</a>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                <div class="table-responsive">
+                    <table class="table table-striped dt-responsive w-100">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Paid Amount</th>
+                                <th>Paid through</th>
+                                <th>Paid By</th>
+                                <th>Paid At</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-if="payments.length === 0">
+                                <td colspan="5" class="text-center text-muted">No payments recorded.</td>
+                            </tr>
+                            <tr v-for="(payment, index) in payments" :key="payment.id">
+                                <td>{{ index + 1 }}</td>
+                                <td>{{ payment.paid_amount }}</td>
+                                <td>{{ payment.payment_option_label || payment.payment_option }}</td>
+                                <td>{{ payment.added_by || '—' }}</td>
+                                <td>{{ payment.created_at }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
-        <PaymentForm 
+        <PaymentForm
             v-if="showPaymentModal"
             :show="showPaymentModal"
             :company-balance="balance"
-            @close="showPaymentModal = false"
+            @close="onPaymentClose"
         />
     </div>
 </template>

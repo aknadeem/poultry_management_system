@@ -29,11 +29,12 @@ const confirmDialog = useConfirm();
 const dialogVariant = ref('danger');
 
 const columns = [
-    { key: 'company_name', label: 'Company Name', sortable: true },
-    { key: 'company_address', label: 'Address', sortable: true },
+    { key: 'company_logo_url', label: 'Logo' },
+    { key: 'company_name', label: 'Name', sortable: true },
     { key: 'business_type', label: 'Business Type' },
-    { key: 'vendor_name', label: 'Vendor' },
+    { key: 'vendor_name', label: 'Vendor Name' },
     { key: 'is_active', label: 'Status' },
+    { key: 'company_address', label: 'Address', sortable: true },
 ];
 
 function fetchList() {
@@ -68,11 +69,11 @@ function onCancel() { confirmDialog.cancel(); }
 
 <template>
     <div class="container-fluid">
-        <PageTitle title="Party Management" :crumbs="['Home', 'PartyManagement', 'Companies']" />
+        <PageTitle title="Company" :crumbs="['Home', 'Company']" />
         <div class="card">
             <div class="card-body">
                 <div class="row mb-2">
-                    <div class="col-6"><h4>Company List</h4></div>
+                    <div class="col-6"><h4>Companies</h4></div>
                     <div class="col-6 text-end">
                         <Link v-if="can('companies.create')" :href="route('inertia.companies.create')" class="btn btn-secondary btn-sm">
                             <i class="fa fa-plus"></i> Company
@@ -94,6 +95,22 @@ function onCancel() { confirmDialog.cancel(); }
                     @page-size="(size) => { table.state.perPage = size; table.state.page = 1; fetchList(); }"
                     @reset="table.reset(listUrl)"
                 >
+                    <template #cell.company_logo_url="{ row }">
+                        <img
+                            v-if="row.company_logo_url"
+                            class="rounded-circle avatar-lg"
+                            :src="row.company_logo_url"
+                            alt="Company logo"
+                            style="width: 48px; height: 48px; object-fit: cover;"
+                        >
+                        <b v-else>No Image</b>
+                    </template>
+                    <template #cell.company_name="{ row }">
+                        <b>{{ row.company_name }}</b>
+                    </template>
+                    <template #cell.vendor_name="{ row }">
+                        <b>{{ row.vendor_name || '—' }}</b>
+                    </template>
                     <template #cell.is_active="{ row }">
                         <button
                             v-if="can('companies.update')"

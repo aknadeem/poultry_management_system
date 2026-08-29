@@ -24,12 +24,18 @@ class UpdatePartyCompanyAction
                 $company->company_logo
             );
 
-            $company->update([
-                'company_name'    => $data['name'],
+            $payload = [
+                'company_name' => $data['name'],
                 'company_address' => $data['address'],
-                'company_logo'    => $logo,
-                'updatedby'       => $userId,
-            ]);
+                'company_logo' => $logo,
+                'updatedby' => $userId,
+            ];
+
+            if (array_key_exists('business_type_id', $data) && $data['business_type_id'] !== null && $data['business_type_id'] !== '') {
+                $payload['business_type_id'] = (int) $data['business_type_id'];
+            }
+
+            $company->update($payload);
 
             if ($company->party_id) {
                 Party::where('id', $company->party_id)->update([

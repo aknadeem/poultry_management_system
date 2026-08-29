@@ -17,7 +17,7 @@ const props = defineProps({
 });
 
 const isCreate = computed(() => props.company === null);
-const imagePreview = ref(props.company?.company_logo ?? null);
+const imagePreview = ref(props.company?.company_logo_url ?? props.company?.company_logo ?? null);
 
 const form = useForm({
     name: props.company?.company_name ?? '',

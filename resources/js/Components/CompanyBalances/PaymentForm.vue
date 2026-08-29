@@ -1,10 +1,11 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import Modal from '../Modal/Modal.vue';
 import FormError from '../Forms/FormError.vue';
 import PrimaryButton from '../Buttons/PrimaryButton.vue';
 import SecondaryButton from '../Buttons/SecondaryButton.vue';
+import { useRoute } from '../../Utils/route';
 
 const props = defineProps({
     show: { type: Boolean, default: false },
@@ -12,42 +13,49 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['close']);
+const route = useRoute();
 
 const form = useForm({
     company_balance_id: props.companyBalance?.id,
-    company_id: props.companyBalance?.company_id,
+    party_company_id: props.companyBalance?.company_id,
     amount_payment: '',
-    payment_option: 1, // 1 = Cash, 2 = Cheque
+    payment_option: 'cash',
     cheque_date: '',
     bank_name: '',
     description: '',
     cheque_picture: null,
-    image_file: null, // invoice picture
+    image_file: null,
 });
 
-const maxAmount = computed(() => {
-    return Number(props.companyBalance?.remaining_amount || 0);
-});
+watch(() => props.companyBalance, (balance) => {
+    form.company_balance_id = balance?.id;
+    form.party_company_id = balance?.company_id;
+}, { immediate: true });
 
-const isCheque = computed(() => form.payment_option == 2);
+const maxAmount = computed(() => Number(props.companyBalance?.remaining_amount || 0));
+const isCheque = computed(() => form.payment_option === 'cheque');
 
 function onChequeFileChange(e) {
-    form.cheque_picture = e.target.files[0];
+    form.cheque_picture = e.target.files[0] ?? null;
 }
 
 function onInvoiceFileChange(e) {
-    form.image_file = e.target.files[0];
+    form.image_file = e.target.files[0] ?? null;
 }
 
 function close() {
     form.reset();
     form.clearErrors();
+    form.payment_option = 'cash';
+    form.company_balance_id = props.companyBalance?.id;
+    form.party_company_id = props.companyBalance?.company_id;
     emit('close');
 }
 
 function submit() {
     form.post(route('inertia.company-balances.store'), {
         forceFormData: true,
+        preserveScroll: true,
         onSuccess: () => close(),
     });
 }
@@ -87,10 +95,10 @@ function submit() {
                         <small class="text-muted">Maximum: {{ maxAmount }}</small>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label class="fw-bold">Payment Method *</label>
+                        <label class="fw-bold">Payment Option *</label>
                         <select v-model="form.payment_option" class="form-select">
-                            <option value="1">Cash</option>
-                            <option value="2">Cheque</option>
+                            <option value="cash">Cash</option>
+                            <option value="cheque">Cheque</option>
                         </select>
                         <FormError :message="form.errors.payment_option" />
                     </div>
@@ -107,7 +115,7 @@ function submit() {
                             <FormError :message="form.errors.bank_name" />
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="fw-bold">Cheque Picture</label>
+                            <label class="fw-bold">Cheque Picture *</label>
                             <input class="form-control" type="file" accept="image/jpeg,image/jpg,image/png" @change="onChequeFileChange">
                             <FormError :message="form.errors.cheque_picture" />
                         </div>
