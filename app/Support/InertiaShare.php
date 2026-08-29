@@ -4,9 +4,11 @@ namespace App\Support;
 
 use App\Models\ChickPurchase;
 use App\Models\ChickenSale;
+use App\Models\CompanyBalance;
 use App\Models\Feed;
 use App\Models\Party;
 use App\Models\PartyBalance;
+use App\Models\PartyCompany;
 use App\Models\Product;
 use App\Models\ProductPurchase;
 use App\Models\ProductSale;
@@ -159,6 +161,22 @@ class InertiaShare
             'inertia.feeds.show' => route('inertia.feeds.show', ['feed' => '__id__'], false),
             'inertia.feeds.update' => route('inertia.feeds.update', ['feed' => '__id__'], false),
             'inertia.feeds.destroy' => route('inertia.feeds.destroy', ['feed' => '__id__'], false),
+            'inertia.companies.index' => route('inertia.companies.index', [], false),
+            'inertia.companies.create' => route('inertia.companies.create', [], false),
+            'inertia.companies.store' => route('inertia.companies.store', [], false),
+            'inertia.companies.show' => route('inertia.companies.show', ['company' => '__id__'], false),
+            'inertia.companies.edit' => route('inertia.companies.edit', ['company' => '__id__'], false),
+            'inertia.companies.update' => route('inertia.companies.update', ['company' => '__id__'], false),
+            'inertia.companies.destroy' => route('inertia.companies.destroy', ['company' => '__id__'], false),
+            'inertia.companies.toggle-status' => route('inertia.companies.toggle-status', ['company' => '__id__'], false),
+            'inertia.company-balances.index' => route('inertia.company-balances.index', [], false),
+            'inertia.company-balances.store' => route('inertia.company-balances.store', [], false),
+            'inertia.company-balances.show' => route('inertia.company-balances.show', ['companyBalance' => '__id__'], false),
+            'inertia.reports.chick-sale' => route('inertia.reports.chick-sale', [], false),
+            'inertia.reports.chick-purchase' => route('inertia.reports.chick-purchase', [], false),
+            'inertia.reports.product' => route('inertia.reports.product', [], false),
+            'inertia.reports.product-purchase' => route('inertia.reports.product-purchase', [], false),
+            'inertia.reports.product-sale' => route('inertia.reports.product-sale', [], false),
         ];
     }
 
@@ -228,6 +246,18 @@ class InertiaShare
                     'create' => false,
                     'update' => false,
                     'delete' => false,
+                ],
+                'companies' => [
+                    'viewAny' => false,
+                    'view' => false,
+                    'create' => false,
+                    'update' => false,
+                    'delete' => false,
+                ],
+                'companyBalances' => [
+                    'viewAny' => false,
+                    'view' => false,
+                    'create' => false,
                 ],
             ];
         }
@@ -301,6 +331,18 @@ class InertiaShare
                 'create' => $user->can('create', Feed::class),
                 'update' => $user->can('update', $feedProbe),
                 'delete' => $user->can('delete', $feedProbe),
+            ],
+            'companies' => [
+                'viewAny' => $user->can('viewAny', PartyCompany::class),
+                'view' => $user->can('viewAny', PartyCompany::class),
+                'create' => $user->can('create', PartyCompany::class),
+                'update' => $user->can('update', new PartyCompany),
+                'delete' => $user->can('delete', new PartyCompany),
+            ],
+            'companyBalances' => [
+                'viewAny' => $user->can('viewAny', CompanyBalance::class),
+                'view' => $user->can('viewAny', CompanyBalance::class),
+                'create' => $user->can('create', CompanyBalance::class),
             ],
         ];
     }

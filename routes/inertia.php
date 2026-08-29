@@ -5,8 +5,10 @@ use App\Http\Controllers\Inertia\Auth\ForgotPasswordController;
 use App\Http\Controllers\Inertia\Auth\LoginController;
 use App\Http\Controllers\Inertia\Auth\RegisterController;
 use App\Http\Controllers\Inertia\Auth\ResetPasswordController;
+use App\Http\Controllers\Inertia\BalanceManagement\CompanyBalanceController as InertiaCompanyBalanceController;
 use App\Http\Controllers\Inertia\DashboardController;
 use App\Http\Controllers\Inertia\PartyManagement\BrokerController as InertiaBrokerController;
+use App\Http\Controllers\Inertia\PartyManagement\CompanyController as InertiaCompanyController;
 use App\Http\Controllers\Inertia\PartyManagement\ConductPersonController as InertiaConductPersonController;
 use App\Http\Controllers\Inertia\PartyManagement\CustomerController as InertiaCustomerController;
 use App\Http\Controllers\Inertia\PartyManagement\PartyBalanceController as InertiaPartyBalanceController;
@@ -28,6 +30,8 @@ use App\Http\Controllers\Inertia\ProductManagement\ProductStoreController as Ine
 use App\Http\Controllers\Inertia\InventoryManagement\ChickSaleController as InertiaChickSaleController;
 use App\Http\Controllers\Inertia\InventoryManagement\ChickPurchaseController as InertiaChickPurchaseController;
 use App\Http\Controllers\Inertia\InventoryManagement\FeedController as InertiaFeedController;
+use App\Http\Controllers\Inertia\ReportManagement\ChickReportController as InertiaChickReportController;
+use App\Http\Controllers\Inertia\ReportManagement\ProductReportController as InertiaProductReportController;
 use App\Http\Controllers\Inertia\UserManagement\UserController as InertiaUserController;
 use App\Http\Controllers\Inertia\UserManagement\UserRoleController as InertiaUserRoleController;
 use Illuminate\Support\Facades\Route;
@@ -239,5 +243,42 @@ Route::prefix('app')->group(function (): void {
             Route::put('feeds/{feed}', [InertiaFeedController::class, 'update'])->name('inertia.feeds.update');
             Route::delete('feeds/{feed}', [InertiaFeedController::class, 'destroy'])->name('inertia.feeds.destroy');
         });
+
+        Route::prefix('partymanagement')->group(function (): void {
+            Route::resource('companies', InertiaCompanyController::class)->names([
+                'index'   => 'inertia.companies.index',
+                'create'  => 'inertia.companies.create',
+                'store'   => 'inertia.companies.store',
+                'show'    => 'inertia.companies.show',
+                'edit'    => 'inertia.companies.edit',
+                'update'  => 'inertia.companies.update',
+                'destroy' => 'inertia.companies.destroy',
+            ])->parameters(['companies' => 'company']);
+            Route::put('companies/{company}/status', [InertiaCompanyController::class, 'toggleStatus'])
+                ->name('inertia.companies.toggle-status');
+        });
+
+        Route::prefix('balancemanagement')->group(function (): void {
+            Route::get('company-balances', [InertiaCompanyBalanceController::class, 'index'])
+                ->name('inertia.company-balances.index');
+            Route::post('company-balances', [InertiaCompanyBalanceController::class, 'store'])
+                ->name('inertia.company-balances.store');
+            Route::get('company-balances/{companyBalance}', [InertiaCompanyBalanceController::class, 'show'])
+                ->name('inertia.company-balances.show');
+        });
+
+        Route::prefix('reportmanagement')->group(function (): void {
+            Route::get('chick-sale-report', [InertiaChickReportController::class, 'saleReport'])
+                ->name('inertia.reports.chick-sale');
+            Route::get('chick-purchase-report', [InertiaChickReportController::class, 'purchaseReport'])
+                ->name('inertia.reports.chick-purchase');
+            Route::get('product-report', [InertiaProductReportController::class, 'productReport'])
+                ->name('inertia.reports.product');
+            Route::get('product-purchase-report', [InertiaProductReportController::class, 'purchaseReport'])
+                ->name('inertia.reports.product-purchase');
+            Route::get('product-sale-report', [InertiaProductReportController::class, 'saleReport'])
+                ->name('inertia.reports.product-sale');
+        });
     });
 });
+

@@ -90,11 +90,11 @@ class HandleInertiaRequests extends Middleware
                 'chickPurchases' => route('inertia.chick-purchases.index'),
                 'feed' => route('inertia.feeds.index'),
                 'payables' => route('payables.index'),
-                'chickSaleReport' => route('chickreport.index'),
-                'chickPurchaseReport' => route('chickreport.purchases'),
-                'productPurchaseReport' => route('productreport.purchase'),
-                'productSaleReport' => route('productreport.sale'),
-                'productReport' => route('productreport.index'),
+                'chickSaleReport' => route('inertia.reports.chick-sale'),
+                'chickPurchaseReport' => route('inertia.reports.chick-purchase'),
+                'productPurchaseReport' => route('inertia.reports.product-purchase'),
+                'productSaleReport' => route('inertia.reports.product-sale'),
+                'productReport' => route('inertia.reports.product'),
             ],
         ];
     }
