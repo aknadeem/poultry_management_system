@@ -66,6 +66,15 @@ class ProductSaleController extends Controller
         ]);
     }
 
+    public function invoice(ProductSale $productSale): Response
+    {
+        $this->authorize('view', $productSale);
+
+        return Inertia::render('ProductSales/Invoice', [
+            'sale' => ProductPresenter::sale($productSale),
+        ]);
+    }
+
     public function destroy(
         ProductSale $productSale,
         DestroyProductSaleAction $action,

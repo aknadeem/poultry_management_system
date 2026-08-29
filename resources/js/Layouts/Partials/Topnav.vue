@@ -43,6 +43,9 @@ const { can } = usePermissions();
                                 <div class="dropdown">
                                     <Link class="dropdown-item" :href="route('inertia.party-balances.index')"><i class="fas fa-money-check"></i> Party Balance</Link>
                                 </div>
+                                <div class="dropdown">
+                                    <Link class="dropdown-item" :href="route('inertia.broker-balances.index')"><i class="fas fa-money-check"></i> Broker Balance</Link>
+                                </div>
                             </div>
                         </li>
 
@@ -109,19 +112,19 @@ const { can } = usePermissions();
                                         <i class="fas fa-list-ul"></i> Chicks<div class="arrow-down"></div>
                                     </a>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item" :href="urls.chickSales"><i class="fas fa-paper-plane"></i> Sales</a>
-                                        <a class="dropdown-item" :href="urls.chickPurchases"><i class="fas fa-credit-card"></i> Purchase</a>
+                                        <Link class="dropdown-item" :href="route('inertia.chick-sales.index')"><i class="fas fa-paper-plane"></i> Sales</Link>
+                                        <Link class="dropdown-item" :href="route('inertia.chick-purchases.index')"><i class="fas fa-credit-card"></i> Purchase</Link>
                                     </div>
                                 </div>
                                 <div class="dropdown">
-                                    <a class="dropdown-item" :href="urls.feed"><i class="fas fa-braille"></i> Feed</a>
+                                    <Link class="dropdown-item" :href="route('inertia.feeds.index')"><i class="fas fa-braille"></i> Feed</Link>
                                 </div>
                                 <div class="dropdown">
                                     <a class="dropdown-item dropdown-toggle arrow-none" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="fa fa-list"></i> Payments <div class="arrow-down"></div>
                                     </a>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item" :href="urls.payables"><i class="fas fa-credit-card"></i> Account Payable</a>
+                                        <Link class="dropdown-item" :href="route('inertia.payables.index')"><i class="fas fa-credit-card"></i> Account Payable</Link>
                                     </div>
                                 </div>
                             </div>
@@ -137,8 +140,8 @@ const { can } = usePermissions();
                                         <i class="fas fa-bird"></i> Chicks <div class="arrow-down"></div>
                                     </a>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item" :href="route('inertia.reports.chick-sale')">Sale</a>
-                                        <a class="dropdown-item" :href="route('inertia.reports.chick-purchase')">Purchase</a>
+                                        <Link class="dropdown-item" :href="route('inertia.reports.chick-sale')">Sale</Link>
+                                        <Link class="dropdown-item" :href="route('inertia.reports.chick-purchase')">Purchase</Link>
                                     </div>
                                 </div>
                                 <div class="dropdown">
@@ -146,9 +149,9 @@ const { can } = usePermissions();
                                         <i class="fe-file"></i> Products <div class="arrow-down"></div>
                                     </a>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item" :href="route('inertia.reports.product-purchase')">Product Purchase</a>
-                                        <a class="dropdown-item" :href="route('inertia.reports.product-sale')">Product Sale</a>
-                                        <a class="dropdown-item" :href="route('inertia.reports.product')">Products</a>
+                                        <Link class="dropdown-item" :href="route('inertia.reports.product-purchase')">Product Purchase</Link>
+                                        <Link class="dropdown-item" :href="route('inertia.reports.product-sale')">Product Sale</Link>
+                                        <Link class="dropdown-item" :href="route('inertia.reports.product')">Products</Link>
                                     </div>
                                 </div>
                             </div>

@@ -24,6 +24,7 @@ class AuthServiceProvider extends ServiceProvider
         \App\Models\Product::class => \App\Policies\ProductPolicy::class,
         \App\Models\Feed::class => \App\Policies\FeedPolicy::class,
         \App\Models\Expense::class => \App\Policies\ExpensePolicy::class,
+        \App\Models\AccountPayable::class => \App\Policies\AccountPayablePolicy::class,
         \App\Models\PartyBalance::class => \App\Policies\PartyBalancePolicy::class,
         \App\Models\CompanyBalance::class => \App\Policies\CompanyBalancePolicy::class,
         \App\Models\BrokerBalance::class => \App\Policies\BrokerBalancePolicy::class,

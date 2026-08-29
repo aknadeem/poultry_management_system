@@ -343,7 +343,7 @@ it('creates a product purchase through inertia exactly once per request', functi
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('ProductPurchases/Show')
-            ->where('purchase.invoice_url', route('productpurchases.invoice', $purchase->id, false))
+            ->where('purchase.invoice_url', route('inertia.product-purchases.invoice', $purchase->id, false))
             ->has('purchase.items', 1)
         );
 });
@@ -587,7 +587,7 @@ it('creates a product sale through inertia exactly once per request', function (
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('ProductSales/Show')
-            ->where('sale.invoice_url', route('productsales.invoice', $sale->id, false))
+            ->where('sale.invoice_url', route('inertia.product-sales.invoice', $sale->id, false))
             ->has('sale.items', 1)
             ->where('urls.productSales', route('inertia.product-sales.index'))
         );

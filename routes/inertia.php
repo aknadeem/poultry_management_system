@@ -31,6 +31,8 @@ use App\Http\Controllers\Inertia\InventoryManagement\ChickSaleController as Iner
 use App\Http\Controllers\Inertia\InventoryManagement\ChickPurchaseController as InertiaChickPurchaseController;
 use App\Http\Controllers\Inertia\InventoryManagement\FeedController as InertiaFeedController;
 use App\Http\Controllers\Inertia\InventoryManagement\ExpenseController as InertiaExpenseController;
+use App\Http\Controllers\Inertia\PaymentManagement\AccountPayableController as InertiaAccountPayableController;
+use App\Http\Controllers\Inertia\BalanceManagement\BrokerBalanceController as InertiaBrokerBalanceController;
 use App\Http\Controllers\Inertia\ReportManagement\ChickReportController as InertiaChickReportController;
 use App\Http\Controllers\Inertia\ReportManagement\ProductReportController as InertiaProductReportController;
 use App\Http\Controllers\Inertia\UserManagement\UserController as InertiaUserController;
@@ -121,9 +123,10 @@ Route::prefix('app')->group(function (): void {
                 'update' => 'inertia.brokers.update',
                 'destroy' => 'inertia.brokers.destroy',
             ]);
-            Route::resource('partybalances', InertiaPartyBalanceController::class)->only(['index', 'show'])->names([
+            Route::resource('partybalances', InertiaPartyBalanceController::class)->only(['index', 'show', 'store'])->names([
                 'index' => 'inertia.party-balances.index',
                 'show' => 'inertia.party-balances.show',
+                'store' => 'inertia.party-balances.store',
             ]);
             Route::post('lookup-types', [InertiaLookupTypeController::class, 'store'])->name('inertia.lookup-types.store');
             Route::post('partyaccounts', [InertiaPartyAccountController::class, 'store'])->name('inertia.party-accounts.store');
@@ -200,6 +203,7 @@ Route::prefix('app')->group(function (): void {
             Route::post('product-purchases', [InertiaProductPurchaseController::class, 'store'])->name('inertia.product-purchases.store');
             Route::get('product-purchases/rebates', [InertiaProductPurchaseController::class, 'rebates'])->name('inertia.product-purchases.rebates');
             Route::post('product-purchases/rebate', [InertiaProductPurchaseController::class, 'rebate'])->name('inertia.product-purchases.rebate');
+            Route::get('product-purchases/{productPurchase}/invoice', [InertiaProductPurchaseController::class, 'invoice'])->name('inertia.product-purchases.invoice');
             Route::get('product-purchases/{productPurchase}', [InertiaProductPurchaseController::class, 'show'])->name('inertia.product-purchases.show');
             Route::delete('product-purchases/{productPurchase}', [InertiaProductPurchaseController::class, 'destroy'])->name('inertia.product-purchases.destroy');
             Route::put('product-purchases/{productPurchase}/status', [InertiaProductPurchaseController::class, 'toggleStatus'])
@@ -210,6 +214,7 @@ Route::prefix('app')->group(function (): void {
             Route::post('product-sales', [InertiaProductSaleController::class, 'store'])->name('inertia.product-sales.store');
             Route::get('product-sales/rebates', [InertiaProductSaleController::class, 'rebates'])->name('inertia.product-sales.rebates');
             Route::post('product-sales/rebate', [InertiaProductSaleController::class, 'rebate'])->name('inertia.product-sales.rebate');
+            Route::get('product-sales/{productSale}/invoice', [InertiaProductSaleController::class, 'invoice'])->name('inertia.product-sales.invoice');
             Route::get('product-sales/{productSale}', [InertiaProductSaleController::class, 'show'])->name('inertia.product-sales.show');
             Route::delete('product-sales/{productSale}', [InertiaProductSaleController::class, 'destroy'])->name('inertia.product-sales.destroy');
             Route::put('product-sales/{productSale}/status', [InertiaProductSaleController::class, 'toggleStatus'])
@@ -275,6 +280,14 @@ Route::prefix('app')->group(function (): void {
                 ->name('inertia.company-balances.store');
             Route::get('company-balances/{companyBalance}', [InertiaCompanyBalanceController::class, 'show'])
                 ->name('inertia.company-balances.show');
+
+            Route::get('broker-balances', [InertiaBrokerBalanceController::class, 'index'])
+                ->name('inertia.broker-balances.index');
+        });
+
+        Route::prefix('paymentmanagement')->group(function (): void {
+            Route::get('payables', [InertiaAccountPayableController::class, 'index'])
+                ->name('inertia.payables.index');
         });
 
         Route::prefix('reportmanagement')->group(function (): void {

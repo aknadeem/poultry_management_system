@@ -66,6 +66,15 @@ class ProductPurchaseController extends Controller
         ]);
     }
 
+    public function invoice(ProductPurchase $productPurchase): Response
+    {
+        $this->authorize('view', $productPurchase);
+
+        return Inertia::render('ProductPurchases/Invoice', [
+            'purchase' => ProductPresenter::purchase($productPurchase),
+        ]);
+    }
+
     public function destroy(
         ProductPurchase $productPurchase,
         DestroyProductPurchaseAction $action,

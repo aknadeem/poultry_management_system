@@ -128,7 +128,7 @@ class ProductPresenter
             'payment_status_color' => is_array($status) ? ($status['color_name'] ?? 'secondary') : 'secondary',
             'description' => $purchase->description,
             'is_active' => (bool) $purchase->is_active,
-            'invoice_url' => route('productpurchases.invoice', $purchase->id, false),
+            'invoice_url' => route('inertia.product-purchases.invoice', $purchase->id, false),
         ];
 
         if ($includeItems) {
@@ -212,6 +212,7 @@ class ProductPresenter
             'division_id' => $sale->division_id,
             'party_id' => $sale->party_id,
             'party_name' => $sale->party?->name,
+            'party_cnic' => $sale->party?->cnic_no,
             'party_company_id' => $sale->party_company_id,
             'company_name' => $sale->company?->company_name,
             'product_category_id' => $sale->product_category_id,
@@ -233,7 +234,7 @@ class ProductPresenter
             'payment_status_color' => $payment['color'],
             'description' => $sale->description,
             'is_active' => (bool) $sale->is_active,
-            'invoice_url' => route('productsales.invoice', $sale->id, false),
+            'invoice_url' => route('inertia.product-sales.invoice', $sale->id, false),
         ];
 
         if ($includeItems) {

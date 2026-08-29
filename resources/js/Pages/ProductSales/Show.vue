@@ -51,7 +51,7 @@ function submitRebate() {
                 <div class="row mb-2">
                     <div class="col-6"><h4>Product Sale Detail</h4></div>
                     <div class="col-6 text-end">
-                        <a :href="route('productsales.invoice', sale)" class="btn btn-info btn-sm" target="_blank">
+                        <a :href="route('inertia.product-sales.invoice', sale)" class="btn btn-info btn-sm" target="_blank">
                             <i class="fa fa-file"></i> Invoice
                         </a>
                         <Link :href="route('inertia.product-sales.index')" class="btn btn-secondary btn-sm ms-1">

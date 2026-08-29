@@ -2,6 +2,8 @@
 
 namespace App\Support;
 
+use App\Models\AccountPayable;
+use App\Models\BrokerBalance;
 use App\Models\ChickPurchase;
 use App\Models\ChickenSale;
 use App\Models\CompanyBalance;
@@ -79,6 +81,7 @@ class InertiaShare
             'inertia.brokers.destroy' => route('inertia.brokers.destroy', ['broker' => '__id__'], false),
             'inertia.party-balances.index' => route('inertia.party-balances.index', [], false),
             'inertia.party-balances.show' => route('inertia.party-balances.show', ['partybalance' => '__id__'], false),
+            'inertia.party-balances.store' => route('inertia.party-balances.store', [], false),
             'inertia.lookup-types.store' => route('inertia.lookup-types.store', [], false),
             'inertia.party-accounts.store' => route('inertia.party-accounts.store', [], false),
             'inertia.party-accounts.destroy' => route('inertia.party-accounts.destroy', ['partyaccount' => '__id__'], false),
@@ -131,6 +134,7 @@ class InertiaShare
             'inertia.product-purchases.rebates' => route('inertia.product-purchases.rebates', [], false),
             'inertia.product-purchases.rebate' => route('inertia.product-purchases.rebate', [], false),
             'inertia.product-purchases.toggle-status' => route('inertia.product-purchases.toggle-status', ['productPurchase' => '__id__'], false),
+            'inertia.product-purchases.invoice' => route('inertia.product-purchases.invoice', ['productPurchase' => '__id__'], false),
             'productpurchases.invoice' => route('productpurchases.invoice', ['id' => '__id__'], false),
             'inertia.product-sales.index' => route('inertia.product-sales.index', [], false),
             'inertia.product-sales.create' => route('inertia.product-sales.create', [], false),
@@ -140,6 +144,7 @@ class InertiaShare
             'inertia.product-sales.rebates' => route('inertia.product-sales.rebates', [], false),
             'inertia.product-sales.rebate' => route('inertia.product-sales.rebate', [], false),
             'inertia.product-sales.toggle-status' => route('inertia.product-sales.toggle-status', ['productSale' => '__id__'], false),
+            'inertia.product-sales.invoice' => route('inertia.product-sales.invoice', ['productSale' => '__id__'], false),
             'productsales.invoice' => route('productsales.invoice', ['id' => '__id__'], false),
             'productfilter' => url('/ProductManagement/productfilter'),
             'inertia.chick-sales.index' => route('inertia.chick-sales.index', [], false),
@@ -181,6 +186,8 @@ class InertiaShare
             'inertia.company-balances.index' => route('inertia.company-balances.index', [], false),
             'inertia.company-balances.store' => route('inertia.company-balances.store', [], false),
             'inertia.company-balances.show' => route('inertia.company-balances.show', ['companyBalance' => '__id__'], false),
+            'inertia.broker-balances.index' => route('inertia.broker-balances.index', [], false),
+            'inertia.payables.index' => route('inertia.payables.index', [], false),
             'inertia.reports.chick-sale' => route('inertia.reports.chick-sale', [], false),
             'inertia.reports.chick-purchase' => route('inertia.reports.chick-purchase', [], false),
             'inertia.reports.product' => route('inertia.reports.product', [], false),
@@ -211,6 +218,15 @@ class InertiaShare
                     'delete' => false,
                 ],
                 'partyBalances' => [
+                    'viewAny' => false,
+                    'view' => false,
+                    'create' => false,
+                ],
+                'brokerBalances' => [
+                    'viewAny' => false,
+                    'view' => false,
+                ],
+                'payables' => [
                     'viewAny' => false,
                     'view' => false,
                 ],
@@ -275,6 +291,14 @@ class InertiaShare
                     'view' => false,
                     'create' => false,
                 ],
+                'brokerBalances' => [
+                    'viewAny' => false,
+                    'view' => false,
+                ],
+                'payables' => [
+                    'viewAny' => false,
+                    'view' => false,
+                ],
             ];
         }
 
@@ -306,6 +330,7 @@ class InertiaShare
             'partyBalances' => [
                 'viewAny' => $user->can('viewAny', PartyBalance::class),
                 'view' => $user->can('viewAny', PartyBalance::class),
+                'create' => $user->can('create', PartyBalance::class),
             ],
             'products' => [
                 'viewAny' => $user->can('viewAny', Product::class),
@@ -367,6 +392,14 @@ class InertiaShare
                 'viewAny' => $user->can('viewAny', CompanyBalance::class),
                 'view' => $user->can('viewAny', CompanyBalance::class),
                 'create' => $user->can('create', CompanyBalance::class),
+            ],
+            'brokerBalances' => [
+                'viewAny' => $user->can('viewAny', BrokerBalance::class),
+                'view' => $user->can('viewAny', BrokerBalance::class),
+            ],
+            'payables' => [
+                'viewAny' => $user->can('viewAny', AccountPayable::class),
+                'view' => $user->can('viewAny', AccountPayable::class),
             ],
         ];
     }
