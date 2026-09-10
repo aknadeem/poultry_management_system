@@ -86,6 +86,48 @@ it('lists broker balances through inertia', function (): void {
         );
 });
 
+it('lists party balances with payment props through inertia', function (): void {
+    $timestamps = [
+        'created_at' => '2026-06-01 00:00:00',
+        'updated_at' => '2026-06-01 00:00:00',
+    ];
+
+    DB::table('parties')->insert([
+        'id' => 1,
+        'is_customer' => true,
+        'is_vendor' => false,
+        'is_active' => true,
+        'name' => 'Fixture Party',
+        'cnic_no' => '1000000000001',
+        'contact_no' => '03000000001',
+        ...$timestamps,
+    ]);
+
+    PartyBalance::query()->create([
+        'party_id' => 1,
+        'total_amount' => 1000,
+        'paid_amount' => 0,
+        'remaining_amount' => 1000,
+        'transaction_date' => '2026-06-01',
+        'amount_type' => Constant::AMOUNT_TYPE['ToReceive'],
+        'payment_status' => Constant::PAYMENT_STATUS['UnPaid'],
+        'narration' => 'Fixture party balance',
+        'addedby' => 1,
+    ]);
+
+    $this->actingAs(remainingMigrationUser())
+        ->get(route('inertia.party-balances.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('PartyBalances/Index')
+            ->has('today')
+            ->has('balances.data', 1)
+            ->where('balances.data.0.party_name', 'Fixture Party')
+            ->where('balances.data.0.narration', 'Fixture party balance')
+            ->where('balances.data.0.amount_type_color', 'success')
+        );
+});
+
 it('shows party balance payments and records a payment through inertia', function (): void {
     $timestamps = [
         'created_at' => '2026-06-01 00:00:00',
@@ -132,13 +174,18 @@ it('shows party balance payments and records a payment through inertia', functio
             'amount_payment' => 250,
             'paid_date' => '2026-06-15',
             'payment_option' => 'cash',
+            'reference_no' => 'REF-100',
             'description' => 'Partial payment',
         ])
         ->assertRedirect();
 
+    $payment = PartyBalancePayment::query()->first();
+
     expect((float) $balance->refresh()->paid_amount)->toBe(250.0)
         ->and((float) $balance->remaining_amount)->toBe(750.0)
-        ->and(PartyBalancePayment::count())->toBe(1);
+        ->and(PartyBalancePayment::count())->toBe(1)
+        ->and($payment?->reference_no)->toBe('REF-100')
+        ->and($payment?->narration)->toBe('Partial payment');
 });
 
 it('registers remaining inertia routes', function (): void {

@@ -38,6 +38,7 @@ class RecordPartyBalancePaymentAction
                 'payment_option' => $data['payment_option'],
                 'cheque_date' => $data['cheque_date'] ?? null,
                 'bank_name' => $data['bank_name'] ?? null,
+                'reference_no' => $data['reference_no'] ?? null,
                 'cheque_picture' => $chequePicture,
                 'invoice_picture' => $imageName,
                 'narration' => $data['description'] ?? null,

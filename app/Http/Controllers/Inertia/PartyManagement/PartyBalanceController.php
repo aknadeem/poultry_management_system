@@ -24,6 +24,7 @@ class PartyBalanceController extends Controller
         return Inertia::render('PartyBalances/Index', [
             'balances' => $balances->through(fn (PartyBalance $balance): array => $this->listItem($balance)),
             'filters' => $query->filters(),
+            'today' => now()->toDateString(),
         ]);
     }
 

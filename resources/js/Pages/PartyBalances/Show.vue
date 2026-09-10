@@ -46,7 +46,7 @@ function onPaymentClose() {
                             class="btn btn-primary btn-sm"
                             @click="showPaymentModal = true"
                         >
-                            <i class="fa fa-money-bill"></i> Add Payment
+                            <i class="fa fa-plus"></i> Add Payment
                         </button>
                     </div>
                 </div>
@@ -133,7 +133,7 @@ function onPaymentClose() {
         </div>
 
         <PaymentForm
-            v-if="showPaymentModal"
+            v-if="balance"
             :show="showPaymentModal"
             :balance="balance"
             :today="today"

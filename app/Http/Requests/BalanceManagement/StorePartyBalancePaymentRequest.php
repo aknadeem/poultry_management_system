@@ -22,6 +22,7 @@ class StorePartyBalancePaymentRequest extends FormRequest
             'cheque_date' => 'bail|required_if:payment_option,cheque|nullable|date',
             'bank_name' => 'bail|required_if:payment_option,cheque|nullable|string',
             'cheque_picture' => 'bail|required_if:payment_option,cheque|nullable',
+            'reference_no' => 'nullable|string|max:255',
             'description' => 'nullable',
             'image_file' => 'nullable',
         ];

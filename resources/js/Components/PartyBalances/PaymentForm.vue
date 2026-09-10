@@ -1,10 +1,8 @@
 <script setup>
 import { computed, watch } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-import Modal from '../Modal/Modal.vue';
+import FormModal from '../Modal/FormModal.vue';
 import FormError from '../Forms/FormError.vue';
-import PrimaryButton from '../Buttons/PrimaryButton.vue';
-import SecondaryButton from '../Buttons/SecondaryButton.vue';
 import { useRoute } from '../../Utils/route';
 
 const props = defineProps({
@@ -21,9 +19,10 @@ const form = useForm({
     party_id: props.balance?.party_id,
     amount_payment: '',
     paid_date: props.today || '',
-    payment_option: 'cash',
+    payment_option: 'cheque',
     cheque_date: '',
     bank_name: '',
+    reference_no: '',
     description: '',
     cheque_picture: null,
     image_file: null,
@@ -34,8 +33,27 @@ watch(() => props.balance, (balance) => {
     form.party_id = balance?.party_id;
 }, { immediate: true });
 
+watch(() => props.show, (isOpen) => {
+    if (! isOpen) {
+        return;
+    }
+
+    form.reset();
+    form.clearErrors();
+    form.balance_id = props.balance?.id;
+    form.party_id = props.balance?.party_id;
+    form.paid_date = props.today || '';
+    form.payment_option = 'cheque';
+});
+
 const maxAmount = computed(() => Number(props.balance?.remaining_amount || 0));
-const isCheque = computed(() => form.payment_option === 'cheque');
+
+function formatAmount(value) {
+    return Number(value || 0).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    });
+}
 
 function onChequeFileChange(e) {
     form.cheque_picture = e.target.files[0] ?? null;
@@ -48,7 +66,7 @@ function onInvoiceFileChange(e) {
 function close() {
     form.reset();
     form.clearErrors();
-    form.payment_option = 'cash';
+    form.payment_option = 'cheque';
     form.paid_date = props.today || '';
     form.balance_id = props.balance?.id;
     form.party_id = props.balance?.party_id;
@@ -65,88 +83,145 @@ function submit() {
 </script>
 
 <template>
-    <Modal :show="show" max-width="lg" @close="close">
-        <div class="modal-header">
-            <h5 class="modal-title">Record Payment for {{ balance?.party_name }}</h5>
-            <button type="button" class="btn-close" @click="close"></button>
-        </div>
-        <form autocomplete="off" @submit.prevent="submit">
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="fw-bold">Party Name</label>
-                        <input class="form-control" type="text" :value="balance?.party_name" disabled>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="fw-bold">Payment Status</label>
-                        <input class="form-control" type="text" :value="balance?.payment_status" disabled>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="fw-bold">Total Amount</label>
-                        <input class="form-control" type="text" :value="balance?.total_amount" disabled>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="fw-bold">Remaining Amount</label>
-                        <input class="form-control" type="text" :value="balance?.remaining_amount" disabled>
-                    </div>
-                    <div class="col-md-12"><hr></div>
+    <FormModal :show="show" title="Add Payment" size="lg" @close="close">
+        <form autocomplete="off" class="form_loader" @submit.prevent="submit">
+            <div class="row form-group">
+                <div class="col-sm-4 mb-2">
+                    <label>
+                        Total Amount:
+                        <span class="fw-bold fs-4">{{ formatAmount(balance?.total_amount) }}</span>
+                    </label>
+                </div>
+                <div class="col-sm-4 mb-2">
+                    <label>
+                        Paid Amount:
+                        <span class="fw-bold fs-4 text-success">{{ formatAmount(balance?.paid_amount) }}</span>
+                    </label>
+                </div>
+                <div class="col-sm-4 mb-2">
+                    <label>
+                        Remaining Amount:
+                        <span class="fw-bold fs-4 text-danger">{{ formatAmount(balance?.remaining_amount) }}</span>
+                    </label>
+                </div>
 
-                    <div class="col-md-6 mb-3">
-                        <label class="fw-bold">Amount Payment *</label>
-                        <input v-model="form.amount_payment" class="form-control" type="number" step="any" min="1" :max="maxAmount" placeholder="Enter amount">
-                        <FormError :message="form.errors.amount_payment" />
-                        <small class="text-muted">Maximum: {{ maxAmount }}</small>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="fw-bold">Paid Date *</label>
-                        <input v-model="form.paid_date" class="form-control" type="date">
-                        <FormError :message="form.errors.paid_date" />
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="fw-bold">Payment Option *</label>
-                        <select v-model="form.payment_option" class="form-select">
-                            <option value="cash">Cash</option>
-                            <option value="cheque">Cheque</option>
-                            <option value="other">Other</option>
-                        </select>
-                        <FormError :message="form.errors.payment_option" />
-                    </div>
+                <div class="col-sm-6 mb-2">
+                    <label for="amount_payment">Amount</label>
+                    <input
+                        id="amount_payment"
+                        v-model="form.amount_payment"
+                        class="form-control"
+                        type="number"
+                        step="any"
+                        min="0"
+                        :max="maxAmount"
+                        placeholder="Enter amount"
+                        required
+                    >
+                    <FormError :message="form.errors.amount_payment" />
+                </div>
 
-                    <template v-if="isCheque">
-                        <div class="col-md-6 mb-3">
-                            <label class="fw-bold">Cheque Date *</label>
-                            <input v-model="form.cheque_date" class="form-control" type="date">
-                            <FormError :message="form.errors.cheque_date" />
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="fw-bold">Bank Name *</label>
-                            <input v-model="form.bank_name" class="form-control" type="text" placeholder="Enter bank name">
-                            <FormError :message="form.errors.bank_name" />
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="fw-bold">Cheque Picture *</label>
-                            <input class="form-control" type="file" accept="image/jpeg,image/jpg,image/png" @change="onChequeFileChange">
-                            <FormError :message="form.errors.cheque_picture" />
-                        </div>
-                    </template>
+                <div class="col-sm-6 mb-2">
+                    <label for="payment_option">Payment Option</label>
+                    <select id="payment_option" v-model="form.payment_option" class="form-control" required>
+                        <option value="cheque">Cheque</option>
+                        <option value="cash">Cash</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <FormError :message="form.errors.payment_option" />
+                </div>
 
-                    <div class="col-md-6 mb-3">
-                        <label class="fw-bold">Invoice/Receipt Picture</label>
-                        <input class="form-control" type="file" accept="image/jpeg,image/jpg,image/png" @change="onInvoiceFileChange">
-                        <FormError :message="form.errors.image_file" />
-                    </div>
+                <div class="col-sm-4 mb-2">
+                    <label for="cheque_date">Cheque Date</label>
+                    <input id="cheque_date" v-model="form.cheque_date" class="form-control" type="date" placeholder="Enter cheque date">
+                    <FormError :message="form.errors.cheque_date" />
+                </div>
 
-                    <div class="col-md-12 mb-3">
-                        <label class="fw-bold">Narration</label>
-                        <textarea v-model="form.description" class="form-control" rows="2" placeholder="Description/Note"></textarea>
-                        <FormError :message="form.errors.description" />
-                    </div>
+                <div class="col-sm-4 mb-2">
+                    <label for="bank_name">Cheque Bank</label>
+                    <input
+                        id="bank_name"
+                        v-model="form.bank_name"
+                        class="form-control"
+                        type="text"
+                        placeholder="Enter bank name"
+                    >
+                    <FormError :message="form.errors.bank_name" />
+                </div>
+
+                <div class="col-sm-4 mb-2">
+                    <label for="cheque_picture">Cheque Picture</label>
+                    <input
+                        id="cheque_picture"
+                        class="form-control"
+                        type="file"
+                        accept="image/jpeg,image/jpg,image/png"
+                        @change="onChequeFileChange"
+                    >
+                    <FormError :message="form.errors.cheque_picture" />
+                </div>
+
+                <div class="col-sm-4 mb-2">
+                    <label for="reference_no">Reference Number</label>
+                    <input
+                        id="reference_no"
+                        v-model="form.reference_no"
+                        class="form-control"
+                        type="text"
+                        placeholder="Enter amount"
+                    >
+                    <FormError :message="form.errors.reference_no" />
+                </div>
+
+                <div class="col-sm-4 mb-2">
+                    <label for="paid_date">Payment Date *</label>
+                    <input id="paid_date" v-model="form.paid_date" class="form-control" type="date" required>
+                    <FormError :message="form.errors.paid_date" />
+                </div>
+
+                <div class="col-sm-4 mb-2">
+                    <label for="image_file">Picture</label>
+                    <input
+                        id="image_file"
+                        class="form-control"
+                        type="file"
+                        accept="image/jpeg,image/jpg,image/png"
+                        @change="onInvoiceFileChange"
+                    >
+                    <FormError :message="form.errors.image_file" />
+                </div>
+
+                <div class="col-sm-12 mb-2">
+                    <label for="description">Description</label>
+                    <input
+                        id="description"
+                        v-model="form.description"
+                        class="form-control"
+                        type="text"
+                        placeholder="Enter amount"
+                    >
+                    <FormError :message="form.errors.description" />
                 </div>
             </div>
-            <div class="modal-footer">
-                <SecondaryButton type="button" @click="close">Cancel</SecondaryButton>
-                <PrimaryButton type="submit" :disabled="form.processing">Submit Payment</PrimaryButton>
+
+            <div class="row form-group">
+                <div class="col-sm-4 mb-3">
+                    <button
+                        type="submit"
+                        class="btn btn-secondary btn-sm waves-effect waves-light mt-3"
+                        :disabled="form.processing"
+                    >
+                        Submit
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-light btn-sm waves-effect waves-light mt-3"
+                        @click="close"
+                    >
+                        Cancel
+                    </button>
+                </div>
             </div>
         </form>
-    </Modal>
+    </FormModal>
 </template>
