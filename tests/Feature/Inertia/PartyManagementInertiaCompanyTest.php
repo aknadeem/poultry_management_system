@@ -253,7 +253,7 @@ it('stores a company balance payment via cash', function (): void {
     expect((float) $balance->refresh()->remaining_amount)->toBe(600.0)
         ->and($balance->status)->toBe('pending')
         ->and(CompanyBalancePayment::count())->toBe(1)
-        ->and(AccountPayable::where('amount_type', 'company_balance_payment')->count())->toBe(1);
+        ->and(AccountPayable::where('amount_type', 'company_balance_payment')->count())->toBe(0);
 });
 
 it('rejects cheque payments without cheque fields', function (): void {

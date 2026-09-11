@@ -128,6 +128,8 @@ Route::prefix('app')->group(function (): void {
                 'show' => 'inertia.party-balances.show',
                 'store' => 'inertia.party-balances.store',
             ]);
+            Route::post('partybalances/payments/{payment}/reverse', [InertiaPartyBalanceController::class, 'reverse'])
+                ->name('inertia.party-balances.payments.reverse');
             Route::post('lookup-types', [InertiaLookupTypeController::class, 'store'])->name('inertia.lookup-types.store');
             Route::post('partyaccounts', [InertiaPartyAccountController::class, 'store'])->name('inertia.party-accounts.store');
             Route::delete('partyaccounts/{partyaccount}', [InertiaPartyAccountController::class, 'destroy'])->name('inertia.party-accounts.destroy');
@@ -280,6 +282,8 @@ Route::prefix('app')->group(function (): void {
                 ->name('inertia.company-balances.store');
             Route::get('company-balances/{companyBalance}', [InertiaCompanyBalanceController::class, 'show'])
                 ->name('inertia.company-balances.show');
+            Route::post('company-balances/payments/{payment}/reverse', [InertiaCompanyBalanceController::class, 'reverse'])
+                ->name('inertia.company-balances.payments.reverse');
 
             Route::get('broker-balances', [InertiaBrokerBalanceController::class, 'index'])
                 ->name('inertia.broker-balances.index');

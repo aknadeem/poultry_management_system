@@ -45,9 +45,24 @@ beforeEach(function () {
         'addedby' => 1,
         ...$timestamps,
     ]);
+    DB::table('account_payables')->insert([
+        'id' => 1,
+        'amount_type' => 'product_purchase',
+        'amount_status' => 'unpaid',
+        'narration' => 'company balance on product purchase',
+        'entry_date' => '2026-06-01',
+        'model_id' => 1,
+        'company_balance_id' => 1,
+        'total_amount' => 10000,
+        'paid_amount' => 0,
+        'remaining_amount' => 10000,
+        'dr' => 10000,
+        'addedby' => 1,
+        ...$timestamps,
+    ]);
 });
 
-test('company balance payment reduces remaining balance and records payable', function () {
+test('company balance payment reduces remaining balance and syncs original payable', function () {
     $this->withoutExceptionHandling();
 
     $this->post(route('companybalance.store'), [
@@ -69,7 +84,9 @@ test('company balance payment reduces remaining balance and records payable', fu
     expect($balance->status)->toBe('pending');
 
     expect(CompanyBalancePayment::count())->toBe(1);
-    expect(AccountPayable::where('amount_type', 'company_balance_payment')->count())->toBe(1);
+    expect(AccountPayable::where('amount_type', 'company_balance_payment')->count())->toBe(0);
+    expect((float) AccountPayable::findOrFail(1)->paid_amount)->toBe(2500.0);
+    expect((float) AccountPayable::findOrFail(1)->remaining_amount)->toBe(7500.0);
 });
 
 test('company balance payments show page handles empty payments successfully', function () {

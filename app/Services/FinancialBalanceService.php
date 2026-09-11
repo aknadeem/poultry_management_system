@@ -35,6 +35,8 @@ class FinancialBalanceService
             ],
             [
                 'company_id' => $companyId,
+                'reference_type' => 'chick_purchase',
+                'reference_id' => $purchaseId,
                 'total_amount' => $totalPrice,
                 'remaining_amount' => $companyRemaining,
                 'dr' => $totalPrice,
@@ -45,9 +47,16 @@ class FinancialBalanceService
 
         // 2. Party Balance (Customer)
         $narrationPattern = "(Purchase #{$purchaseId})";
-        $partyBalance = PartyBalance::where('party_id', $customerId)
-            ->where('narration', 'like', "%{$narrationPattern}%")
+        $partyBalance = PartyBalance::query()
+            ->where('reference_type', 'chick_purchase')
+            ->where('reference_id', $purchaseId)
             ->first();
+
+        if (! $partyBalance) {
+            $partyBalance = PartyBalance::where('party_id', $customerId)
+                ->where('narration', 'like', "%{$narrationPattern}%")
+                ->first();
+        }
 
         // If not found, try searching for the legacy format if it matches the exact price and date
         if (!$partyBalance) {
@@ -67,6 +76,8 @@ class FinancialBalanceService
             ],
             [
                 'party_id' => $customerId,
+                'reference_type' => 'chick_purchase',
+                'reference_id' => $purchaseId,
                 'total_amount' => $totalPrice,
                 'remaining_amount' => $partyRemaining,
                 'transaction_date' => $date,
@@ -109,9 +120,15 @@ class FinancialBalanceService
     ): void {
         // 1. Party Balance (Customer)
         $partyPattern = "(Sale #{$saleId})";
-        $partyBalance = PartyBalance::where('party_id', $customerId)
-            ->where('narration', 'like', "%{$partyPattern}%")
+        $partyBalance = PartyBalance::query()
+            ->where('reference_type', 'chicken_sale')
+            ->where('reference_id', $saleId)
             ->first();
+
+        if (! $partyBalance) {
+            $partyBalance = PartyBalance::where('narration', 'like', "%{$partyPattern}%")
+                ->first();
+        }
 
         if (!$partyBalance) {
             $partyBalance = PartyBalance::where('party_id', $customerId)
@@ -130,6 +147,8 @@ class FinancialBalanceService
             ],
             [
                 'party_id' => $customerId,
+                'reference_type' => 'chicken_sale',
+                'reference_id' => $saleId,
                 'total_amount' => $totalPrice,
                 'remaining_amount' => $partyRemaining,
                 'transaction_date' => $date,
@@ -142,9 +161,15 @@ class FinancialBalanceService
 
         // 2. Broker Balance
         $brokerPattern = "(Sale #{$saleId})";
-        $brokerBalance = BrokerBalance::where('broker_id', $brokerId)
-            ->where('narration', 'like', "%{$brokerPattern}%")
+        $brokerBalance = BrokerBalance::query()
+            ->where('reference_type', 'chicken_sale')
+            ->where('reference_id', $saleId)
             ->first();
+
+        if (! $brokerBalance) {
+            $brokerBalance = BrokerBalance::where('narration', 'like', "%{$brokerPattern}%")
+                ->first();
+        }
 
         if (!$brokerBalance) {
             $brokerBalance = BrokerBalance::where('broker_id', $brokerId)
@@ -162,6 +187,8 @@ class FinancialBalanceService
             ],
             [
                 'broker_id' => $brokerId,
+                'reference_type' => 'chicken_sale',
+                'reference_id' => $saleId,
                 'dr' => $brokerCommission,
                 'total_amount' => $brokerCommission,
                 'remaining_amount' => $brokerRemaining,
@@ -256,9 +283,16 @@ class FinancialBalanceService
         int $userId
     ): void {
         $pattern = "(ProductSale #{$saleId})";
-        $partyBalance = PartyBalance::where('party_id', $partyId)
-            ->where('narration', 'like', "%{$pattern}%")
+        $partyBalance = PartyBalance::query()
+            ->where('reference_type', 'product_sale')
+            ->where('reference_id', $saleId)
             ->first();
+
+        if (! $partyBalance) {
+            $partyBalance = PartyBalance::where('party_id', $partyId)
+                ->where('narration', 'like', "%{$pattern}%")
+                ->first();
+        }
 
         if (! $partyBalance) {
             $partyBalance = PartyBalance::where('party_id', $partyId)
@@ -279,6 +313,8 @@ class FinancialBalanceService
                 'transaction_date' => $date,
                 'amount_type' => Constant::AMOUNT_TYPE['ToReceive'],
                 'narration' => "product sale balance {$pattern}",
+                'reference_type' => 'product_sale',
+                'reference_id' => $saleId,
                 'addedby' => $partyBalance ? $partyBalance->addedby : $userId,
                 'updatedby' => $partyBalance ? $userId : null,
             ]
@@ -332,16 +368,24 @@ class FinancialBalanceService
         float $paymentAmount,
         int $userId
     ): CompanyBalance {
-        $paid = round((float) $balance->paid_amount + $paymentAmount, 2);
-        $remaining = round((float) $balance->total_amount - $paid, 2);
-        if ($remaining < 0) {
-            $remaining = 0.0;
+        // Legacy entry point retained for compatibility. Payment actions now allocate
+        // through PaymentAllocationService, which rejects overpayments and locks rows.
+        $amount = \App\Support\FinancialAmount::fromDecimalString((string) $paymentAmount);
+        $remaining = \App\Support\FinancialAmount::fromDecimalString((string) ($balance->remaining_amount ?? 0));
+
+        if (! $amount->isPositive() || $amount->greaterThan($remaining)) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'amount_payment' => 'Payment amount cannot exceed the remaining balance.',
+            ]);
         }
 
+        $paid = \App\Support\FinancialAmount::fromDecimalString((string) ($balance->paid_amount ?? 0))->add($amount);
+        $newRemaining = \App\Support\FinancialAmount::fromDecimalString((string) ($balance->total_amount ?? 0))->subtract($paid);
+
         $balance->update([
-            'paid_amount' => $paid,
-            'remaining_amount' => $remaining,
-            'status' => $remaining <= 0 ? 'paid' : ($paid > 0 ? 'pending' : 'unpaid'),
+            'paid_amount' => $paid->toDecimalString(),
+            'remaining_amount' => $newRemaining->toDecimalString(),
+            'status' => $newRemaining->isZero() ? 'paid' : ($paid->isPositive() ? 'pending' : 'unpaid'),
             'updatedby' => $userId,
         ]);
 
@@ -376,22 +420,28 @@ class FinancialBalanceService
         float $paymentAmount,
         int $userId
     ): PartyBalance {
-        $paid = round((float) ($balance->paid_amount ?? 0) + $paymentAmount, 2);
-        $remaining = round((float) $balance->total_amount - $paid, 2);
-        if ($remaining < 0) {
-            $remaining = 0.0;
+        $amount = \App\Support\FinancialAmount::fromDecimalString((string) $paymentAmount);
+        $remaining = \App\Support\FinancialAmount::fromDecimalString((string) ($balance->remaining_amount ?? 0));
+
+        if (! $amount->isPositive() || $amount->greaterThan($remaining)) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'amount_payment' => 'Payment amount cannot exceed the remaining balance.',
+            ]);
         }
 
+        $paid = \App\Support\FinancialAmount::fromDecimalString((string) ($balance->paid_amount ?? 0))->add($amount);
+        $newRemaining = \App\Support\FinancialAmount::fromDecimalString((string) ($balance->total_amount ?? 0))->subtract($paid);
+
         $status = Constant::PAYMENT_STATUS['UnPaid'];
-        if ($remaining <= 0) {
+        if ($newRemaining->isZero()) {
             $status = Constant::PAYMENT_STATUS['Paid'];
-        } elseif ($paid > 0) {
+        } elseif ($paid->isPositive()) {
             $status = Constant::PAYMENT_STATUS['Pending'];
         }
 
         $balance->update([
-            'paid_amount' => $paid,
-            'remaining_amount' => $remaining,
+            'paid_amount' => $paid->toDecimalString(),
+            'remaining_amount' => $newRemaining->toDecimalString(),
             'payment_status' => $status,
             'updatedby' => $userId,
         ]);
@@ -426,6 +476,9 @@ class FinancialBalanceService
         if ($balanceType !== null) {
             $payload['balance_type'] = $balanceType;
         }
+
+        $payload['reference_type'] = $type;
+        $payload['reference_id'] = $modelId;
 
         return CompanyBalance::updateOrCreate(
             [

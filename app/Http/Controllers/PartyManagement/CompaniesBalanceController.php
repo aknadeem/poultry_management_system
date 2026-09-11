@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\PartyManagement;
 
 use App\Actions\PartyManagement\RecordCompanyBalancePaymentAction;
+use App\Actions\PartyManagement\ReverseCompanyBalancePaymentAction;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PartyManagement\ReverseCompanyBalancePaymentRequest;
 use App\Http\Requests\PartyManagement\StoreCompanyBalancePaymentRequest;
 use App\Models\CompanyBalance;
 use App\Models\CompanyBalancePayment;
@@ -118,6 +120,43 @@ class CompaniesBalanceController extends Controller
             ->get();
 
         return view('partymanagement.company.balancepayments.index', compact('balance_payments', 'company_balance'));
+    }
+
+    public function reverse(
+        ReverseCompanyBalancePaymentRequest $request,
+        CompanyBalancePayment $payment,
+        ReverseCompanyBalancePaymentAction $action,
+    ) {
+        $balance = CompanyBalance::query()->findOrFail($payment->company_balance_id);
+        $this->authorize('update', $balance);
+
+        try {
+            $action->execute(
+                $payment,
+                $this->authUserId,
+                $request->validated('reversal_reason')
+            );
+
+            return response()->json([
+                'message' => 'Payment reversed successfully!',
+                'success' => 'yes',
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'error' => $e->errors(),
+                'success' => 'no',
+            ], 422);
+        } catch (\Throwable $e) {
+            Log::error($e);
+            if (app()->environment('testing')) {
+                throw $e;
+            }
+
+            return response()->json([
+                'message' => 'Something went wrong',
+                'success' => 'no',
+            ], 200);
+        }
     }
 
     public function edit($id)

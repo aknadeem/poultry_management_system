@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Inertia\PartyManagement;
 
 use App\Actions\BalanceManagement\RecordPartyBalancePaymentAction;
+use App\Actions\BalanceManagement\ReversePartyBalancePaymentAction;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BalanceManagement\ReversePartyBalancePaymentRequest;
 use App\Http\Requests\BalanceManagement\StorePartyBalancePaymentRequest;
 use App\Models\PartyBalance;
 use App\Models\PartyBalancePayment;
@@ -68,6 +70,29 @@ class PartyBalanceController extends Controller
             ]);
     }
 
+    public function reverse(
+        ReversePartyBalancePaymentRequest $request,
+        PartyBalancePayment $payment,
+        ReversePartyBalancePaymentAction $action,
+    ): RedirectResponse {
+        $balance = PartyBalance::query()->findOrFail($payment->party_balance_id);
+        $this->authorize('update', $balance);
+
+        $action->execute(
+            $payment,
+            (int) Auth::id(),
+            $request->validated('reversal_reason'),
+        );
+
+        return redirect()
+            ->back()
+            ->with('swal_notification', [
+                'title' => 'Payment Reversed',
+                'icon_type' => 'success',
+                'message' => 'Payment reversed successfully',
+            ]);
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -109,9 +134,11 @@ class PartyBalanceController extends Controller
                 'other' => 'Other',
                 default => (string) $payment->payment_option,
             },
+            'payment_status' => $payment->payment_status ?? 'posted',
             'cheque_date' => $payment->cheque_date,
             'bank_name' => $payment->bank_name,
             'narration' => $payment->narration,
+            'reversal_reason' => $payment->reversal_reason,
             'added_by' => $payment->user?->name,
             'created_at' => $payment->created_at?->format('d M, Y h:i:s A'),
         ];

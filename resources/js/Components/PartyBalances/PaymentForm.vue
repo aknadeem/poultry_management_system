@@ -26,6 +26,7 @@ const form = useForm({
     description: '',
     cheque_picture: null,
     image_file: null,
+    idempotency_key: crypto.randomUUID(),
 });
 
 watch(() => props.balance, (balance) => {
@@ -44,6 +45,7 @@ watch(() => props.show, (isOpen) => {
     form.party_id = props.balance?.party_id;
     form.paid_date = props.today || '';
     form.payment_option = 'cheque';
+    form.idempotency_key = crypto.randomUUID();
 });
 
 const maxAmount = computed(() => Number(props.balance?.remaining_amount || 0));
@@ -70,6 +72,7 @@ function close() {
     form.paid_date = props.today || '';
     form.balance_id = props.balance?.id;
     form.party_id = props.balance?.party_id;
+    form.idempotency_key = crypto.randomUUID();
     emit('close');
 }
 

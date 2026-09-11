@@ -110,6 +110,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                 <form autocomplete="off" method="post" enctype="multipart/form-data" id="AddPaymentForm"
                     class="form_loader">
                     @csrf
+                    <input type="hidden" name="idempotency_key" id="PartyPaymentIdempotencyKey" value="{{ (string) \Illuminate\Support\Str::uuid() }}">
                     <div class="row form-group">
                         <input type="hidden" name="balance_id" id="BalanceId">
 
@@ -225,6 +226,9 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                     $('#PaidAmountLabel').html(data?.balance?.paid_amount || 0)
                     $('#RemAmountLabel').html(data?.balance?.remaining_amount)
                     $('#AddAmount').attr('max', data?.balance?.remaining_amount)
+                    if (window.crypto && window.crypto.randomUUID) {
+                        $('#PartyPaymentIdempotencyKey').val(window.crypto.randomUUID())
+                    }
                     $('#AddPaymentModal').modal('show')
                 }else{
                     return 0;
@@ -237,6 +241,12 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
             let balance_id = parseInt($(this).attr('data-id')) || 0
             let form_url = "{{ route('partybalance.store')}}"
             let form_type = "POST"
+            const $form = $(this);
+            const $submit = $form.find('button[type="submit"]');
+            if ($submit.prop('disabled')) {
+                return;
+            }
+            $submit.prop('disabled', true);
             $.ajax({
                 type: form_type,
                 url: form_url,
@@ -257,6 +267,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                             // console.log(prefix)
                             $('#AddPaymentForm').find('span.'+prefix+'_error').text(val[0]);
                         });
+                        $submit.prop('disabled', false);
                     }else{
                         $("#AddPaymentForm").trigger("reset");
                         $('#AddPaymentModal').modal('hide');
@@ -273,6 +284,7 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                     }
                 },
                 error: function (xhr) {
+                    $submit.prop('disabled', false);
                     if (xhr.status === 422) {
                         const errors = xhr.responseJSON?.errors || {};
 

@@ -5,6 +5,7 @@ namespace App\Actions\ProductManagement;
 use App\Models\ProductPurchase;
 use App\Models\ProductPurchaseDetail;
 use App\Services\FinancialBalanceService;
+use App\Services\FinancialTransactionService;
 use App\Services\InventoryService;
 use App\Services\PayableService;
 use Illuminate\Support\Arr;
@@ -16,6 +17,7 @@ class StoreProductPurchaseAction
         private FinancialBalanceService $balanceService,
         private InventoryService $inventoryService,
         private PayableService $payableService,
+        private FinancialTransactionService $transactionService,
     ) {
     }
 
@@ -68,8 +70,22 @@ class StoreProductPurchaseAction
                 (float) $data['final_amount'],
                 'product_purchase',
                 'company balance on product purchase',
-                $userId
+                $userId,
+                null,
+                'product_purchase',
+                (int) $purchase->id,
             );
+
+            if (config('financial.rollouts.product_purchase')) {
+                $this->transactionService->post($purchase, [
+                    'transaction_type' => 'product_purchase',
+                    'direction' => 'debit',
+                    'amount' => (string) $data['final_amount'],
+                    'transaction_date' => now()->toDateString(),
+                    'narration' => 'Product purchase #'.$purchase->id,
+                    'idempotency_key' => 'product-purchase-'.$purchase->id,
+                ], $userId);
+            }
 
             return $purchase;
         });

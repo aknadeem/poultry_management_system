@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { Link, router } from '@inertiajs/vue3';
+import { Link, router, useForm } from '@inertiajs/vue3';
 import PageTitle from '../../Layouts/Partials/PageTitle.vue';
 import PaymentForm from '../../Components/CompanyBalances/PaymentForm.vue';
 import { usePermissions } from '../../Composables/usePermissions';
@@ -15,6 +15,9 @@ defineProps({
 });
 
 const showPaymentModal = ref(false);
+const reverseForm = useForm({
+    reversal_reason: '',
+});
 
 function statusClass(status) {
     const value = String(status || '').toLowerCase();
@@ -31,6 +34,18 @@ function statusClass(status) {
 function onPaymentClose() {
     showPaymentModal.value = false;
     router.reload({ only: ['balance', 'payments'] });
+}
+
+function reversePayment(payment) {
+    if (payment.payment_status === 'reversed') {
+        return;
+    }
+
+    reverseForm.reversal_reason = window.prompt('Optional reversal reason:') || '';
+    reverseForm.post(route('inertia.company-balances.payments.reverse', payment.id), {
+        preserveScroll: true,
+        onSuccess: () => router.reload({ only: ['balance', 'payments'] }),
+    });
 }
 </script>
 
@@ -112,20 +127,35 @@ function onPaymentClose() {
                                 <th>#</th>
                                 <th>Paid Amount</th>
                                 <th>Paid through</th>
+                                <th>Status</th>
                                 <th>Paid By</th>
                                 <th>Paid At</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-if="payments.length === 0">
-                                <td colspan="5" class="text-center text-muted">No payments recorded.</td>
+                                <td colspan="7" class="text-center text-muted">No payments recorded.</td>
                             </tr>
                             <tr v-for="(payment, index) in payments" :key="payment.id">
                                 <td>{{ index + 1 }}</td>
                                 <td>{{ payment.paid_amount }}</td>
                                 <td>{{ payment.payment_option_label || payment.payment_option }}</td>
+                                <td>{{ payment.payment_status || 'posted' }}</td>
                                 <td>{{ payment.added_by || '—' }}</td>
                                 <td>{{ payment.created_at }}</td>
+                                <td>
+                                    <button
+                                        v-if="(payment.payment_status || 'posted') !== 'reversed' && can('companyBalances.update')"
+                                        type="button"
+                                        class="btn btn-sm btn-outline-danger"
+                                        :disabled="reverseForm.processing"
+                                        @click="reversePayment(payment)"
+                                    >
+                                        Reverse
+                                    </button>
+                                    <span v-else class="text-muted">{{ payment.reversal_reason || '—' }}</span>
+                                </td>
                             </tr>
                         </tbody>
                     </table>

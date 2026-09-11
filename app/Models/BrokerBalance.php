@@ -11,12 +11,16 @@ class BrokerBalance extends Model
     use HasFactory, SoftDeletes;
     protected $fillable = [
         'broker_id',
+        'reference_type',
+        'reference_id',
         'total_amount',
         'paid_amount',
         'remaining_amount',
         'dr',
         'cr',
         'balance',
+        'status',
+        'financial_status',
         'narration',
         'addedby',
         'updatedby',

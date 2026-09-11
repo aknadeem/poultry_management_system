@@ -37,6 +37,16 @@ class TestingDatabaseGuard
      */
     public static function assertInMemorySqlite(array $databaseConfig, ?string $connectionName = null): void
     {
+        self::assertSafeTestingDatabase($databaseConfig, $connectionName);
+    }
+
+    /**
+     * Allow sqlite/:memory: by default, or MySQL/MariaDB databases whose name ends in `_testing`.
+     *
+     * @param  array<string, mixed>  $databaseConfig
+     */
+    public static function assertSafeTestingDatabase(array $databaseConfig, ?string $connectionName = null): void
+    {
         self::$invocationLog[] = 'guard';
 
         $connectionName = $connectionName ?? ($databaseConfig['default'] ?? 'unknown');
@@ -45,15 +55,24 @@ class TestingDatabaseGuard
         $driver = $effective['driver'] ?? null;
         $database = $effective['database'] ?? null;
 
-        if ($driver !== 'sqlite' || $database !== ':memory:') {
-            throw new RuntimeException(
-                "Feature tests require sqlite/:memory:, got [{$connectionName}/{$driver}/{$database}]."
-            );
+        if ($driver === 'sqlite' && $database === ':memory:') {
+            return;
         }
+
+        if (in_array($driver, ['mysql', 'mariadb'], true)
+            && is_string($database)
+            && str_ends_with($database, '_testing')
+        ) {
+            return;
+        }
+
+        throw new RuntimeException(
+            "Feature tests require sqlite/:memory: or a MySQL/MariaDB database ending in _testing, got [{$connectionName}/{$driver}/{$database}]."
+        );
     }
 
     public static function assertApplicationUsesInMemorySqlite(\Illuminate\Contracts\Foundation\Application $app): void
     {
-        self::assertInMemorySqlite($app['config']['database']);
+        self::assertSafeTestingDatabase($app['config']['database']);
     }
 }

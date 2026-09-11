@@ -24,7 +24,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('finance:reconcile --report')
+            ->daily()
+            ->withoutOverlapping()
+            ->appendOutputTo(storage_path('logs/finance-reconcile.log'));
     }
 
     /**

@@ -13,6 +13,8 @@ use App\Models\PartyBalancePayment;
 use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
 use App\Actions\BalanceManagement\RecordPartyBalancePaymentAction;
+use App\Actions\BalanceManagement\ReversePartyBalancePaymentAction;
+use App\Http\Requests\BalanceManagement\ReversePartyBalancePaymentRequest;
 use App\Http\Requests\BalanceManagement\StorePartyBalancePaymentRequest;
 
 class PartyBalanceController extends Controller
@@ -28,12 +30,14 @@ class PartyBalanceController extends Controller
 
     public function index()
     {
+        $this->authorize('viewAny', PartyBalance::class);
         $balances = PartyBalance::with('party:id,name,cnic_no')->orderBy('id','DESC')->get();
         return view('balancemanagement.party_balances.index', compact('balances'));
     }
 
     public function getPartyBalances()
     {
+        $this->authorize('viewAny', PartyBalance::class);
         $balances = PartyBalance::with('party:id,name,cnic_no')->orderBy('id','DESC')->get();
         if($balances->count() > 0){
             $message = 'yes';
@@ -68,6 +72,7 @@ class PartyBalanceController extends Controller
 
     public function getBalanceList()
     {
+        $this->authorize('viewAny', PartyBalance::class);
         $balances = PartyBalance::with('party:id,name,cnic_no')->orderBy('id','DESC')->withCasts([
             'created_at' => 'date:d M, Y'
         ])->get();
@@ -86,7 +91,7 @@ class PartyBalanceController extends Controller
                     $payment_button = '';
                 }
                 return $payment_button.'<a class="btn btn-primary btn-sm"
-                FeedId="'.$row["id"].'" href="'.route("companybalance.show", $row["id"]).'"
+                FeedId="'.$row["id"].'" href="'.route("getBalancePayments", $row["id"]).'"
                 title="View Details" tabindex="0" data-plugin="tippy"
                 data-tippy-animation="scale" data-tippy-arrow="true"><i class="fa fa-eye"></i>
                 View
@@ -98,18 +103,18 @@ class PartyBalanceController extends Controller
 
     public function show($id)
     {
-        $balance = PartyBalance::find($id);
-        if($balance){
-            $message = 'yes';
-            return response()->json([
-                'message' => $message,
-                'balance' => $balance->toArray(),
-            ], 201);
-        }
+        $balance = PartyBalance::findOrFail($id);
+        $this->authorize('view', $balance);
+        return response()->json([
+            'message' => 'yes',
+            'balance' => $balance->toArray(),
+        ], 201);
     }
 
     public function getBalancePayments($id)
     {
+        $balance = PartyBalance::findOrFail($id);
+        $this->authorize('view', $balance);
         $payments = PartyBalancePayment::query()
             ->where('party_balance_id',$id)
             ->with('party:id,name,email,is_vendor,is_customer,profile_picture,contact_no','user:id,name')
@@ -120,6 +125,7 @@ class PartyBalanceController extends Controller
 
     public function store(StorePartyBalancePaymentRequest $request, RecordPartyBalancePaymentAction $action)
     {
+        $this->authorize('create', PartyBalance::class);
         try {
             $action->execute(
                 $request->validated(),
@@ -137,6 +143,43 @@ class PartyBalanceController extends Controller
                 'error' => $e->errors(),
                 'success' => 'no',
             ], 201);
+        } catch (\Throwable $e) {
+            Log::error($e);
+            if (app()->environment('testing')) {
+                throw $e;
+            }
+
+            return response()->json([
+                'message' => 'Something went wrong',
+                'success' => 'no',
+            ], 200);
+        }
+    }
+
+    public function reverse(
+        ReversePartyBalancePaymentRequest $request,
+        PartyBalancePayment $payment,
+        ReversePartyBalancePaymentAction $action,
+    ) {
+        $balance = PartyBalance::query()->findOrFail($payment->party_balance_id);
+        $this->authorize('update', $balance);
+
+        try {
+            $action->execute(
+                $payment,
+                $this->authUserId,
+                $request->validated('reversal_reason')
+            );
+
+            return response()->json([
+                'message' => 'Payment reversed successfully!',
+                'success' => 'yes',
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'error' => $e->errors(),
+                'success' => 'no',
+            ], 422);
         } catch (\Throwable $e) {
             Log::error($e);
             if (app()->environment('testing')) {

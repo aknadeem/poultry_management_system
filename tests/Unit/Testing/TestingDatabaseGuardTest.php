@@ -36,7 +36,7 @@ it('accepts sqlite in-memory DATABASE_URL override', function () {
     expect(TestingDatabaseGuard::$invocationLog)->toBe(['guard']);
 });
 
-it('rejects mysql configuration', function () {
+it('rejects mysql configuration that is not a dedicated testing database', function () {
     TestingDatabaseGuard::assertInMemorySqlite([
         'default' => 'mysql',
         'connections' => [
@@ -47,7 +47,22 @@ it('rejects mysql configuration', function () {
             ],
         ],
     ]);
-})->throws(RuntimeException::class, 'Feature tests require sqlite/:memory:');
+})->throws(RuntimeException::class, 'Feature tests require sqlite/:memory: or a MySQL/MariaDB database ending in _testing');
+
+it('accepts mysql databases ending in _testing', function () {
+    TestingDatabaseGuard::assertSafeTestingDatabase([
+        'default' => 'mysql',
+        'connections' => [
+            'mysql' => [
+                'driver' => 'mysql',
+                'host' => '127.0.0.1',
+                'database' => 'pms_db_testing',
+            ],
+        ],
+    ]);
+
+    expect(TestingDatabaseGuard::$invocationLog)->toBe(['guard']);
+});
 
 it('rejects file-based sqlite configuration', function () {
     TestingDatabaseGuard::assertInMemorySqlite([
@@ -59,7 +74,7 @@ it('rejects file-based sqlite configuration', function () {
             ],
         ],
     ]);
-})->throws(RuntimeException::class, 'Feature tests require sqlite/:memory:');
+})->throws(RuntimeException::class, 'Feature tests require sqlite/:memory: or a MySQL/MariaDB database ending in _testing');
 
 it('rejects mysql DATABASE_URL override on sqlite connection', function () {
     TestingDatabaseGuard::assertInMemorySqlite([
@@ -72,7 +87,7 @@ it('rejects mysql DATABASE_URL override on sqlite connection', function () {
             ],
         ],
     ]);
-})->throws(RuntimeException::class, 'Feature tests require sqlite/:memory:');
+})->throws(RuntimeException::class, 'Feature tests require sqlite/:memory: or a MySQL/MariaDB database ending in _testing');
 
 it('rejects file sqlite DATABASE_URL override', function () {
     TestingDatabaseGuard::assertInMemorySqlite([
@@ -85,7 +100,7 @@ it('rejects file sqlite DATABASE_URL override', function () {
             ],
         ],
     ]);
-})->throws(RuntimeException::class, 'Feature tests require sqlite/:memory:');
+})->throws(RuntimeException::class, 'Feature tests require sqlite/:memory: or a MySQL/MariaDB database ending in _testing');
 
 it('resolves effective config using the same parser as Laravel database manager', function () {
     $databaseConfig = [

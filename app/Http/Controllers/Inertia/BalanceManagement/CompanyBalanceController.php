@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Inertia\BalanceManagement;
 
 use App\Actions\PartyManagement\RecordCompanyBalancePaymentAction;
+use App\Actions\PartyManagement\ReverseCompanyBalancePaymentAction;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PartyManagement\ReverseCompanyBalancePaymentRequest;
 use App\Http\Requests\PartyManagement\StoreCompanyBalancePaymentRequest;
 use App\Models\CompanyBalance;
 use App\Models\CompanyBalancePayment;
@@ -64,6 +66,29 @@ class CompanyBalanceController extends Controller
                 'title'     => 'Payment Added',
                 'icon_type' => 'success',
                 'message'   => 'Payment recorded successfully',
+            ]);
+    }
+
+    public function reverse(
+        ReverseCompanyBalancePaymentRequest $request,
+        CompanyBalancePayment $payment,
+        ReverseCompanyBalancePaymentAction $action,
+    ): RedirectResponse {
+        $balance = CompanyBalance::query()->findOrFail($payment->company_balance_id);
+        $this->authorize('update', $balance);
+
+        $action->execute(
+            $payment,
+            (int) Auth::id(),
+            $request->validated('reversal_reason'),
+        );
+
+        return redirect()
+            ->back()
+            ->with('swal_notification', [
+                'title' => 'Payment Reversed',
+                'icon_type' => 'success',
+                'message' => 'Payment reversed successfully',
             ]);
     }
 }

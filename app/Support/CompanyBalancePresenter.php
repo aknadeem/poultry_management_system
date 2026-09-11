@@ -68,6 +68,8 @@ class CompanyBalancePresenter
                 ? asset('storage/companies/payment/'.$payment->invoice_picture)
                 : null,
             'description' => $payment->description,
+            'payment_status' => $payment->payment_status ?? 'posted',
+            'reversal_reason' => $payment->reversal_reason,
             'added_by' => $payment->addedBy?->name,
             'created_at' => $payment->created_at?->format('d M, Y h:i:s A'),
         ];

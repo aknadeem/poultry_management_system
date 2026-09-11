@@ -92,6 +92,8 @@ Route::group(['middleware' => 'auth'], function(){
         Route::resource('companybalance', CompaniesBalanceController::class)->except([
             'create', 'update', 'destroy',
         ]);
+        Route::post('/companybalance-payments/{payment}/reverse', [CompaniesBalanceController::class, 'reverse'])
+            ->name('companybalance.payments.reverse');
 
         Route::get('/partybalancelist', [PartyBalanceController::class, 'getBalanceList'])->name('getBalanceList');
 
@@ -100,6 +102,8 @@ Route::group(['middleware' => 'auth'], function(){
         // Route::get('/getParties', [PartyBalanceController::class, 'getParties'])->name('getParties');
 
         Route::resource('partybalance', PartyBalanceController::class)->only(['index', 'show', 'store']);
+        Route::post('/partybalance-payments/{payment}/reverse', [PartyBalanceController::class, 'reverse'])
+            ->name('partybalance.payments.reverse');
 
         Route::get('/party-balance-payments/{id}', [PartyBalanceController::class, 'getBalancePayments'])->name('getBalancePayments');
     });

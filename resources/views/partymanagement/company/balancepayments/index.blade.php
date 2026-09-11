@@ -52,8 +52,10 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                                 <th>#</th>
                                 <th>Paid Amount</th>
                                 <th>Paid through</th>
+                                <th>Status</th>
                                 <th>Paid By </th>
                                 <th>Paid At </th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -62,8 +64,19 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
                                 <td>{{++$key}}</td>
                                 <td>{{$item->paid_amount}}</td>
                                 <td>{{$item->payment_option}}</td>
+                                <td>{{$item->payment_status ?? 'posted'}}</td>
                                 <td>{{$item?->addedBy?->name}} </td>
                                 <td>{{$item->created_at?->format('d M, Y h:i:s A')}}</td>
+                                <td>
+                                    @if(($item->payment_status ?? 'posted') !== 'reversed')
+                                        <button type="button" class="btn btn-sm btn-outline-danger reverseCompanyPayment"
+                                            data-url="{{ route('companybalance.payments.reverse', $item->id) }}">
+                                            Reverse
+                                        </button>
+                                    @else
+                                        <span class="text-muted">{{ $item->reversal_reason }}</span>
+                                    @endif
+                                </td>
                             </tr>
                             @empty
                             @endforelse
@@ -104,6 +117,32 @@ $load_js = Array('tables','tippy','sweetAlert', 'jquery-confirm','select2','sele
             // $(this).find('modal').hide();
             $('.modal').modal('hide'); 
             $(this).find('form').trigger('reset');
+        });
+
+        $(document).on('click', '.reverseCompanyPayment', function () {
+            const url = $(this).data('url');
+            const reason = window.prompt('Optional reversal reason:');
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    reversal_reason: reason || null,
+                },
+                success: function (response) {
+                    if (response.success === 'yes') {
+                        window.location.reload();
+                    } else {
+                        alert(response.message || 'Unable to reverse payment');
+                    }
+                },
+                error: function (xhr) {
+                    const message = xhr.responseJSON?.error?.payment?.[0]
+                        || xhr.responseJSON?.message
+                        || 'Unable to reverse payment';
+                    alert(message);
+                }
+            });
         });
     });
 </script>

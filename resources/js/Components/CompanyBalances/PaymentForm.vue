@@ -25,12 +25,21 @@ const form = useForm({
     description: '',
     cheque_picture: null,
     image_file: null,
+    idempotency_key: crypto.randomUUID(),
 });
 
 watch(() => props.companyBalance, (balance) => {
     form.company_balance_id = balance?.id;
     form.party_company_id = balance?.company_id;
 }, { immediate: true });
+
+watch(() => props.show, (isOpen) => {
+    if (! isOpen) {
+        return;
+    }
+
+    form.idempotency_key = crypto.randomUUID();
+});
 
 const maxAmount = computed(() => Number(props.companyBalance?.remaining_amount || 0));
 const isCheque = computed(() => form.payment_option === 'cheque');
@@ -49,6 +58,7 @@ function close() {
     form.payment_option = 'cash';
     form.company_balance_id = props.companyBalance?.id;
     form.party_company_id = props.companyBalance?.company_id;
+    form.idempotency_key = crypto.randomUUID();
     emit('close');
 }
 

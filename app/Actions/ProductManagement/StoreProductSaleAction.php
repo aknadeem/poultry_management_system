@@ -6,6 +6,7 @@ use App\Models\ProductSale;
 use App\Models\ProductSaleDetail;
 use App\Services\FileUploadService;
 use App\Services\FinancialBalanceService;
+use App\Services\FinancialTransactionService;
 use App\Services\InventoryService;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +17,7 @@ class StoreProductSaleAction
         private FinancialBalanceService $balanceService,
         private InventoryService $inventoryService,
         private FileUploadService $uploadService,
+        private FinancialTransactionService $transactionService,
     ) {
     }
 
@@ -63,6 +65,17 @@ class StoreProductSaleAction
                 (string) $data['sale_date'],
                 $userId
             );
+
+            if (config('financial.rollouts.product_sale')) {
+                $this->transactionService->post($sale, [
+                    'transaction_type' => 'product_sale',
+                    'direction' => 'debit',
+                    'amount' => (string) $data['final_amount'],
+                    'transaction_date' => (string) $data['sale_date'],
+                    'narration' => 'Product sale #'.$sale->id,
+                    'idempotency_key' => 'product-sale-'.$sale->id,
+                ], $userId);
+            }
 
             return $sale;
         });

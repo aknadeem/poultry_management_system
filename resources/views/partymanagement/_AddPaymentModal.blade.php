@@ -172,6 +172,7 @@
                 <form autocomplete="off" method="post" enctype="multipart/form-data" id="AddPaymentForm"
                     class="form_loader">
                     @csrf
+                    <input type="hidden" name="idempotency_key" id="CompanyPaymentIdempotencyKey" value="{{ (string) \Illuminate\Support\Str::uuid() }}">
                     <div class="row form-group">
                         <input type="hidden" name="company_balance_id" id="CompanyBalanceId">
 
@@ -276,6 +277,9 @@
                     $('#PaidAmountLabel').html(data?.balance?.paid_amount)
                     $('#RemAmountLabel').html(data?.balance?.remaining_amount)
                     $('#AddAmount').attr('max', data?.balance?.remaining_amount)
+                    if (window.crypto && window.crypto.randomUUID) {
+                        $('#CompanyPaymentIdempotencyKey').val(window.crypto.randomUUID())
+                    }
                     $('#AddPaymentModal').modal('show')
                 }else{
                     return 0;
@@ -289,6 +293,12 @@
             // alert(balance_id)x
             let form_url = "{{ route('companybalance.store')}}"
             let form_type = "POST"
+            const $form = $(this);
+            const $submit = $form.find('button[type="submit"]');
+            if ($submit.prop('disabled')) {
+                return;
+            }
+            $submit.prop('disabled', true);
 
             $.ajax({
                 type: form_type,
@@ -310,6 +320,7 @@
                             // console.log(prefix)
                             $('#AddPaymentForm').find('span.'+prefix+'_error').text(val[0]);
                         });
+                        $submit.prop('disabled', false);
                     }else{
                         $("#AddPaymentForm").trigger("reset");
                         $('#AddPaymentModal').modal('hide');
@@ -326,6 +337,7 @@
                     }
                 },
                 error: function (xhr) {
+                    $submit.prop('disabled', false);
                     if (xhr.status === 422) {
                         const errors = xhr.responseJSON?.errors || {};
 
